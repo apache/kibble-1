@@ -1,0 +1,20 @@
+elasticsearch:
+    host:       localhost
+    port:       9200
+    ssl:        false
+    dbname:     kibble
+    
+mail:
+    mailhost:   localhost
+    mailport:   25
+    sender:     Kibble <no-reply@kibble.live>
+
+accounts:
+    allowSignup:    true
+    verifyEmail:    false
+    # Example auto-invite setup:
+    autoInvite:
+        -
+            domain: apache.org
+            organisation: apache
+    

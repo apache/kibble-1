@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Please log in - Apache Kibble</title>
+    <meta name="msapplication-TileColor" content="#5bc0de" />
+    <meta name="msapplication-TileImage" content="images/background.png" />
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.2.0/animate.min.css">
+
+    <!-- Metis core stylesheet -->
+    <link rel="stylesheet" href="css/kibble.min.css">
+  </head>
+  <body class="login">
+    <div class="form-signin">
+      <div class="text-center" style="text-align: center;">
+        <img src="images/kibble-logo.png" alt="Apache Kibble" style="width: 160px;">
+      </div>
+      <hr>
+      <div class="tab-content">
+        <div id="login" class="tab-pane active">
+          <form onsubmit="return kibbleLogin(this.elements['email'].value, this.elements['password'].value);">
+            <p class="text-muted text-center">
+              Enter your email address and password
+            </p>
+            <input name="email" type="email" placeholder="Email address" class="form-control top">
+            <input name="password" type="password" placeholder="Password" class="form-control bottom">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+          </form>
+        </div>
+        <div id="forgot" class="tab-pane">
+          <form action="index.html">
+            <p class="text-muted text-center">Enter your valid e-mail</p>
+            <input type="email" placeholder="mail@domain.com" class="form-control">
+            <br>
+            <button class="btn btn-lg btn-danger btn-block" type="submit">Recover Password</button>
+          </form>
+        </div>
+        <div id="signup" class="tab-pane">
+          <form action="index.html">
+            <input type="email" placeholder="Email address" class="form-control top">
+            <input type="text" placeholder="Your full name" class="form-control top">
+            <input type="password" placeholder="password" class="form-control middle">
+            <input type="password" placeholder="re-password" class="form-control bottom">
+            <button class="btn btn-lg btn-success btn-block" type="submit">Register</button>
+          </form>
+        </div>
+      </div>
+      <hr>
+      <div class="text-center">
+        <ul class="list-inline">
+          <li> <a class="text-muted" href="#login" data-toggle="tab">Login</a>  </li>
+          <li> <a class="text-muted" href="#forgot" data-toggle="tab">Forgot Password</a>  </li>
+          <li> <a class="text-muted" href="#signup" data-toggle="tab">Signup</a>  </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Kibble JS -->
+    <script src="js/kibble.v1.js"></script>
+    
+    <!--jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <!--Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      (function($) {
+        $(document).ready(function() {
+          $('.list-inline li > a').click(function() {
+            var activeForm = $(this).attr('href') + ' > form';
+            //console.log(activeForm);
+            $(activeForm).addClass('animated fadeIn');
+            //set timer to 1 seconds, after that, unload the animate animation
+            setTimeout(function() {
+              $(activeForm).removeClass('animated fadeIn');
+            }, 1000);
+          });
+        });
+      })(jQuery);
+    </script>
+    <script type="text/javascript">
+      
+var colors = new Array(
+  [62,35,255],
+  [60,255,60],
+  [255,35,98],
+  [45,175,230],
+  [255,0,255],
+  [255,128,0]);
+
+var step = 0;
+//color table indices for: 
+// current color left
+// next color left
+// current color right
+// next color right
+var colorIndices = [0,1,2,3];
+
+//transition speed
+var gradientSpeed = 0.009;
+
+function updateGradient()
+{
+  
+  if ( $===undefined ) return;
+  
+var c0_0 = colors[colorIndices[0]];
+var c0_1 = colors[colorIndices[1]];
+var c1_0 = colors[colorIndices[2]];
+var c1_1 = colors[colorIndices[3]];
+
+var istep = 1 - step;
+var r1 = Math.round(istep * c0_0[0] + step * c0_1[0]);
+var g1 = Math.round(istep * c0_0[1] + step * c0_1[1]);
+var b1 = Math.round(istep * c0_0[2] + step * c0_1[2]);
+var color1 = "rgb("+r1+","+g1+","+b1+")";
+
+var r2 = Math.round(istep * c1_0[0] + step * c1_1[0]);
+var g2 = Math.round(istep * c1_0[1] + step * c1_1[1]);
+var b2 = Math.round(istep * c1_0[2] + step * c1_1[2]);
+var color2 = "rgb("+r2+","+g2+","+b2+")";
+
+ $('body').css({
+    background: "url(images/background.png) repeat, linear-gradient(135deg, "+color1+" 0%, "+color2+" 100%)"});
+  
+  step += gradientSpeed;
+  if ( step >= 1 )
+  {
+    step %= 1;
+    colorIndices[0] = colorIndices[1];
+    colorIndices[2] = colorIndices[3];
+    
+    //pick two new target color indices
+    //do not pick the same as the current one
+    colorIndices[1] = ( colorIndices[1] + Math.floor( 1 + Math.random() * (colors.length - 1))) % colors.length;
+    colorIndices[3] = ( colorIndices[3] + Math.floor( 1 + Math.random() * (colors.length - 1))) % colors.length;
+    
+  }
+}
+
+setInterval(updateGradient,10);
+    </script>
+  </body>
+</html>

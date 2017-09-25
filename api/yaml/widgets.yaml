@@ -1,0 +1,105 @@
+
+widgets:
+    repos:
+        title: "Code Repositories"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+                    -
+                        type:   repopicker
+                        blocks: 4
+                        source: "sources"
+                        name:   "Repository picker"
+            -
+                name: "Trends"
+                children:
+                    -
+                        type:   "trends"
+                        source: "code-trends"
+                        name:   "Commit trends"
+                        blocks: 12
+            -
+                name: "Code analysis"
+                children:
+                    -
+                        type:       "donut"
+                        datatype:   "repo"
+                        blocks:     4
+                        source:     "sloc"
+                        representation: "sloccount"
+                        name:       "Language breakdown"
+                        target:     ""
+                    -
+                        type:       "donut"
+                        datatype:   "repo"
+                        blocks:     4
+                        source:     "sloc"
+                        representation: "commentcount"
+                        name:       "Language breakdown"
+                        target:     ""
+                    -
+                        type:       "top5"
+                        datatype:   "repo"
+                        blocks:     4
+                        source:     "committers"
+                        representation: "top5"
+                        name:       "Top 5 contributors"
+            -
+                name: "Commit history"
+                children:
+                    -
+                        type:           line
+                        source:         commits
+                        target:         ""
+                        name:           "Commit history"
+                        blocks:         6
+                    -
+                        type:           line
+                        source:         committers
+                        target:         ""
+                        name:           "Active developers per month"
+                        blocks:         6
+            -
+                name: "Code changes"
+                children:
+                    -
+                        type:           line
+                        source:         code-changes
+                        target:         ""
+                        name:           "Lines changed"
+                        blocks:         6
+                    -
+                        type:           line
+                        source:         code-evolution
+                        representation: stack
+                        target:         ""
+                        name:           "Code evolution"
+                        blocks:         6
+            -
+                name: "Top repositories"
+                children:
+                    -
+                        type:       donut
+                        datatype:   repo
+                        blocks:     4
+                        source:     top-sloc
+                        name:       "Top repos by lines of code"
+                        target:     ""
+                    -
+                        type:       donut
+                        datatype:   repo
+                        blocks:     4
+                        source:     top-commits
+                        name:       "Top repos by commits"
+                        target:     ""
+

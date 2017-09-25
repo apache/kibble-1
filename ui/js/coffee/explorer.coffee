@@ -1,0 +1,493 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+explorer = (json, state) ->
+        
+        org = json.organisation
+        h = document.createElement('h2')
+        if json.tag
+            org.name += " (Filter: " + json.tag + ")"
+        h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
+        state.widget.inject(h, true)
+        list = document.createElement('select')
+        state.widget.inject(list)
+        opt = document.createElement('option')
+        opt.value = ""
+        slen = 0
+        for item in json.sources
+            if item.type in ['git', 'svn', 'gerrit', 'github'] and item.noclone != true
+                slen++
+        opt.text = "All " + slen + " repositories"
+        list.appendChild(opt)
+        json.sources.sort((a,b) ->
+            return if (a.sourceURL == b.sourceURL) then 0 else (if a.sourceURL > b.sourceURL then 1 else -1)
+            )
+        for item in json.sources
+            if item.type in ['git', 'svn', 'gerrit', 'github'] and item.noclone != true
+                opt = document.createElement('option')
+                opt.value = item.sourceID
+                ezURL = null
+                m = item.sourceURL.match(/^([a-z]+:\/\/.+?)[\/?]([^\/?]+)$/i)
+                if m and m.length == 3
+                    ezURL = "#{m[2]} - (#{m[1]})"
+                opt.text = if ezURL then ezURL else item.sourceURL
+                if globArgs.source and globArgs.source == item.sourceID
+                    opt.selected = 'selected'
+                list.appendChild(opt)
+        
+        list.addEventListener("change", () ->
+                source = this.value
+                
+                if source == ""
+                        source = null
+                globArgs.source = source
+                updateWidgets('donut', null, { source: source })
+                updateWidgets('line', null, { source: source })
+                updateWidgets('contacts', null, { source: source })
+                updateWidgets('top5', null, { source: source })
+                updateWidgets('trends', null, { source: source })
+                updateWidgets('mvp', null, { source: source })
+                updateWidgets('comstat', null, { source: source })
+                
+        , false)
+        
+        
+        # Unique commits label
+        id = Math.floor(Math.random() * 987654321).toString(16)
+        chk = document.createElement('input')
+        chk.setAttribute("type", "checkbox")
+        chk.setAttribute("id", id)
+        chk.style.marginLeft = '10px'
+        if globArgs.author and globArgs.author == 'true'
+                chk.checked = true
+        chk.addEventListener("change", () ->
+                unique = null
+                if this.checked
+                        unique = 'true'
+                        globArgs['unique'] = 'true'
+                
+                updateWidgets('donut', null, { unique: unique })
+                updateWidgets('line', null, { unique: unique })
+                updateWidgets('contacts', null, { unique: unique })
+                updateWidgets('top5', null, { unique: unique })
+                updateWidgets('trends', null, { unique: unique })
+                updateWidgets('relationship', null, {unique: unique})
+                updateWidgets('mvp', null, {unique: unique})
+                updateWidgets('comstat', null, { source: source })
+                )
+        state.widget.inject(chk)
+        label = document.createElement('label')
+        label.setAttribute("for", id)
+        label.setAttribute("title", "Check this box to only view unique commits across the organisation")
+        chk.setAttribute("title", "Check this box to only view unique commits across the organisation")
+        label.style.paddingLeft = '5px'
+        label.appendChild(document.createTextNode('Unique commits only'))
+        state.widget.inject(label)
+
+
+
+
+mailexplorer = (json, state) ->
+        
+        org = json.organisation
+        h = document.createElement('h2')
+        if json.tag
+            org.name += " (Filter: " + json.tag + ")"
+        h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
+        
+        state.widget.inject(h, true)
+        list = document.createElement('select')
+        state.widget.inject(list)
+        opt = document.createElement('option')
+        opt.value = ""
+        slen = 0
+        for item in json.sources
+            if item.type == 'mail'
+                slen++
+        opt.text = "All " + slen + " mailing lists"
+        list.appendChild(opt)
+        json.sources.sort((a,b) ->
+            return if (a.sourceURL == b.sourceURL) then 0 else (if a.sourceURL > b.sourceURL then 1 else -1)
+            )
+        for item in json.sources
+            if item.type == 'mail'
+                opt = document.createElement('option')
+                opt.value = item.sourceID
+                ezURL = null
+                m = item.sourceURL.match(/^([a-z]+:\/\/.+?)[\/?]([^\/?]+)$/i)
+                if m and m.length == 3
+                    ezURL = "#{m[2]} - (#{m[1]})"
+                opt.text = if ezURL then ezURL else item.sourceURL
+                if globArgs.source and globArgs.source == item.sourceID
+                    opt.selected = 'selected'
+                list.appendChild(opt)
+        
+        list.addEventListener("change", () ->
+                source = this.value
+                
+                if source == ""
+                        source = null
+                globArgs.source = source
+                updateWidgets('donut', null, { source: source })
+                updateWidgets('line', null, { source: source })
+                updateWidgets('contacts', null, { source: source })
+                updateWidgets('top5', null, { source: source })
+                updateWidgets('trends', null, { source: source })
+                
+        , false)
+        
+logexplorer = (json, state) ->
+        
+        org = json.organisation
+        h = document.createElement('h2')
+        if json.tag
+            org.name += " (Filter: " + json.tag + ")"
+        h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
+        
+        state.widget.inject(h, true)
+        list = document.createElement('select')
+        state.widget.inject(list)
+        opt = document.createElement('option')
+        opt.value = ""
+        slen = 0
+        for item in json.sources
+            if item.type == 'stats'
+                slen++
+        opt.text = "All " + slen + " log files"
+        list.appendChild(opt)
+        json.sources.sort((a,b) ->
+            return if (a.sourceURL == b.sourceURL) then 0 else (if a.sourceURL > b.sourceURL then 1 else -1)
+            )
+        for item in json.sources
+            if item.type == 'stats'
+                opt = document.createElement('option')
+                opt.value = item.sourceID
+                ezURL = null
+                m = item.sourceURL.match(/^([a-z]+:\/\/.+?)[\/?]([^\/?]+)$/i)
+                if m and m.length == 3
+                    ezURL = "#{m[2]} - (#{m[1]})"
+                opt.text = if ezURL then ezURL else item.sourceURL
+                if globArgs.source and globArgs.source == item.sourceID
+                    opt.selected = 'selected'
+                list.appendChild(opt)
+        
+        list.addEventListener("change", () ->
+                source = this.value
+                
+                if source == ""
+                        source = null
+                globArgs.source = source
+                updateWidgets('donut', null, { source: source })
+                updateWidgets('line', null, { source: source })
+                updateWidgets('worldmap', null, { source: source })
+                updateWidgets('top5', null, { source: source })
+                updateWidgets('trends', null, { source: source })
+                
+        , false)
+        
+issueexplorer = (json, state) ->
+        
+        org = json.organisation
+        if json.tag
+            org.name += " (Filter: " + json.tag + ")"
+        h = document.createElement('h2')
+        h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
+        state.widget.inject(h, true)
+        list = document.createElement('select')
+        state.widget.inject(list)
+        opt = document.createElement('option')
+        opt.value = ""
+        slen = 0
+        for item in json.sources
+            if item.type in ['jira', 'gerrit', 'github', 'bugzilla']
+                slen++
+        opt.text = "All " + slen + " issue tracker(s)"
+        list.appendChild(opt)
+        json.sources.sort((a,b) ->
+            return if (a.sourceURL == b.sourceURL) then 0 else (if a.sourceURL > b.sourceURL then 1 else -1)
+            )
+        for item in json.sources
+            if item.type in ['jira', 'gerrit', 'github', 'bugzilla']
+                opt = document.createElement('option')
+                opt.value = item.sourceID
+                ezURL = null
+                n = item.sourceURL.match(/^([a-z]+:\/\/.+?)\/([-.A-Z0-9]+)$/i)                
+                m = item.sourceURL.match(/^([a-z]+:\/\/.+?)\s(.+)$/i)
+                if n and n.length == 3
+                    ezURL = "#{n[2]} - (#{n[1]})"
+                else if m and m.length == 3
+                    ezURL = "#{m[2]} - (#{m[1]})"
+                opt.text = if ezURL then ezURL else item.sourceURL
+                if globArgs.source and globArgs.source == item.sourceID
+                    opt.selected = 'selected'
+                list.appendChild(opt)
+        
+        list.addEventListener("change", () ->
+                source = this.value
+                
+                if source == ""
+                        source = null
+                globArgs.source = source
+                updateWidgets('donut', null, { source: source })
+                updateWidgets('line', null, { source: source })
+                updateWidgets('contacts', null, { source: source })
+                updateWidgets('top5', null, { source: source })
+                updateWidgets('trends', null, { source: source })
+                
+        , false)
+        
+
+
+
+imexplorer = (json, state) ->
+        
+        org = json.organisation
+        if json.tag
+            org.name += " (Filter: " + json.tag + ")"
+        h = document.createElement('h2')
+        h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
+        state.widget.inject(h, true)
+        list = document.createElement('select')
+        state.widget.inject(list)
+        opt = document.createElement('option')
+        opt.value = ""
+        slen = 0
+        for item in json.sources
+            if item.type in ['irc','gitter']
+                slen++
+        opt.text = "All " + slen + " messaging sources"
+        list.appendChild(opt)
+        json.sources.sort((a,b) ->
+            return if (a.sourceURL == b.sourceURL) then 0 else (if a.sourceURL > b.sourceURL then 1 else -1)
+            )
+        for item in json.sources
+            if item.type in ['irc', 'gitter']
+                opt = document.createElement('option')
+                opt.value = item.sourceID
+                ezURL = null
+                n = item.sourceURL.match(/^([a-z]+:\/\/.+?)\/([#\S+]+)$/i)                
+                m = item.sourceURL.match(/^([a-z]+:\/\/.+?)\s(.+)$/i)
+                if n and n.length == 3
+                    ezURL = "#{n[2]} - (#{n[1]})"
+                else if m and m.length == 3
+                    ezURL = "#{m[2]} - (#{m[1]})"
+                opt.text = if ezURL then ezURL else item.sourceURL
+                if globArgs.source and globArgs.source == item.sourceID
+                    opt.selected = 'selected'
+                list.appendChild(opt)
+        
+        list.addEventListener("change", () ->
+                source = this.value
+                
+                if source == ""
+                        source = null
+                globArgs.source = source
+                updateWidgets('donut', null, { source: source })
+                updateWidgets('line', null, { source: source })
+                updateWidgets('contacts', null, { source: source })
+                updateWidgets('top5', null, { source: source })
+                updateWidgets('trends', null, { source: source })
+                
+        , false)
+        
+        
+
+multiviewexplorer = (json, state) ->
+        org = json.organisation
+        h = document.createElement('h2')
+        h.appendChild(document.createTextNode("Select views to compare:"))
+        state.widget.inject(h, true)
+        for k in [1..3]
+            tName = 'tag'+k
+            list = document.createElement('select')
+            list.setAttribute("data", tName)
+            state.widget.inject(list)
+            opt = document.createElement('option')
+            opt.value = ""
+            opt.text = "(None)"
+            list.appendChild(opt)
+            opt = document.createElement('option')
+            opt.value = "---"
+            opt.text = "Entire organisation"
+            if globArgs[tName] and globArgs[tName] == '---'
+                opt.selected = 'selected'
+            list.appendChild(opt)
+            if isArray(json.views)
+                json.views.sort((a,b) ->
+                    return if (a.name == b.name) then 0 else (if a.name > b.name then 1 else -1)
+                    )
+            for item in json.views
+                opt = document.createElement('option')
+                opt.value = item.id
+                opt.text = item.name
+                if globArgs[tName] and globArgs[tName] == item.id
+                    opt.selected = 'selected'
+                list.appendChild(opt)
+            
+            list.addEventListener("change", () ->
+                    source = this.value
+                    if source == ""
+                            source = null
+                    tName = this.getAttribute("data")
+                    globArgs[tName] = source
+                    x = {}
+                    x[tName] = source
+                    updateWidgets('donut', null, x)
+                    updateWidgets('line', null, x)
+                    updateWidgets('contacts', null, x)
+                    updateWidgets('top5', null, x)
+                    updateWidgets('trends', null, x)
+                    updateWidgets('radar', null, x)
+                    
+            , false)
+            
+viewexplorer = (json, state) ->
+        org = json.organisation
+        h = document.createElement('h2')
+        h.appendChild(document.createTextNode("Select a view to use:"))
+        state.widget.inject(h, true)
+        tName = 'view'
+        list = document.createElement('select')
+        list.setAttribute("data", tName)
+        state.widget.inject(list)
+        opt = document.createElement('option')
+        opt.value = ""
+        opt.text = "(None)"
+        list.appendChild(opt)
+        opt = document.createElement('option')
+        opt.value = "---"
+        opt.text = "Entire organisation"
+        if globArgs[tName] and globArgs[tName] == '---'
+            opt.selected = 'selected'
+        list.appendChild(opt)
+        if isArray(json.views)
+            json.views.sort((a,b) ->
+                return if (a.name == b.name) then 0 else (if a.name > b.name then 1 else -1)
+                )
+        for item in json.views
+            opt = document.createElement('option')
+            opt.value = item.id
+            opt.text = item.name
+            if globArgs[tName] and globArgs[tName] == item.id
+                opt.selected = 'selected'
+            list.appendChild(opt)
+        
+        list.addEventListener("change", () ->
+                source = this.value
+                if source == ""
+                        source = null
+                tName = this.getAttribute("data")
+                globArgs[tName] = source
+                x = {}
+                x[tName] = source
+                updateWidgets('repopicker', null, x)
+                updateWidgets('issuepicker', null, x)
+                updateWidgets('mailpicker', null, x)
+                updateWidgets('logpicker', null, x)
+                updateWidgets('donut', null, x)
+                updateWidgets('line', null, x)
+                updateWidgets('contacts', null, x)
+                updateWidgets('top5', null, x)
+                updateWidgets('trends', null, x)
+                updateWidgets('radar', null, x)
+                updateWidgets('widget', null, x)
+                updateWidgets('relationship', null, x)
+                updateWidgets('treemap', null, x)
+                updateWidgets('report', null, x)
+                updateWidgets('mvp', null, x)
+                updateWidgets('comstat', null, x)
+                updateWidgets('worldmap', null, x)
+                
+        , false)
+            
+        
+
+widgetexplorer = (json, state) ->
+        pwidgets = {
+            'languages': 'Code: Language breakdown',
+            'commit-history-year': "Code: Commit history (past year)"
+            'commit-history-all': "Code: Commit history (all time)"
+            'commit-top5-year': "Code: top 5 committers (past year)"
+            'commit-top5-all': "Code: top 5 committers (all time)"
+            'committer-count-year': "Code: Committers/Authors per month (past year)"
+            'committer-count-all': "Code: Committers/Authors per month (all time)"
+            'commit-lines-year': "Code: Lines changed (past year)"
+            'commit-lines-all': "Code: Lines changed (all time)"
+            'sloc-map': "Code: Language Treemap"
+            'repo-size-year': "Repos: top 15 by lines of code"
+            'repo-commits-year': "Repos: top 15 by number of commits (past year)"
+            'repo-commits-all': "Repos: top 15 by number of commits (all time)"
+            'evolution': "Code: Code evolution (all time)"
+            'evolution-extended': "Code: Code evolution (individual languages, all time)"
+            'issue-count-year': "Issues: Tickets opened/closed (past year)"
+            'issue-count-all': "Issues: Tickets opened/closed (all time)"
+            'issue-operators-year': "Issues: Ticket creators/closers (past year)"
+            'issue-operators-all': "Issues: Ticket creators/closers (all time)"
+            'issue-queue-all': "Issue queue size by ticket age"
+            'email-count-year': "Mail: Emails/threads/authors (past year)"
+            'email-count-all': "Mail: Emails/threads/authors (all time)"
+            'im-stats-year': "Online messaging activity (past year)",
+            'im-stats-all': "Online messaging activity (all time)",
+            'compare-commits-year': "Commits by Affiliation (past year)",
+            'compare-commits-all': "Commits by Affiliation (all time)"
+            'repo-relationship-year': "Repository relationships (past year)"
+            'repo-relationship-2year': "Repository relationships (past two years)"
+            'issue-relationship-year': "Issue tracker relationships (past year)"
+            'issue-relationship-2year': "Issue tracker relationships (past two years)"
+            'log-stats-year': "Downloads/Visits (past year)"
+            'log-stats-all': "Downloads/Visits (all time)"
+            'log-map-month': "Downloads/Visits per country (past month)"
+            'log-map-year': "Downloads/Visits per country (past year)"
+            'log-map-all': "Downloads/Visits per country (all time)"
+        }
+        org = json.organisation
+        h = document.createElement('h2')
+        h.appendChild(document.createTextNode("Select a widget to use:"))
+        state.widget.inject(h, true)
+        tName = 'widget'
+        list = document.createElement('select')
+        list.setAttribute("data", tName)
+        state.widget.inject(list)
+        opt = document.createElement('option')
+        opt.value = ""
+        opt.text = "Select a widget type:"
+        list.appendChild(opt)
+        for key, value of pwidgets
+            opt = document.createElement('option')
+            opt.value = key
+            opt.text = value
+            if globArgs[tName] and globArgs[tName] == key
+                opt.selected = 'selected'
+            list.appendChild(opt)
+        
+        list.addEventListener("change", () ->
+                source = this.value
+                if source == ""
+                        source = null
+                tName = this.getAttribute("data")
+                globArgs[tName] = source
+                x = {}
+                x[tName] = source
+                updateWidgets('widget', null, x)
+                updateWidgets('donut', null, x)
+                updateWidgets('line', null, x)
+                updateWidgets('contacts', null, x)
+                updateWidgets('top5', null, x)
+                updateWidgets('trends', null, x)
+                updateWidgets('radar', null, x)
+                
+        , false)
+            
+        
