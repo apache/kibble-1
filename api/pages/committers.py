@@ -84,8 +84,35 @@ def run(API, environ, indata, session):
                 'terms': {
                     'field': which,
                     'size': 25
-                }                
+                },
+                'aggs': {
+                'byinsertions': {
+                    'terms': {
+                        'field': which
+                    },
+                    'aggs': {
+                        'stats': {
+                            'sum': {
+                                'field': "insertions"
+                            }
+                        }
+                    }
+                },
+                'bydeletions': {
+                    'terms': {
+                        'field': which
+                    },
+                    'aggs': {
+                        'stats': {
+                            'sum': {
+                                'field': "deletions"
+                            }
+                        }
+                    }
+                },
             }
+            },
+            
         }
     res = session.DB.ES.search(
             index=session.DB.dbname,
@@ -93,7 +120,7 @@ def run(API, environ, indata, session):
             size = 0,
             body = query
         )
-    
+
     people = {}
     for bucket in res['aggregations']['committers']['buckets']:
         email = bucket['key']
@@ -111,8 +138,8 @@ def run(API, environ, indata, session):
             people[email]['md5'] = hashlib.md5(person.get('email', 'unknown').encode('utf-8')).hexdigest()
             people[email]['changes'] = {
                 'commits': count,
-                'insertions': 1,
-                'deletions': 1
+                'insertions': int(bucket['byinsertions']['buckets'][0]['stats']['value']),
+                'deletions': int(bucket['bydeletions']['buckets'][0]['stats']['value'])
             }
         
         
