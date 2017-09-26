@@ -659,9 +659,11 @@ components:
           description: "HTTP Error Code"
           type: integer
           format: int16
+          example: 403
         reason:
           description: "Human readable error message"
           type: string
+          example: "You need to be logged in to view this endpoint!"
     ActionCompleted:
       required:
         - message
@@ -669,6 +671,7 @@ components:
         message:
           type: string
           description: "Acknowledgement message"
+          example: "Action completed"
     Source:
       required:
         - sourceID
@@ -697,7 +700,9 @@ components:
           type: boolean
         organisation:
           type: string
+          description: "The organisation these sources belong to"
         sources:
+          description: "The sources in this organisation"
           type: array
           items:
             $ref: '#/components/schemas/Source'
@@ -709,11 +714,18 @@ components:
       properties:
         id:
           type: string
+          description: "The ID of this view. to be used with other API queries"
+          example: "abcdef67126734271"
         name:
           type: string
+          description: "The name of this view"
+          example: "Big Data Projects"
         organisation:
           type: string
+          description: "The organisation this view belongs to"
+          example: "apache"
         sources:
+          description: "The sources within this view"
           type: array
           items:
             $ref: '#/components/schemas/Source'
@@ -726,13 +738,17 @@ components:
         okay:
           type: boolean
         organisation:
+          description: "The organisation these views belong to"
           type: string
+          example: "apache"
         sources:
+          description: "A list of sources within this org"
           type: array
           items:
             $ref: '#/components/schemas/Source'
         views:
           type: array
+          description: "The view available"
           items:
             $ref: '#/components/schemas/View'
     UserCredentials:
@@ -742,44 +758,68 @@ components:
       properties:
         email:
           type: string
+          example: guest@kibble.live
         password:
           type: string
+          example: "kibbledemo"
     UserData:
       properties:
         username:
           type: string
+          description: "The username (email) of the user"
+          example: "guest@kibble.live"
         displayName:
           type: string
+          description: "The display-name of the user"
+          example: "Kibble Guest"
         defaultOrganisation:
           type: string
+          description: "The default organisation. This is where Kibble will collect data from."
+          example: "apache"
         organisations:
+          description: "A list of organisations you belong to"
+          example: ["apache", "demo"]
           type: array
           items:
             type: string
         userLevel:
+          description: "User level (user/owner/admin)"
+          example: "user"
           type: string
     defaultWidgetArgs:
       properties:
         view:
           type: string
           description: "ID Of optional view to use"
-          example: "foo"
+          example: "abcdef12345678"
         quick:
           type: boolean
+          description: "Turns on quick data for some endpoints, returning only sparse data (thus less traffic)"
+          example: false
         page:
           type: string
         source:
           type: string
+          description: "If specified, only compile data on this specific sourceID"
+          example: "abcdef12345678"
         from:
           type: integer
+          description: "If specified, compile data from this timestamp onwards"
+          example: 1400000000
         to:
           type: integer
+          description: "If specified, only compile data up until here"
+          example: 1503483273
         author:
           type: boolean
+          description: "Turns on author view for code results, as opposed to the default committer view"
         unique:
           type: boolean
+          description: "Only compile data from unique commits, ignore duplicates"
         interval:
+          description: "If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year"
           type: string
+          example: "month"
     Sloc:
       properties:
         count:
@@ -803,7 +843,7 @@ components:
         timeseries:
           type: array
           items:
-            type: object
+            $ref: "#/components/schemas/TimeseriesObject"
         interval:
           type: string
     TimeseriesObject:
@@ -812,6 +852,16 @@ components:
       properties:
         date:
           type: integer
+          description: "Seconds since UNIX epoch"
+          example: 1508273
+        $item:
+          type: integer
+          description: "A timeseries object"
+          example: 50
+        $otheritem:
+          type: integer
+          description: "A timeseries object"
+          example: 26
     WidgetDesign:
       properties:
         title:
@@ -837,23 +887,29 @@ components:
         type:
           type: string
           description: The type of widget
+          example: "My Widget"
         name:
           type: string
           description: The title of the widget app
+          example: "Widget Title"
         blocks:
           type: integer
           description: Size (width) in UI blocks of the app
+          example: 4
         source:
           type: string
           description: The API endpoint to get data from
+          example: code-evolution
         datatype:
           type: string
           description: The top category of this data
+          example: repo
         target:
           type: string
         representation:
           type: string
           description: The visual representation style of this widget
+          example: donut
         text:
           type: string
           description: Text to insert into the widget (if paragraph type widget)
@@ -865,13 +921,17 @@ components:
       properties:
         email:
           type: string
+          example: "guest@kibble.live"
         password:
           type: string
+          example: "kibbledemo"
         displayname:
           type: string
+          example: "Kibble Guest"
     UserName:
       required:
         - username
       properties:
         username:
           type: string
+          example: "kibbleguest"
