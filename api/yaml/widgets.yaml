@@ -104,3 +104,43 @@ widgets:
                         name:       "Top repos by commits"
                         target:     ""
 
+### ISSUE TRACKERS
+    issues:
+        title: "Issue Trackers"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+                    -
+                        type:   issuepicker
+                        blocks: 4
+                        source: "sources"
+                        name:   "Issue Tracker picker"
+            -
+                name: "Trends"
+                children:
+                    -
+                        type:   "trends"
+                        source: "issue-trends"
+                        name:   "Issue tracker trends"
+                        blocks: 12
+            -
+                name: "Issue tracker timeline"
+                children:
+                    -
+                        type:       "line"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issues"
+                        name:       "Issues opened/closed"
+                        target:     ""
+

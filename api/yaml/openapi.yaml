@@ -209,6 +209,82 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                                 
+# ISSUE TRENDS
+    /api/issue-trends:
+        get:
+            summary: "Shows trend data for a set of issue trackers over a given period of time"
+            responses:
+                '200':
+                    description: "200 Response"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Trend"
+                default:
+                    description: "unexpected error"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+        post:
+            summary: "Shows trend data for a set of issue trackers over a given period of time"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#!/components/schemas/defaultWidgetArgs"
+            responses:
+                '200':
+                    description: "200 Response"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Trend"
+                default:
+                    description: "unexpected error"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                                
+# ISSUE TIMESERIES
+    /api/issues:
+        get:
+            summary: "Shows timeseries of issues opened/closed over time"
+            responses:
+                '200':
+                    description: "200 Response"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Timeseries"
+                default:
+                    description: "unexpected error"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+        post:
+            summary: "Shows timeseries of issues opened/closed over time"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#!/components/schemas/defaultWidgetArgs"
+            responses:
+                '200':
+                    description: "200 Response"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Timeseries"
+                default:
+                    description: "unexpected error"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                           
 # TOP COMMITTERS/AUTHORS
     /api/committers:
         get:
