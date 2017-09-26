@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
-  description: Moo
+  description: This is the API specifications for interacting with the Kibble UI.
   title: Apache Kibble API
   license:
     name: Apache 2.0
