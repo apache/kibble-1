@@ -47,7 +47,7 @@ setupPage = (json, state) ->
         app(p, a)
         vrow.inject(p)
     
-    document.title = json.title + " - Snoot.io"    
+    document.title = json.title + " - Apache Kibble"    
     # Go through each row
     
     for r in json.rows

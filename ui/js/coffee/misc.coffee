@@ -399,20 +399,6 @@ isHash = (value) ->
         typeof value is 'object' and
         not isArray(value)
         
-snoot_sidebar_hide = false
-snoot_sidebar = () ->
-    if (typeof(window.localStorage) != "undefined") 
-        try
-            ssh = window.localStorage.getItem("snoot_sidebar")
-            if ssh and ssh == 'hide'
-                snoot_sidebar_hide = false
-                window.localStorage.setItem("snoot_sidebar", 'show')
-            else
-                snoot_sidebar_hide = true
-                window.localStorage.setItem("snoot_sidebar", 'hide')
-        catch e
-            #
-
 
 class HTML
     constructor: (type, params, children) ->
