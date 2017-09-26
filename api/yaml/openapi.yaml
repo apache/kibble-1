@@ -1,6 +1,7 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
+  description: Moo
   title: Apache Kibble API
   license:
     name: Apache 2.0
@@ -508,7 +509,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SourceItem'
+              $ref: '#/components/schemas/Source'
       responses:
         '200':
           description: 200 Response
@@ -530,7 +531,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SourceItem'
+              $ref: '#/components/schemas/Source'
       responses:
         '200':
           description: 200 Response
@@ -655,9 +656,11 @@ components:
         - reason
       properties:
         code:
+          description: "HTTP Error Code"
           type: integer
           format: int16
         reason:
+          description: "Human readable error message"
           type: string
     ActionCompleted:
       required:
@@ -665,6 +668,7 @@ components:
       properties:
         message:
           type: string
+          description: "Acknowledgement message"
     Source:
       required:
         - sourceID
@@ -672,28 +676,16 @@ components:
         - sourceURL
       properties:
         sourceID:
+          description: "The SourceID of this source"
           type: string
         type:
+          description: "The type of source (git, svn, bugzilla, mail, etc)"
           type: string
         sourceURL:
+          description: "The origin URL of this source."
           type: string
         organisation:
-          type: string
-    SourceItem:
-      required:
-        - sourceID
-        - type
-        - sourceURL
-      properties:
-        auth:
-          type: object
-        sourceID:
-          type: string
-        type:
-          type: string
-        sourceURL:
-          type: string
-        organisation:
+          description: "The organisation this source belongs to"
           type: string
     SourceList:
       required:
@@ -770,6 +762,8 @@ components:
       properties:
         view:
           type: string
+          description: "ID Of optional view to use"
+          example: "foo"
         quick:
           type: boolean
         page:
