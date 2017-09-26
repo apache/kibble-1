@@ -1,908 +1,883 @@
-openapi: "3.0.0"
+openapi: 3.0.0
 info:
-    version: 1.0.0
-    title: "Apache Kibble API"
-    license:
-        name: Apache 2.0
-        url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+  title: Apache Kibble API
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 paths:
-    /api/account:
-        put:
-            summary: "Create a new account"
-            requestBody:
-                description: "User credentials"
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/UserAccount"
-            responses:
-                '200':
-                    description: "200 response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ActionCompleted"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        delete:
-            summary: "Delete an account"
-            requestBody:
-                description: "User ID"
-                required: true
-                content:
-                    application/json:
-                        schema:
-                          $ref: "#/components/schemas/UserName"
-            responses:
-                '200':
-                    description: "200 response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ActionCompleted"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-    /api/session:
-        get:
-            summary: "Display your login details"
-            responses:
-                '200':
-                    description: "200 response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/UserData"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        put:
-            summary: "Log in"
-            requestBody:
-                description: "User credentials"
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/UserCredentials"
-            responses:
-                '200':
-                    description: "Login successful"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/UserData"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        delete:
-            summary: "Log out (remove session)"
-            responses:
-                '200':
-                    description: "Logout successful"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/UserData"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-    /api/sloc:
-        get:
-            summary: "Shows a breakdown of lines of code for one or more sources"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Sloc"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        post:
-            summary: "Shows a breakdown of lines of code for one or more sources"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Sloc"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-
-# CODE TRENDS
-    /api/code-trends:
-        get:
-            summary: "Shows trend data for a set of repos over a given period of time"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Trend"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        post:
-            summary: "Shows trend data for a set of repos over a given period of time"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Trend"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-                                
-# ISSUE TRENDS
-    /api/issue-trends:
-        get:
-            summary: "Shows trend data for a set of issue trackers over a given period of time"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Trend"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        post:
-            summary: "Shows trend data for a set of issue trackers over a given period of time"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Trend"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-                                
-# ISSUE TIMESERIES
-    /api/issues:
-        get:
-            summary: "Shows timeseries of issues opened/closed over time"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        post:
-            summary: "Shows timeseries of issues opened/closed over time"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-                           
-# TOP COMMITTERS/AUTHORS
-    /api/committers:
-        get:
-            summary: "Shows the top N of committers"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/CommitterList"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        post:
-            summary: "Shows trend data for a set of repos over a given period of time"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/CommitterList"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-
-# COMMITS/AUTHORSHIPS
-    /api/commits:
-        get:
-            summary: "Show commits as a timeseries"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        post:
-            summary: "Show commits as a timeseries"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-                                
-# CODE CHANGES
-    /api/code-changes:
-        get:
-            summary: "Show insertions/deletions as a timeseries"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        post:
-            summary: "Show insertions/deletions as a timeseries"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-                                
-# CODE EVOLUTION
-    /api/code-evolution:
-        get:
-            summary: "Show code evolution as a timeseries"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        post:
-            summary: "Show code evolution as a timeseries"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-                                
-# TOP REPOS BY COMMITS
-    /api/top-commits:
-        get:
-            summary: "Shows top 25 repos by commit volume"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        post:
-            summary: "Shows top 25 repos by commit volume"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-                                
-# TOP REPOS BY SLOC
-    /api/top-sloc:
-        get:
-            summary: "Shows top 25 repos by lines of code"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-        post:
-            summary: "Shows top 25 repos by lines of code"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Timeseries"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-                                
-
-
-    /api/sources:
-        get:
-            summary: "Fetches a list of all sources for this organisation"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/SourceList"
-                default:
-                    description: unexpected error
-                    content:
-                      application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-        post:
-            summary: "Fetches a list of all sources for this organisation"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/SourceList"
-                default:
-                    description: unexpected error
-                    content:
-                      application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-        patch:
-            summary: "Edit an existing source"
-            requestBody:
-                description: "New source data to set"
-                required: true
-                content:
-                    application/json:
-                        schema:
-                          $ref: '#/components/schemas/SourceItem'
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ActionCompleted"
-                default:
-                    description: unexpected error
-                    content:
-                      application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-        put:
-            summary: "Add a new source"
-            requestBody:
-                description: "New source data to add"
-                required: true
-                content:
-                    application/json:
-                        schema:
-                             $ref: '#/components/schemas/SourceItem'
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ActionCompleted"
-                default:
-                    description: unexpected error
-                    content:
-                      application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-    
-    
-    /api/views:
-        get:
-            summary: "Fetches a list of all views (filters) for this user"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ViewList"
-                default:
-                    description: unexpected error
-                    content:
-                      application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-        post:
-            summary: "Fetches a list of all views (filters) for this user"
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/defaultWidgetArgs"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ViewList"
-                default:
-                    description: unexpected error
-                    content:
-                      application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-        patch:
-            summary: "Edit an existing source"
-            requestBody:
-                description: "New source data to set"
-                required: true
-                content:
-                    application/json:
-                        schema:
-                             $ref: '#/components/schemas/View'
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ActionCompleted"
-                default:
-                    description: unexpected error
-                    content:
-                      application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-        put:
-            summary: "Add a new source"
-            requestBody:
-                description: "New source data to add"
-                required: true
-                content:
-                    application/json:
-                        schema:
-                             $ref: '#/components/schemas/View'
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ActionCompleted"
-                default:
-                    description: unexpected error
-                    content:
-                      application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-    
-    /api/widgets/{pageid}:
-        get:
-            summary: "Shows the widget layout for a specific page"
-            parameters:
-                - name: pageid
-                  in: path
-                  description: "Page ID to fetch design for"
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/WidgetDesign"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
+  /api/account:
+    put:
+      summary: Create a new account
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccount'
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete an account
+      requestBody:
+        description: User ID
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserName'
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/session:
+    get:
+      summary: Display your login details
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserData'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Log in
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserData'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Log out (remove session)
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserData'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/sloc:
+    get:
+      summary: Shows a breakdown of lines of code for one or more sources
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows a breakdown of lines of code for one or more sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/code-trends:
+    get:
+      summary: Shows trend data for a set of repos over a given period of time
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows trend data for a set of repos over a given period of time
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/issue-trends:
+    get:
+      summary: Shows trend data for a set of issue trackers over a given period of time
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows trend data for a set of issue trackers over a given period of time
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/issues:
+    get:
+      summary: Shows timeseries of issues opened/closed over time
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows timeseries of issues opened/closed over time
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/committers:
+    get:
+      summary: Shows the top N of committers
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows trend data for a set of repos over a given period of time
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/commits:
+    get:
+      summary: Show commits as a timeseries
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Show commits as a timeseries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/code-changes:
+    get:
+      summary: Show insertions/deletions as a timeseries
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Show insertions/deletions as a timeseries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/code-evolution:
+    get:
+      summary: Show code evolution as a timeseries
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Show code evolution as a timeseries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/top-commits:
+    get:
+      summary: Shows top 25 repos by commit volume
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows top 25 repos by commit volume
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/top-sloc:
+    get:
+      summary: Shows top 25 repos by lines of code
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows top 25 repos by lines of code
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/sources:
+    get:
+      summary: Fetches a list of all sources for this organisation
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Fetches a list of all sources for this organisation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: Edit an existing source
+      requestBody:
+        description: New source data to set
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceItem'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Add a new source
+      requestBody:
+        description: New source data to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceItem'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/views:
+    get:
+      summary: Fetches a list of all views (filters) for this user
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Fetches a list of all views (filters) for this user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: Edit an existing source
+      requestBody:
+        description: New source data to set
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/View'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Add a new source
+      requestBody:
+        description: New source data to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/View'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/api/widgets/{pageid}':
+    get:
+      summary: Shows the widget layout for a specific page
+      parameters:
+        - name: pageid
+          in: path
+          description: Page ID to fetch design for
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetDesign'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
-    schemas:
-        Error:
-            required:
-                - code
-                - reason
-            properties:
-                code:
-                    type: integer
-                    format: int16
-                reason:
-                    type: string
-        ActionCompleted:
-            required:
-                - message
-            properties:
-                message:
-                  type: string
-        Source:
-            required:
-                - sourceID
-                - type
-                - sourceURL
-            properties:
-                sourceID:
-                    type: string
-                type:
-                    type: string
-                sourceURL:
-                    type: string
-                organisation:
-                    type: string
-        SourceItem:
-            required:
-                - sourceID
-                - type
-                - sourceURL
-            properties:
-                auth:
-                  type: object
-                sourceID:
-                    type: string
-                type:
-                    type: string
-                sourceURL:
-                    type: string
-                organisation:
-                    type: string
-        SourceList:
-            required:
-                - okay
-                - organisation
-                - sources
-            properties:
-                okay:
-                    type: boolean
-                organisation:
-                    type: string
-                sources:
-                    type: array
-                    items:
-                        $ref: "#/components/schemas/Source"
-        View:
-            required:
-                - id
-                - name
-                - organisation
-            properties:
-                id:
-                    type: string
-                name:
-                    type: string
-                organisation:
-                    type: string
-                sources:
-                    type: array
-                    items:
-                        $ref: "#/components/schemas/Source"
-        ViewList:
-            required:
-                - okay
-                - organisation
-                - views
-            properties:
-                okay:
-                    type: boolean
-                organisation:
-                    type: string
-                sources:
-                    type: array
-                    items:
-                        $ref: "#/components/schemas/Source"
-                views:
-                    type: array
-                    items:
-                        $ref: "#/components/schemas/View"
-        UserCredentials:
-            required:
-                - email
-                - password
-            properties:
-                email:
-                    type: string
-                password:
-                    type: string
-        UserData:
-            properties:
-                username:
-                    type: string
-                displayName:
-                    type: string
-                defaultOrganisation:
-                    type: string
-                organisations:
-                    type: array
-                    items:
-                        type: string
-                userLevel:
-                    type: string
-        defaultWidgetArgs:
-            properties:
-                view:
-                    type: string
-                quick:
-                    type: boolean
-                page:
-                    type: string
-                source:
-                    type: string
-                from:
-                    type: integer
-                to:
-                    type: integer
-                author:
-                    type: boolean
-                unique:
-                    type: boolean
-                interval:
-                    type: string
-        Sloc:
-          properties:
-            count:
-              type: object
-        Trend:
-            properties:
-                okay:
-                    type: boolean
-                trends:
-                    type: object
-        CommitterList:
-            properties:
-                okay:
-                    type: boolean
-                people:
-                    type: object
-        Timeseries:
-            properties:
-                okay:
-                    type: boolean
-                timeseries:
-                    type: array
-                    items:
-                      type: object
-                interval:
-                    type: string
-        TimeseriesObject:
-          required:
-            - date
-          properties:
-            date:
-              type: integer
-        WidgetDesign:
-            properties:
-                title:
-                    type: string
-                rows:
-                    type: array
-                    items:
-                        $ref: "#/components/schemas/WidgetRow"
-        WidgetRow:
-            properties:
-                name:
-                    type: string
-                children:
-                    type: array
-                    items:
-                        $ref: "#/components/schemas/WidgetApp"
-        WidgetApp:
-            required:
-                - type
-                - name
-                - blocks
-            properties:
-                type:
-                    type: string
-                    description: "The type of widget"
-                name:
-                    type: string
-                    description: "The title of the widget app"
-                blocks:
-                    type: integer
-                    description: "Size (width) in UI blocks of the app"
-                source:
-                    type: string
-                    description: "The API endpoint to get data from"
-                datatype:
-                    type: string
-                    description: "The top category of this data"
-                target:
-                    type: string
-                representation:
-                    type: string
-                    description: "The visual representation style of this widget"
-                text:
-                    type: string
-                    description: "Text to insert into the widget (if paragraph type widget)"
-        UserAccount:
-            required:
-                - email
-                - password
-                - displayname
-            properties:
-                email:
-                    type: string
-                password:
-                    type: string
-                displayname:
-                    type: string
-        UserName:
-            required:
-              - username
-            properties:
-                username:
-                    type: string
-        
+  schemas:
+    Error:
+      required:
+        - code
+        - reason
+      properties:
+        code:
+          type: integer
+          format: int16
+        reason:
+          type: string
+    ActionCompleted:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    Source:
+      required:
+        - sourceID
+        - type
+        - sourceURL
+      properties:
+        sourceID:
+          type: string
+        type:
+          type: string
+        sourceURL:
+          type: string
+        organisation:
+          type: string
+    SourceItem:
+      required:
+        - sourceID
+        - type
+        - sourceURL
+      properties:
+        auth:
+          type: object
+        sourceID:
+          type: string
+        type:
+          type: string
+        sourceURL:
+          type: string
+        organisation:
+          type: string
+    SourceList:
+      required:
+        - okay
+        - organisation
+        - sources
+      properties:
+        okay:
+          type: boolean
+        organisation:
+          type: string
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+    View:
+      required:
+        - id
+        - name
+        - organisation
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        organisation:
+          type: string
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+    ViewList:
+      required:
+        - okay
+        - organisation
+        - views
+      properties:
+        okay:
+          type: boolean
+        organisation:
+          type: string
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+        views:
+          type: array
+          items:
+            $ref: '#/components/schemas/View'
+    UserCredentials:
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    UserData:
+      properties:
+        username:
+          type: string
+        displayName:
+          type: string
+        defaultOrganisation:
+          type: string
+        organisations:
+          type: array
+          items:
+            type: string
+        userLevel:
+          type: string
+    defaultWidgetArgs:
+      properties:
+        view:
+          type: string
+        quick:
+          type: boolean
+        page:
+          type: string
+        source:
+          type: string
+        from:
+          type: integer
+        to:
+          type: integer
+        author:
+          type: boolean
+        unique:
+          type: boolean
+        interval:
+          type: string
+    Sloc:
+      properties:
+        count:
+          type: object
+    Trend:
+      properties:
+        okay:
+          type: boolean
+        trends:
+          type: object
+    CommitterList:
+      properties:
+        okay:
+          type: boolean
+        people:
+          type: object
+    Timeseries:
+      properties:
+        okay:
+          type: boolean
+        timeseries:
+          type: array
+          items:
+            type: object
+        interval:
+          type: string
+    TimeseriesObject:
+      required:
+        - date
+      properties:
+        date:
+          type: integer
+    WidgetDesign:
+      properties:
+        title:
+          type: string
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/WidgetRow'
+    WidgetRow:
+      properties:
+        name:
+          type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/WidgetApp'
+    WidgetApp:
+      required:
+        - type
+        - name
+        - blocks
+      properties:
+        type:
+          type: string
+          description: The type of widget
+        name:
+          type: string
+          description: The title of the widget app
+        blocks:
+          type: integer
+          description: Size (width) in UI blocks of the app
+        source:
+          type: string
+          description: The API endpoint to get data from
+        datatype:
+          type: string
+          description: The top category of this data
+        target:
+          type: string
+        representation:
+          type: string
+          description: The visual representation style of this widget
+        text:
+          type: string
+          description: Text to insert into the widget (if paragraph type widget)
+    UserAccount:
+      required:
+        - email
+        - password
+        - displayname
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        displayname:
+          type: string
+    UserName:
+      required:
+        - username
+      properties:
+        username:
+          type: string
