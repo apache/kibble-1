@@ -30,6 +30,8 @@ def run(API, environ, indata, session):
     widgets = yaml.load(open("yaml/widgets.yaml"))
     
     page = indata['pageid']
+    if not page:
+        page = widgets.get('defaultWidget', 'repos')
     if page in widgets['widgets']:
         yield json.dumps(widgets['widgets'][page])
     else:
