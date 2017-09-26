@@ -14,17 +14,8 @@ paths:
                 required: true
                 content:
                     application/json:
-                        required:
-                            - email
-                            - password
-                            - displayname
-                        properties:
-                            email:
-                                type: string
-                            password:
-                                type: string
-                            displayname:
-                                type: string
+                        schema:
+                            $ref: "#/components/schemas/UserAccount"
             responses:
                 '200':
                     description: "200 response"
@@ -39,17 +30,14 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
         delete:
-            summary: "Delete a new account"
+            summary: "Delete an account"
             requestBody:
                 description: "User ID"
                 required: true
                 content:
                     application/json:
-                        required:
-                            - username
-                        properties:
-                            username:
-                                type: string
+                        schema:
+                          $ref: "#/components/schemas/UserName"
             responses:
                 '200':
                     description: "200 response"
@@ -116,24 +104,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Error"
-        
-    /api/organisations:
-        get:
-            summary: "Fetches a list of all organisations you belong to"
-            responses:
-                '200':
-                    description: "200 Response"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/OrgList"
-                default:
-                    description: "unexpected error"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-    
     /api/sloc:
         get:
             summary: "Shows a breakdown of lines of code for one or more sources"
@@ -156,7 +126,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -194,7 +164,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -232,7 +202,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -270,7 +240,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -308,7 +278,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -346,7 +316,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -384,7 +354,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -422,7 +392,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -460,7 +430,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -498,7 +468,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -537,7 +507,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -559,7 +529,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                             $ref: '#/components/schemas/SourceItem'
+                          $ref: '#/components/schemas/SourceItem'
             responses:
                 '200':
                     description: "200 Response"
@@ -577,7 +547,7 @@ paths:
             summary: "Add a new source"
             requestBody:
                 description: "New source data to add"
-                rerquired: true
+                required: true
                 content:
                     application/json:
                         schema:
@@ -619,7 +589,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#!/components/schemas/defaultWidgetArgs"
+                            $ref: "#/components/schemas/defaultWidgetArgs"
             responses:
                 '200':
                     description: "200 Response"
@@ -641,7 +611,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                             $ref: '#/components/schemas/SourceItem'
+                             $ref: '#/components/schemas/View'
             responses:
                 '200':
                     description: "200 Response"
@@ -659,11 +629,11 @@ paths:
             summary: "Add a new source"
             requestBody:
                 description: "New source data to add"
-                rerquired: true
+                required: true
                 content:
                     application/json:
                         schema:
-                             $ref: '#/components/schemas/SourceItem'
+                             $ref: '#/components/schemas/View'
             responses:
                 '200':
                     description: "200 Response"
@@ -717,14 +687,30 @@ components:
             required:
                 - message
             properties:
-                reason:
-                    type: string
+                message:
+                  type: string
         Source:
             required:
                 - sourceID
                 - type
                 - sourceURL
             properties:
+                sourceID:
+                    type: string
+                type:
+                    type: string
+                sourceURL:
+                    type: string
+                organisation:
+                    type: string
+        SourceItem:
+            required:
+                - sourceID
+                - type
+                - sourceURL
+            properties:
+                auth:
+                  type: object
                 sourceID:
                     type: string
                 type:
@@ -824,6 +810,10 @@ components:
                     type: boolean
                 interval:
                     type: string
+        Sloc:
+          properties:
+            count:
+              type: object
         Trend:
             properties:
                 okay:
@@ -842,9 +832,16 @@ components:
                     type: boolean
                 timeseries:
                     type: array
+                    items:
+                      type: object
                 interval:
                     type: string
-                    # format TBD
+        TimeseriesObject:
+          required:
+            - date
+          properties:
+            date:
+              type: integer
         WidgetDesign:
             properties:
                 title:
@@ -852,7 +849,7 @@ components:
                 rows:
                     type: array
                     items:
-                        $ref: "#!/components/schemas/WidgetRow"
+                        $ref: "#/components/schemas/WidgetRow"
         WidgetRow:
             properties:
                 name:
@@ -860,7 +857,7 @@ components:
                 children:
                     type: array
                     items:
-                        $ref: "#!/components/schemas/WidgetApp"
+                        $ref: "#/components/schemas/WidgetApp"
         WidgetApp:
             required:
                 - type
@@ -890,4 +887,22 @@ components:
                 text:
                     type: string
                     description: "Text to insert into the widget (if paragraph type widget)"
-                    
+        UserAccount:
+            required:
+                - email
+                - password
+                - displayname
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+                displayname:
+                    type: string
+        UserName:
+            required:
+              - username
+            properties:
+                username:
+                    type: string
+        
