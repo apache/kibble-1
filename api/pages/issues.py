@@ -39,7 +39,7 @@ def run(API, environ, indata, session):
             viewList = view['_source']['sourceList']
     
     dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*3)) # Default to a 3 month span
+    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
     
     interval = indata.get('interval', 'month')
     
