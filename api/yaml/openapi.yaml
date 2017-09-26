@@ -31,6 +31,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     delete:
+      security:
+        - cookieAuth: []
       summary: Delete an account
       requestBody:
         description: User ID
@@ -54,6 +56,8 @@ paths:
                 $ref: '#/components/schemas/Error'
   /api/session:
     get:
+      security:
+        - cookieAuth: []
       summary: Display your login details
       responses:
         '200':
@@ -80,6 +84,11 @@ paths:
       responses:
         '200':
           description: Login successful
+          headers:
+            Set-Cookie:
+                schema:
+                    type: string
+                    example: 77488a26-23c2-4e29-94a1-6a0738f6a3ff
           content:
             application/json:
               schema:
@@ -92,6 +101,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     delete:
       summary: Log out (remove session)
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: Logout successful
@@ -108,6 +119,8 @@ paths:
   /api/sloc:
     get:
       summary: Shows a breakdown of lines of code for one or more sources
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -123,6 +136,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Shows a breakdown of lines of code for one or more sources
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -144,6 +159,8 @@ paths:
   /api/code-trends:
     get:
       summary: Shows trend data for a set of repos over a given period of time
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -159,6 +176,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Shows trend data for a set of repos over a given period of time
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -180,6 +199,8 @@ paths:
   /api/issue-trends:
     get:
       summary: Shows trend data for a set of issue trackers over a given period of time
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -195,6 +216,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Shows trend data for a set of issue trackers over a given period of time
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -216,6 +239,8 @@ paths:
   /api/issues:
     get:
       summary: Shows timeseries of issues opened/closed over time
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -231,6 +256,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Shows timeseries of issues opened/closed over time
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -252,6 +279,8 @@ paths:
   /api/committers:
     get:
       summary: Shows the top N of committers
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -267,6 +296,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Shows trend data for a set of repos over a given period of time
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -288,6 +319,8 @@ paths:
   /api/commits:
     get:
       summary: Show commits as a timeseries
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -303,6 +336,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Show commits as a timeseries
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -324,6 +359,8 @@ paths:
   /api/code-changes:
     get:
       summary: Show insertions/deletions as a timeseries
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -339,6 +376,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Show insertions/deletions as a timeseries
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -360,6 +399,8 @@ paths:
   /api/code-evolution:
     get:
       summary: Show code evolution as a timeseries
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -375,6 +416,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Show code evolution as a timeseries
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -396,6 +439,8 @@ paths:
   /api/top-commits:
     get:
       summary: Shows top 25 repos by commit volume
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -411,6 +456,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Shows top 25 repos by commit volume
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -432,6 +479,8 @@ paths:
   /api/top-sloc:
     get:
       summary: Shows top 25 repos by lines of code
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -447,6 +496,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Shows top 25 repos by lines of code
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -468,6 +519,8 @@ paths:
   /api/sources:
     get:
       summary: Fetches a list of all sources for this organisation
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -483,6 +536,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Fetches a list of all sources for this organisation
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -503,6 +558,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     patch:
       summary: Edit an existing source
+      security:
+        - cookieAuth: []
       requestBody:
         description: New source data to set
         required: true
@@ -525,6 +582,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     put:
       summary: Add a new source
+      security:
+        - cookieAuth: []
       requestBody:
         description: New source data to add
         required: true
@@ -548,6 +607,8 @@ paths:
   /api/views:
     get:
       summary: Fetches a list of all views (filters) for this user
+      security:
+        - cookieAuth: []
       responses:
         '200':
           description: 200 Response
@@ -563,6 +624,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Fetches a list of all views (filters) for this user
+      security:
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -583,6 +646,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     patch:
       summary: Edit an existing source
+      security:
+        - cookieAuth: []
       requestBody:
         description: New source data to set
         required: true
@@ -605,6 +670,8 @@ paths:
                 $ref: '#/components/schemas/Error'
     put:
       summary: Add a new source
+      security:
+        - cookieAuth: []
       requestBody:
         description: New source data to add
         required: true
@@ -628,6 +695,8 @@ paths:
   '/api/widgets/{pageid}':
     get:
       summary: Shows the widget layout for a specific page
+      security:
+        - cookieAuth: []
       parameters:
         - name: pageid
           in: path
@@ -649,6 +718,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: kibble_session
   schemas:
     Error:
       required:
