@@ -38,9 +38,6 @@ def run(API, environ, indata, session):
             view = session.DB.ES.get(index=session.DB.dbname, doc_type="view", id = indata['view'])
             viewList = view['_source']['sourceList']
     
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*3)) # Default to a 3 month span
-    
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
