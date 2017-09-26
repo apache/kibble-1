@@ -93,7 +93,7 @@ class KibbleAPIWrapper:
             # Validate URL against OpenAPI specs
             try:
                 self.API.validate(environ['REQUEST_METHOD'], self.path, formdata)
-            except openapi.OpenAPIException as err:
+            except plugins.openapi.OpenAPIException as err:
                 start_response('400 Invalid request', [
                             ('Content-Type', 'application/json')])
                 yield json.dumps({
