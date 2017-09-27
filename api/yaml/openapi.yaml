@@ -80,7 +80,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserCredentials'
+              $ref: '#/components/schemas/ActionCompleted'
       responses:
         '200':
           description: Login successful
