@@ -896,6 +896,10 @@ components:
           description: "If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year"
           type: string
           example: "month"
+        types:
+          description: "If set, only return data from sources matching these types"
+          type: array
+          example: ['jira', 'bugzilla']
     Sloc:
       properties:
         count:

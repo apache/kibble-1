@@ -124,6 +124,8 @@ widgets:
                         type:   issuepicker
                         blocks: 4
                         source: "sources"
+                        eargs:
+                            types: ['jira', 'bugzilla', 'github', 'gerrit']
                         name:   "Issue Tracker picker"
             -
                 name: "Trends"

@@ -37,6 +37,7 @@ def run(API, environ, indata, session):
     else:
         raise API.exception(404, "No such organisation, '%s'" % dOrg)
     
+    sourceTypes = indata.get('types', [])
     # Fetch all sources for default org
     
     res = session.DB.ES.search(
@@ -64,6 +65,8 @@ def run(API, environ, indata, session):
     for hit in res['hits']['hits']:
         doc = hit['_source']
         if viewList and not doc['sourceID'] in viewList:
+            continue
+        if sourceTypes and not doc['type'] in sourceTypes:
             continue
         if indata.get('quick'):
             xdoc = {
