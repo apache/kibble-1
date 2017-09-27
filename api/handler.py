@@ -185,3 +185,5 @@ def application(environ, start_response):
 
 
 
+if __name__ == '__main__':
+    KibbleOpenAPI.toHTML()
