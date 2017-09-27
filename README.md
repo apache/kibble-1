@@ -1,3 +1,5 @@
+![Logo](/ui/images/kibble-logo.png)
+
 # Kibble UI and Database Service
 
 ## Requirements
