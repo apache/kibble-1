@@ -81,8 +81,11 @@ def run(API, environ, indata, session):
         
         JSON_OUT = {
             'displayName': session.user['displayName'],
+            'defaultOrganisation': session.user['defaultOrganisation'],
             'organisations': session.user['organisations'],
-            'gravatar': hashlib.md5(session.user['email'].encode('utf-8')).hexdigest()
+            'ownerships': session.user['ownerships'],
+            'gravatar': hashlib.md5(session.user['email'].encode('utf-8')).hexdigest(),
+            'userlevel': session.user['userlevel']
         }
         yield json.dumps(JSON_OUT)
         return
