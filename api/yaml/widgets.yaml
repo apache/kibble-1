@@ -21,6 +21,8 @@ widgets:
                         blocks: 4
                         source: "sources"
                         name:   "Repository picker"
+                        eargs:
+                            types: ['git', 'svn', 'github']
             -
                 name: "Trends"
                 children:
