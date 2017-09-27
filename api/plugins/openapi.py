@@ -194,7 +194,7 @@ class OpenAPI():
                 method = method.upper()
                 summary = mspec.get('summary', 'No summary available')
                 linkname = "%s%s" % (method.lower(), path.replace('/', '-'))
-                li += "<li><a href='#%s'>%s %s</a>: %s</li>" % (linkname, method, path, summary)
+                li += "<li><a href='#%s'>%s %s</a>: %s</li>\n" % (linkname, method, path, summary)
         li += "</ul>"
         print(li)
         for path, spec in sorted(self.API['paths'].items()):
@@ -210,14 +210,14 @@ class OpenAPI():
                         for ctype, pdef in cresp['content'].items():
                             xjs, desc = self.dumpExamples(pdef)
                             js = json.dumps(xjs, indent = 4)
-                            resp += "<div style='float: left; width: 90%%;'><pre style='width: 600px;'><b>%s</b>:\n%s</pre>\n</div>" % (code, js)
+                            resp += "<div style='float: left; width: 90%%;'><pre style='width: 600px;'><b>%s</b>:\n%s</pre>\n</div>\n" % (code, js)
                 
                 if 'requestBody' in mspec:
                     for ctype, pdef in mspec['requestBody']['content'].items():
                         xjs, desc = self.dumpExamples(pdef)
                         if desc:
                             for k, v in desc.items():
-                                inpvars += "<kbd><b>%s:</b></kbd> (%s) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>%s</span><br/>" % (k, v[0], v[1])
+                                inpvars += "<kbd><b>%s:</b></kbd> (%s) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>%s</span><br/>\n" % (k, v[0], v[1])
                         js = json.dumps(xjs, indent = 4)
                         inp += "<div style='float: left; width: 90%%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>%s</b>:\n%s</pre></blockquote>\n</div>" % (ctype, js)
                     
