@@ -1,0 +1,454 @@
+{
+    "mappings": {
+        "email": {
+            "properties": {
+                "@version": {
+                    "type": "long"
+                },
+                "address": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "date": {
+                    "type": "date",
+                    "store": true,
+                    "format": "yyyy/MM/dd HH:mm:ss"
+                },
+                "hash": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "organisation": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "sender": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "sourceID": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "ts": {
+                    "type": "long"
+                }
+            }
+        },
+        "useraccount": {
+            "properties": {
+                "verified": {
+                    "type": "boolean",
+                    "index": "not_analyzed"
+                },
+                "email": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "defaultOrganisation": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "organisations": {
+                    "type": "object"
+                },
+                "ownerships": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "request_id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "tag": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "verified": {
+                    "type": "boolean"
+                }
+            }
+        },
+    "code_commit": {
+        "properties": {
+            "@version": {
+                "type": "long"
+            },
+            "author_email": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "author_name": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "committer_email": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "committer_name": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "date": {
+                "type": "date",
+                "store": true,
+                "format": "yyyy/MM/dd HH:mm:ss"
+            },
+            "deletions": {
+                "type": "long"
+            },
+            "id": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "insertions": {
+                "type": "long"
+            },
+            "organisation": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "sourceID": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "source": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "ts": {
+                "type": "long"
+            },
+            "tsday": {
+                "type": "long"
+            },
+            "vcs": {
+                "type": "string",
+                "index": "not_analyzed"
+            }
+        }
+    },
+    "code_commit_unique": {
+        "properties": {
+            "@version": {
+                "type": "long"
+            },
+            "author_email": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "author_name": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "committer_email": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "committer_name": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "date": {
+                "type": "date",
+                "store": true,
+                "format": "yyyy/MM/dd HH:mm:ss"
+            },
+            "deletions": {
+                "type": "long"
+            },
+            "id": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "insertions": {
+                "type": "long"
+            },
+            "organisation": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "sourceID": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "source": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "ts": {
+                "type": "long"
+            },
+            "tsday": {
+                "type": "long"
+            },
+            "vcs": {
+                "type": "string",
+                "index": "not_analyzed"
+            }
+        }
+    },
+    "org": {
+        "properties": {
+            "admins": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "name": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "request_id": {
+                "type": "string",
+                "index": "not_analyzed"
+            }
+        }
+    },
+    "mailstats": {
+        "properties": {
+            "authors": {
+                "type": "long"
+            },
+            "date": {
+                "type": "date",
+                "store": true,
+                "format": "yyyy/MM/dd HH:mm:ss"
+            },
+            "emails": {
+                "type": "long"
+            },
+            "hash": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "organisation": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "sourceID": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "topics": {
+                "type": "long"
+            }
+        }
+    },
+    "mailtop": {
+        "properties": {
+            "date": {
+                "type": "date",
+                "store": true,
+                "format": "yyyy/MM/dd HH:mm:ss"
+            },
+            "emails": {
+                "type": "long"
+            },
+            "hash": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "id": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "organisation": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "shash": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "sourceID": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "subject": {
+                "type": "string"
+            },
+            "ts": {
+                "type": "long"
+            }
+        }
+    },
+    "source": {
+        "properties": {
+            "default_branch": {
+                "type": "string"
+            },
+            "exception": {
+                "type": "string"
+            },
+            "good": {
+                "type": "boolean"
+            },
+            "sourceID": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "sourceURL": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "organisation": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "sync": {
+                "type": "double"
+            },
+            "tag": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "type": {
+                "type": "string",
+                "index": "not_analyzed"
+            }
+        }
+    },
+    "person": {
+        "properties": {
+            "@version": {
+                "type": "long"
+            },
+            "address": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "email": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "id": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "name": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "organisation": {
+                "type": "string",
+                "index": "not_analyzed"
+            }
+        }
+    },
+    "issue": {
+        "properties": {
+            "assignee": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "changeDate": {
+                "type": "date",
+                "store": true,
+                "format": "yyyy/MM/dd HH:mm:ss"
+            },
+            "closed": {
+                "type": "double"
+            },
+            "closedDate": {
+                "type": "date",
+                "format": "yyyy/MM/dd HH:mm:ss||yyyy/MM/dd||epoch_millis"
+            },
+            "comments": {
+                "type": "long"
+            },
+            "created": {
+                "type": "double"
+            },
+            "createdDate": {
+                "type": "date",
+                "format": "yyyy/MM/dd HH:mm:ss||yyyy/MM/dd||epoch_millis"
+            },
+            "id": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "issueCloser": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "issueCreator": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "key": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "organisation": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "sourceID": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "status": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "title": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "url": {
+                "type": "string",
+                "index": "not_analyzed"
+            }
+        }
+    },
+    "evolution": {
+        "properties": {
+            "blank": {
+                "type": "long"
+            },
+            "comments": {
+                "type": "long"
+            },
+            "cost": {
+                "type": "double"
+            },
+            "loc": {
+                "type": "long"
+            },
+            "organisation": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "sourceID": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "time": {
+                "type": "double"
+            },
+            "years": {
+                "type": "double"
+            }
+        }
+    }
+}
+
+}
