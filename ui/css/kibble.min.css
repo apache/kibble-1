@@ -143,8 +143,8 @@ div.wrapper {
 nav.titlebar {
     margin: 0px;
     padding: 0px;
-    background: #EBEFF2;
-    height: 48px;
+    background: url(../images/background-bright.png), #EBEFF2;
+    height: 46px;
     font-family: Montserrat, sanf-serif;
     font-size: 32px;
     color: #223;
@@ -162,7 +162,7 @@ nav.titlebar > div.searchbar {
     width: 175px;
     float: left;
     border-right: 1px groove rgba(0,0,0,0.3);
-    margin-right: 40px;
+    margin-right: 49px;
     background: #FFF;
 }
 
@@ -228,7 +228,7 @@ div.wrap2 {
 }
 
 div.wrap3 {
-    background: #EBEFF2;
+    background: url(../images/background-bright.png), #EBEFF2;
     padding: 0px;
 }
 
@@ -287,7 +287,6 @@ h2 {
 }
 
 .snoot_widget {
-    border: 1px solid #efefef;
     color: #333;
     margin-bottom: 10px;
     height: 100%;
@@ -298,6 +297,7 @@ h2 {
 
 .row {
    display: flex;
+   margin: 0;
 }
 
 .img-circle {
