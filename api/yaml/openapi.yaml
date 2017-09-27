@@ -80,7 +80,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ActionCompleted'
+              $ref: '#/components/schemas/UserCredentials'
       responses:
         '200':
           description: Login successful
@@ -92,7 +92,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserData'
+                $ref: '#/components/schemas/ActionCompleted'
         default:
           description: unexpected error
           content:
