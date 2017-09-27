@@ -147,4 +147,11 @@ widgets:
                         source:     "issues"
                         name:       "Issues opened/closed"
                         target:     ""
+                    -
+                        type:       "line"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issue-actors"
+                        name:       "Openers/Closers of issues"
+                        target:     ""
 

@@ -31,6 +31,7 @@ __all__ = [
     'code-trends',
     'commits',
     'committers',
+    'issue-actors',
     'issue-trends',
     'issues',
     'session',
