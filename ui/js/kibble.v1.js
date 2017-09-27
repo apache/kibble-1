@@ -5834,7 +5834,7 @@ top5 = function(json, state) {
       })(this));
     }
     if (state.widget.args.source === 'issue-closers') {
-      ref4 = json.individuals;
+      ref4 = json.people;
       for (person in ref4) {
         data = ref4[person];
         people.push([person, data]);
@@ -5845,15 +5845,15 @@ top5 = function(json, state) {
         };
       })(this));
     }
-    if (state.widget.args.source === 'issue-creators') {
-      ref5 = json.individuals;
+    if (state.widget.args.source === 'issue-openers') {
+      ref5 = json.people;
       for (person in ref5) {
         data = ref5[person];
         people.push([person, data]);
       }
       people.sort((function(_this) {
         return function(a, b) {
-          return b[1].created - a[1].created;
+          return b[1].opened - a[1].opened;
         };
       })(this));
     }
@@ -5909,9 +5909,9 @@ top5 = function(json, state) {
             changes = people[i][1].closed.pretty() + " issues closed.";
             obj.innerHTML += '<div class="media event">                            <a class="pull-left">   <img style="width: 48px; height: 48px;" class="img-circle img-responsive" src="https://secure.gravatar.com/avatar/' + committer.md5 + '.png?d=identicon"/>                         </a>                            <div class="media-body">                              <a class="title" href="?page=people&email=' + people[i][0] + '" >' + committer.name + '</a>                              <p><strong>' + people[i][1].closed.pretty() + '</strong> issues closed ' + p + '.</p>';
           }
-          if (people[i][1].created) {
-            changes = people[i][1].created.pretty() + " issues created.";
-            obj.innerHTML += '<div class="media event">                            <a class="pull-left">   <img style="width: 48px; height: 48px;" class="img-circle img-responsive" src="https://secure.gravatar.com/avatar/' + committer.md5 + '.png?d=identicon"/>                         </a>                            <div class="media-body">                              <a class="title" href="?page=people&email=' + people[i][0] + '" >' + committer.name + '</a>                              <p><strong>' + people[i][1].created.pretty() + '</strong> issues created ' + p + '.</p>';
+          if (people[i][1].opened) {
+            changes = people[i][1].opened.pretty() + " issues created.";
+            obj.innerHTML += '<div class="media event">                            <a class="pull-left">   <img style="width: 48px; height: 48px;" class="img-circle img-responsive" src="https://secure.gravatar.com/avatar/' + committer.md5 + '.png?d=identicon"/>                         </a>                            <div class="media-body">                              <a class="title" href="?page=people&email=' + people[i][0] + '" >' + committer.name + '</a>                              <p><strong>' + people[i][1].opened.pretty() + '</strong> issues opened ' + p + '.</p>';
           }
         }
       }

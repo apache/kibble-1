@@ -77,13 +77,13 @@ top5 = (json, state) ->
                             people.push([person, data])
                     people.sort((a,b) => b[1].emails - a[1].emails)
             if state.widget.args.source == 'issue-closers'                
-                    for person, data of json.individuals
+                    for person, data of json.people
                             people.push([person, data])
                     people.sort((a,b) => b[1].closed - a[1].closed)
-            if state.widget.args.source == 'issue-creators'                
-                    for person, data of json.individuals
+            if state.widget.args.source == 'issue-openers'                
+                    for person, data of json.people
                             people.push([person, data])
-                    people.sort((a,b) => b[1].created - a[1].created)
+                    people.sort((a,b) => b[1].opened - a[1].opened)
             if state.widget.args.source == 'im-authors'                
                     for person, data of json.individuals
                             people.push([person, data])
@@ -120,9 +120,9 @@ top5 = (json, state) ->
                                 if people[i][1].closed
                                     changes = (people[i][1].closed).pretty() + " issues closed."
                                     obj.innerHTML += '<div class="media event">                            <a class="pull-left">   <img style="width: 48px; height: 48px;" class="img-circle img-responsive" src="https://secure.gravatar.com/avatar/' + committer.md5 + '.png?d=identicon"/>                         </a>                            <div class="media-body">                              <a class="title" href="?page=people&email='+people[i][0]+'" >'+committer.name+'</a>                              <p><strong>'+people[i][1].closed.pretty()+'</strong> issues closed ' + p + '.</p>'
-                                if people[i][1].created
-                                    changes = (people[i][1].created).pretty() + " issues created."
-                                    obj.innerHTML += '<div class="media event">                            <a class="pull-left">   <img style="width: 48px; height: 48px;" class="img-circle img-responsive" src="https://secure.gravatar.com/avatar/' + committer.md5 + '.png?d=identicon"/>                         </a>                            <div class="media-body">                              <a class="title" href="?page=people&email='+people[i][0]+'" >'+committer.name+'</a>                              <p><strong>'+people[i][1].created.pretty()+'</strong> issues created ' + p + '.</p>'
+                                if people[i][1].opened
+                                    changes = (people[i][1].opened).pretty() + " issues created."
+                                    obj.innerHTML += '<div class="media event">                            <a class="pull-left">   <img style="width: 48px; height: 48px;" class="img-circle img-responsive" src="https://secure.gravatar.com/avatar/' + committer.md5 + '.png?d=identicon"/>                         </a>                            <div class="media-body">                              <a class="title" href="?page=people&email='+people[i][0]+'" >'+committer.name+'</a>                              <p><strong>'+people[i][1].opened.pretty()+'</strong> issues opened ' + p + '.</p>'
             state.widget.inject(obj, true)
             if people.length > 5 and not json.widget
                 id = Math.floor(Math.random()*987654321).toString(16)
