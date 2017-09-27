@@ -833,9 +833,11 @@ components:
         email:
           type: string
           example: guest@kibble.live
+          description: "Username (email)"
         password:
           type: string
           example: "kibbledemo"
+          description: "User password"
     UserData:
       properties:
         username:
@@ -996,12 +998,15 @@ components:
         email:
           type: string
           example: "guest@kibble.live"
+          description: "Desired username (email address)"
         password:
           type: string
           example: "kibbledemo"
+          description: "Desired password for the account"
         displayname:
           type: string
           example: "Kibble Guest"
+          description: "A display name (e.g. full name) for the account"
     UserName:
       required:
         - username
