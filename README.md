@@ -8,14 +8,14 @@
 
 ## Installation instructions
 
- * Make sure you have an ElasticSearch server set up first.
+ * Make sure you have an ElasticSearch server set up first
  * Download the Kibble package (release or master, what do we care)
  * For new installations, cd to the `setup/` and run: `python3 setup.py` to set up the DB
  * Assuming you install in /var/www/kibble:
  * * Create a virtual host (apache, nginx etc) and point it to /var/www/kibble/ui/
  * * Set up WSGI for the /api/ directory, using /var/www/kibble/api/handler.py:application as mount point.
  * Enjoy!
- 
+
 ### Using gunicorn for WSGI:
  
  You can use gunicorn (gunicorn3) for the WSGI application, by following these steps:
