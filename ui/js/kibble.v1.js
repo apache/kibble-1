@@ -2647,7 +2647,7 @@ loadPageWidgets = function(page, apiVersion) {
 };
 
 renderAccountInfo = function(json, state) {
-  var div, email, img, img2, len, ma, mli, msp, name, name2, nl, nm, q, ref;
+  var div, email, img, img2, len, ma, mli, msp, name, name2, nl, nm, q, ref, ref1, ulevel;
   if (json.error) {
     div = document.getElementById('innercontents');
     div.style.textAlign = 'center';
@@ -2667,14 +2667,16 @@ renderAccountInfo = function(json, state) {
     name2 = document.getElementById('user_name2');
     name2.innerHTML = "";
     name2.appendChild(document.createTextNode(json.displayName));
+    ulevel = get('user_level');
+    ulevel.inject(json.userlevel === 'admin' ? 'Administrator' : (ref = json.defaultOrganisation, indexOf.call(json.organisations, ref) >= 0) ? 'Organisation Owner' : 'User');
     nm = get('messages_number');
     nm.innerHTML = json.messages;
     if (json.messages > 0) {
       nm.setAttribute("class", "badge bg-green");
       nl = get('messages_list');
-      ref = json.messages_headers;
-      for (q = 0, len = ref.length; q < len; q++) {
-        email = ref[q];
+      ref1 = json.messages_headers;
+      for (q = 0, len = ref1.length; q < len; q++) {
+        email = ref1[q];
         mli = mk('li');
         ma = mk('a');
         set(ma, 'href', '?page=messages&message=' + email.id);
