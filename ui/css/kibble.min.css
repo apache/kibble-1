@@ -10,15 +10,17 @@ nav:not(h1,h2,text) {
 }
 html {
     height: 100%;
-    background: #3a6077;
+    background: #EBEFF2;
 }
 
 body {
-    min-height: 100%;
+    min-height: calc(100% - 48px);
 }
 
 .dashboard {
-    background: #3a6077 !important;
+    background: #EBEFF2 !important;
+    /*min-height: calc(100% - 88px);*/
+    position: relative;
 }
 
 select {
@@ -60,30 +62,34 @@ select {
 /* SIDE MENU */
 
 nav.menu {
-    background: #3a6077;
+   position: absolute;
+    background: #FFF;
     float: left;
-    flex-direction: column-wrap;
-    box-flex: 0;
-    height: calc(100% - 48px);
-    width: 200px;
-    color: #BBB;
+    flex-direction: column;
+    flex: flex-grow;
+    box-sizing: border-box;
+    width: 175px;
+    color: #445;
     font-size: 1.1em;
+    border-right: 1px solid #999;
+    overflow-y: auto;
+    height: 100%;
 }
 
 nav.menu > div.sidemenu > ul {
     margin: 0;
     padding: 0;
     list-style: none;
-    width: 200px;
+    width: 175px;
     float: left;
 }
 nav.menu > div.sidemenu > ul > a:last-child > li{
-    border-bottom: 1px solid #385668;
+    border-bottom: 1px solid #CCD;
 }
 
 nav.menu > div.sidemenu > ul > a > li {
-    border-top: 1px solid #789;
-    border-bottom: 1px solid #385668;
+    border-top: 1px solid #CCD;
+    border-bottom: 1px solid #AAB;
     height: 40px;
     padding-left: 10px;
     padding-right: 10px;
@@ -92,16 +98,17 @@ nav.menu > div.sidemenu > ul > a > li {
     min-width: 48px;
     font-weight: normal;
     font-family: montserrat light, sans-serif;
-    background: #4b6c7f;    
+    background: #DDD;    
 }
 
 nav.menu > div.sidemenu > ul > a > li {
     text-decoration: none;
-    color: #AAA;
+    color: #445;
+    font-size: 13px;
 }
 
 nav.menu > div.sidemenu > ul > a > li:hover {
-    background: #3a6077;
+    background: #EEE;
 }
 
 nav.menu > div.sidemenu> ul > a > li > img {
@@ -110,18 +117,19 @@ nav.menu > div.sidemenu> ul > a > li > img {
 }
 
 nav.menu > div.sidemenu {
-    width: 200px;
+    width: 175px;
     float: left;
     
 }
 
 nav.menu > div.profile {
-    width: 180px;
+    width: 154px;
     margin: 10px;
-    background: #3a6077;
+    background: #CCC;
     border: 2px inset rgba(100,120,140,0.75);
     border-radius: 5px;
     height: 128px;
+    font-size: 11px;
 }
 
 
@@ -135,25 +143,27 @@ div.wrapper {
 nav.titlebar {
     margin: 0px;
     padding: 0px;
-    background: #3a6077;
+    background: #EBEFF2;
     height: 48px;
     font-family: Montserrat, sanf-serif;
     font-size: 32px;
-    color: #CCC;
+    color: #223;
 }
 
 nav.topbar {
     margin: 0px;
     padding: 0px;
-    background: #2a4a5e;
+    background: #36404A;
+    background: linear-gradient(to bottom, #34383B 0, #222327 100%);
     height: 48px;
 }
 
 nav.titlebar > div.searchbar {
-    width: 200px;
+    width: 175px;
     float: left;
-    border-right: 2px groove rgba(0,0,0,0.3);
+    border-right: 1px groove rgba(0,0,0,0.3);
     margin-right: 40px;
+    background: #FFF;
 }
 
 nav.topbar > img.logo {
@@ -175,7 +185,7 @@ nav.topbar > ul > a:last-child > li{
 }
 
 nav.topbar > ul > a.selected > li {
-    background: #102034 !important;
+    background: linear-gradient(to bottom, #14181B 0, #121317 100%) !important;
 }
 
 nav.topbar > ul > a > li {
@@ -207,34 +217,33 @@ nav.topbar > ul > a > li > img {
 
 
 div.wrap1 {
-    background: #57798e;
-    padding: 10px;
-    float: left;
-    width: calc(100% - 200px);
-    height: 100%;
+    padding: 0px;
+    float: right;
+    width: calc(100% - 175px);
+    position: relative;
 }
 
 div.wrap2 {
-    background: #abc1ce;
-    padding: 10px;
-    height: 100%;
+    padding: 0px;
 }
 
 div.wrap3 {
-    background: #FFF;
-    padding: 10px;
-    height: 100%;
+    background: #EBEFF2;
+    padding: 0px;
 }
 
 
 .x_title {
-    background: linear-gradient(to bottom, #fff 0, #f2f2f2 100%);
+    background: linear-gradient(to bottom, #3095D9 0, #258CD1 100%);
     box-shadow: 0 1px 4px rgba(0,0,0,0.065);
     box-sizing: border-box;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     border-bottom: 1px solid #d4d4d4;
-    height: 24px;
+    height: 28px;
     width: 100%;
+    color: #FFF;
+    border-radius: 3px;
+    padding: 2px 2px 2px 8px;
 }
 
 h2 {
@@ -244,13 +253,14 @@ h2 {
     font-size: 1.6em !important;
     font-weight: bold;
     margin-right: 16px;
+    margin-bottom: 0px;
 }
 
 .x_title h2 {
     display: block;
     float: left;
     margin-top: 2px;
-    font-size: 1.5em !important;
+    font-size: 1.3em !important;
     font-weight: bold;
 }
 
@@ -266,7 +276,10 @@ h2 {
     width: 100%;
     float: left;
     clear: both;
-    margin-top: 5px;
+    background: #FFF;
+    border: 4px solid #CCC;
+    border-radius: 3px;
+    height: calc(100% - 48px);
 }
 
 .chartChart {
@@ -276,8 +289,15 @@ h2 {
 .snoot_widget {
     border: 1px solid #efefef;
     color: #333;
-    min-height: 150px;
     margin-bottom: 10px;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.row {
+   display: flex;
 }
 
 .img-circle {
@@ -288,6 +308,7 @@ h2 {
 .panel_toolbox  > li {
     display: inline-block !important;
     position: relative;
+    
 }
 
 .panel_toolbox {
@@ -297,6 +318,13 @@ h2 {
     margin-top: -6px;
     list-style: none;
     display: inline-block;
+    height: 24px;
+}
+
+
+.collapse-link, .close-link {
+   color: #FFF;
+   cursor: pointer;
 }
 
 
