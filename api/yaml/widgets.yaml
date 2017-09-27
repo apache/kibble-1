@@ -154,4 +154,11 @@ widgets:
                         source:     "issue-actors"
                         name:       "Openers/Closers of issues"
                         target:     ""
+                    -
+                        type:       "line"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issue-age"
+                        name:       "Issue age"
+                        target:     ""
 

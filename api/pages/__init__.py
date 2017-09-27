@@ -32,6 +32,7 @@ __all__ = [
     'commits',
     'committers',
     'issue-actors',
+    'issue-age',
     'issue-trends',
     'issues',
     'session',
