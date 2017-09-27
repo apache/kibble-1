@@ -84,14 +84,18 @@
     <script type="text/javascript">
       
 var colors = new Array(
-  [62,35,255],
-  [60,255,60],
-  [255,35,98],
-  [45,175,230],
+  [62,0,255],
+  [60,255,0],
+  [255,0,98],
+  [0,175,230],
   [255,0,255],
   [255,128,0]);
 
 var step = 0;
+var pctx = 50;
+var pcty = 50;
+var pctstepX = 0.15;
+var pctstepY = 0.2;
 //color table indices for: 
 // current color left
 // next color left
@@ -100,13 +104,21 @@ var step = 0;
 var colorIndices = [0,1,2,3];
 
 //transition speed
-var gradientSpeed = 0.009;
+var gradientSpeed = 0.005;
 
 function updateGradient()
 {
   
   if ( $===undefined ) return;
-  
+pctx += pctstepX;
+if (pctx >= 90 || pctx <= 0) {
+  pctstepX = -1*pctstepX;
+}
+pcty += pctstepY;
+if (pcty >= 90 || pcty <= 10) {
+  pctstepY = -1*pctstepY;
+}
+
 var c0_0 = colors[colorIndices[0]];
 var c0_1 = colors[colorIndices[1]];
 var c1_0 = colors[colorIndices[2]];
@@ -124,7 +136,8 @@ var b2 = Math.round(istep * c1_0[2] + step * c1_1[2]);
 var color2 = "rgb("+r2+","+g2+","+b2+")";
 
  $('body').css({
-    background: "url(images/background.png) repeat, linear-gradient(135deg, "+color1+" 0%, "+color2+" 100%)"});
+    background: "url(images/background.png) repeat, radial-gradient(at " + pctx + "% " + pcty + "%, "+color1+" 0%, "+color2+" 60%)"
+    });
   
   step += gradientSpeed;
   if ( step >= 1 )
