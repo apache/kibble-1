@@ -399,6 +399,88 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  /api/issue-closers:
+    get:
+      summary: Shows the top N of issue closers
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows the top N of issue closers
+      security:
+        - cookieAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/issue-openers:
+    get:
+      summary: Shows the top N of issue openers
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows the top N of issue openers
+      security:
+        - cookieAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
   /api/commits:
     get:
       summary: Show commits as a timeseries

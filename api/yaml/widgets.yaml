@@ -161,4 +161,27 @@ widgets:
                         source:     "issue-age"
                         name:       "Issue age"
                         target:     ""
-
+            -
+                name: "Issues and handlers"
+                children:
+                    -
+                        type:       "top5"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issue-openers"
+                        name:       "Top 5 issue openers"
+                        target:     ""
+                    -
+                        type:       "top5"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issue-closers"
+                        name:       "Top 5 issue closers"
+                        target:     ""
+                    -
+                        type:       "top5"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issue-age"
+                        name:       "Issue age"
+                        target:     ""
