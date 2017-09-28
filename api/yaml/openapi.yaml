@@ -1160,7 +1160,7 @@ components:
       properties:
         title:
           type: string
-        rows:
+        top:
           type: array
           items:
             type: object
