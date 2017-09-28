@@ -5767,7 +5767,7 @@ top5 = function(json, state) {
       }
       return state.widget.inject(obj2);
     }
-  } else if (state.widget.args.source === 'issue-top') {
+  } else if (state.widget.args.source === 'issue/top') {
     obj = document.createElement('div');
     if (json.title) {
       obj.innerHTML += "<h2>" + json.title + "</h2>";
@@ -5833,7 +5833,7 @@ top5 = function(json, state) {
         };
       })(this));
     }
-    if (state.widget.args.source === 'issue-closers') {
+    if (state.widget.args.source === 'issue/closers') {
       ref4 = json.people;
       for (person in ref4) {
         data = ref4[person];
@@ -5845,7 +5845,7 @@ top5 = function(json, state) {
         };
       })(this));
     }
-    if (state.widget.args.source === 'issue-openers') {
+    if (state.widget.args.source === 'issue/openers') {
       ref5 = json.people;
       for (person in ref5) {
         data = ref5[person];

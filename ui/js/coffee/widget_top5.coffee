@@ -36,7 +36,7 @@ top5 = (json, state) ->
                     if i
                         obj2.innerHTML += '<div class="media event">                            <a class="pull-left">   <i class="fa fa-envelope" style="font-size: 32pt;"></i></a>                            <div class="media-body">                              <a class="title" href="#" >'+item[0]+'</a>                              <p><strong>'+item[1].pretty()+'</strong> interactions' + p + '.</p>'
                 state.widget.inject(obj2)
-        else if state.widget.args.source == 'issue-top'
+        else if state.widget.args.source == 'issue/top'
             obj = document.createElement('div')
             if json.title
                 obj.innerHTML += "<h2>" + json.title + "</h2>"
@@ -76,11 +76,11 @@ top5 = (json, state) ->
                     for person, data of json.individuals
                             people.push([person, data])
                     people.sort((a,b) => b[1].emails - a[1].emails)
-            if state.widget.args.source == 'issue-closers'                
+            if state.widget.args.source == 'issue/closers'                
                     for person, data of json.people
                             people.push([person, data])
                     people.sort((a,b) => b[1].closed - a[1].closed)
-            if state.widget.args.source == 'issue-openers'                
+            if state.widget.args.source == 'issue/openers'                
                     for person, data of json.people
                             people.push([person, data])
                     people.sort((a,b) => b[1].opened - a[1].opened)
