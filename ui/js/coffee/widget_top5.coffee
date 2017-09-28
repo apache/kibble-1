@@ -28,13 +28,13 @@ make5 = (obj, json, pos) ->
         rightInner = new HTML('div', { class: "media-body"})
         right.inject(rightInner)
         if item.email
-            title = new HTML('a', { class: "title", href:"javascript: void(filterPerson('#{item.email}'));"}, item.name)
+            title = new HTML('a', { class: "title", href:"javascript: void(filterPerson('#{item.email}'));"}, txt(item.name))
             rightInner.inject(title)
         else if item.url
-            title = new HTML('a', { class: "title", href:item.url}, item.name)
+            title = new HTML('a', { class: "title", href:item.url}, txt(item.name))
             rightInner.inject(title)
         else
-            title = new HTML('a', { class: "title"}, item.name)
+            title = new HTML('a', { class: "title"}, txt(item.name))
             rightInner.inject(title)
         fodder = new HTML('p', {})
         fodder.inject(new HTML('b', {}, item.count.pretty()))

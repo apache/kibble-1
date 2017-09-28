@@ -5780,18 +5780,18 @@ make5 = function(obj, json, pos) {
       title = new HTML('a', {
         "class": "title",
         href: "javascript: void(filterPerson('" + item.email + "'));"
-      }, item.name);
+      }, txt(item.name));
       rightInner.inject(title);
     } else if (item.url) {
       title = new HTML('a', {
         "class": "title",
         href: item.url
-      }, item.name);
+      }, txt(item.name));
       rightInner.inject(title);
     } else {
       title = new HTML('a', {
         "class": "title"
-      }, item.name);
+      }, txt(item.name));
       rightInner.inject(title);
     }
     fodder = new HTML('p', {});
