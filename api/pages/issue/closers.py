@@ -108,13 +108,18 @@ def run(API, environ, indata, session):
             person = pres['_source']
             person['name'] = person.get('name', 'unknown')
             people[email] = person
-            people[email]['md5'] = hashlib.md5(person.get('email', 'unknown').encode('utf-8')).hexdigest()
-            people[email]['closed'] = count
+            people[email]['gravatar'] = hashlib.md5(person.get('email', 'unknown').encode('utf-8')).hexdigest()
+            people[email]['count'] = count
         
-
-    
+    topN = []
+    for email, person in people.items():
+        topN.append(person)
+    topN = sorted(topN, key = lambda x: x['count'], reverse = True)
     JSON_OUT = {
-        'people': people,
+        'topN': {
+            'denoter': 'issues closed',
+            'items': topN,
+        },
         'okay': True,
         'responseTime': time.time() - now,
         'widgetType': {

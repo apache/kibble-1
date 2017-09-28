@@ -88,11 +88,17 @@ def run(API, environ, indata, session):
     for bucket in res['hits']['hits']:
         doc = bucket['_source']
         doc['source'] = doc.get('url', '#')
+        doc['name'] = doc['key']
+        doc['count'] = doc.get('comments', 0)
         top.append(doc)
     
         
     JSON_OUT = {
-        'top': top,
+        'topN': {
+            'denoter': 'interactions',
+            'icon': 'bug',
+            'items': top
+        },
         'okay': True,
         'responseTime': time.time() - now,
         'widgetType': {

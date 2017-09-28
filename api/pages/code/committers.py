@@ -138,13 +138,17 @@ def run(API, environ, indata, session):
             person = pres['_source']
             person['name'] = person.get('name', 'unknown')
             people[email] = person
-            people[email]['md5'] = hashlib.md5(person.get('email', 'unknown').encode('utf-8')).hexdigest()
-            people[email]['changes'] = {
-                'commits': count,
+            people[email]['gravatar'] = hashlib.md5(person.get('email', 'unknown').encode('utf-8')).hexdigest()
+            people[email]['count'] = count
+            people[email]['subcount'] = {
                 'insertions': int(bucket['byinsertions']['buckets'][0]['stats']['value']),
                 'deletions': int(bucket['bydeletions']['buckets'][0]['stats']['value'])
             }
-        
+    
+    topN = []
+    for email, person in people.items():
+        topN.append(person)
+    topN = sorted(topN, key = lambda x: x['count'], reverse = True)
         
     # Get timeseries for this period
     query['aggs'] = {
@@ -187,7 +191,10 @@ def run(API, environ, indata, session):
         })
     
     JSON_OUT = {
-        'people': people,
+        'topN': {
+            'denoter': 'commits',
+            'items': topN
+        },
         'timeseries': timeseries,
         'sorted': people,
         'okay': True,
