@@ -28,7 +28,7 @@ widgets:
                 children:
                     -
                         type:   "trends"
-                        source: "code-trends"
+                        source: "code/trends"
                         name:   "Commit trends"
                         blocks: 12
             -
@@ -38,7 +38,7 @@ widgets:
                         type:       "donut"
                         datatype:   "repo"
                         blocks:     4
-                        source:     "sloc"
+                        source:     "code/sloc"
                         representation: "sloccount"
                         name:       "Language breakdown"
                         target:     ""
@@ -46,7 +46,7 @@ widgets:
                         type:       "donut"
                         datatype:   "repo"
                         blocks:     4
-                        source:     "sloc"
+                        source:     "code/sloc"
                         representation: "commentcount"
                         name:       "Language breakdown"
                         target:     ""
@@ -54,7 +54,7 @@ widgets:
                         type:       "top5"
                         datatype:   "repo"
                         blocks:     4
-                        source:     "committers"
+                        source:     "code/committers"
                         representation: "top5"
                         name:       "Top 5 contributors"
             -
@@ -62,13 +62,13 @@ widgets:
                 children:
                     -
                         type:           line
-                        source:         commits
+                        source:         code/commits
                         target:         ""
                         name:           "Commit history"
                         blocks:         6
                     -
                         type:           line
-                        source:         committers
+                        source:         code/committers
                         target:         ""
                         name:           "Active developers per month"
                         blocks:         6
@@ -77,13 +77,13 @@ widgets:
                 children:
                     -
                         type:           line
-                        source:         code-changes
+                        source:         code/changes
                         target:         ""
                         name:           "Lines changed"
                         blocks:         6
                     -
                         type:           line
-                        source:         code-evolution
+                        source:         code/evolution
                         representation: stack
                         target:         ""
                         name:           "Code evolution"
@@ -95,14 +95,14 @@ widgets:
                         type:       donut
                         datatype:   repo
                         blocks:     4
-                        source:     top-sloc
+                        source:     code/top-sloc
                         name:       "Top repos by lines of code"
                         target:     ""
                     -
                         type:       donut
                         datatype:   repo
                         blocks:     4
-                        source:     top-commits
+                        source:     code/top-commits
                         name:       "Top repos by commits"
                         target:     ""
 
@@ -134,7 +134,7 @@ widgets:
                 children:
                     -
                         type:   "trends"
-                        source: "issue-trends"
+                        source: "issue/trends"
                         name:   "Issue tracker trends"
                         blocks: 12
             -
@@ -144,21 +144,21 @@ widgets:
                         type:       "line"
                         datatype:   "issue"
                         blocks:     4
-                        source:     "issues"
+                        source:     "issue/issues"
                         name:       "Issues opened/closed"
                         target:     ""
                     -
                         type:       "line"
                         datatype:   "issue"
                         blocks:     4
-                        source:     "issue-actors"
+                        source:     "issue/actors"
                         name:       "Openers/Closers of issues"
                         target:     ""
                     -
                         type:       "line"
                         datatype:   "issue"
                         blocks:     4
-                        source:     "issue-age"
+                        source:     "issue/age"
                         name:       "Issue age"
                         target:     ""
             -
@@ -168,20 +168,20 @@ widgets:
                         type:       "top5"
                         datatype:   "issue"
                         blocks:     4
-                        source:     "issue-openers"
+                        source:     "issue/openers"
                         name:       "Top 5 issue openers"
                         target:     ""
                     -
                         type:       "top5"
                         datatype:   "issue"
                         blocks:     4
-                        source:     "issue-closers"
+                        source:     "issue/closers"
                         name:       "Top 5 issue closers"
                         target:     ""
                     -
                         type:       "top5"
                         datatype:   "issue"
                         blocks:     4
-                        source:     "issue-top"
+                        source:     "issue/top"
                         name:       "Most active issues"
                         target:     ""

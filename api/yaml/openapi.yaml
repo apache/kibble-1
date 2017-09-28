@@ -116,7 +116,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/sloc:
+  /api/code/sloc:
     get:
       summary: Shows a breakdown of lines of code for one or more sources
       security:
@@ -156,7 +156,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/code-trends:
+  /api/code/trends:
     get:
       summary: Shows trend data for a set of repos over a given period of time
       security:
@@ -196,7 +196,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/issue-trends:
+  /api/issue/trends:
     get:
       summary: Shows trend data for a set of issue trackers over a given period of time
       security:
@@ -236,7 +236,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/issues:
+  /api/issue/issues:
     get:
       summary: Shows timeseries of issues opened/closed over time
       security:
@@ -277,7 +277,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /api/issue-actors:
+  /api/issue/actors:
     get:
       summary: Shows timeseries of no. of people opening/closing issues over time
       security:
@@ -318,7 +318,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /api/issue-age:
+  /api/issue/age:
     get:
       summary: Shows timeseries of no. of open tickets by age
       security:
@@ -359,7 +359,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /api/committers:
+  /api/code/committers:
     get:
       summary: Shows the top N of committers
       security:
@@ -400,7 +400,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /api/issue-closers:
+  /api/issue/closers:
     get:
       summary: Shows the top N of issue closers
       security:
@@ -440,7 +440,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/issue-openers:
+  /api/issue/openers:
     get:
       summary: Shows the top N of issue openers
       security:
@@ -481,7 +481,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 
-  /api/issue-top:
+  /api/issue/top:
     get:
       summary: Shows the top N issues by interactions
       security:
@@ -522,7 +522,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 
-  /api/commits:
+  /api/code/commits:
     get:
       summary: Show commits as a timeseries
       security:
@@ -562,7 +562,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/code-changes:
+  /api/code/changes:
     get:
       summary: Show insertions/deletions as a timeseries
       security:
@@ -602,7 +602,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/code-evolution:
+  /api/code/evolution:
     get:
       summary: Show code evolution as a timeseries
       security:
@@ -642,7 +642,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/top-commits:
+  /api/code/top-commits:
     get:
       summary: Shows top 25 repos by commit volume
       security:
@@ -682,7 +682,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/top-sloc:
+  /api/code/top-sloc:
     get:
       summary: Shows top 25 repos by lines of code
       security:
