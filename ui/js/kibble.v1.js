@@ -5782,6 +5782,12 @@ make5 = function(obj, json, pos) {
         href: "javascript: void(filterPerson('" + item.email + "'));"
       }, item.name);
       rightInner.inject(title);
+    } else if (item.url) {
+      title = new HTML('a', {
+        "class": "title",
+        href: item.url
+      }, item.name);
+      rightInner.inject(title);
     } else {
       title = new HTML('a', {
         "class": "title"
