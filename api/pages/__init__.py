@@ -35,6 +35,7 @@ __all__ = [
     'issue-age',
     'issue-closers',
     'issue-openers',
+    'issue-top',
     'issue-trends',
     'issues',
     'session',

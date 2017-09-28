@@ -481,6 +481,47 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 
+  /api/issue-top:
+    get:
+      summary: Shows the top N issues by interactions
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows the top N issues by interactions
+      security:
+        - cookieAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopList'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
   /api/commits:
     get:
       summary: Show commits as a timeseries
@@ -1115,6 +1156,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WidgetRow'
+    TopList:
+      properties:
+        title:
+          type: string
+        rows:
+          type: array
+          items:
+            type: object
     WidgetRow:
       properties:
         name:

@@ -182,6 +182,6 @@ widgets:
                         type:       "top5"
                         datatype:   "issue"
                         blocks:     4
-                        source:     "issue-age"
-                        name:       "Issue age"
+                        source:     "issue-top"
+                        name:       "Most active issues"
                         target:     ""
