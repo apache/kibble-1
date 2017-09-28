@@ -120,10 +120,13 @@ def run(API, environ, indata, session):
     # PF for authors
     pf_author = 0
     pf_author_count = 0
+    cpf = {}
     for bucket in res['aggregations']['by_author']['buckets']:
         count = bucket['doc_count']
         pf_author += 1
         pf_author_count += count
+        mldom = bucket['key'].lower().split('@')[1]
+        cpf[mldom] = True
         if pf_author_count > int(globcount/2):
             break
     
@@ -203,13 +206,16 @@ def run(API, environ, indata, session):
     # PF for authors
     pf_author_b = 0
     pf_author_count = 0
+    cpf_b = {}
     for bucket in res['aggregations']['by_author']['buckets']:
         count = bucket['doc_count']
         pf_author_b += 1
         pf_author_count += count
+        mldom = bucket['key'].lower().split('@')[1]
+        cpf_b[mldom] = True
         if pf_author_count > int(globcount/2):
             break
-        
+    
     JSON_OUT = {
         'factors': [
             {
@@ -221,6 +227,11 @@ def run(API, environ, indata, session):
                 'title': "Pony Factor (by authorship)",
                 'count': pf_author,
                 'previous': pf_author_b
+            },
+            {
+                'title': "Meta-Pony Factor (by authorship)",
+                'count': len(cpf),
+                'previous': len(cpf_b)
             }
         ],
         'okay': True,
