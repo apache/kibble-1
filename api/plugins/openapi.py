@@ -158,6 +158,7 @@ class OpenAPI():
             raise OpenAPIException("OpenAPI mismatch: Unknown API path '%s'!" % path)
 
     def dumpExamples(self, pdef, array = False):
+        schema = None
         if 'schema' in pdef:
             schema = pdef['schema']['$ref']
         if '$ref' in pdef:
@@ -167,18 +168,19 @@ class OpenAPI():
             pdef = functools.reduce(operator.getitem, schema.split('/')[1:], self.API)
         js = {}
         desc = {}
-        for k, v in pdef['properties'].items():
-            if 'description' in v:
-                desc[k] = [v['type'], v['description']]
-            if 'example' in v:
-                js[k] = v['example']
-            elif 'items' in v:
-                if v['type'] == 'array':
-                    js[k], foo = self.dumpExamples(v['items'], True)
-                else:
-                    js[k], foo = self.dumpExamples(v['items'])
+        if 'properties' in pdef:
+            for k, v in pdef['properties'].items():
+                if 'description' in v:
+                    desc[k] = [v['type'], v['description']]
+                if 'example' in v:
+                    js[k] = v['example']
+                elif 'items' in v:
+                    if v['type'] == 'array':
+                        js[k], foo = self.dumpExamples(v['items'], True)
+                    else:
+                        js[k], foo = self.dumpExamples(v['items'])
         return [js if not array else [js], desc]
-    
+        
     def toHTML(self):
         """ Blurps out the specs in a pretty HTML blob """
         print("""
