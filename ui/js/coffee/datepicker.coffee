@@ -8,6 +8,7 @@ updateTimeseriesWidgets = (range) ->
             globArgs.to = to
             updateWidgets('line', null, { to: to, from: from})
             updateWidgets('top5', null, { to: to, from: from})
+            updateWidgets('factors', null, { to: to, from: from})
             updateWidgets('trends', null, { to: to, from: from})
             updateWidgets('donut', null, { to: to, from: from})
             updateWidgets('radar', null, { to: to, from: from})

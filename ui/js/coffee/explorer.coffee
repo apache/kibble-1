@@ -57,6 +57,7 @@ explorer = (json, state) ->
                 updateWidgets('line', null, { source: source })
                 updateWidgets('contacts', null, { source: source })
                 updateWidgets('top5', null, { source: source })
+                updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('mvp', null, { source: source })
                 updateWidgets('comstat', null, { source: source })
@@ -82,6 +83,7 @@ explorer = (json, state) ->
                 updateWidgets('line', null, { unique: unique })
                 updateWidgets('contacts', null, { unique: unique })
                 updateWidgets('top5', null, { unique: unique })
+                updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { unique: unique })
                 updateWidgets('relationship', null, {unique: unique})
                 updateWidgets('mvp', null, {unique: unique})
@@ -144,6 +146,7 @@ mailexplorer = (json, state) ->
                 updateWidgets('line', null, { source: source })
                 updateWidgets('contacts', null, { source: source })
                 updateWidgets('top5', null, { source: source })
+                updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 
         , false)
@@ -193,6 +196,7 @@ logexplorer = (json, state) ->
                 updateWidgets('line', null, { source: source })
                 updateWidgets('worldmap', null, { source: source })
                 updateWidgets('top5', null, { source: source })
+                updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 
         , false)
@@ -244,6 +248,7 @@ issueexplorer = (json, state) ->
                 updateWidgets('line', null, { source: source })
                 updateWidgets('contacts', null, { source: source })
                 updateWidgets('top5', null, { source: source })
+                updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 
         , false)
@@ -298,6 +303,7 @@ imexplorer = (json, state) ->
                 updateWidgets('line', null, { source: source })
                 updateWidgets('contacts', null, { source: source })
                 updateWidgets('top5', null, { source: source })
+                updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 
         , false)
@@ -348,6 +354,7 @@ multiviewexplorer = (json, state) ->
                     updateWidgets('line', null, x)
                     updateWidgets('contacts', null, x)
                     updateWidgets('top5', null, x)
+                    updateWidgets('factors', null, x)
                     updateWidgets('trends', null, x)
                     updateWidgets('radar', null, x)
                     
@@ -400,6 +407,7 @@ viewexplorer = (json, state) ->
                 updateWidgets('line', null, x)
                 updateWidgets('contacts', null, x)
                 updateWidgets('top5', null, x)
+                updateWidgets('factors', null, x)
                 updateWidgets('trends', null, x)
                 updateWidgets('radar', null, x)
                 updateWidgets('widget', null, x)
@@ -485,6 +493,7 @@ widgetexplorer = (json, state) ->
                 updateWidgets('line', null, x)
                 updateWidgets('contacts', null, x)
                 updateWidgets('top5', null, x)
+                updateWidgets('factors', null, x)
                 updateWidgets('trends', null, x)
                 updateWidgets('radar', null, x)
                 

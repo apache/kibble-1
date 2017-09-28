@@ -85,6 +85,7 @@ setupPage = (json, state) ->
                 when 'widget' then widget.load(publisher)
                 when 'radar' then widget.load(radar)
                 when 'top5' then widget.load(top5)
+                when 'factors' then widget.load(factors)
                 when 'trends' then widget.load(trend)
                 when 'line' then widget.load(linechart)
                 when 'bio' then widget.load(bio)

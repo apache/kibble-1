@@ -114,6 +114,7 @@ updateWidgets = (type, target, eargs) ->
                 when 'paragraph' then widget.load(paragraph)
                 when 'line' then widget.load(linechart)
                 when 'top5' then widget.load(top5)
+                when 'factors' then widget.load(factors)
                 when 'trends' then widget.load(trend)
                 when 'preferences' then widget.load(preferences)
                 when 'messages' then widget.load(messages)
