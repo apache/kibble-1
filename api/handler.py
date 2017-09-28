@@ -26,7 +26,6 @@ also handles CGI parsing and exceptions in the applications.
 # Main imports
 import cgi
 import re
-import pages
 import sys
 import traceback
 import yaml
@@ -38,8 +37,10 @@ import plugins.openapi
 # Compile valid API URLs from the pages library
 # Allow backwards compatibility by also accepting .lua URLs
 urls = []
-for page in pages.handlers:
-    urls.append((r"^(/api/%s)(/.+)?$" % page, pages.handlers[page].run))
+if __name__ != '__main__':
+    import pages
+    for page in pages.handlers:
+        urls.append((r"^(/api/%s)(/.+)?$" % page, pages.handlers[page].run))
 
 
 # Load Kibble master configuration

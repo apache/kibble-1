@@ -24,7 +24,6 @@ It handles setting/getting cookies and user prefs
 # Main imports
 import cgi
 import re
-import pages
 import sys
 import traceback
 import http.cookies
