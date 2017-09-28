@@ -1,6 +1,29 @@
-defaultWidget: repos
+defaultWidget: org
+
+
 
 widgets:
+    org:
+        title: "Your organisation"
+        rows:
+            -
+                name: "Organisational trends"
+                children:
+                    -
+                        type: trend
+                        blocks: 12
+                        name: "Organisation trends"
+                        source: org/trends
+                        
+            -
+                name: "Your organisations"
+                children:
+                    -
+                        type: orgpicker
+                        blocks: 12
+                        name: "Your organisations"
+                        source: org/list
+                
     repos:
         title: "Code Repositories"
         rows:
@@ -104,6 +127,13 @@ widgets:
                         blocks:     4
                         source:     code/top-commits
                         name:       "Top repos by commits"
+                        target:     ""
+                    -
+                        type:       factors
+                        datatype:   repo
+                        blocks:     4
+                        source:     code/pony
+                        name:       "Pony Factors"
                         target:     ""
 
 ### ISSUE TRACKERS
