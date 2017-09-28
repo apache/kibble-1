@@ -24,6 +24,38 @@ widgets:
                         name: "Your organisations"
                         source: org/list
                 
+    factors:
+        title: "Engagement factors"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+                    -
+                        type:   repopicker
+                        blocks: 4
+                        source: "sources"
+                        name:   "Repository picker"
+                        eargs:
+                            types: ['git', 'svn', 'github']
+            -
+                name: "Pony Factors"
+                children:
+                    -
+                        type: line
+                        blocks: 8
+                        name: "Pony Factor over time"
+                        source: code/pony-timeseries
+                        
+                
     repos:
         title: "Code Repositories"
         rows:
