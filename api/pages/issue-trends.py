@@ -72,7 +72,10 @@ def run(API, environ, indata, session):
                     }
                 }
             }
-    if viewList:
+    # Source-specific or view-specific??
+    if indata.get('source'):
+        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
     
     
@@ -125,7 +128,10 @@ def run(API, environ, indata, session):
                     }
                 }
             }
-    if viewList:
+    # Source-specific or view-specific??
+    if indata.get('source'):
+        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
     
     
