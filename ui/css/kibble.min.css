@@ -383,11 +383,15 @@ h2 {
 }
 
 .orgItem {
-   width: 90%;
+   width: calc(100% - 40px);
    border: 2px solid #666;
    float: left;
    padding: 10px;
    margin: 10px;
+}
+
+.orgSelected {
+   background: #DFD;
 }
 
 .orgItem:hover {
