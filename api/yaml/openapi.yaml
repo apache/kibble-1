@@ -231,13 +231,20 @@ paths:
       summary: Log out (remove session)
       security:
         - cookieAuth: []
+      requestBody:
+        description: Nada
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Empty'
       responses:
         '200':
           description: Logout successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserData'
+                $ref: '#/components/schemas/ActionCompleted'
         default:
           description: unexpected error
           content:
