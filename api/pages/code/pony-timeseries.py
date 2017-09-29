@@ -39,6 +39,7 @@ def run(API, environ, indata, session):
             view = session.DB.ES.get(index=session.DB.dbname, doc_type="view", id = indata['view'])
             viewList = view['_source']['sourceList']
     
+    hl = indata.get('span', 2)
     tnow = datetime.date.today()
     nm = tnow.month - (tnow.month % 3)
     ny = tnow.year
@@ -47,7 +48,7 @@ def run(API, environ, indata, session):
     while ny > 1970:
         d = datetime.date(ny, nm, 1)
         t = time.mktime(d.timetuple())
-        d = datetime.date(ny-2, nm, 1)
+        d = datetime.date(ny-hl, nm, 1)
         tf = time.mktime(d.timetuple())
         nm -= 3
         if nm < 1:
@@ -152,6 +153,7 @@ def run(API, environ, indata, session):
     ts = sorted(ts, key = lambda x: x['date'])
     
     JSON_OUT = {
+        'text': "This shows Pony Factors as calculated over a %u year timespan. Authorship measures the people writing the bulk of the codebase, committership mesaures the people committing (merging) the code, and meta-pony is an estimation of how many organisations/companies are involved." % hl,
         'timeseries': ts,
         'okay': True,
         'responseTime': time.time() - now,

@@ -1203,6 +1203,10 @@ components:
           description: "If set, only return data from sources matching these types"
           type: array
           example: ['jira', 'bugzilla']
+        span:
+          description: "For factor charts, denotes the number of years to calculate a factor from"
+          type: integer
+          example: 2
     Sloc:
       properties:
         count:
