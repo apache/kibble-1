@@ -4166,9 +4166,13 @@ Widget = (function() {
     idiv = document.createElement('div');
     idiv.setAttribute("class", "icon");
     idiv.setAttribute("style", "text-align: center; vertical-align: middle; height: 500px;");
-    i = document.createElement('i');
-    i.setAttribute("class", "fa fa-spin fa-cog");
-    i.setAttribute("style", "font-size: " + size + "pt !important; color: #AAB;");
+    i = new HTML('div', {
+      "class": "spinwheel"
+    }, new HTML('div', {
+      "class": "spinwheel_md"
+    }, new HTML('div', {
+      "class": "spinwheel_sm"
+    })));
     idiv.appendChild(i);
     idiv.appendChild(document.createElement('br'));
     idiv.appendChild(document.createTextNode('Loading, hang on tight..!'));

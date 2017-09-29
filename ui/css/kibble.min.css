@@ -3,6 +3,76 @@
  */
 
 
+/* Spinner */
+.spinner {
+    z-index: 100;
+    position: fixed;
+    top: calc(40% - 90px);
+    left: calc(50% - 150px);
+    width: 360px;
+    height: 240px;
+    background: #3285BC;
+    border-radius: 8px;
+    font-size: 9pt;
+    color: #FFF;
+    text-align: center;
+    font-family: sans-serif;
+}
+.spinwheel {
+    margin: 28px auto;
+    border-top: 10px solid rgba(30,190,200,0.95);
+    border-right: 10px solid rgba(220, 30, 120, 0.95);
+    border-bottom: 10px solid rgba(120, 200, 30, 0.95);
+    border-left: 10px solid rgba(220,190,30,0.95);
+    transform: translateZ(0);
+    animation: spin1 1s infinite;
+}
+
+.spinwheel, .spinwheel:after {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+.spinwheel_md {
+    margin: 10px 10px;
+    border-top: 10px solid rgba(30,190,200,0.95);
+    border-right: 10px solid rgba(220, 30, 120, 0.95);
+    border-bottom: 10px solid rgba(120, 200, 30, 0.95);
+    border-left: 10px solid rgba(220,190,30,0.95);
+}
+
+.spinwheel_md, .spinwheel_md:after {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+}
+
+.spinwheel_sm {
+    margin: 10px 10px;
+    border-top: 10px solid rgba(30,190,200,0.95);
+    border-right: 10px solid rgba(220, 30, 120, 0.95);
+    border-bottom: 10px solid rgba(120, 200, 30, 0.95);
+    border-left: 10px solid rgba(220,190,30,0.95);
+}
+
+.spinwheel_sm, .spinwheel_sm:after {
+    border-radius: 50%;
+    width: 0px;
+    height: 0px;
+}
+
+@keyframes spin1 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
 nav:not(h1,h2,text) {
     background: #202024 !important;
     height: 100%;
