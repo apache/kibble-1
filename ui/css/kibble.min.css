@@ -382,6 +382,20 @@ h2 {
     flex: 1;
 }
 
+.orgItem {
+   width: 90%;
+   border: 2px solid #666;
+   float: left;
+   padding: 10px;
+   margin: 10px;
+}
+
+.orgItem:hover {
+   background: #FFD;
+   border: 2px solid #669;
+   cursor: pointer;
+}
+
 .row {
    display: flex;
    margin: 0;

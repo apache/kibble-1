@@ -13,6 +13,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+keyValueForm = (type, key, caption, placeholder) ->
+    div = new HTML('div', { style: { width: "100%", margin: "10px", paddingBottom: "10px"}})
+    left = new HTML('div', { style: { float: "left", width: "300px"}}, caption)
+    right = new HTML('div', { style: { float: "left", width: "300px"}}) 
+    
+    if type == 'text'
+        inp = new HTML('input', {id: key, style: { marginBottom: "10px"}, class: "form-control", type: "text", placeholder: placeholder})
+        right.inject(inp)
+    if type == 'textarea'
+        inp = new HTML('textarea', {id: key, style: { marginBottom: "10px"}, class: "form-control", placeholder: placeholder})
+        right.inject(inp)
+    div.inject([left, right])
+    return div
+
+orgCreated = (json, state) ->
+    if json.okay
+        location.reload()
+
+makeOrg = () ->
+    orgname = get('orgname').value
+    orgdesc = get('orgdesc').value
+    orgid = get('orgid').value
+    if orgid.length == 0
+        orgid = parseInt(Math.random()*987654321).toString(16)
+    if orgname.length  == 0
+        alert("Please enter a name for the organisation!")
+        return
+    if orgdesc.length  == 0
+        alert("Please enter a description of the organisation!")
+        return
+    put('org/list', {id: orgid, name: orgname, desc: orgdesc}, {}, orgCreated)
+
 
 orglist = (json, state) ->
     items = []
@@ -22,3 +54,30 @@ orglist = (json, state) ->
         if userAccount.userlevel == 'admin'
             obj.inject("...but you can make one!")
         state.widget.inject(obj, true)
+    else
+        odiv = new HTML('div')
+        for org in json.organisations
+            div = new HTML('div', { class: "orgItem"})
+            div.inject(new HTML('h1', {}, org.name))
+            div.inject(new HTML('p', {}, org.description or ""))
+            
+            odiv.inject(div)
+            odiv.inject(new HTML('hr'))
+        state.widget.inject(odiv, true)
+        
+    if userAccount.userlevel == "admin"
+        fieldset = new HTML('fieldset', { style: { float: "left", margin: '30px'}})
+        legend = new HTML('legend', {}, "Create a new orgsanisation:")
+        fieldset.inject(legend)
+        
+        fieldset.inject(keyValueForm('text', 'orgname', 'Name of the organisation:', 'Foo, inc.'))
+        fieldset.inject(keyValueForm('textarea', 'orgdesc', 'Description:', 'Foo, inc. is awesome and does stuff.'))
+        fieldset.inject(keyValueForm('text', 'orgid', 'Optional org ID:', 'demo, myorg etc'))
+        
+        fieldset.inject(new HTML('p', {}, "You'll be able to add users and owners once the organisation has been created."))
+        
+        btn = new HTML('input', { style: { width: "200px"},class: "btn btn-primary btn-block", type: "button", onclick: "makeOrg();", value: "Create organisation"})
+        fieldset.inject(btn)
+        
+        state.widget.inject(fieldset)
+        
