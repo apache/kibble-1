@@ -26,7 +26,29 @@ def run(API, environ, indata, session):
     now = time.time()
     # We need to be logged in for this!
     if not session.user:
-        raise API.exception(403, "You must be logged in to use this API endpoint! %s")
+        raise API.exception(403, "You must be logged in to use this API endpoint!")
+    
+    method = environ['REQUEST_METHOD']
+    # Are we making a new org?
+    if method == "PUT":
+        if session.user['userlevel'] == "admin":
+            orgname = indata.get('name', 'Foo')
+            orgdesc = indata.get('desc', '')
+            orgid = indata.get('id', str(int(time.time())))
+            if session.DB.ES.exists(index=session.DB.dbname, doc_type='organisation', id = orgid):
+                raise API.exception(403, "Organisation ID already in use!")
+            
+            doc = {
+                'id': orgid,
+                'name': orgname,
+                'description': orgdesc,
+                'admins': []
+            }
+            session.DB.ES.index(index=session.DB.dbname, doc_type='organisation', id = orgid, body = doc)
+            yield json.dumps({"okay": True, "message": "Organisation created!"})
+            return
+        else:
+            raise API.exception(403, "Only administrators can create new organisations.")
     
     ####################################################################
     orgs = []

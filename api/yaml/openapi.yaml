@@ -89,7 +89,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                              
+    put:
+      summary: Create a new organisation
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewOrg'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                            
   /api/account:
     put:
       summary: Create a new account
@@ -1489,6 +1512,25 @@ components:
         username:
           type: string
           example: "kibbleguest"
+    NewOrg:
+      required:
+        - id
+        - name
+        - desc
+      properties:
+        id:
+          type: string
+          example: demo
+          description: the ID of the organisation, can be anything.
+        name:
+          type: string
+          example: Kibble, Inc.
+          description: The name of the organisation to create
+        desc:
+          type: string
+          example: Kibble, inc. is awesome
+          description: A short description of the organisation
+        
     Empty:
       required: []
       properties:
