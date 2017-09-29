@@ -31,10 +31,6 @@ widgets:
                 name: "Date picker row"
                 children:
                     -
-                        type:   "datepicker"
-                        blocks: 4
-                        name:   "Date picker"
-                    -
                         type:   "viewpicker"
                         blocks: 4
                         source: "views"
