@@ -4630,6 +4630,9 @@ factors = function(json, state) {
 linechart = function(json, state) {
   var aa, ab, cat, catdata, cats, catseries, chartBox, chk, dates, div, filled, from, id, item, key, label, len, len1, len2, len3, list, m, opt, point, q, range, ref, ref1, ref2, ref3, rv, stack, tName, to, type, u, val;
   div = document.createElement('div');
+  if (json.text) {
+    div.inject(new HTML('p', {}, json.text));
+  }
   cats = new Array();
   dates = new Array();
   catdata = {};

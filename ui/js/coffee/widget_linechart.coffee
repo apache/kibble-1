@@ -15,6 +15,8 @@
 
 linechart = (json, state) ->
         div = document.createElement('div')
+        if json.text
+                div.inject(new HTML('p', {}, json.text))
         cats = new Array()
         dates = new Array()
         catdata = {}
@@ -80,6 +82,7 @@ linechart = (json, state) ->
           div.style.minHeight = "100%"
         if state.widget.fullscreen
           div.style.minHeight = "640px"
+        
         
         state.widget.inject(div, true)
         
