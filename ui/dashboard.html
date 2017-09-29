@@ -16,12 +16,13 @@
     <link rel="stylesheet" href="css/kibble.min.css">
     <link rel="stylesheet" href="css/daterangepicker.css">
     <link href="css/c3.css" rel="stylesheet">
+    <link href="css/chosen.css" rel="stylesheet">
   </head>
   <body class="dashboard" onload="loadPageWidgets(window.location.search.substr(1), 3);">
     <nav class="topbar">
       <img class="logo" src="images/kibble-logo-white.png"/>
       <ul>
-        <a href="dashboard.html?page=org"><li><i class="fa fa-home"></i> Organisation</li></a>
+        <a href="organisations.html?page=org"><li><i class="fa fa-home"></i> Organisation</li></a>
         <a href="dashboard.html?page=repos" class="selected"><li><i class="fa fa-bar-chart-o"></i> Data Points</li></a>
         <a href="engagement.html?page=factors"><li><i class="fa fa-cubes"></i> Engagement</li></a>
         <a href="dashboard.html?page=people"><li><i class="fa fa-user"></i> Contributors</li></a>
@@ -93,6 +94,6 @@
     <script type="text/javascript" src="js/kibble.v1.js"></script>
     <script src="js/moment/moment.min.js"></script>
     <script src="js/datepicker/daterangepicker.js"></script>
-   
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.jquery.min.js" type="text/javascript" data-rocketoptimized="true"></script>
   </body>
 </html>
