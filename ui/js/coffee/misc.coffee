@@ -28,7 +28,7 @@ fetch = (url, xstate, callback, nocreds) ->
                 js = JSON.parse(xmlHttp.responseText)
                 # If we need to log in first, redirect to login page
                 if js.code == 403
-                    mpart = location.href.match(/\/\/(.+)$/)[1]
+                    mpart = location.href.match(/\/\/[^/]+\/(.+)$/)[1]
                     location.href = "login.html?redirect=" + mpart
                 badModal(js.reason)
                 return

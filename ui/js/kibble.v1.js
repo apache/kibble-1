@@ -2029,7 +2029,7 @@ fetch = function(url, xstate, callback, nocreds) {
     if (xmlHttp.readyState === 4 && xmlHttp.status >= 400) {
       js = JSON.parse(xmlHttp.responseText);
       if (js.code === 403) {
-        mpart = location.href.match(/\/\/(.+)$/)[1];
+        mpart = location.href.match(/\/\/[^\/]+\/(.+)$/)[1];
         location.href = "login.html?redirect=" + mpart;
       }
       badModal(js.reason);
