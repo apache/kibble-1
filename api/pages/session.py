@@ -80,6 +80,7 @@ def run(API, environ, indata, session):
             orgs.append(doc)
         
         JSON_OUT = {
+            'email': session.user['email'],
             'displayName': session.user['displayName'],
             'defaultOrganisation': session.user['defaultOrganisation'],
             'organisations': session.user['organisations'],
