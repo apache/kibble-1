@@ -10,3 +10,7 @@ kibbleLoginCallback = (json, state) ->
 kibbleLogin = (email, password) ->
     put("session", {email: email, password: password}, null, kibbleLoginCallback)
     return false
+
+signout = () ->
+    xdelete('session', {}, {}, () -> location.href = 'login.html')
+    

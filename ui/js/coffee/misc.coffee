@@ -110,6 +110,40 @@ patch = (url, json, xstate, callback, nocreds = false) ->
                     catch e
                         callback(JSON.parse(xmlHttp.responseText), xstate)
 
+xdelete = (url, json, xstate, callback, nocreds = false) ->
+    xmlHttp = null;
+    # Set up request object
+    if window.XMLHttpRequest
+        xmlHttp = new XMLHttpRequest();
+    else
+        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+    if not nocreds
+        xmlHttp.withCredentials = true
+    # GET URL
+    xmlHttp.open("DELETE", "api/#{url}", true);
+    xmlHttp.send(JSON.stringify(json || {}));
+    
+    xmlHttp.onreadystatechange = (state) ->
+            if xmlHttp.readyState == 4 and xmlHttp.status == 500
+                if snap
+                    snap(xstate)
+                return
+            if xmlHttp.readyState == 4 and xmlHttp.status >= 400
+                js = JSON.parse(xmlHttp.responseText)
+                badModal(js.reason)
+                return
+            if xmlHttp.readyState == 4 and xmlHttp.status == 200
+                if callback
+                    # Try to parse as JSON and deal with cache objects, fall back to old style parse-and-pass
+                    try
+                        response = JSON.parse(xmlHttp.responseText)
+                        if response && response.loginRequired
+                            location.href = "/login.html"
+                            return
+                        callback(response, xstate);
+                    catch e
+                        callback(JSON.parse(xmlHttp.responseText), xstate)
+
 
 post = (url, json, xstate, callback, snap) ->
     xmlHttp = null;
