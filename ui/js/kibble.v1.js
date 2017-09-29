@@ -1979,7 +1979,13 @@ widgetexplorer = function(json, state) {
 };
 
 kibbleLoginCallback = function(json, state) {
-  return location.href = "dashboard.html";
+  var m;
+  m = location.href.match(/\?redirect=(.+)$/);
+  if (m && !m[1].match(/:/)) {
+    return location.href = m[1];
+  } else {
+    return location.href = "dashboard.html";
+  }
 };
 
 kibbleLogin = function(email, password) {
@@ -2013,7 +2019,7 @@ fetch = function(url, xstate, callback, nocreds) {
   xmlHttp.open("GET", "api/" + url, true);
   xmlHttp.send(null);
   return xmlHttp.onreadystatechange = function(state) {
-    var e, js, response;
+    var e, js, mpart, response;
     if (xmlHttp.readyState === 4 && xmlHttp.status === 500) {
       if (snap) {
         snap(xstate);
@@ -2023,7 +2029,8 @@ fetch = function(url, xstate, callback, nocreds) {
     if (xmlHttp.readyState === 4 && xmlHttp.status >= 400) {
       js = JSON.parse(xmlHttp.responseText);
       if (js.code === 403) {
-        location.href = "login.html";
+        mpart = location.href.match(/\/\/(.+)$/)[1];
+        location.href = "login.html?redirect=" + mpart;
       }
       badModal(js.reason);
       return;
