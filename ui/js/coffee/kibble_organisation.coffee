@@ -60,6 +60,12 @@ orglist = (json, state) ->
             div = new HTML('div', { class: "orgItem"})
             div.inject(new HTML('h1', {}, org.name))
             div.inject(new HTML('p', {}, org.description or ""))
+            div.inject([
+                new HTML('kbd', {}, ""+org.docCount.pretty()),
+                " objects collected from ",
+                new HTML('kbd', {}, ""+org.sourceCount.pretty()),
+                " sources so far."
+                ])
             
             odiv.inject(div)
             odiv.inject(new HTML('hr'))

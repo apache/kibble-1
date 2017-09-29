@@ -60,6 +60,18 @@ def run(API, environ, indata, session):
             body = {'query': { 'match_all': {}}}
         )
         for doc in res['hits']['hits']:
+            orgID = doc['_source']['id']
+            numDocs = session.DB.ES.count(
+                index=session.DB.dbname,
+                body = {'query': { 'term': {'organisation': orgID}}}
+                )['count']
+            numSources = session.DB.ES.count(
+                index=session.DB.dbname,
+                doc_type="source",
+                body = {'query': { 'term': {'organisation': orgID}}}
+                )['count']
+            doc['_source']['sourceCount'] = numSources
+            doc['_source']['docCount'] = numDocs
             orgs.append(doc['_source'])
     else:
         res = session.DB.ES.search(
@@ -68,6 +80,18 @@ def run(API, environ, indata, session):
             body = {'query': { 'terms': {'id': session.user['organisations']}}}
         )
         for doc in res['hits']['hits']:
+            orgID = doc['_source']['id']
+            numDocs = session.DB.ES.count(
+                index=session.DB.dbname,
+                body = {'query': { 'term': {'organisation': orgID}}}
+                )['count']
+            numSources = session.DB.ES.count(
+                index=session.DB.dbname,
+                doc_type="source",
+                body = {'query': { 'term': {'organisation': orgID}}}
+                )['count']
+            doc['_source']['sourceCount'] = numSources
+            doc['_source']['docCount'] = numDocs
             orgs.append(doc['_source'])
     
     
