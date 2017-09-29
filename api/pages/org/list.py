@@ -45,6 +45,7 @@ def run(API, environ, indata, session):
                 'admins': []
             }
             session.DB.ES.index(index=session.DB.dbname, doc_type='organisation', id = orgid, body = doc)
+            time.sleep(1.5)
             yield json.dumps({"okay": True, "message": "Organisation created!"})
             return
         else:
