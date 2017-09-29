@@ -2,6 +2,23 @@
  * Kibble CSS
  */
 
+.form-control  {
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    z-index: 10;
+    overflow: visible;
+}
+
 
 /* Spinner */
 .spinner {
@@ -342,7 +359,7 @@ h2 {
 
 .x_content {
     padding: 0 5px 6px;
-    position: relative;
+    
     width: 100%;
     float: left;
     clear: both;
@@ -350,6 +367,7 @@ h2 {
     border: 4px solid #CCC;
     border-radius: 3px;
     height: calc(100% - 48px);
+    overflow: visible;
 }
 
 .chartChart {
@@ -361,13 +379,13 @@ h2 {
     margin-bottom: 10px;
     height: 100%;
     box-sizing: border-box;
-    overflow-y: auto;
     flex: 1;
 }
 
 .row {
    display: flex;
    margin: 0;
+   overflow-y: visible;
 }
 
 .img-circle {
@@ -477,7 +495,7 @@ h2 {
         -webkit-transition: all .3s ease-in-out;
         -o-transition: all .3s ease-in-out;
         transition: all .3s ease-in-out;
-        overflow: hidden;
+        
         text-overflow: ellipsis;
         white-space: nowrap
     }
