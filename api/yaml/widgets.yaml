@@ -10,7 +10,7 @@ widgets:
                 name: "Organisational trends"
                 children:
                     -
-                        type: trend
+                        type: trends
                         blocks: 12
                         name: "Organisation trends"
                         source: org/trends
@@ -19,7 +19,7 @@ widgets:
                 name: "Your organisations"
                 children:
                     -
-                        type: orgpicker
+                        type: orglist
                         blocks: 12
                         name: "Your organisations"
                         source: org/list
