@@ -4013,6 +4013,9 @@ updateWidgets = function(type, target, eargs) {
         case 'repopicker':
           results.push(widget.load(explorer));
           break;
+        case 'sourcepicker':
+          results.push(widget.load(sourceexplorer));
+          break;
         case 'issuepicker':
           results.push(widget.load(issueexplorer));
           break;
