@@ -42,7 +42,7 @@ def run(API, environ, indata, session):
         res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="organisation",
-            body = {'query': { 'terms': {'id': sesion.user['organisations']}}}
+            body = {'query': { 'terms': {'id': session.user['organisations']}}}
         )
         for doc in res['hits']['hits']:
             orgs.append(doc['_source'])
