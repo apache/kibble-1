@@ -47,7 +47,9 @@ explorer = (json, state) ->
                     opt.selected = 'selected'
                 list.appendChild(opt)
         
-        list.addEventListener("change", () ->
+        ID = Math.floor(Math.random() * 987654321).toString(16)
+        list.setAttribute('id', ID)
+        $("#"+ID).chosen().change(() ->
                 source = this.value
                 
                 if source == ""
@@ -61,8 +63,8 @@ explorer = (json, state) ->
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('mvp', null, { source: source })
                 updateWidgets('comstat', null, { source: source })
-                
-        , false)
+              )
+        
         
         
         # Unique commits label
@@ -107,8 +109,10 @@ sourceexplorer = (json, state) ->
             org.name += " (Filter: " + json.tag + ")"
         h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
         state.widget.inject(h, true)
-        list = document.createElement('select')
-        state.widget.inject(list)
+        div = new HTML('div', {class: "form-group"})
+        list = new HTML('select', { class: "form-control"})
+        div.inject(list)
+        state.widget.inject(div)
         opt = document.createElement('option')
         opt.value = ""
         slen = 0
@@ -131,8 +135,10 @@ sourceexplorer = (json, state) ->
                 if globArgs.source and globArgs.source == item.sourceID
                     opt.selected = 'selected'
                 list.appendChild(opt)
-        
-        list.addEventListener("change", () ->
+                
+        ID = Math.floor(Math.random() * 987654321).toString(16)
+        list.setAttribute('id', ID)
+        $("#"+ID).chosen().change(() ->
                 source = this.value
                 
                 if source == ""
@@ -146,10 +152,7 @@ sourceexplorer = (json, state) ->
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('mvp', null, { source: source })
                 updateWidgets('comstat', null, { source: source })
-                
-        , false)
-        
-
+        )
 
 
 
@@ -188,7 +191,9 @@ mailexplorer = (json, state) ->
                     opt.selected = 'selected'
                 list.appendChild(opt)
         
-        list.addEventListener("change", () ->
+        ID = Math.floor(Math.random() * 987654321).toString(16)
+        list.setAttribute('id', ID)
+        $("#"+ID).chosen().change(() ->
                 source = this.value
                 
                 if source == ""
@@ -201,7 +206,7 @@ mailexplorer = (json, state) ->
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 
-        , false)
+        )
         
 logexplorer = (json, state) ->
         
@@ -238,7 +243,9 @@ logexplorer = (json, state) ->
                     opt.selected = 'selected'
                 list.appendChild(opt)
         
-        list.addEventListener("change", () ->
+        ID = Math.floor(Math.random() * 987654321).toString(16)
+        list.setAttribute('id', ID)
+        $("#"+ID).chosen().change(() ->
                 source = this.value
                 
                 if source == ""
@@ -251,7 +258,7 @@ logexplorer = (json, state) ->
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 
-        , false)
+        )
         
 issueexplorer = (json, state) ->
         
@@ -290,7 +297,9 @@ issueexplorer = (json, state) ->
                     opt.selected = 'selected'
                 list.appendChild(opt)
         
-        list.addEventListener("change", () ->
+        ID = Math.floor(Math.random() * 987654321).toString(16)
+        list.setAttribute('id', ID)
+        $("#"+ID).chosen().change(() ->
                 source = this.value
                 
                 if source == ""
@@ -303,7 +312,7 @@ issueexplorer = (json, state) ->
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 
-        , false)
+        )
         
 
 
@@ -345,7 +354,9 @@ imexplorer = (json, state) ->
                     opt.selected = 'selected'
                 list.appendChild(opt)
         
-        list.addEventListener("change", () ->
+        ID = Math.floor(Math.random() * 987654321).toString(16)
+        list.setAttribute('id', ID)
+        $("#"+ID).chosen().change(() ->
                 source = this.value
                 
                 if source == ""
@@ -359,6 +370,7 @@ imexplorer = (json, state) ->
                 updateWidgets('trends', null, { source: source })
                 
         , false)
+        $('select').chosen();
         
         
 
@@ -394,7 +406,9 @@ multiviewexplorer = (json, state) ->
                     opt.selected = 'selected'
                 list.appendChild(opt)
             
-            list.addEventListener("change", () ->
+                ID = Math.floor(Math.random() * 987654321).toString(16)
+                list.setAttribute('id', ID)
+                $("#"+ID).chosen().change(() ->
                     source = this.value
                     if source == ""
                             source = null
@@ -409,8 +423,7 @@ multiviewexplorer = (json, state) ->
                     updateWidgets('factors', null, x)
                     updateWidgets('trends', null, x)
                     updateWidgets('radar', null, x)
-                    
-            , false)
+              )
             
 viewexplorer = (json, state) ->
         org = json.organisation
@@ -443,7 +456,9 @@ viewexplorer = (json, state) ->
                 opt.selected = 'selected'
             list.appendChild(opt)
         
-        list.addEventListener("change", () ->
+        ID = Math.floor(Math.random() * 987654321).toString(16)
+        list.setAttribute('id', ID)
+        $("#"+ID).chosen().change(() ->
                 source = this.value
                 if source == ""
                         source = null
@@ -471,7 +486,7 @@ viewexplorer = (json, state) ->
                 updateWidgets('comstat', null, x)
                 updateWidgets('worldmap', null, x)
                 
-        , false)
+        )
             
         
 

@@ -278,11 +278,14 @@ class Widget
         else
             post(url, js, {widget: this, eargs: @args.eargs}, this.callback, this.snap)
 
+rowZ = 100
 class Row
     constructor: () ->
         @id = Math.floor(Math.random() * 987654321).toString(16)
         @div = document.createElement('div')
         @div.setAttribute("class", "row")
+        @div.style.zIndex = rowZ
+        rowZ--;
         @div.setAttribute("id", @id)
         @cdiv = document.createElement('div')
         @cdiv.setAttribute("class", "col-md-12")
