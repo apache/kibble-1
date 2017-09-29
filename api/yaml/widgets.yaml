@@ -43,7 +43,7 @@ widgets:
                         type:   sourcepicker
                         blocks: 4
                         source: "sources"
-                        name:   "Repository picker"
+                        name:   "Source picker"
             -
                 name: "Pony Factors, code"
                 children:
