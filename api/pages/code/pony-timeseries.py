@@ -102,13 +102,13 @@ def run(API, environ, indata, session):
                 'by_committer': {
                     'terms': {
                         'field': 'committer_email',
-                        'size': 5000
+                        'size': 1000
                     }                
                 },
                 'by_author': {
                     'terms': {
                         'field': 'author_email',
-                        'size': 5000
+                        'size': 1000
                     }                
                 }
             }
