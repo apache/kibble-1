@@ -72,6 +72,7 @@ setupPage = (json, state) ->
             switch child.type
 
                 when 'datepicker' then datepicker(widget)
+                when 'sourcepicker' then widget.load(sourceexplorer)
                 when 'repopicker' then widget.load(explorer)
                 when 'mailpicker' then widget.load(mailexplorer)
                 when 'issuepicker' then widget.load(issueexplorer)

@@ -99,6 +99,58 @@ explorer = (json, state) ->
         state.widget.inject(label)
 
 
+sourceexplorer = (json, state) ->
+        
+        org = json.organisation
+        h = document.createElement('h2')
+        if json.tag
+            org.name += " (Filter: " + json.tag + ")"
+        h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
+        state.widget.inject(h, true)
+        list = document.createElement('select')
+        state.widget.inject(list)
+        opt = document.createElement('option')
+        opt.value = ""
+        slen = 0
+        for item in json.sources
+                slen++
+        opt.text = "All " + slen + " sources"
+        list.appendChild(opt)
+        json.sources.sort((a,b) ->
+            return if (a.sourceURL == b.sourceURL) then 0 else (if a.sourceURL > b.sourceURL then 1 else -1)
+            )
+        for item in json.sources
+            if true
+                opt = document.createElement('option')
+                opt.value = item.sourceID
+                ezURL = null
+                m = item.sourceURL.match(/^([a-z]+:\/\/.+?)[\/?]([^\/?]+)$/i)
+                if m and m.length == 3
+                    ezURL = "#{m[2]} - (#{m[1]})"
+                opt.text = if ezURL then ezURL else item.sourceURL
+                if globArgs.source and globArgs.source == item.sourceID
+                    opt.selected = 'selected'
+                list.appendChild(opt)
+        
+        list.addEventListener("change", () ->
+                source = this.value
+                
+                if source == ""
+                        source = null
+                globArgs.source = source
+                updateWidgets('donut', null, { source: source })
+                updateWidgets('line', null, { source: source })
+                updateWidgets('contacts', null, { source: source })
+                updateWidgets('top5', null, { source: source })
+                updateWidgets('factors', null, { source: source })
+                updateWidgets('trends', null, { source: source })
+                updateWidgets('mvp', null, { source: source })
+                updateWidgets('comstat', null, { source: source })
+                
+        , false)
+        
+
+
 
 
 mailexplorer = (json, state) ->
