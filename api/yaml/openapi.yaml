@@ -136,6 +136,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    patch:
+      summary: Edit an account
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountEdit'
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
       security:
         - cookieAuth: []
@@ -1505,6 +1527,26 @@ components:
           type: string
           example: "Kibble Guest"
           description: "A display name (e.g. full name) for the account"
+    UserAccountEdit:
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          example: "guest@kibble.live"
+          description: "Desired username (email address)"
+        password:
+          type: string
+          example: "kibbledemo"
+          description: "Desired password for the account"
+        displayname:
+          type: string
+          example: "Kibble Guest"
+          description: "A display name (e.g. full name) for the account"
+        defaultOrganisation:
+          type: string
+          example: demo
+          description: If editing an account, this sets the default org (if a member of it)
     UserName:
       required:
         - username

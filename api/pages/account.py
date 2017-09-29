@@ -82,3 +82,25 @@ def run(API, environ, indata, session):
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
     
+    
+    # Patch (edit) an account
+    if method == "PATCH":
+        userid = session.user['email']
+        if indata.get('email') and session.user['userlevel'] == "admin":
+            userid = indata.get('email')
+        doc = session.DB.ES.get(index=session.DB.dbname, doc_type='useraccount', id = userid)
+        udoc = doc['_source']
+        if indata.get('defaultOrganisation'):
+            # Make sure user is a member or admin here..
+            if session.user['userlevel'] == "admin" or indata.get('defaultOrganisation') in udoc['organisations']:
+                udoc['defaultOrganisation'] = indata.get('defaultOrganisation')
+        # Changing pasword?
+        if indata.get('password'):
+            p = indata.get('password')
+            salt = bcrypt.gensalt()
+            pwd = bcrypt.hashpw(p.encode('utf-8'), salt).decode('ascii')
+        # Update user doc
+        session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = userid, body = udoc)
+        yield json.dumps({"message": "Account updated!"})
+        return
+    
