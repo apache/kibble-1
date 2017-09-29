@@ -31,6 +31,15 @@ orgCreated = (json, state) ->
     if json.okay
         location.reload()
 
+setDefaultOrg = (orgid) ->
+    patch('account', { email: userAccount.email, defaultOrganisation: orgid}, {}, defaultOrgChanged)
+
+defaultOrgChanged = (json, state) ->
+    window.setTimeout(
+        () ->
+            location.reload()
+        , 1000)
+
 makeOrg = () ->
     orgname = get('orgname').value
     orgdesc = get('orgdesc').value
@@ -57,8 +66,9 @@ orglist = (json, state) ->
     else
         odiv = new HTML('div')
         for org in json.organisations
-            div = new HTML('div', { class: "orgItem"})
-            div.inject(new HTML('h1', {}, org.name))
+            isDefault = (org.id == userAccount.defaultOrganisation)
+            div = new HTML('div', { class: "orgItem " + (if isDefault then "orgSelected" else "")})
+            div.inject(new HTML('h1', {}, org.name + (if isDefault then " (Default)" else "")))
             div.inject(new HTML('p', {}, org.description or ""))
             div.inject([
                 new HTML('kbd', {}, ""+org.docCount.pretty()),
@@ -68,6 +78,8 @@ orglist = (json, state) ->
                 ])
             
             odiv.inject(div)
+            dbtn = new HTML('input', { style: { width: "120px"},class: "btn btn-primary btn-block", type: "button", onclick: "setDefaultOrg('#{org.id}');", value: "Set as default"})
+            odiv.inject(dbtn)
             odiv.inject(new HTML('hr'))
         state.widget.inject(odiv, true)
         
