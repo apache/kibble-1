@@ -16,7 +16,7 @@
 # limitations under the License.
 
 """
-This is the SLoC renderer for Kibble
+This is the org trend renderer for Kibble
 """
 
 import json
@@ -50,7 +50,7 @@ def run(API, environ, indata, session):
     # Then we reset the query, and change date to yonder-->from        #
     # and rerun the same queries.                                      #
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user['defaultOrganisation'] or "kibbledemo"
     query = {
                 'query': {
                     'bool': {
@@ -72,12 +72,6 @@ def run(API, environ, indata, session):
                     }
                 }
             }
-    # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-    elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
     
     # Get number of commits, this period
     res = session.DB.ES.count(
@@ -90,11 +84,6 @@ def run(API, environ, indata, session):
     
     # Get number of committers, this period
     query['aggs'] = {
-            'commits': {
-                'cardinality': {
-                    'field': 'committer_email'
-                }
-            },
             'authors': {
                 'cardinality': {
                     'field': 'author_email'
@@ -108,41 +97,7 @@ def run(API, environ, indata, session):
             size = 0,
             body = query
         )
-    no_committers = res['aggregations']['commits']['value']
     no_authors = res['aggregations']['authors']['value']
-    
-    
-    # Get number of insertions, this period
-    query['aggs'] = {
-            'changes': {
-                'sum': {
-                    'field': 'insertions'
-                }
-            }
-        }
-    res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="code_commit",
-            size = 0,
-            body = query
-        )
-    insertions = res['aggregations']['changes']['value']
-    
-    # Get number of deletions, this period
-    query['aggs'] = {
-            'changes': {
-                'sum': {
-                    'field': 'deletions'
-                }
-            }
-        }
-    res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="code_commit",
-            size = 0,
-            body = query
-        )
-    deletions = res['aggregations']['changes']['value']
     
     
     ####################################################################
@@ -170,12 +125,6 @@ def run(API, environ, indata, session):
                     }
                 }
             }
-    # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-    elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
     
     # Get number of commits, this period
     res = session.DB.ES.count(
@@ -187,11 +136,6 @@ def run(API, environ, indata, session):
     
     # Get number of committers, this period
     query['aggs'] = {
-            'commits': {
-                'cardinality': {
-                    'field': 'committer_email'
-                }
-            },
             'authors': {
                 'cardinality': {
                     'field': 'author_email'
@@ -204,63 +148,19 @@ def run(API, environ, indata, session):
             size = 0,
             body = query
         )
-    no_committers_before = res['aggregations']['commits']['value']
-    no_authors_before = res['aggregations']['commits']['value']
-    
-    # Get number of insertions, this period
-    query['aggs'] = {
-            'changes': {
-                'sum': {
-                    'field': 'insertions'
-                }
-            }
-        }
-    res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="code_commit",
-            size = 0,
-            body = query
-        )
-    insertions_before = res['aggregations']['changes']['value']
-    
-     # Get number of deletions, this period
-    query['aggs'] = {
-            'changes': {
-                'sum': {
-                    'field': 'deletions'
-                }
-            }
-        }
-    res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="code_commit",
-            size = 0,
-            body = query
-        )
-    deletions_before = res['aggregations']['changes']['value']
-    
+    no_authors_before = res['aggregations']['authors']['value']
     
     
     trends = {
-        "committers": {
-            'before': no_committers_before,
-            'after': no_committers,
-            'title': "Committers this period"
-        },
         "authors": {
             'before': no_authors_before,
             'after': no_authors,
-            'title': "Authors this period"
+            'title': "Contributors this period"
         },
         'commits': {
             'before': no_commits_before,
             'after': no_commits,
             'title': "Commits this period"
-        },
-        'changes': {
-            'before': insertions + deletions,
-            'after': insertions_before + deletions,
-            'title': "Lines changed this period"
         }
     }
     
@@ -270,22 +170,3 @@ def run(API, environ, indata, session):
         'responseTime': time.time() - now
     }
     yield json.dumps(JSON_OUT)
-
-"""
-commits = {
-                before = pcommits,
-                after = commits,
-                title = "Commits"
-            },
-            [role.."s"] = {
-                before = pcommitters,
-                after = committers,
-                title = role:gsub("^(%S)", string.upper).."s",
-            },
-            lines = {
-                before = pdeletions + pinsertions,
-                after = deletions + insertions,
-                title = "Lines changed"
-            }
-            """
-            
