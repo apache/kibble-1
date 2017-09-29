@@ -40,22 +40,34 @@ widgets:
                         source: "views"
                         name:   "Quick filter"
                     -
-                        type:   repopicker
+                        type:   sourcepicker
                         blocks: 4
                         source: "sources"
                         name:   "Repository picker"
-                        eargs:
-                            types: ['git', 'svn', 'github']
             -
-                name: "Pony Factors"
+                name: "Pony Factors, code"
                 children:
                     -
                         type: line
                         blocks: 8
-                        name: "Pony Factor over time"
+                        name: "Pony Factor over time, codebase"
                         source: code/pony-timeseries
-                        
-                
+            -
+                name: "Pony Factors, email"
+                children:
+                    -
+                        type: line
+                        blocks: 8
+                        name: "Pony Factor over time, email"
+                        source: mail/pony-timeseries
+            -
+                name: "Pony Factors, issues"
+                children:
+                    -
+                        type: line
+                        blocks: 8
+                        name: "Pony Factor over time, issue trackers"
+                        source: issue/pony-timeseries
     repos:
         title: "Code Repositories"
         rows:
