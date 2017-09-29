@@ -451,6 +451,7 @@ viewexplorer = (json, state) ->
                 globArgs[tName] = source
                 x = {}
                 x[tName] = source
+                updateWidgets('sourcepicker', null, x)
                 updateWidgets('repopicker', null, x)
                 updateWidgets('issuepicker', null, x)
                 updateWidgets('mailpicker', null, x)
