@@ -2140,20 +2140,23 @@ orglist = function(json, state) {
       div = new HTML('div', {
         "class": "orgItem " + (isDefault ? "orgSelected" : "")
       });
-      div.inject(new HTML('h1', {}, org.name + (isDefault ? " (Default)" : "")));
+      div.inject(new HTML('h1', {}, org.name + (isDefault ? " (Current)" : "")));
       div.inject(new HTML('p', {}, org.description || ""));
       div.inject([new HTML('kbd', {}, "" + org.docCount.pretty()), " objects collected from ", new HTML('kbd', {}, "" + org.sourceCount.pretty()), " sources so far."]);
       odiv.inject(div);
-      dbtn = new HTML('input', {
-        style: {
-          width: "120px"
-        },
-        "class": "btn btn-primary btn-block",
-        type: "button",
-        onclick: "setDefaultOrg('" + org.id + "');",
-        value: "Set as default"
-      });
-      odiv.inject(dbtn);
+      if (!isDefault) {
+        dbtn = new HTML('input', {
+          style: {
+            marginTop: "10px",
+            width: "120px"
+          },
+          "class": "btn btn-primary btn-block",
+          type: "button",
+          onclick: "setDefaultOrg('" + org.id + "');",
+          value: "Set as current"
+        });
+        div.inject(dbtn);
+      }
       odiv.inject(new HTML('hr'));
     }
     state.widget.inject(odiv, true);
