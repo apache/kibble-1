@@ -4,6 +4,7 @@
 
 ## Requirements
 
+ * Python >= 3.4 (with elasticsearch, yaml, certifi libs)
  * A web server of your choice (apache, nginx, lighttp etc)
  * A WSGI capable server (apache with mod_wsgi, gunicorn etc)
  * An ElasticSearch instance
