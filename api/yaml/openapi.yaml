@@ -1647,5 +1647,18 @@ components:
     Empty:
       required: []
       properties:
-        - page:
+        page:
             description: optional page id
+            type: string
+    SourceTypes:
+      properties:
+        title:
+            type: string
+            example: git
+        description:
+            type: string
+            example: Git repositories
+        regex:
+            type: string
+            example: https?://.*/.+\.git
+          
