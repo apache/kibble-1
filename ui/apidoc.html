@@ -6,6 +6,7 @@
 <body>
 
 <h3>Overview:</h3><ul style='font-size: 12px; font-family: Open Sans, sans-serif;'><li><a href='#delete-api-account'>DELETE /api/account</a>: Delete an account</li>
+<li><a href='#patch-api-account'>PATCH /api/account</a>: Edit an account</li>
 <li><a href='#put-api-account'>PUT /api/account</a>: Create a new account</li>
 <li><a href='#get-api-code-changes'>GET /api/code/changes</a>: Show insertions/deletions as a timeseries</li>
 <li><a href='#post-api-code-changes'>POST /api/code/changes</a>: Show insertions/deletions as a timeseries</li>
@@ -17,6 +18,8 @@
 <li><a href='#post-api-code-evolution'>POST /api/code/evolution</a>: Show code evolution as a timeseries</li>
 <li><a href='#get-api-code-pony'>GET /api/code/pony</a>: Shows pony factor data for a set of repos over a given period of time</li>
 <li><a href='#post-api-code-pony'>POST /api/code/pony</a>: Shows pony factor data for a set of repos over a given period of time</li>
+<li><a href='#get-api-code-pony-timeseries'>GET /api/code/pony-timeseries</a>: Shows timeseries of Pony Factor over time</li>
+<li><a href='#post-api-code-pony-timeseries'>POST /api/code/pony-timeseries</a>: Shows timeseries of Pony Factor over time</li>
 <li><a href='#get-api-code-sloc'>GET /api/code/sloc</a>: Shows a breakdown of lines of code for one or more sources</li>
 <li><a href='#post-api-code-sloc'>POST /api/code/sloc</a>: Shows a breakdown of lines of code for one or more sources</li>
 <li><a href='#get-api-code-top-commits'>GET /api/code/top-commits</a>: Shows top 25 repos by commit volume</li>
@@ -35,14 +38,25 @@
 <li><a href='#post-api-issue-issues'>POST /api/issue/issues</a>: Shows timeseries of issues opened/closed over time</li>
 <li><a href='#get-api-issue-openers'>GET /api/issue/openers</a>: Shows the top N of issue openers</li>
 <li><a href='#post-api-issue-openers'>POST /api/issue/openers</a>: Shows the top N of issue openers</li>
+<li><a href='#get-api-issue-pony-timeseries'>GET /api/issue/pony-timeseries</a>: Shows timeseries of Pony Factor over time</li>
+<li><a href='#post-api-issue-pony-timeseries'>POST /api/issue/pony-timeseries</a>: Shows timeseries of Pony Factor over time</li>
 <li><a href='#get-api-issue-top'>GET /api/issue/top</a>: Shows the top N issues by interactions</li>
 <li><a href='#post-api-issue-top'>POST /api/issue/top</a>: Shows the top N issues by interactions</li>
 <li><a href='#get-api-issue-trends'>GET /api/issue/trends</a>: Shows trend data for a set of issue trackers over a given period of time</li>
 <li><a href='#post-api-issue-trends'>POST /api/issue/trends</a>: Shows trend data for a set of issue trackers over a given period of time</li>
+<li><a href='#get-api-mail-pony-timeseries'>GET /api/mail/pony-timeseries</a>: Shows timeseries of Pony Factor over time</li>
+<li><a href='#post-api-mail-pony-timeseries'>POST /api/mail/pony-timeseries</a>: Shows timeseries of Pony Factor over time</li>
+<li><a href='#get-api-org-list'>GET /api/org/list</a>: Lists the organisations you belong to (or all, if admin)</li>
+<li><a href='#post-api-org-list'>POST /api/org/list</a>: Lists the organisations you belong to (or all, if admin)</li>
+<li><a href='#put-api-org-list'>PUT /api/org/list</a>: Create a new organisation</li>
+<li><a href='#get-api-org-sourcetypes'>GET /api/org/sourcetypes</a>: Lists the available source types supported by Kibble</li>
+<li><a href='#post-api-org-sourcetypes'>POST /api/org/sourcetypes</a>: Lists the available source types supported by Kibble</li>
 <li><a href='#get-api-org-trends'>GET /api/org/trends</a>: Shows a quick trend summary of the past 6 months for your org</li>
+<li><a href='#post-api-org-trends'>POST /api/org/trends</a>: Shows a quick trend summary of the past 6 months for your org</li>
 <li><a href='#delete-api-session'>DELETE /api/session</a>: Log out (remove session)</li>
 <li><a href='#get-api-session'>GET /api/session</a>: Display your login details</li>
 <li><a href='#put-api-session'>PUT /api/session</a>: Log in</li>
+<li><a href='#delete-api-sources'>DELETE /api/sources</a>: Delete an existing source</li>
 <li><a href='#get-api-sources'>GET /api/sources</a>: Fetches a list of all sources for this organisation</li>
 <li><a href='#patch-api-sources'>PATCH /api/sources</a>: Edit an existing source</li>
 <li><a href='#post-api-sources'>POST /api/sources</a>: Fetches a list of all sources for this organisation</li>
@@ -93,6 +107,53 @@
                       </div>
                       
 
+                      <div id="patch-api-account" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #d5a37e; font-family: sans-serif; background: #d5a37e30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #d5a37e;">PATCH</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/account</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Edit an account</div>
+                          <div style="float: left; width: 90%;display: block; ">
+                            <h4>JSON parameters:</h4>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>password:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Desired password for the account</span><br/>
+<kbd><b>defaultOrganisation:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If editing an account, this sets the default org (if a member of it)</span><br/>
+<kbd><b>displayname:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>A display name (e.g. full name) for the account</span><br/>
+<kbd><b>email:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Desired username (email address)</span><br/>
+</pre>
+</blockquote></div>
+                            <br/>
+                            <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
+{
+    "password": "kibbledemo",
+    "defaultOrganisation": "demo",
+    "displayname": "Kibble Guest",
+    "email": "guest@kibble.live"
+}</pre></blockquote>
+</div>
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{
+    "message": "Action completed"
+}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
                       <div id="put-api-account" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #fca130; font-family: sans-serif; background: #fca13030;">
                         <div style="min-height: 32px;">
                           <!-- method -->
@@ -105,17 +166,17 @@
                           Create a new account</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>email:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Desired username (email address)</span><br/>
-<kbd><b>password:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Desired password for the account</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>password:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Desired password for the account</span><br/>
 <kbd><b>displayname:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>A display name (e.g. full name) for the account</span><br/>
+<kbd><b>email:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Desired username (email address)</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
-    "email": "guest@kibble.live",
     "password": "kibbledemo",
-    "displayname": "Kibble Guest"
+    "displayname": "Kibble Guest",
+    "email": "guest@kibble.live"
 }</pre></blockquote>
 </div>
                           </div>
@@ -160,9 +221,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -191,30 +252,32 @@
                           Show insertions/deletions as a timeseries</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -224,9 +287,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -265,9 +328,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -296,30 +359,32 @@
                           Show commits as a timeseries</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -329,9 +394,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -393,30 +458,32 @@
                           Shows trend data for a set of repos over a given period of time</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -459,9 +526,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -490,30 +557,32 @@
                           Show code evolution as a timeseries</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -523,9 +592,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -591,30 +660,32 @@
                           Shows pony factor data for a set of repos over a given period of time</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -624,6 +695,113 @@
 {
     "factors": [
         {}
+    ]
+}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="get-api-code-pony-timeseries" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #61affe; font-family: sans-serif; background: #61affe30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #61affe;">GET</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/code/pony-timeseries</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Shows timeseries of Pony Factor over time</div>
+                          <div style="float: left; width: 90%;display: none; ">
+                            <h4>JSON parameters:</h4>
+                            
+                            <br/>
+                            
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{
+    "timeseries": [
+        {
+            "date": 1508273,
+            "$otheritem": 26,
+            "$item": 50
+        }
+    ]
+}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="post-api-code-pony-timeseries" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #49cc5c; font-family: sans-serif; background: #49cc5c30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #49cc5c;">POST</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/code/pony-timeseries</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Shows timeseries of Pony Factor over time</div>
+                          <div style="float: left; width: 90%;display: block; ">
+                            <h4>JSON parameters:</h4>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
+<kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
+<kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
+<kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+</pre>
+</blockquote></div>
+                            <br/>
+                            <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
+{
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
+    "quick": false,
+    "source": "abcdef12345678",
+    "interval": "month",
+    "types": [
+        "jira",
+        "bugzilla"
+    ]
+}</pre></blockquote>
+</div>
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{
+    "timeseries": [
+        {
+            "date": 1508273,
+            "$otheritem": 26,
+            "$item": 50
+        }
     ]
 }</pre>
 </div>
@@ -684,30 +862,32 @@
                           Shows a breakdown of lines of code for one or more sources</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -750,9 +930,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -781,30 +961,32 @@
                           Shows top 25 repos by commit volume</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -814,9 +996,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -855,9 +1037,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -886,30 +1068,32 @@
                           Shows top 25 repos by lines of code</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -919,9 +1103,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -983,30 +1167,32 @@
                           Shows trend data for a set of repos over a given period of time</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -1049,9 +1235,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -1080,30 +1266,32 @@
                           Shows timeseries of no. of people opening/closing issues over time</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -1113,9 +1301,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -1154,9 +1342,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -1185,30 +1373,32 @@
                           Shows timeseries of no. of open tickets by age</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -1218,9 +1408,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -1282,30 +1472,32 @@
                           Shows the top N of issue closers</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -1348,9 +1540,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -1379,30 +1571,32 @@
                           Shows timeseries of issues opened/closed over time</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -1412,9 +1606,9 @@
 {
     "timeseries": [
         {
-            "$item": 50,
+            "date": 1508273,
             "$otheritem": 26,
-            "date": 1508273
+            "$item": 50
         }
     ]
 }</pre>
@@ -1476,30 +1670,32 @@
                           Shows the top N of issue openers</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -1507,6 +1703,113 @@
                             <h4>Response examples:</h4>
                             <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
 {}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="get-api-issue-pony-timeseries" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #61affe; font-family: sans-serif; background: #61affe30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #61affe;">GET</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/issue/pony-timeseries</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Shows timeseries of Pony Factor over time</div>
+                          <div style="float: left; width: 90%;display: none; ">
+                            <h4>JSON parameters:</h4>
+                            
+                            <br/>
+                            
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{
+    "timeseries": [
+        {
+            "date": 1508273,
+            "$otheritem": 26,
+            "$item": 50
+        }
+    ]
+}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="post-api-issue-pony-timeseries" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #49cc5c; font-family: sans-serif; background: #49cc5c30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #49cc5c;">POST</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/issue/pony-timeseries</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Shows timeseries of Pony Factor over time</div>
+                          <div style="float: left; width: 90%;display: block; ">
+                            <h4>JSON parameters:</h4>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
+<kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
+<kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
+<kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+</pre>
+</blockquote></div>
+                            <br/>
+                            <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
+{
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
+    "quick": false,
+    "source": "abcdef12345678",
+    "interval": "month",
+    "types": [
+        "jira",
+        "bugzilla"
+    ]
+}</pre></blockquote>
+</div>
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{
+    "timeseries": [
+        {
+            "date": 1508273,
+            "$otheritem": 26,
+            "$item": 50
+        }
+    ]
+}</pre>
 </div>
 <div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
 {
@@ -1569,30 +1872,32 @@
                           Shows the top N issues by interactions</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -1662,30 +1967,370 @@
                           Shows trend data for a set of issue trackers over a given period of time</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
+    ]
+}</pre></blockquote>
+</div>
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="get-api-mail-pony-timeseries" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #61affe; font-family: sans-serif; background: #61affe30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #61affe;">GET</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/mail/pony-timeseries</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Shows timeseries of Pony Factor over time</div>
+                          <div style="float: left; width: 90%;display: none; ">
+                            <h4>JSON parameters:</h4>
+                            
+                            <br/>
+                            
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{
+    "timeseries": [
+        {
+            "date": 1508273,
+            "$otheritem": 26,
+            "$item": 50
+        }
+    ]
+}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="post-api-mail-pony-timeseries" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #49cc5c; font-family: sans-serif; background: #49cc5c30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #49cc5c;">POST</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/mail/pony-timeseries</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Shows timeseries of Pony Factor over time</div>
+                          <div style="float: left; width: 90%;display: block; ">
+                            <h4>JSON parameters:</h4>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
+<kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
+<kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
+<kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+</pre>
+</blockquote></div>
+                            <br/>
+                            <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
+{
+    "span": 2,
     "from": 1400000000,
     "to": 1503483273,
+    "view": "abcdef12345678",
+    "quick": false,
     "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    "interval": "month",
+    "types": [
+        "jira",
+        "bugzilla"
+    ]
+}</pre></blockquote>
+</div>
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{
+    "timeseries": [
+        {
+            "date": 1508273,
+            "$otheritem": 26,
+            "$item": 50
+        }
+    ]
+}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="get-api-org-list" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #61affe; font-family: sans-serif; background: #61affe30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #61affe;">GET</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/org/list</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Lists the organisations you belong to (or all, if admin)</div>
+                          <div style="float: left; width: 90%;display: none; ">
+                            <h4>JSON parameters:</h4>
+                            
+                            <br/>
+                            
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="post-api-org-list" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #49cc5c; font-family: sans-serif; background: #49cc5c30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #49cc5c;">POST</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/org/list</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Lists the organisations you belong to (or all, if admin)</div>
+                          <div style="float: left; width: 90%;display: block; ">
+                            <h4>JSON parameters:</h4>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
+<kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
+<kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
+<kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+</pre>
+</blockquote></div>
+                            <br/>
+                            <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
+{
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
+    "quick": false,
+    "source": "abcdef12345678",
+    "interval": "month",
+    "types": [
+        "jira",
+        "bugzilla"
+    ]
+}</pre></blockquote>
+</div>
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="put-api-org-list" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #fca130; font-family: sans-serif; background: #fca13030;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #fca130;">PUT</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/org/list</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Create a new organisation</div>
+                          <div style="float: left; width: 90%;display: block; ">
+                            <h4>JSON parameters:</h4>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>name:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The name of the organisation to create</span><br/>
+<kbd><b>id:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>the ID of the organisation, can be anything.</span><br/>
+<kbd><b>desc:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>A short description of the organisation</span><br/>
+</pre>
+</blockquote></div>
+                            <br/>
+                            <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
+{
+    "name": "Kibble, Inc.",
+    "id": "demo",
+    "desc": "Kibble, inc. is awesome"
+}</pre></blockquote>
+</div>
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{
+    "message": "Action completed"
+}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="get-api-org-sourcetypes" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #61affe; font-family: sans-serif; background: #61affe30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #61affe;">GET</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/org/sourcetypes</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Lists the available source types supported by Kibble</div>
+                          <div style="float: left; width: 90%;display: none; ">
+                            <h4>JSON parameters:</h4>
+                            
+                            <br/>
+                            
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{
+    "description": "Git repositories",
+    "title": "git",
+    "regex": "https?://.*/.+\\.git"
+}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="post-api-org-sourcetypes" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #49cc5c; font-family: sans-serif; background: #49cc5c30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #49cc5c;">POST</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/org/sourcetypes</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Lists the available source types supported by Kibble</div>
+                          <div style="float: left; width: 90%;display: block; ">
+                            <h4>JSON parameters:</h4>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
+<kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
+<kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
+<kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+</pre>
+</blockquote></div>
+                            <br/>
+                            <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
+{
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
+    "quick": false,
+    "source": "abcdef12345678",
+    "interval": "month",
+    "types": [
+        "jira",
+        "bugzilla"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -1739,6 +2384,64 @@
                       </div>
                       
 
+                      <div id="post-api-org-trends" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #49cc5c; font-family: sans-serif; background: #49cc5c30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #49cc5c;">POST</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/org/trends</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Shows a quick trend summary of the past 6 months for your org</div>
+                          <div style="float: left; width: 90%;display: block; ">
+                            <h4>JSON parameters:</h4>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
+<kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
+<kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
+<kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+</pre>
+</blockquote></div>
+                            <br/>
+                            <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
+{
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
+    "quick": false,
+    "source": "abcdef12345678",
+    "interval": "month",
+    "types": [
+        "jira",
+        "bugzilla"
+    ]
+}</pre></blockquote>
+</div>
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
+{}</pre>
+</div>
+<div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
+{
+    "code": 403,
+    "reason": "You need to be logged in to view this endpoint!"
+}</pre>
+</div>
+</blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
                       <div id="delete-api-session" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #f93e3e; font-family: sans-serif; background: #f93e3e30;">
                         <div style="min-height: 32px;">
                           <!-- method -->
@@ -1749,24 +2452,21 @@
                           <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/session</strong></kbd></span>
                           <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
                           Log out (remove session)</div>
-                          <div style="float: left; width: 90%;display: none; ">
+                          <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>page:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>optional page id</span><br/>
+</pre>
+</blockquote></div>
                             <br/>
-                            
+                            <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
+{}</pre></blockquote>
+</div>
                           </div>
                           <div style="float: left; width: 90%; ">
                             <h4>Response examples:</h4>
                             <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
 {
-    "userLevel": "user",
-    "organisations": [
-        "apache",
-        "demo"
-    ],
-    "username": "guest@kibble.live",
-    "displayName": "Kibble Guest",
-    "defaultOrganisation": "apache"
+    "message": "Action completed"
 }</pre>
 </div>
 <div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
@@ -1801,14 +2501,14 @@
                             <h4>Response examples:</h4>
                             <blockquote><div style='float: left; width: 90%;'><pre style='width: 600px;'><b>200</b>:
 {
-    "userLevel": "user",
+    "displayName": "Kibble Guest",
+    "defaultOrganisation": "apache",
     "organisations": [
         "apache",
         "demo"
     ],
-    "username": "guest@kibble.live",
-    "displayName": "Kibble Guest",
-    "defaultOrganisation": "apache"
+    "userLevel": "user",
+    "username": "guest@kibble.live"
 }</pre>
 </div>
 <div style='float: left; width: 90%;'><pre style='width: 600px;'><b>default</b>:
@@ -1835,15 +2535,15 @@
                           Log in</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>email:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Username (email)</span><br/>
-<kbd><b>password:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>User password</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>password:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>User password</span><br/>
+<kbd><b>email:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Username (email)</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
-    "email": "guest@kibble.live",
-    "password": "kibbledemo"
+    "password": "kibbledemo",
+    "email": "guest@kibble.live"
 }</pre></blockquote>
 </div>
                           </div>
@@ -1861,6 +2561,34 @@
 }</pre>
 </div>
 </blockquote>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                      <div id="delete-api-sources" style="margin: 20px; display: flex; box-sizing: border-box; width: 900px; border-radius: 6px; border: 1px solid #f93e3e; font-family: sans-serif; background: #f93e3e30;">
+                        <div style="min-height: 32px;">
+                          <!-- method -->
+                          
+                          <div style="float: left; align-items: center; margin: 4px; border-radius: 5px; text-align: center; padding-top: 4px; height: 20px; width: 100px; color: #FFF; font-weight: bold; background: #f93e3e;">DELETE</div>
+                          
+                          <!-- path and summary -->
+                          <span style="display: flex; padding-top: 6px;"><kbd><strong>/api/sources</strong></kbd></span>
+                          <div style="box-sizing: border-box; flex: 1; font-size: 13px; font-family: Open Sans, sans-serif; float: left; padding-top: 6px; margin-left: 20px;">
+                          Delete an existing source</div>
+                          <div style="float: left; width: 90%;display: block; ">
+                            <h4>JSON parameters:</h4>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>id:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>source ID</span><br/>
+</pre>
+</blockquote></div>
+                            <br/>
+                            <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
+{}</pre></blockquote>
+</div>
+                          </div>
+                          <div style="float: left; width: 90%; ">
+                            <h4>Response examples:</h4>
+                            <blockquote></blockquote>
                           </div>
                         </div>
                       </div>
@@ -1915,10 +2643,13 @@
                           Edit an existing source</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>organisation:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The organisation this source belongs to</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>password:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>optional password for auth</span><br/>
 <kbd><b>type:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The type of source (git, svn, bugzilla, mail, etc)</span><br/>
+<kbd><b>username:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>optional username for auth</span><br/>
 <kbd><b>sourceURL:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The origin URL of this source.</span><br/>
+<kbd><b>cookie:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>optional session cookie for auth</span><br/>
 <kbd><b>sourceID:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The SourceID of this source</span><br/>
+<kbd><b>organisation:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The organisation this source belongs to</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
@@ -1957,30 +2688,32 @@
                           Fetches a list of all sources for this organisation</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -2017,15 +2750,17 @@
                           Add a new source</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>organisation:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The organisation this source belongs to</span><br/>
-<kbd><b>type:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The type of source (git, svn, bugzilla, mail, etc)</span><br/>
-<kbd><b>sourceURL:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The origin URL of this source.</span><br/>
-<kbd><b>sourceID:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The SourceID of this source</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>sources:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The sources in this organisation</span><br/>
+<kbd><b>organisation:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The organisation these sources belong to</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
-{}</pre></blockquote>
+{
+    "sources": [
+        {}
+    ]
+}</pre></blockquote>
 </div>
                           </div>
                           <div style="float: left; width: 90%; ">
@@ -2077,8 +2812,8 @@
                 {}
             ],
             "name": "Big Data Projects",
-            "id": "abcdef67126734271",
-            "organisation": "apache"
+            "organisation": "apache",
+            "id": "abcdef67126734271"
         }
     ]
 }</pre>
@@ -2109,8 +2844,8 @@
                             <h4>JSON parameters:</h4>
                             <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>sources:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The sources within this view</span><br/>
 <kbd><b>name:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The name of this view</span><br/>
-<kbd><b>id:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The ID of this view. to be used with other API queries</span><br/>
 <kbd><b>organisation:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The organisation this view belongs to</span><br/>
+<kbd><b>id:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The ID of this view. to be used with other API queries</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
@@ -2120,8 +2855,8 @@
         {}
     ],
     "name": "Big Data Projects",
-    "id": "abcdef67126734271",
-    "organisation": "apache"
+    "organisation": "apache",
+    "id": "abcdef67126734271"
 }</pre></blockquote>
 </div>
                           </div>
@@ -2156,30 +2891,32 @@
                           Fetches a list of all views (filters) for this user</div>
                           <div style="float: left; width: 90%;display: block; ">
                             <h4>JSON parameters:</h4>
-                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
-<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
-<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
-<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
+                            <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>span:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>For factor charts, denotes the number of years to calculate a factor from</span><br/>
 <kbd><b>author:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on author view for code results, as opposed to the default committer view</span><br/>
-<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
 <kbd><b>to:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data up until here</span><br/>
-<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
 <kbd><b>view:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>ID Of optional view to use</span><br/>
+<kbd><b>from:</b></kbd> (integer) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, compile data from this timestamp onwards</span><br/>
+<kbd><b>quick:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Turns on quick data for some endpoints, returning only sparse data (thus less traffic)</span><br/>
+<kbd><b>source:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If specified, only compile data on this specific sourceID</span><br/>
+<kbd><b>interval:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year</span><br/>
+<kbd><b>unique:</b></kbd> (boolean) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>Only compile data from unique commits, ignore duplicates</span><br/>
+<kbd><b>types:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>If set, only return data from sources matching these types</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
                             <div style='float: left; width: 90%;'><h4>Input examples:</h4><blockquote><pre style='width: 600px;'><b>application/json</b>:
 {
+    "span": 2,
+    "from": 1400000000,
+    "to": 1503483273,
+    "view": "abcdef12345678",
     "quick": false,
+    "source": "abcdef12345678",
     "interval": "month",
     "types": [
         "jira",
         "bugzilla"
-    ],
-    "from": 1400000000,
-    "to": 1503483273,
-    "source": "abcdef12345678",
-    "view": "abcdef12345678"
+    ]
 }</pre></blockquote>
 </div>
                           </div>
@@ -2197,8 +2934,8 @@
                 {}
             ],
             "name": "Big Data Projects",
-            "id": "abcdef67126734271",
-            "organisation": "apache"
+            "organisation": "apache",
+            "id": "abcdef67126734271"
         }
     ]
 }</pre>
@@ -2229,8 +2966,8 @@
                             <h4>JSON parameters:</h4>
                             <div style='float: left; width: 90%;'><blockquote><pre style='width: 600px;'><kbd><b>sources:</b></kbd> (array) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The sources within this view</span><br/>
 <kbd><b>name:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The name of this view</span><br/>
-<kbd><b>id:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The ID of this view. to be used with other API queries</span><br/>
 <kbd><b>organisation:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The organisation this view belongs to</span><br/>
+<kbd><b>id:</b></kbd> (string) <span style='font-size: 12px; font-family: Open Sans, sans-serif;'>The ID of this view. to be used with other API queries</span><br/>
 </pre>
 </blockquote></div>
                             <br/>
@@ -2240,8 +2977,8 @@
         {}
     ],
     "name": "Big Data Projects",
-    "id": "abcdef67126734271",
-    "organisation": "apache"
+    "organisation": "apache",
+    "id": "abcdef67126734271"
 }</pre></blockquote>
 </div>
                           </div>
@@ -2288,12 +3025,12 @@
         {
             "children": [
                 {
-                    "representation": "donut",
                     "name": "Widget Title",
-                    "type": "My Widget",
                     "blocks": 4,
+                    "type": "My Widget",
+                    "datatype": "repo",
                     "source": "code-evolution",
-                    "datatype": "repo"
+                    "representation": "donut"
                 }
             ]
         }
