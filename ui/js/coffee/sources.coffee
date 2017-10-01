@@ -238,7 +238,7 @@ sourcelist = (json, state) ->
         for t, el of sourceTypes
             div = new HTML('div', {class: "sourceTypeIcon", onclick: "showType('#{t}');"})
             el.btn = div
-            img = new HTML('img', { src: "images/sourcetypes/#{t}.png", style: {  width: "48px", margin: "2px", cursor: "pointer"}, title: t})
+            img = new HTML('img', { src: "images/sourcetypes/#{t}.png", style: {  width: "32px", margin: "2px", cursor: "pointer"}, title: t})
             div.inject(img)
             div.inject(" #{t}: #{el.count}")
             slist.inject(div)
@@ -280,7 +280,7 @@ sourceadd = (json, state) ->
         obj.inject(new HTML("h4", {}, el.title+":"))
         opt = new HTML('input', { onclick: "addSourceType('#{type}');", type: "radio", id: "type_#{type}", name: "type", style: {width: "16px", height: "16px"}})
         lbl = new HTML('label', { 'for': "type_#{type}", style: {marginRight: "20px", }}, [
-            new HTML('img', { src: "images/sourcetypes/#{type}.png", width: "48", height: "48"}),
+            new HTML('img', { src: "images/sourcetypes/#{type}.png", width: "32", height: "32"}),
             type
         ])
         div.inject(opt)

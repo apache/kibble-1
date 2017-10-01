@@ -3583,7 +3583,7 @@ sourcelist = function(json, state) {
       img = new HTML('img', {
         src: "images/sourcetypes/" + t + ".png",
         style: {
-          width: "48px",
+          width: "32px",
           margin: "2px",
           cursor: "pointer"
         },
@@ -3679,8 +3679,8 @@ sourceadd = function(json, state) {
     }, [
       new HTML('img', {
         src: "images/sourcetypes/" + type + ".png",
-        width: "48",
-        height: "48"
+        width: "32",
+        height: "32"
       }), type
     ]);
     div.inject(opt);
