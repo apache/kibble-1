@@ -1,0 +1,40 @@
+git:
+    title: "Plain git repository"
+    regex: (?:https?|git)://.*/.+\.git
+    example: "git://example.org/repos/foo.git"
+
+github:
+    title: "GitHub repository (plus issues/PRs)"
+    regex: "https://github.com/.+/.+"
+    example: "https://github.comn/apache/kibble.git"
+
+svn:
+    title: "Subversion repository"
+    regex: "https?://.+/.*"
+    example: "https://svn.apache.org/repos/asf/httpd/httpd"
+
+jira:
+    title: "JIRA Project"
+    regex: "https://.+/browse/[A-Z0-9-]+"
+    example: "https://issues.apache.org/jira/browse/ZEST"
+
+bugzilla:
+    title: "BugZilla Project"
+    regex: https?://.+/jsonrpc\.cgi?.+
+    example: "https://bz.apache.org/bugzilla/jsonrpc.cgi?Apache2"
+
+ponymail:
+    title: "Pony Mail Archive"
+    regex: "https?://.+/list.html?.+@.+"
+    example: "https://lists.apache.org/list.html?dev@spamassassin.apache.org"
+
+pipermail:
+    title: "Pipermail archive"
+    regex: "https?://.+/archives/.+/"
+    example: "https://www.redhat.com/archives/libvir-list/"
+
+gerrit:
+    title: "Gerrit Code Review Project"
+    regex: "https?://.+/r/.+"
+    example: https://review.rdoproject.org/r/puppet/puppet-designate
+
