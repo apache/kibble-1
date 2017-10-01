@@ -107,7 +107,7 @@ def run(API, environ, indata, session):
                 'by_author': {
                     'terms': {
                         'field': 'sender',
-                        'size': 100000
+                        'size': 200000
                     }                
                 }
             }
