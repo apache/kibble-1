@@ -141,7 +141,8 @@ sourcelist = (json, state) ->
                 mail: 'fa fa-envelope'
                 issues: 'fa fa-feed'
                 
-            t = mk('td')
+            t = new HTML('td', { style: { minWidth: "260px !important"}})
+        
             borked = false
             steps = ['sync', 'census', 'count', 'evolution']
             if source.type == 'mail'
@@ -182,6 +183,7 @@ sourcelist = (json, state) ->
                 set(t, 'data-steps-failure', 'true')
             else
                 set(t, 'data-steps-failure', 'false')
+            t.style.minWidth = "260px"
             app(d, t)
                     
             lu = "Unknown"
