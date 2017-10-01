@@ -20,8 +20,8 @@ jira:
 
 bugzilla:
     title: "BugZilla Project"
-    regex: https?://.+/jsonrpc\.cgi?.+
-    example: "https://bz.apache.org/bugzilla/jsonrpc.cgi?Apache2"
+    regex: https?://.+/jsonrpc\.cgi?\s+.+
+    example: "https://bz.apache.org/bugzilla/jsonrpc.cgi Apache2"
 
 ponymail:
     title: "Pony Mail Archive"
