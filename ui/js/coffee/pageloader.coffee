@@ -67,7 +67,7 @@ setupPage = (json, state) ->
             if child.eargs
                 for k, v of child.eargs
                     widget.args.eargs[k] = v
-            if child.type != 'views'
+            if child.type not in ['views', 'sourcelist']
                 widget.args.eargs.quick = 'true'        
             switch child.type
 

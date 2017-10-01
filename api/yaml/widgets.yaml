@@ -3,6 +3,7 @@ defaultWidget: repos
 
 
 widgets:
+### ORG LIST
     org:
         title: "Your organisation"
         rows:
@@ -23,6 +24,27 @@ widgets:
                         blocks: 12
                         name: "Your organisations"
                         source: org/list
+### SOURCE EDITOR
+    sources:
+        title: "Sources"
+        rows:
+            -
+                name: "Current Sources"
+                children:
+                    -
+                        type: sourcelist
+                        blocks: 12
+                        name: "Existing Sources"
+                        source: sources
+                        
+            -
+                name: "Add source(s)"
+                children:
+                    -
+                        type: sourceadd
+                        blocks: 12
+                        name: "Add Source(s)"
+                        source: org/sourcetypes
                 
     factors:
         title: "Engagement factors"
