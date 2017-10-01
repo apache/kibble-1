@@ -259,3 +259,63 @@ showType = (t) ->
             el.btn.className = "sourceTypeIcon"
             el.main.style.display = "none"
 
+addSourceType = (t) ->
+    for st, el of aSourceTypes
+        if st == t
+            el.style.display = "block"
+        else
+            el.style.display = "none"
+
+aSourceTypes = {}
+st = {}
+sourceadd = (json, state) ->
+    div = new HTML('div', style: { position: "relative"})
+    div.inject(new HTML('h3', {}, "Source type:"))
+    st = json
+    for type, el of json
+        aSourceTypes[type] = new HTML('form', { style: { float: "left", background: "#FFE", border: "2px solid #333", margin: "20px", borderRadius: "10px", padding: "20px", display: "none"}})
+        obj = aSourceTypes[type]
+        obj.inject(new HTML("h4", {}, el.title+":"))
+        opt = new HTML('input', { onclick: "addSourceType('#{type}');", type: "radio", id: "type_#{type}", name: "type", style: {width: "16px", height: "16px"}})
+        lbl = new HTML('label', { 'for': "type_#{type}", style: {marginRight: "20px", }}, [
+            new HTML('img', { src: "images/sourcetypes/#{type}.png", width: "48", height: "48"}),
+            type
+        ])
+        div.inject(opt)
+        div.inject(lbl)
+        obj.inject(new HTML('p', {}, el.description or ""))
+        obj.inject(keyValueForm('textarea', 'source', 'Source URL:', el.example + "\nYou can add multiple sources, one per line."))
+        
+        if el.optauth
+            obj.inject("Optional authentication options:")
+            for abit in el.optauth
+                obj.inject(keyValueForm('text', "#{abit}", abit))
+        btn = new HTML('input', {class: "btn btn-primary btn-block", type: "button", onclick: "addSources('#{type}', this.form);", value: "Add source(s)"})
+        obj.inject(btn)
+    state.widget.inject(div, true)
+    for k, v of aSourceTypes
+        state.widget.inject(v)
+    
+sourceAdded = (json, state) ->
+    window.setTimeout(() ->
+            location.reload()
+        , 1000)
+    
+addSources = (type, form) ->
+    jsa = []
+    lineNo = 0
+    re = new RegExp(st[type].regex)
+    for source in form.elements.namedItem('source').value.split(/\r?\n/)
+        lineNo++
+        if not source.match(re)
+            alert("Source on line #{lineNo} does not match the required source regex #{st[type].regex}!")
+            return false
+        js = {
+            type: type,
+            sourceURL: source
+        }
+        for el in form.elements
+            if el.name.length > 0 and el.name != 'source'
+                js[el.name] = el.value
+        jsa.push(js)
+    put('sources', {sources: jsa}, {}, sourceAdded)
