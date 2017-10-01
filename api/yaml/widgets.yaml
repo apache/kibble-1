@@ -29,15 +29,6 @@ widgets:
         title: "Sources"
         rows:
             -
-                name: "Current Sources"
-                children:
-                    -
-                        type: sourcelist
-                        blocks: 12
-                        name: "Existing Sources"
-                        source: sources
-                        
-            -
                 name: "Add source(s)"
                 children:
                     -
@@ -45,6 +36,15 @@ widgets:
                         blocks: 12
                         name: "Add Source(s)"
                         source: org/sourcetypes
+            -
+                name: "Current Sources"
+                children:
+                    -
+                        type: sourcelist
+                        blocks: 12
+                        name: "Existing Sources"
+                        source: sources
+            
                 
     factors:
         title: "Engagement factors"
