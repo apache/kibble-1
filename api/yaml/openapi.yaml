@@ -1142,7 +1142,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Source'
+              $ref: '#/components/schemas/SourceList'
       responses:
         '200':
           description: 200 Response
@@ -1300,7 +1300,6 @@ components:
           example: "Action completed"
     Source:
       required:
-        - sourceID
         - type
         - sourceURL
       properties:
@@ -1316,10 +1315,17 @@ components:
         organisation:
           description: "The organisation this source belongs to"
           type: string
+        username:
+          description: "optional username for auth"
+          type: string
+        password:
+          description: "optional password for auth"
+          type: string
+        cookie:
+          description: "optional session cookie for auth"
+          type: string
     SourceList:
       required:
-        - okay
-        - organisation
         - sources
       properties:
         okay:
