@@ -47,6 +47,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /api/org/sourcetypes:
+    get:
+      summary: Lists the available source types supported by Kibble
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceTypes'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Lists the available source types supported by Kibble
+      security:
+        - cookieAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Empty'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/org/list:
     get:
       summary: Lists the organisations you belong to (or all, if admin)
