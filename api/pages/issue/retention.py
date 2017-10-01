@@ -157,7 +157,7 @@ def run(API, environ, indata, session):
         for who in prune:
             del activePeople[who]
             del peopleSeen[who]
-        retained = len(activePeople)
+        retained = len(activePeople) - added
         
         ts.append({
             'date': t,
