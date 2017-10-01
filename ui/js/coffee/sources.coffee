@@ -53,14 +53,7 @@ deletesource = (hash) ->
         tr = get(hash)
         tr.parentNode.removeChild(tr)
         xdelete('sources', { id: hash }, null, null)
-        
-tagsource = (hash) ->
-    tag = window.prompt("Please enter the tag with which you wish to associate this source, or type nothing to untag.")
-    if tag == ""
-        tag = null
-    tr = get(hash)
-    postJSON('manage-sources', { action: 'tag', source: hash, tag: tag }, null, null)
-
+       
 sourceTypes = {
     
 }
@@ -237,13 +230,6 @@ sourcelist = (json, state) ->
             app(dbtn, txt("Delete"))
             app(act, dbtn)
             
-            # tag a source
-            dbtn = mk('button')
-            set(dbtn, 'class', 'btn btn-info')
-            set(dbtn, 'onclick', 'tagsource("' + source.sourceID + '");')
-            dbtn.style.padding = "2px"
-            app(dbtn, txt("Tag"))
-            app(act, dbtn)
             app(d, act)
             tbody.inject(d)
         
