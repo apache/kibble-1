@@ -8,11 +8,11 @@
    color: #FFF;
    font-weight: bold;
    cursor: pointer;
-   margin: 20px;
+   margin: 10px;
    border-radius: 10px;
    text-align: center;
    background: linear-gradient(to bottom, #1f69a5 0%,#258dc8 100%);
-   padding-right: 8px;
+   padding-right: 4px;
    height: 44px;
    min-width: 120px;
    vertical-align: middle;
