@@ -73,7 +73,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Empty'
+              $ref: '#/components/schemas/defaultWidgetArgs'
       responses:
         '200':
           description: 200 Response
