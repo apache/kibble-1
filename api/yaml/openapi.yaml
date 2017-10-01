@@ -1652,6 +1652,12 @@ components:
             type: string
     SourceTypes:
       properties:
+        git:
+          type: object
+          schema:
+            $ref: "#/components/schemas/SourceType"
+    SourceType:
+      properties:
         title:
             type: string
             example: git
