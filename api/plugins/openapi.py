@@ -74,7 +74,7 @@ class OpenAPI():
         # allOf: list of schemas to validate against
         if 'allOf' in pdef:
             for subdef in pdef['allOf']:
-                self.validateParams(subdef, formdata)
+                self.validateSchema(subdef, formdata)
         
         where = "JSON body"
         # Symbolic link??
@@ -106,13 +106,13 @@ class OpenAPI():
             if ftype == 'array' and 'items' in pdef['properties'][field]:
                 for item in formdata[field]:
                     if '$ref' in pdef['properties'][field]['items']:
-                        self.validateParams(pdef['properties'][field]['items'], item)
+                        self.validateSchema(pdef['properties'][field]['items'], item)
                     else:
                         self.validateType(field, formdata[field], pdef['properties'][field]['items']['type'])
             
             # Validate sub-hashes
             if ftype == 'hash' and 'schema' in pdef['properties'][field]:
-                self.validateParams(pdef['properties'][field], formdata[field])
+                self.validateSchema(pdef['properties'][field], formdata[field])
     def validateParameters(self, defs, formdata):
         #
         pass
