@@ -23,64 +23,91 @@ import json
 import re
 import time
 
+def canModifySource(session):
+    """ Determine if the user can edit sources in this org """
+    if session.user['userlevel'] == 'admin':
+        return True
+    
+    dOrg = session.user['defaultOrganisation'] or "apache"
+    if session.DB.ES.exists(index=session.DB.dbname, doc_type="org", id= dOrg):
+        xorg = session.DB.ES.get(index=session.DB.dbname, doc_type="org", id= dOrg)['_source']
+        if session.user['email'] in xorg['admins']:
+            return True
+
 def run(API, environ, indata, session):
     
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
     
-    # Fetch organisation data
-    dOrg = session.user['defaultOrganisation'] or "apache"
-    if session.DB.ES.exists(index=session.DB.dbname, doc_type="org", id= dOrg):
-        org = session.DB.ES.get(index=session.DB.dbname, doc_type="org", id= dOrg)['_source']
-        del org['admins']
-    else:
-        raise API.exception(404, "No such organisation, '%s'" % dOrg)
+    method = environ['REQUEST_METHOD']
     
-    sourceTypes = indata.get('types', [])
-    # Fetch all sources for default org
-    
-    res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="source",
-            size = 5000,
-            body = {
-                'query': {
-                    'term': {
-                        'organisation': dOrg
+    if method in ['GET', 'POST']:
+        # Fetch organisation data
+        dOrg = session.user['defaultOrganisation'] or "apache"
+        if session.DB.ES.exists(index=session.DB.dbname, doc_type="org", id= dOrg):
+            org = session.DB.ES.get(index=session.DB.dbname, doc_type="org", id= dOrg)['_source']
+            del org['admins']
+        else:
+            raise API.exception(404, "No such organisation, '%s'" % dOrg)
+        
+        sourceTypes = indata.get('types', [])
+        # Fetch all sources for default org
+        
+        res = session.DB.ES.search(
+                index=session.DB.dbname,
+                doc_type="source",
+                size = 5000,
+                body = {
+                    'query': {
+                        'term': {
+                            'organisation': dOrg
+                        }
                     }
                 }
-            }
-        )
+            )
+        
+        # Secondly, fetch the view if we have such a thing enabled
+        viewList = []
+        if indata.get('view'):
+            if session.DB.ES.exists(index=session.DB.dbname, doc_type="view", id = indata['view']):
+                view = session.DB.ES.get(index=session.DB.dbname, doc_type="view", id = indata['view'])
+                viewList = view['_source']['sourceList']
+        
+        
+        sources = []
+        for hit in res['hits']['hits']:
+            doc = hit['_source']
+            if viewList and not doc['sourceID'] in viewList:
+                continue
+            if sourceTypes and not doc['type'] in sourceTypes:
+                continue
+            if indata.get('quick'):
+                xdoc = {
+                    'sourceID': doc['sourceID'],
+                    'type': doc['type'],
+                    'sourceURL': doc['sourceURL']
+                    }
+                sources.append(xdoc)
+            else:
+                sources.append(doc)
+        
+        JSON_OUT = {
+            'sources': sources,
+            'okay': True,
+            'organisation': org
+        }
+        yield json.dumps(JSON_OUT)
+        return
     
-    # Secondly, fetch the view if we have such a thing enabled
-    viewList = []
-    if indata.get('view'):
-        if session.DB.ES.exists(index=session.DB.dbname, doc_type="view", id = indata['view']):
-            view = session.DB.ES.get(index=session.DB.dbname, doc_type="view", id = indata['view'])
-            viewList = view['_source']['sourceList']
+    # Add one or more sources
+    if method == "PUT":
+        pass
     
+    # Delete a source
+    if method == "DELETE":
+        pass
     
-    sources = []
-    for hit in res['hits']['hits']:
-        doc = hit['_source']
-        if viewList and not doc['sourceID'] in viewList:
-            continue
-        if sourceTypes and not doc['type'] in sourceTypes:
-            continue
-        if indata.get('quick'):
-            xdoc = {
-                'sourceID': doc['sourceID'],
-                'type': doc['type'],
-                'sourceURL': doc['sourceURL']
-                }
-            sources.append(xdoc)
-        else:
-            sources.append(doc)
-    
-    JSON_OUT = {
-        'sources': sources,
-        'okay': True,
-        'organisation': org
-    }
-    yield json.dumps(JSON_OUT)
+    # Edit a source
+    if method == "PATCH":
+        pass
