@@ -261,9 +261,8 @@ nav.titlebar {
 nav.topbar {
     margin: 0px;
     padding: 0px;
-    background: #36404A;
-    background: linear-gradient(to bottom, #34383B 0, #222327 100%);
-    height: 48px;
+    background: #323234;
+    height: 40px;
 }
 
 nav.titlebar > div.searchbar {
@@ -275,12 +274,12 @@ nav.titlebar > div.searchbar {
 }
 
 nav.topbar > img.logo {
-    width: 64px;
+    height: 40px;
     vertical-align: middle;
     padding: 6px;
     float: left;
-    margin-right: 30px;
-    margin-left: 30px;
+    margin-right: 75px;
+    margin-left: 50px;
 }
 
 nav.topbar > ul {
@@ -299,10 +298,10 @@ nav.topbar > ul > a.selected > li {
 nav.topbar > ul > a > li {
     display: inline-block;
     border-left: 1px solid #456;
-    height: 48px;
+    height: 40px;
     padding-left: 10px;
     padding-right: 10px;
-    padding-top:18px;
+    padding-top:12px;
     margin-left: -4px;
     min-width: 48px;
     font-weight: normal;
@@ -311,7 +310,7 @@ nav.topbar > ul > a > li {
 
 nav.topbar > ul > a > li {
     text-decoration: none;
-    color: #AAA;
+    color: #bebebe;
 }
 
 nav.topbar > ul > a > li:hover {
