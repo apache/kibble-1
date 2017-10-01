@@ -106,8 +106,17 @@ def run(API, environ, indata, session):
     
     # Delete a source
     if method == "DELETE":
-        pass
-    
+        if canModifySource(session):
+            sourceID = indata.get('id')
+            if session.DB.ES.exists(index=session.DB.dbname, doc_type="source", id = sourceID):
+                # Delete all data pertainig to this source
+                session.DB.ES.delete_by_query(index=session.DB.dbname, body = {'query': {'match': {'sourceID': sourceID}}})
+                yield json.dumps({'message': "Source deleted"})
+            else:
+                raise API.exception(404, "No such source item")
+        else:
+            raise API.exception(403, "You don't have prmission to delete this source.")
+        
     # Edit a source
     if method == "PATCH":
         pass

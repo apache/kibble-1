@@ -1096,6 +1096,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    
+    delete:
+      summary: Delete an existing source
+      security:
+        - cookieAuth: []
+      requestBody:
+        description: Source ID info
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceID'
     patch:
       summary: Edit an existing source
       security:
@@ -1619,7 +1631,13 @@ components:
           type: string
           example: Kibble, inc. is awesome
           description: A short description of the organisation
-        
+    SourceID:
+      required:
+        - id
+      properties:
+        id:
+          description: source ID
+          type: string
     Empty:
       required: []
       properties:
