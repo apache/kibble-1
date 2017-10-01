@@ -150,7 +150,7 @@ def run(API, environ, indata, session):
         
         prune = []
         for k, v in activePeople.items():
-            if v < (tf - (hl*365*86400)):
+            if v < (tf - (hl*366*86400)):
                 prune.append(k)
                 lost += 1
         
