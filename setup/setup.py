@@ -43,7 +43,7 @@ except:
 if dopip and (getpass.getuser() != "root"):
     print("It looks like you need to install some python modules first")
     print("Either run this as root to do so, or run: ")
-    print("pip3 install elasticsearch formatflowed netaddr certifi")
+    print("pip3 install elasticsearch certifi")
     sys.exit(-1)
 
 elif dopip:
