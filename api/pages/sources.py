@@ -45,8 +45,8 @@ def run(API, environ, indata, session):
     if method in ['GET', 'POST']:
         # Fetch organisation data
         dOrg = session.user['defaultOrganisation'] or "apache"
-        if session.DB.ES.exists(index=session.DB.dbname, doc_type="org", id= dOrg):
-            org = session.DB.ES.get(index=session.DB.dbname, doc_type="org", id= dOrg)['_source']
+        if session.DB.ES.exists(index=session.DB.dbname, doc_type="organisation", id= dOrg):
+            org = session.DB.ES.get(index=session.DB.dbname, doc_type="organisation", id= dOrg)['_source']
             del org['admins']
         else:
             raise API.exception(404, "No such organisation, '%s'" % dOrg)
