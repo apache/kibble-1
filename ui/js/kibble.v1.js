@@ -3086,7 +3086,7 @@ renderAccountInfo = function(json, state) {
     name2.innerHTML = "";
     name2.appendChild(document.createTextNode(json.displayName));
     ulevel = get('user_level');
-    ulevel.inject(json.userlevel === 'admin' ? 'Administrator' : (ref = json.defaultOrganisation, indexOf.call(json.organisations, ref) >= 0) ? 'Organisation Owner' : 'User');
+    ulevel.inject(json.userlevel === 'admin' ? 'Administrator' : (ref = json.defaultOrganisation, indexOf.call(json.ownerships, ref) >= 0) ? 'Organisation Owner' : 'User');
     nm = get('messages_number');
     nm.innerHTML = json.messages;
     if (json.messages > 0) {

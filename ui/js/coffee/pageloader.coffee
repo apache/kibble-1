@@ -174,7 +174,7 @@ renderAccountInfo = (json, state) ->
         name2.appendChild(document.createTextNode(json.displayName))
         
         ulevel = get('user_level')
-        ulevel.inject(if json.userlevel == 'admin' then 'Administrator' else if json.defaultOrganisation in json.organisations then 'Organisation Owner' else 'User')
+        ulevel.inject(if json.userlevel == 'admin' then 'Administrator' else if json.defaultOrganisation in json.ownerships then 'Organisation Owner' else 'User')
         
         nm = get('messages_number')
         nm.innerHTML = json.messages
