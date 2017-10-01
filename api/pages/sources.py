@@ -22,6 +22,7 @@ This is the source list handler for Kibble
 import json
 import re
 import time
+import hashlib
 
 def canModifySource(session):
     """ Determine if the user can edit sources in this org """
@@ -102,7 +103,43 @@ def run(API, environ, indata, session):
     
     # Add one or more sources
     if method == "PUT":
-        pass
+        if canModifySource(session):
+            new = 0
+            old = 0
+            for source in indata.get('sources', []):
+                sourceURL = source['sourceURL']
+                sourceType = source['type']
+                creds = {}
+                if 'username' in source and len(source['username']) > 0:
+                    creds['username'] = source['username']
+                if 'password' in source and len(source['password']) > 0:
+                    creds['password'] = source['password']
+                if 'cookie' in source and len(source['cookie']) > 0:
+                    creds['cookie'] = source['cookie']
+                sourceID = hashlib.sha224( ("%s-%s" % (sourceType, sourceURL)).encode('utf-8') ).hexdigest()
+                
+                dOrg = session.user['defaultOrganisation'] or "apache"
+                
+                doc = {
+                    'organisation': dOrg,
+                    'sourceURL': sourceURL,
+                    'sourceID': sourceID,
+                    'type': sourceType,
+                    'creds': creds,
+                    'steps': {}
+                }
+                if session.DB.ES.exists(index=session.DB.dbname, doc_type="source", id = sourceID):
+                    old += 1
+                else:
+                    new += 1
+                session.DB.ES.index(index=session.DB.dbname, doc_type="source", id = sourceID, body = doc)
+            yield json.dumps({
+                "message": "Sources added/updated",
+                "added": new,
+                "updated": old
+                })
+        else:
+            raise API.exception(403, "You don't have prmission to delete this source.")
     
     # Delete a source
     if method == "DELETE":
