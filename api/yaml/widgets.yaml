@@ -116,7 +116,7 @@ widgets:
                     -
                         type: line
                         blocks: 8
-                        name: "Pony Factor over time, email"
+                        name: "Retention over time, email"
                         source: mail/retention
             -
                 name: "Pony Factors, issues"
@@ -124,7 +124,7 @@ widgets:
                     -
                         type: line
                         blocks: 8
-                        name: "Pony Factor over time, issue trackers"
+                        name: "Retention over time, issue trackers"
                         source: issue/retention
     repos:
         title: "Code Repositories"
