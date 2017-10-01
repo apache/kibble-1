@@ -15,14 +15,14 @@
 
 keyValueForm = (type, key, caption, placeholder) ->
     div = new HTML('div', { style: { width: "100%", margin: "10px", paddingBottom: "10px"}})
-    left = new HTML('div', { style: { float: "left", width: "300px"}}, caption)
-    right = new HTML('div', { style: { float: "left", width: "300px"}}) 
+    left = new HTML('div', { style: { float: "left", width: "300px", fontWeight: "bold"}}, caption)
+    right = new HTML('div', { style: { float: "left", width: "500px"}}) 
     
     if type == 'text'
-        inp = new HTML('input', {id: key, style: { marginBottom: "10px"}, class: "form-control", type: "text", placeholder: placeholder})
+        inp = new HTML('input', {name: key, id: key, style: { marginBottom: "10px"}, class: "form-control", type: "text", placeholder: placeholder})
         right.inject(inp)
     if type == 'textarea'
-        inp = new HTML('textarea', {id: key, style: { marginBottom: "10px"}, class: "form-control", placeholder: placeholder})
+        inp = new HTML('textarea', {name: key, id: key, style: { marginBottom: "10px"}, class: "form-control", placeholder: placeholder})
         right.inject(inp)
     div.inject([left, right])
     return div
