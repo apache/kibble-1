@@ -1,13 +1,20 @@
 git:
     title: "Plain git repository"
+    description: This is a plain git repository with no issues/PRs attached. For GitHub repositories, use the GitHub source type.
     regex: (?:https?|git)://.*/.+\.git
     example: "git://example.org/repos/foo.git"
-
+    optauth:
+        - username
+        - password
+        
 github:
     title: "GitHub repository (plus issues/PRs)"
+    description: "This is GitHub repositories with issues and pull requests. For non-GitHub repos, please use the plain 'git' source type"
     regex: "https://github.com/.+/.+"
-    example: "https://github.comn/apache/kibble.git"
-
+    example: "https://github.com/apache/kibble.git"
+    optauth:
+        - username
+        - password
 svn:
     title: "Subversion repository"
     regex: "https?://.+/.*"
@@ -15,8 +22,12 @@ svn:
 
 jira:
     title: "JIRA Project"
+    description: "This is a JIRA project. It requires a user account with read credentials to operate optimally."
     regex: "https://.+/browse/[A-Z0-9-]+"
     example: "https://issues.apache.org/jira/browse/ZEST"
+    optauth:
+        - username
+        - password    
 
 bugzilla:
     title: "BugZilla Project"
@@ -25,8 +36,11 @@ bugzilla:
 
 ponymail:
     title: "Pony Mail Archive"
+    description: "A Pony Mail archive - add lists one by one. Requires a session cookie to operate optimally."
     regex: "https?://.+/list.html?.+@.+"
     example: "https://lists.apache.org/list.html?dev@spamassassin.apache.org"
+    optauth:
+        - cookie
 
 pipermail:
     title: "Pipermail archive"
