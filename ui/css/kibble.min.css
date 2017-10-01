@@ -20,6 +20,7 @@
 
 .sourceTypeIcon:hover, .sourceTypeIcon.selected {
    background: linear-gradient(to bottom, #1fa569 0%,#25c88d 100%);
+   border-color: #25e88d;
 }
 
 .form-control  {
