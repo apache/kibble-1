@@ -351,6 +351,7 @@ div.wrap3 {
     color: #FFF;
     border-radius: 3px;
     padding: 2px 2px 2px 8px;
+    
 }
 
 h2 {
@@ -369,6 +370,10 @@ h2 {
     margin-top: 2px;
     font-size: 1.3em !important;
     font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space:nowrap;
+    width: calc(100% - 88px);
 }
 
 
@@ -434,7 +439,8 @@ h2 {
 .panel_toolbox  > li {
     display: inline-block !important;
     position: relative;
-    
+    overflow: visible;
+    width: 28px;
 }
 
 .panel_toolbox {
