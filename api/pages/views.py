@@ -43,7 +43,16 @@ def run(API, environ, indata, session):
                 }
             }
         )
-
+    
+    
+    # Are we looking at someone elses view?
+    if indata.get('view'):
+        viewID = indata.get('view')
+        if session.DB.ES.exists(index=session.DB.dbname, doc_type="view", id = viewID):
+            blob = session.DB.ES.get(index=session.DB.dbname, doc_type="view", id = viewID)
+            if blob['_source']['email'] != session.user['email']:
+                blob['_source']['name'] += " (shared by " +  + blob['_source']['email'] + ")"
+                res['hits']['hits'].append(blob)
     sources = []
     for hit in res['hits']['hits']:
         doc = hit['_source']
