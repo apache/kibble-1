@@ -24,6 +24,21 @@ widgets:
                         blocks: 12
                         name: "Your organisations"
                         source: org/list
+                        
+### VIEW EDITOR
+    views:
+        title: "Views"
+        rows:
+            -
+                name: "Existing views"
+                children:
+                    -
+                        type: views
+                        blocks: 12
+                        name: "Existing views"
+                        source: views
+                        eargs:
+                            sources: true
 ### SOURCE EDITOR
     sources:
         title: "Sources"
