@@ -65,7 +65,7 @@ def run(API, environ, indata, session):
                 session.DB.ES.index(index=session.DB.dbname, doc_type="view", id = viewID, body = doc['_source'])
                 yield json.dumps({'okay': True, 'message': "View updated"})
             else:
-                raise API.exception(403, "You don't own this view, and cannot delete it.")
+                raise API.exception(403, "You don't own this view, and cannot edit it.")
         else:
             raise API.exception(404, "We couldn't find a view with this ID.")
     
