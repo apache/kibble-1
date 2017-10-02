@@ -109,6 +109,36 @@ def run(API, environ, indata, session):
                     blob['_source']['name'] += " (shared by " +  blob['_source']['email'] + ")"
                     res['hits']['hits'].append(blob)
         sources = []
+        
+        # Include public views
+        pres = session.DB.ES.search(
+                index=session.DB.dbname,
+                doc_type="view",
+                size = 5000,
+                body = {
+                    'query': {
+                        'bool': {
+                            'must': [
+                                {'term':
+                                    {
+                                        'publicView': True
+                                    }
+                                },
+                                {
+                                    'term': {
+                                        'organisation': dOrg
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            )
+        for hit in pres['hits']['hits']:
+            if hit['_source']['email'] != session.user['email']:
+                hit['_source']['name'] += " (shared view)"
+                res['hits']['hits'].append(hit)
+        
         for hit in res['hits']['hits']:
             doc = hit['_source']
             if doc['organisation'] != dOrg:
