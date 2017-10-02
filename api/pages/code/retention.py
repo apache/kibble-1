@@ -48,6 +48,7 @@ def run(API, environ, indata, session):
     
     peopleSeen = {}
     activePeople = {}
+    allPeople = {}
     
     ny = 1970
     while ny < cy or (ny == cy and nm <= tnow.month):
@@ -138,6 +139,8 @@ def run(API, environ, indata, session):
                 peopleSeen[who] = tf
                 added += 1
             activePeople[who] = tf
+            if who not in allPeople:
+                allPeople[who] = tf
         
         prune = []
         for k, v in activePeople.items():
@@ -158,11 +161,25 @@ def run(API, environ, indata, session):
             'Active people': added + retained
         })
     
+    groups = {
+        'More than 5 years': (5*365*86400)+1,
+        '2 - 5 years': 5 * 365 * 86400,
+        '1 - 2 years': 3*365*86400,
+        'Less than a year': 365*86400,
+    }
+    
+    counts = {}
+    for k, v in groups.items():
+        for person, age in activePeople.items():
+            if allPeople[person] <= time.time() - v:
+                counts[k] = counts.get(k, 0) + 1
+                
     ts = sorted(ts, key = lambda x: x['date'])
     
     JSON_OUT = {
         'text': "This shows Contributor retention as calculated over a %u year timespan.." % hl,
         'timeseries': ts,
+        'counts': counts,
         'okay': True,
         'responseTime': time.time() - now,
     }

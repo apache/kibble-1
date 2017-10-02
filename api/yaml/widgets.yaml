@@ -110,6 +110,12 @@ widgets:
                         blocks: 8
                         name: "Retention over time, codebase"
                         source: code/retention
+                    -
+                        type: donut
+                        datatype: repo
+                        blocks: 3
+                        name: "Programmer experience"
+                        source: code/retention
             -
                 name: "Pony Factors, email"
                 children:
@@ -118,6 +124,12 @@ widgets:
                         blocks: 8
                         name: "Retention over time, email"
                         source: mail/retention
+                    -
+                        type: donut
+                        datatype: repo
+                        blocks: 3
+                        name: "Email experience"
+                        source: mail/retention
             -
                 name: "Pony Factors, issues"
                 children:
@@ -125,6 +137,12 @@ widgets:
                         type: line
                         blocks: 8
                         name: "Retention over time, issue trackers"
+                        source: issue/retention
+                    -
+                        type: donut
+                        datatype: repo
+                        blocks: 3
+                        name: "Issue experience"
                         source: issue/retention
     repos:
         title: "Code Repositories"
