@@ -6649,7 +6649,7 @@ filterView = function(val) {
 };
 
 manageviews = function(json, state) {
-  var aa, btn, h3, h4, inp, len, len1, len2, newdiv, noviews, obj, p, popdiv, q, ref, ref1, ref2, ref3, sdiv, source, u, view;
+  var aa, btn, h3, h4, inp, len, len1, len2, newdiv, noviews, obj, p, popdiv, q, ref, ref1, ref2, ref3, ref4, sdiv, source, u, view;
   obj = mk('div');
   p = mk('p');
   app(p, txt("Views allow you to quickly set up a group of sources to view as a sub-organisation, much like tags, but faster."));
@@ -6676,6 +6676,14 @@ manageviews = function(json, state) {
   app(newdiv, txt("Name your new view: "));
   app(newdiv, inp);
   app(newdiv, mk('br'));
+  if (userAccount.userlevel === 'admin' || (ref = userAccount.defaultOrganisation, indexOf.call(userAccount.ownerships, ref) >= 0)) {
+    inp = mk('input');
+    set(inp, 'type', 'checkbox');
+    set(inp, 'id', 'public');
+    app(newdiv, txt("Make view public (global): "));
+    app(newdiv, inp);
+    app(newdiv, mk('br'));
+  }
   inp = mk('input');
   set(inp, 'type', 'text');
   set(inp, 'id', 'viewfilter');
@@ -6692,9 +6700,9 @@ manageviews = function(json, state) {
   set(btn, 'value', 'Save view');
   set(btn, 'onclick', 'saveview();');
   app(newdiv, btn);
-  ref = json.sources;
-  for (q = 0, len = ref.length; q < len; q++) {
-    source = ref[q];
+  ref1 = json.sources;
+  for (q = 0, len = ref1.length; q < len; q++) {
+    source = ref1[q];
     currentSources[source.sourceID] = source.sourceURL;
     sdiv = mk('div');
     set(sdiv, 'id', source.sourceID);
@@ -6728,9 +6736,9 @@ manageviews = function(json, state) {
   set(btn, 'onclick', 'saveview();');
   app(newdiv, btn);
   app(obj, newdiv);
-  ref1 = json.views;
-  for (u = 0, len1 = ref1.length; u < len1; u++) {
-    view = ref1[u];
+  ref2 = json.views;
+  for (u = 0, len1 = ref2.length; u < len1; u++) {
+    view = ref2[u];
     popdiv = mk('div');
     popdiv.style.paddingLeft = "10px";
     popdiv.style.margin = "3px";
@@ -6775,9 +6783,9 @@ manageviews = function(json, state) {
     set(inp, 'type', 'text');
     set(inp, 'id', 'viewname');
     app(newdiv, txt("Select the sources you wish to have in this view below:"));
-    ref2 = json.sources;
-    for (aa = 0, len2 = ref2.length; aa < len2; aa++) {
-      source = ref2[aa];
+    ref3 = json.sources;
+    for (aa = 0, len2 = ref3.length; aa < len2; aa++) {
+      source = ref3[aa];
       sdiv = mk('div');
       set(sdiv, 'id', view.id + "_" + source.sourceID);
       set(sdiv, 'datatype', view.id);
@@ -6785,7 +6793,7 @@ manageviews = function(json, state) {
       sdiv.style.margin = "3px";
       sdiv.style.border = "1px solid #666";
       sdiv.style.color = "#000";
-      if (ref3 = source.sourceID, indexOf.call(view.sourceList, ref3) >= 0) {
+      if (ref4 = source.sourceID, indexOf.call(view.sourceList, ref4) >= 0) {
         sdiv.style.background = "#4B8";
         sdiv.style.color = "#FFF";
         set(sdiv, 'selected', 'selected');
