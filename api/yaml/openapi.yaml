@@ -1326,7 +1326,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/View'
+              $ref: '#/components/schemas/editView'
       responses:
         '200':
           description: 200 Response
@@ -1341,16 +1341,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     put:
-      summary: Add a new source
+      summary: Add a new view
       security:
         - cookieAuth: []
       requestBody:
-        description: New source data to add
+        description: New view data to add
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/View'
+              $ref: '#/components/schemas/editView'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a new view
+      security:
+        - cookieAuth: []
+      requestBody:
+        description: View to delete
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/editView'
       responses:
         '200':
           description: 200 Response
@@ -1458,16 +1482,27 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Source'
+    editView:
+      properties:
+        sources:
+          type: array
+        id:
+          type: string
+        public:
+          type: boolean
+        name:
+          type: string
     View:
       required:
         - id
-        - name
-        - organisation
       properties:
         id:
           type: string
           description: "The ID of this view. to be used with other API queries"
           example: "abcdef67126734271"
+        public:
+          description: Whether to make this a global view (admins only!)
+          type: boolean
         name:
           type: string
           description: "The name of this view"
@@ -1582,6 +1617,9 @@ components:
           description: "For factor charts, denotes the number of years to calculate a factor from"
           type: integer
           example: 2
+        sources:
+          type: boolean
+          description: for some widget, this fetches all sources
     Sloc:
       properties:
         count:
@@ -1769,6 +1807,9 @@ components:
       properties:
         page:
             description: optional page id
+            type: string
+        id:
+            description: optional object ID
             type: string
     SourceTypes:
       properties:
