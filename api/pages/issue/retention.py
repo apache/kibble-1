@@ -173,18 +173,19 @@ def run(API, environ, indata, session):
             'Active people': added + retained
         })
         
-    groups = {
-        'More than 5 years': (5*365*86400)+1,
-        '2 - 5 years': 5 * 365 * 86400,
-        '1 - 2 years': 3*365*86400,
-        'Less than a year': 365*86400,
-    }
+    groups = [
+        ['More than 5 years', (5*365*86400)+1],
+        ['2 - 5 years', (2*365*86400)+1],
+        ['1 - 2 years', (365*86400)],
+        ['Less than a year', 1]
+    ]
     
     counts = {}
-    for k, v in groups.items():
-        for person, age in activePeople.items():
-            if allPeople[person] <= time.time() - v:
-                counts[k] = counts.get(k, 0) + 1
+    for person, age in activePeople.items():
+        for el in sorted(groups, key = lambda x: x[1], reverse = True):
+            if allPeople[person] <= time.time() - el[1]:
+                counts[el[0]] = counts.get(el[0], 0) + 1
+                break
           
     
     ts = sorted(ts, key = lambda x: x['date'])
