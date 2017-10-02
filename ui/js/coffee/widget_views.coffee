@@ -1,11 +1,5 @@
 newview = []
 
-activateview = (id, url) ->
-    id = id || ""
-    if not url
-        url = "?page=views"
-    postJSON('views', { activate: id }, null, () -> location.href = url)
-        
 saveview = (id) ->
     if not id
         if get('viewname').value == ''
@@ -20,21 +14,36 @@ saveview = (id) ->
             )
         viewname = get('viewname').value
         publicView = false
-        if viewname.match(/^pmv: /)
-            viewname = viewname.replace(/^pmv: /, "")
-            publicView = true
+        if get('public')
+            publicView = get('public').checked
         view = {
+            id: 'makeone',
             name: viewname,
             sources: newview,
-            publicView: publicView
+            public: publicView
         }
-        postJSON('views', { add: view }, null, () -> location.href = '?page=views')
+        put('views', view, null, () ->
+            window.setTimeout(() ->
+                location.href = '?page=views'
+            , 1500)
+            )
     else
         view = {
-            view: id,
+            id: id,
             sources: newview
         }
-        postJSON('views', { set: view }, null, () -> location.href = '?page=views')
+        patch('views', view, null, () ->
+            window.setTimeout(() ->
+                location.href = '?page=views'
+            , 1500)
+            )
+
+rmview = (id) ->
+    xdelete('views', { id: id }, null, () ->
+            window.setTimeout(() ->
+                location.href = '?page=views'
+            , 1500)
+            )
 
 newview = []
 currentSources = {}
@@ -143,39 +152,37 @@ manageviews = (json, state) ->
         h4 = mk('h4')
         app(h4, txt(view.name + " - " + view.sourceList.length + " sources"))
         popdiv.style.border = "1px solid #333"
-        popdiv.style.background = "linear-gradient(to bottom, #00b7ea 0%,#009ec3 100%)"
+        popdiv.style.background = "#323234"
         h4.style.display = "inline-block"
         app(popdiv, h4)
-        if view.id == userAccount.view
-            popdiv.style.background = "linear-gradient(to bottom, #f9c667 0%,#f79621 100%)"
-            app(h4, txt(" (Active)"))
-            btn = mk('input')
-            set(btn, 'type', 'button')
-            set(btn, 'class', 'btn btn-danger')
-            set(btn, 'value', 'Deactivate')
-            set(btn, 'onclick', 'activateview();')
-            btn.style.marginLeft = "20px"
-            btn.style.padding = "2px"
-            app(popdiv, btn)
-        else
-            btn = mk('input')
-            set(btn, 'type', 'button')
-            set(btn, 'class', 'btn btn-warning')
-            set(btn, 'value', 'Set as active')
-            set(btn, 'onclick', 'activateview("' + view.id + '");')
-            btn.style.marginLeft = "20px"
-            btn.style.padding = "2px"
-            app(popdiv, btn)
+        
+        
+        btn = mk('input')
+        set(btn, 'type', 'button')
+        set(btn, 'class', 'btn btn-warning')
+        set(btn, 'value', 'Edit view')
+        set(btn, 'onclick', "get('" + view.id + "').style.display = (get('" + view.id + "').style.display == 'block') ? 'none' : 'block'")
+        btn.style.marginLeft = "20px"
+        btn.style.padding = "2px"
+        app(popdiv, btn)
 
         btn = mk('input')
         set(btn, 'type', 'button')
         set(btn, 'class', 'btn btn-danger')
         set(btn, 'value', 'Delete view')
-        set(btn, 'onclick', 'newview=[]; saveview("' + view.id + '");')
+        set(btn, 'onclick', 'rmview("' + view.id + '");')
         btn.style.marginLeft = "20px"
         btn.style.padding = "2px"
         app(popdiv, btn)
         
+        btn = mk('input')
+        set(btn, 'type', 'button')
+        set(btn, 'class', 'btn btn-success')
+        set(btn, 'value', 'Save changes')
+        set(btn, 'onclick', 'saveview("' + view.id + '");')
+        btn.style.marginLeft = "20px"
+        btn.style.padding = "2px"
+        app(popdiv, btn)
         
         h4.style.color = "#FFA"
         h4.style.cursor = 'pointer'
