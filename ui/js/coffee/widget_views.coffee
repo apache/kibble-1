@@ -95,6 +95,14 @@ manageviews = (json, state) ->
     app(newdiv, inp)
     app(newdiv, mk('br'))
     
+    if userAccount.userlevel == 'admin' or userAccount.defaultOrganisation in userAccount.ownerships
+        inp = mk('input')
+        set(inp, 'type', 'checkbox')
+        set(inp, 'id', 'public')
+        app(newdiv, txt("Make view public (global): "))
+        app(newdiv, inp)
+        app(newdiv, mk('br'))
+    
     inp = mk('input')
     set(inp, 'type', 'text')
     set(inp, 'id', 'viewfilter')
