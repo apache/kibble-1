@@ -137,8 +137,14 @@ def run(API, environ, indata, session):
                     }
                 }
             )
-            for doc in res['hits']['hits']:
-                allsources.append(doc['_source'])
+            for zdoc in res['hits']['hits']:
+                doc = zdoc['_source']
+                xdoc = {
+                    'sourceID': doc['sourceID'],
+                    'type': doc['type'],
+                    'sourceURL': doc['sourceURL']
+                    }
+                allsources.append(xdoc)
         
         JSON_OUT = {
             'views': sources,
