@@ -53,12 +53,14 @@ def run(API, environ, indata, session):
     while ny < cy or (ny == cy and nm <= tnow.month):
         d = datetime.date(ny, nm, 1)
         t = time.mktime(d.timetuple())
-        d = datetime.date(ny-hl, nm, 1)
-        tf = time.mktime(d.timetuple())
         nm += 3
         if nm > 12:
             nm -= 12
             ny = ny + 1
+        if ny == cy and nm > tnow.month:
+            break
+        d = datetime.date(ny, nm, 1)
+        tf = time.mktime(d.timetuple())
         
         
         ####################################################################
@@ -71,8 +73,8 @@ def run(API, environ, indata, session):
                                 {'range':
                                     {
                                         'ts': {
-                                            'from': tf,
-                                            'to': t
+                                            'from': t,
+                                            'to': tf
                                         }
                                     }
                                 },
@@ -130,12 +132,11 @@ def run(API, environ, indata, session):
             if who not in peopleSeen:
                 peopleSeen[who] = tf
                 added += 1
-            if who not in activePeople:
-                activePeople[who] = tf
+            activePeople[who] = tf
         
         prune = []
         for k, v in activePeople.items():
-            if v < (tf - (hl*366*86400)):
+            if v < (t - (hl*366*86400)):
                 prune.append(k)
                 lost += 1
         
