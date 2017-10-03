@@ -146,6 +146,15 @@ loadPageWidgets = (page, apiVersion) ->
     if globArgs.page
         pageID = globArgs.page
 
+    if globArgs.view
+        $( "a" ).each( () ->
+            url = $(this).attr('href')
+            m = url.match(/^(.+\?page=[-a-z]+)(?:&view=[a-f0-9]+)?(.*)$/)
+            if m
+                if globArgs.view
+                        $(this).attr('href', "#{m[1]}&view=#{globArgs.view}#{m[2]}")
+                
+        )
     # Fetch account info
     fetch('session', null, renderAccountInfo)
 

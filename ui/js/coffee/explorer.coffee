@@ -486,6 +486,16 @@ viewexplorer = (json, state) ->
                 updateWidgets('comstat', null, x)
                 updateWidgets('worldmap', null, x)
                 
+                $( "a" ).each( () ->
+                    url = $(this).attr('href')
+                    m = url.match(/^(.+\?page=[-a-z]+)(?:&view=[a-f0-9]+)?(.*)$/)
+                    if m
+                        if source
+                                $(this).attr('href', "#{m[1]}&view=#{source}#{m[2]}")
+                        else
+                                $(this).attr('href', "#{m[1]}#{m[2]}")
+                )
+                
         )
             
         
