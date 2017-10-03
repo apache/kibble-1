@@ -104,7 +104,7 @@ explorer = (json, state) ->
 sourceexplorer = (json, state) ->
         
         org = json.organisation
-        h = document.createElement('h2')
+        h = document.createElement('h4')
         if json.tag
             org.name += " (Filter: " + json.tag + ")"
         h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
@@ -159,7 +159,7 @@ sourceexplorer = (json, state) ->
 mailexplorer = (json, state) ->
         
         org = json.organisation
-        h = document.createElement('h2')
+        h = document.createElement('h4')
         if json.tag
             org.name += " (Filter: " + json.tag + ")"
         h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
@@ -211,7 +211,7 @@ mailexplorer = (json, state) ->
 logexplorer = (json, state) ->
         
         org = json.organisation
-        h = document.createElement('h2')
+        h = document.createElement('h4')
         if json.tag
             org.name += " (Filter: " + json.tag + ")"
         h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
@@ -265,7 +265,7 @@ issueexplorer = (json, state) ->
         org = json.organisation
         if json.tag
             org.name += " (Filter: " + json.tag + ")"
-        h = document.createElement('h2')
+        h = document.createElement('h4')
         h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
         state.widget.inject(h, true)
         list = document.createElement('select')
@@ -322,7 +322,7 @@ imexplorer = (json, state) ->
         org = json.organisation
         if json.tag
             org.name += " (Filter: " + json.tag + ")"
-        h = document.createElement('h2')
+        h = document.createElement('h4')
         h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
         state.widget.inject(h, true)
         list = document.createElement('select')
@@ -376,7 +376,7 @@ imexplorer = (json, state) ->
 
 multiviewexplorer = (json, state) ->
         org = json.organisation
-        h = document.createElement('h2')
+        h = document.createElement('h4')
         h.appendChild(document.createTextNode("Select views to compare:"))
         state.widget.inject(h, true)
         for k in [1..3]
@@ -427,7 +427,7 @@ multiviewexplorer = (json, state) ->
             
 viewexplorer = (json, state) ->
         org = json.organisation
-        h = document.createElement('h2')
+        h = document.createElement('h4')
         h.appendChild(document.createTextNode("Select a view to use:"))
         state.widget.inject(h, true)
         tName = 'view'
@@ -539,7 +539,7 @@ widgetexplorer = (json, state) ->
             'log-map-all': "Downloads/Visits per country (all time)"
         }
         org = json.organisation
-        h = document.createElement('h2')
+        h = document.createElement('h4')
         h.appendChild(document.createTextNode("Select a widget to use:"))
         state.widget.inject(h, true)
         tName = 'widget'
