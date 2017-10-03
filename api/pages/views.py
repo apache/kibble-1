@@ -105,7 +105,7 @@ def run(API, environ, indata, session):
             viewID = indata.get('view')
             if session.DB.ES.exists(index=session.DB.dbname, doc_type="view", id = viewID):
                 blob = session.DB.ES.get(index=session.DB.dbname, doc_type="view", id = viewID)
-                if blob['_source']['email'] != session.user['email']:
+                if blob['_source']['email'] != session.user['email'] and not blob['_source']['publicView']:
                     blob['_source']['name'] += " (shared by " +  blob['_source']['email'] + ")"
                     res['hits']['hits'].append(blob)
         sources = []
