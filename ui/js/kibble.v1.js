@@ -1920,7 +1920,19 @@ viewexplorer = function(json, state) {
     updateWidgets('report', null, x);
     updateWidgets('mvp', null, x);
     updateWidgets('comstat', null, x);
-    return updateWidgets('worldmap', null, x);
+    updateWidgets('worldmap', null, x);
+    return $("a").each(function() {
+      var m, url;
+      url = $(this).attr('href');
+      m = url.match(/^(.+\?page=[-a-z]+)(?:&view=[a-f0-9]+)?(.*)$/);
+      if (m) {
+        if (source) {
+          return $(this).attr('href', m[1] + "&view=" + source + m[2]);
+        } else {
+          return $(this).attr('href', "" + m[1] + m[2]);
+        }
+      }
+    });
   });
 };
 
@@ -3060,6 +3072,18 @@ loadPageWidgets = function(page, apiVersion) {
   }
   if (globArgs.page) {
     pageID = globArgs.page;
+  }
+  if (globArgs.view) {
+    $("a").each(function() {
+      var url;
+      url = $(this).attr('href');
+      m = url.match(/^(.+\?page=[-a-z]+)(?:&view=[a-f0-9]+)?(.*)$/);
+      if (m) {
+        if (globArgs.view) {
+          return $(this).attr('href', m[1] + "&view=" + globArgs.view + m[2]);
+        }
+      }
+    });
   }
   return fetch('session', null, renderAccountInfo);
 };
