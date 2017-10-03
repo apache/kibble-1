@@ -1345,7 +1345,7 @@ explorer = function(json, state) {
 sourceexplorer = function(json, state) {
   var ID, div, ezURL, h, item, len, len1, list, m, opt, org, q, ref, ref1, slen, u;
   org = json.organisation;
-  h = document.createElement('h2');
+  h = document.createElement('h4');
   if (json.tag) {
     org.name += " (Filter: " + json.tag + ")";
   }
@@ -1437,7 +1437,7 @@ sourceexplorer = function(json, state) {
 mailexplorer = function(json, state) {
   var ID, ezURL, h, item, len, len1, list, m, opt, org, q, ref, ref1, slen, u;
   org = json.organisation;
-  h = document.createElement('h2');
+  h = document.createElement('h4');
   if (json.tag) {
     org.name += " (Filter: " + json.tag + ")";
   }
@@ -1519,7 +1519,7 @@ mailexplorer = function(json, state) {
 logexplorer = function(json, state) {
   var ID, ezURL, h, item, len, len1, list, m, opt, org, q, ref, ref1, slen, u;
   org = json.organisation;
-  h = document.createElement('h2');
+  h = document.createElement('h4');
   if (json.tag) {
     org.name += " (Filter: " + json.tag + ")";
   }
@@ -1604,7 +1604,7 @@ issueexplorer = function(json, state) {
   if (json.tag) {
     org.name += " (Filter: " + json.tag + ")";
   }
-  h = document.createElement('h2');
+  h = document.createElement('h4');
   h.appendChild(document.createTextNode("Exploring " + org.name + ":"));
   state.widget.inject(h, true);
   list = document.createElement('select');
@@ -1689,7 +1689,7 @@ imexplorer = function(json, state) {
   if (json.tag) {
     org.name += " (Filter: " + json.tag + ")";
   }
-  h = document.createElement('h2');
+  h = document.createElement('h4');
   h.appendChild(document.createTextNode("Exploring " + org.name + ":"));
   state.widget.inject(h, true);
   list = document.createElement('select');
@@ -1772,7 +1772,7 @@ imexplorer = function(json, state) {
 multiviewexplorer = function(json, state) {
   var ID, h, item, k, list, opt, org, q, results, tName;
   org = json.organisation;
-  h = document.createElement('h2');
+  h = document.createElement('h4');
   h.appendChild(document.createTextNode("Select views to compare:"));
   state.widget.inject(h, true);
   results = [];
@@ -1848,7 +1848,7 @@ multiviewexplorer = function(json, state) {
 viewexplorer = function(json, state) {
   var ID, h, item, len, list, opt, org, q, ref, tName;
   org = json.organisation;
-  h = document.createElement('h2');
+  h = document.createElement('h4');
   h.appendChild(document.createTextNode("Select a view to use:"));
   state.widget.inject(h, true);
   tName = 'view';
@@ -1976,7 +1976,7 @@ widgetexplorer = function(json, state) {
     'log-map-all': "Downloads/Visits per country (all time)"
   };
   org = json.organisation;
-  h = document.createElement('h2');
+  h = document.createElement('h4');
   h.appendChild(document.createTextNode("Select a widget to use:"));
   state.widget.inject(h, true);
   tName = 'widget';
