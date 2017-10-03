@@ -391,7 +391,7 @@ h2 {
     background: #FFF;
     border: 4px solid #CCC;
     border-radius: 3px;
-    height: calc(100% - 48px);
+    height: calc(100% - 42px);
     overflow: visible;
 }
 
