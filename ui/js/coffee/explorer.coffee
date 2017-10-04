@@ -497,6 +497,11 @@ viewexplorer = (json, state) ->
                 )
                 
         )
+        
+        if globArgs.email
+                div = new HTML('div', {}, "Currently filtering results based on " + globArgs.email + ". - ")
+                div.inject(new HTML('a', { href: 'javascript:void(filterPerson(null));'}, "Reset filter"))
+                state.widget.inject(div)
             
         
 
