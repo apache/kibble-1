@@ -6251,7 +6251,7 @@ report = function(json, state) {
 };
 
 make5 = function(obj, json, pos) {
-  var fodder, i, idiv, item, k, left, len, q, ref, ref1, results, right, rightInner, t, title, v, what;
+  var filter, fodder, i, idiv, item, k, left, len, q, ref, ref1, results, right, rightInner, t, title, v, what;
   what = json.topN.denoter;
   ref = json.topN.items.slice(pos, pos + 5);
   results = [];
@@ -6293,9 +6293,15 @@ make5 = function(obj, json, pos) {
     if (item.email) {
       title = new HTML('a', {
         "class": "title",
-        href: "javascript: void(filterPerson('" + item.email + "'));"
+        href: "contributors.html?pages=biography&email=" + item.email
       }, txt(item.name));
       rightInner.inject(title);
+      rightInner.inject(" - ");
+      filter = new HTML('a', {
+        "class": "title",
+        href: "javascript: void(filterPerson('" + item.email + "'));"
+      }, "[filter]");
+      rightInner.inject(filter);
     } else if (item.url) {
       title = new HTML('a', {
         "class": "title",

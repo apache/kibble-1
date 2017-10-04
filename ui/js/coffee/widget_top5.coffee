@@ -28,8 +28,11 @@ make5 = (obj, json, pos) ->
         rightInner = new HTML('div', { class: "media-body"})
         right.inject(rightInner)
         if item.email
-            title = new HTML('a', { class: "title", href:"javascript: void(filterPerson('#{item.email}'));"}, txt(item.name))
+            title = new HTML('a', { class: "title", href:"contributors.html?pages=biography&email=#{item.email}"}, txt(item.name))
             rightInner.inject(title)
+            rightInner.inject(" - ")
+            filter = new HTML('a', { class: "title", href:"javascript: void(filterPerson('#{item.email}'));"}, "[filter]")
+            rightInner.inject(filter)
         else if item.url
             title = new HTML('a', { class: "title", href:item.url}, txt(item.name))
             rightInner.inject(title)
