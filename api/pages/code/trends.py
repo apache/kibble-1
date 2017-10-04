@@ -77,7 +77,9 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+    if indata.get('email'):
+        query['query']['bool']['should'] = [{'term': {'committer_email': indata.get('email')}}, {'term': {'author_email': indata.get('email')}}]
+        query['query']['bool']['minimum_should_match'] = 1
     
     # Get number of commits, this period
     res = session.DB.ES.count(

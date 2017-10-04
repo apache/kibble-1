@@ -66,7 +66,9 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+    if indata.get('email'):
+        query['query']['bool']['should'] = [{'term': {'issueCreator': indata.get('email')}}, {'term': {'issueCloser': indata.get('email')}}]
+        query['query']['bool']['minimum_should_match'] = 1
     
     # Get timeseries for this period
     query['aggs'] = {

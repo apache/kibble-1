@@ -42,7 +42,7 @@ def run(API, environ, indata, session):
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
     
     interval = indata.get('interval', 'month')
-    
+    xtitle = None
     
     ####################################################################
     ####################################################################
@@ -73,7 +73,9 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+    if indata.get('email'):
+        query['query']['bool']['must'].append({'term': {'issueCloser': indata.get('email')}})
+        xtitle = "People opening issues solved by %s" % indata.get('email')
     
     # Get top 25 committers this period
     query['aggs'] = {
@@ -123,7 +125,8 @@ def run(API, environ, indata, session):
         'okay': True,
         'responseTime': time.time() - now,
         'widgetType': {
-            'chartType': 'bar'
+            'chartType': 'bar',
+            'title': xtitle
         }
     }
     yield json.dumps(JSON_OUT)

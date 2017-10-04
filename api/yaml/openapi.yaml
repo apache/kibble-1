@@ -1620,6 +1620,9 @@ components:
         sources:
           type: boolean
           description: for some widget, this fetches all sources
+        email:
+          type: string
+          description: filter sources based on an email (a person)
     Sloc:
       properties:
         count:

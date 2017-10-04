@@ -74,7 +74,8 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+    if indata.get('email'):
+        query['query']['bool']['must'].append({'term': {'issueCreator': indata.get('email')}})
     
     # Get number of opened ones, this period
     query['aggs'] = {
@@ -126,7 +127,8 @@ def run(API, environ, indata, session):
             }
     if viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+    if indata.get('email'):
+        query['query']['bool']['must'].append({'term': {'issueCloser': indata.get('email')}})
     
     # Get number of closed ones, this period
     query['aggs'] = {
