@@ -1846,7 +1846,7 @@ multiviewexplorer = function(json, state) {
 };
 
 viewexplorer = function(json, state) {
-  var ID, h, item, len, list, opt, org, q, ref, tName;
+  var ID, div, h, item, len, list, opt, org, q, ref, tName;
   org = json.organisation;
   h = document.createElement('h4');
   h.appendChild(document.createTextNode("Select a view to use:"));
@@ -1892,7 +1892,7 @@ viewexplorer = function(json, state) {
   }
   ID = Math.floor(Math.random() * 987654321).toString(16);
   list.setAttribute('id', ID);
-  return $("#" + ID).chosen().change(function() {
+  $("#" + ID).chosen().change(function() {
     var source, x;
     source = this.value;
     if (source === "") {
@@ -1934,6 +1934,13 @@ viewexplorer = function(json, state) {
       }
     });
   });
+  if (globArgs.email) {
+    div = new HTML('div', {}, "Currently filtering results based on " + globArgs.email + ". - ");
+    div.inject(new HTML('a', {
+      href: 'javascript:void(filterPerson(null));'
+    }, "Reset filter"));
+    return state.widget.inject(div);
+  }
 };
 
 widgetexplorer = function(json, state) {
@@ -4350,6 +4357,9 @@ updateWidgets = function(type, target, eargs) {
         case 'issuepicker':
           results.push(widget.load(issueexplorer));
           break;
+        case 'viewpicker':
+          results.push(widget.load(viewexplorer));
+          break;
         case 'mailpicker':
           results.push(widget.load(mailexplorer));
           break;
@@ -6394,6 +6404,9 @@ filterPerson = function(email) {
     email: email
   });
   updateWidgets('trends', null, {
+    email: email
+  });
+  updateWidgets('viewpicker', null, {
     email: email
   });
   return globArgs.email = email;
