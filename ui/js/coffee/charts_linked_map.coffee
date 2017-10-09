@@ -28,7 +28,7 @@ charts_linked = (obj, nodes, links, options) ->
 
   link = svg.selectAll(".link")
       .data(edges)
-    .enter().append("line")
+      .enter().append("line")
       .attr("class", "link_link")
       .attr("style", (d) =>
         "stroke-width: #{d.value};"
