@@ -78,7 +78,10 @@ fScreen = (o) ->
         if o.config.donut
             o.config.donut.width = 120
             switchChartType(o, o.config, 'donut')
-        o.chartobj.resize({height: 720})
+        if o.config.linked
+          o.chartobj.resize({height: 1000})
+        else
+          o.chartobj.resize({height: 720})
     else
         o.main.className = "chartWrapper"
         o.buttons['fullscreen'].title = "Switch to fullscreen"
@@ -86,7 +89,10 @@ fScreen = (o) ->
         if o.config.donut
             o.config.donut.width = 50
             switchChartType(o, o.config, 'donut')
-        o.chartobj.resize({height: 240})
+        if o.config.linked
+          o.chartobj.resize({height: 600})
+        else
+          o.chartobj.resize({height: 240})
     return true
 
 
@@ -284,6 +290,8 @@ class Chart
             [@chartobj, @config] = charts_donutchart(@chartdiv, data, 15)
         if type == 'radar'
             [@chartobj, @config] = charts_radarchart(@chartdiv, data)
+         if type == 'relationship'
+            [@chartobj, @config] = charts_linked(@chartdiv, data.nodes, data.links, options)
         
         return @main
     

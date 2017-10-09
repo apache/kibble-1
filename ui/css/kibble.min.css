@@ -2,6 +2,21 @@
  * Kibble CSS
  */
 
+.link_node circle {
+    fill: steelblue;
+}
+.link_node text {
+    font: bold 12px sans-serif;
+    fill: charcoal;
+    text-shadow: 0 1px 0 #fff;
+}
+.link_link {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: .3;
+}
+
+
 .sourceTypeIcon {
    float: left;
    border: 2px solid #116BE0;
