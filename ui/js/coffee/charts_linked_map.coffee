@@ -4,7 +4,7 @@ charts_linked = (obj, nodes, links, options) ->
   lla = 0
   svg = d3.select(obj).append("svg")
     .attr("width", "100%")#llwidth)
-    .attr("height", "720")# llheight)
+    .attr("height", "600")# llheight)
   g = svg.append("g")
   obj.style.minHeight = "600px"
   bb = obj.getBoundingClientRect()
@@ -69,9 +69,13 @@ charts_linked = (obj, nodes, links, options) ->
     node.attr("transform", (d) => ("translate(" + d.x + "," + d.y + ")"))
   )
   linked_zoom = () ->
-        g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        isShift = not not window.event.shiftKey
+        if isShift
+          g.attr("transform", "translate("+d3.event.translate + ")scale(" + d3.event.scale + ")");
+        else
+          g.attr("transform", "scale(" + d3.event.scale + ")");
   svg
-    .call( d3.behavior.zoom().scaleExtent([0.5, 4]).on("zoom", linked_zoom)  )
+    .call( d3.behavior.zoom().center([llwidth / 2, llheight / 2]).scaleExtent([0.5, 4]).on("zoom", linked_zoom)  )
 
     
   
