@@ -160,7 +160,8 @@ def run(API, environ, indata, session):
             m = re.search(indata.get('collapse'), repodata['_source']['sourceURL'])
             if m:
                 ID = m.group(1)
-        
+        else:
+            ID = re.sub(r"^.+/", "", repodata['_source']['sourceURL'])
         for xID, xrepo in repos.items():
             if xID != ID and xID in repodatas:
                 xrepodata = repodatas[xID]
@@ -168,6 +169,8 @@ def run(API, environ, indata, session):
                     m = re.search(indata.get('collapse'), xrepodata['_source']['sourceURL'])
                     if m:
                         xID = m.group(1)
+                else:
+                    xID = re.sub(r"^.+/", "", xrepodata['_source']['sourceURL'])
                 xlinks = []
                 for author in xrepo:
                     if author in repo:
