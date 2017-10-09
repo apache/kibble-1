@@ -429,3 +429,39 @@ widgets:
                         source:     "issue/top"
                         name:       "Most active issues"
                         target:     ""
+
+
+###### RELATIONSHIPS
+
+## CODE
+### EMAIL
+    code-rel:
+        title: "Code/committer relationships"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+                    -
+                        type:   repopicker
+                        blocks: 4
+                        source: "sources"
+                        eargs:
+                            types: ['git', 'github', 'svn']
+                        name:   Repo list picker"
+            -
+                name: "Trends"
+                children:
+                    -
+                        type:   "relationship"
+                        source: "code/relationships"
+                        name:   "Project relationships"
+                        blocks: 12
