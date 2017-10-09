@@ -347,7 +347,7 @@ charts_linked = function(obj, nodes, links, options) {
   force.nodes(nodes).links(edges).start();
   link = svg.selectAll(".link").data(edges).enter().append("line").attr("class", "link_link").attr("style", (function(_this) {
     return function(d) {
-      return "stroke-width: " + d.value + ";";
+      return "stroke-width: " + d.value + "px;";
     };
   })(this));
   node = svg.selectAll(".node").data(nodes).enter().append("g").attr("class", "link_node").call(force.drag);
