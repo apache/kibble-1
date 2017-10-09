@@ -350,3 +350,82 @@ widgets:
                         source:     "issue/top"
                         name:       "Most active issues"
                         target:     ""
+### EMAIL
+    mail:
+        title: "Email activity"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+                    -
+                        type:   mailpicker
+                        blocks: 4
+                        source: "sources"
+                        eargs:
+                            types: ['mail', 'ponymail', 'pipermail', 'hyperkitty']
+                        name:   Mailing list picker"
+            -
+                name: "Trends"
+                children:
+                    -
+                        type:   "trends"
+                        source: "mail/trends"
+                        name:   "Mailing list trends"
+                        blocks: 12
+            -
+                name: "Issue tracker timeline"
+                children:
+                    -
+                        type:       "line"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issue/issues"
+                        name:       "Issues opened/closed"
+                        target:     ""
+                    -
+                        type:       "line"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issue/actors"
+                        name:       "Openers/Closers of issues"
+                        target:     ""
+                    -
+                        type:       "line"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issue/age"
+                        name:       "Issue age"
+                        target:     ""
+            -
+                name: "Issues and handlers"
+                children:
+                    -
+                        type:       "top5"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issue/openers"
+                        name:       "Top 5 issue openers"
+                        target:     ""
+                    -
+                        type:       "top5"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issue/closers"
+                        name:       "Top 5 issue closers"
+                        target:     ""
+                    -
+                        type:       "top5"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "issue/top"
+                        name:       "Most active issues"
+                        target:     ""
