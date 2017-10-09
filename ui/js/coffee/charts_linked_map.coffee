@@ -1,9 +1,11 @@
+
 charts_linked = (obj, nodes, links, options) ->
   llcolors = genColors(nodes.length+1, 0.55, 0.475, true)
   lla = 0
   svg = d3.select(obj).append("svg")
     .attr("width", "100%")#llwidth)
     .attr("height", "720")# llheight)
+  g = svg.append("g")
   obj.style.minHeight = "600px"
   bb = obj.getBoundingClientRect()
   llwidth = bb.width
@@ -11,7 +13,7 @@ charts_linked = (obj, nodes, links, options) ->
   force = d3.layout.force()
       .gravity(.05)
       .distance(llheight/8)
-      .charge(-50)
+      .charge(-80)
       .size([llwidth, llheight])
 
   edges = []
@@ -26,15 +28,15 @@ charts_linked = (obj, nodes, links, options) ->
       .links(edges)
       .start()
 
-  link = svg.selectAll(".link")
+  link = g.selectAll(".link")
       .data(edges)
-      .enter().append("line")
+      .enter().append("path")
       .attr("class", "link_link")
       .attr("style", (d) =>
         "stroke-width: #{d.value};"
       )
 
-  node = svg.selectAll(".node")
+  node = g.selectAll(".node")
       .data(nodes)
     .enter().append("g")
       .attr("class", "link_node")
@@ -57,12 +59,22 @@ charts_linked = (obj, nodes, links, options) ->
 
   
   force.on("tick", () ->
-    link.attr("x1", (d) => d.source.x;)
-        .attr("y1", (d) => d.source.y;)
-        .attr("x2", (d) => d.target.x;)
-        .attr("y2", (d) => d.target.y;)
+    link.attr("d", (d) ->
+        dx = d.target.x - d.source.x
+        dy = d.target.y - d.source.y
+        dr = Math.sqrt(dx * dx + dy * dy)
+        return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y
+    )
+  
     node.attr("transform", (d) => ("translate(" + d.x + "," + d.y + ")"))
   )
+  linked_zoom = () ->
+        g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  svg
+    .call( d3.behavior.zoom().scaleExtent([0.5, 4]).on("zoom", linked_zoom)  )
+
+    
+  
   return [
     {
       svg: svg,
