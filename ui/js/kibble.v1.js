@@ -324,7 +324,7 @@ charts_linked = function(obj, nodes, links, options) {
   bb = obj.getBoundingClientRect();
   llwidth = bb.width;
   llheight = bb.height;
-  force = d3.layout.force().gravity(.25).distance(llheight / 4).charge(-50).size([llwidth, llheight]);
+  force = d3.layout.force().gravity(.05).distance(llheight / 8).charge(-50).size([llwidth, llheight]);
   edges = [];
   links.forEach(function(e) {
     var sourceNode, targetNode;
@@ -347,7 +347,7 @@ charts_linked = function(obj, nodes, links, options) {
   force.nodes(nodes).links(edges).start();
   link = svg.selectAll(".link").data(edges).enter().append("line").attr("class", "link_link").attr("style", (function(_this) {
     return function(d) {
-      return "stroke-width: " + d.value + "px;";
+      return "stroke-width: " + d.value + ";";
     };
   })(this));
   node = svg.selectAll(".node").data(nodes).enter().append("g").attr("class", "link_node").call(force.drag);
@@ -408,7 +408,7 @@ charts_linked = function(obj, nodes, links, options) {
         svg.attr("style", ns);
         llwidth = parseInt(svg.style("width"));
         llheight = parseInt(svg.style("height"));
-        force.size([llwidth, llheight]).distance(llheight / 2);
+        force.size([llwidth, llheight]).distance(llheight / 4);
         return force.nodes(nodes).links(edges).start();
       }
     }, {

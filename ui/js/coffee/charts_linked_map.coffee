@@ -9,8 +9,8 @@ charts_linked = (obj, nodes, links, options) ->
   llwidth = bb.width
   llheight = bb.height
   force = d3.layout.force()
-      .gravity(.25)
-      .distance(llheight/4)
+      .gravity(.05)
+      .distance(llheight/8)
       .charge(-50)
       .size([llwidth, llheight])
 
@@ -78,7 +78,7 @@ charts_linked = (obj, nodes, links, options) ->
         svg.attr("style", ns)
         llwidth = parseInt(svg.style("width"))
         llheight = parseInt(svg.style("height"))
-        force.size([llwidth, llheight]).distance(llheight/2)
+        force.size([llwidth, llheight]).distance(llheight/4)
         force
         .nodes(nodes)
         .links(edges)
