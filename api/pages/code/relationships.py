@@ -163,7 +163,7 @@ def run(API, environ, indata, session):
         else:
             ID = re.sub(r"^.+/", "", repodata['_source']['sourceURL'])
         for xID, xrepo in repos.items():
-            if xID != ID and xID in repodatas:
+            if xID in repodatas:
                 xrepodata = repodatas[xID]
                 if indata.get('collapse'):
                     m = re.search(indata.get('collapse'), xrepodata['_source']['sourceURL'])
@@ -171,17 +171,18 @@ def run(API, environ, indata, session):
                         xID = m.group(1)
                 else:
                     xID = re.sub(r"^.+/", "", xrepodata['_source']['sourceURL'])
-                xlinks = []
-                for author in xrepo:
-                    if author in repo:
-                        xlinks.append(author)
-                lname = "%s@%s" % (ID, xID) # Link name
-                rname = "%s@%s" % (xID, ID) # Reverse link name
-                if len(xlinks) > 0 and not rname in repo_links:
-                    mylinks[xID] = len(xlinks)
-                    repo_links[lname] = repo_links.get(lname, 0) + len(xlinks) # How many contributors in common between project A and B?
-                    if repo_links[lname] > max_shared:
-                        max_shared = repo_links[lname]
+                if xID != ID:
+                    xlinks = []
+                    for author in xrepo:
+                        if author in repo:
+                            xlinks.append(author)
+                    lname = "%s@%s" % (ID, xID) # Link name
+                    rname = "%s@%s" % (xID, ID) # Reverse link name
+                    if len(xlinks) > 0 and not rname in repo_links:
+                        mylinks[xID] = len(xlinks)
+                        repo_links[lname] = repo_links.get(lname, 0) + len(xlinks) # How many contributors in common between project A and B?
+                        if repo_links[lname] > max_shared:
+                            max_shared = repo_links[lname]
         if not ID in repo_notoriety:
             repo_notoriety[ID] = set()
         repo_notoriety[ID].update(mylinks.keys()) # How many projects is this repo connected to?
@@ -202,7 +203,7 @@ def run(API, environ, indata, session):
             'name': sourceID,
             'commits': repo_commits[sourceID],
             'links': len(repo_notoriety[sourceID]),
-            'size': max(5, max(1, (1 - abs(math.log10(repo_commits[sourceID] / max_commits))) * 45))
+            'size': max(5, (1 - abs(math.log10(repo_commits[sourceID] / max_commits))) * 45)
         }
         nodes.append(doc)
         existing_repos.append(sourceID)
@@ -214,7 +215,7 @@ def run(API, environ, indata, session):
             doc = {
                 'source': fr,
                 'target': to,
-                'value': max(1, (1 - abs(math.log10(size/max_shared))) * 10)
+                'value': max(1, (size/max_shared) * 8)
             }
             links.append(doc)
     
