@@ -73,24 +73,29 @@ fScreen = (o) ->
     xclass = o.main.getAttribute('class')
     if not xclass.match('chartModal')
         o.main.className = "chartModal chartWrapper"
+        o.main.style.minHeight = "100% !important"
         o.buttons['fullscreen'].childNodes[0].className = 'fa fa-minus-square'
         o.buttons['fullscreen'].title = "Restore window"
+        o.main.childNodes[2].style.minHeight = (window.innerHeight - 60) + "px"
         if o.config.donut
             o.config.donut.width = 120
             switchChartType(o, o.config, 'donut')
         if o.config.linked
-          o.chartobj.resize({height: 1000})
+          bb = o.main.childNodes[2].getBoundingClientRect()
+          o.chartobj.resize({height: bb.height})
         else
           o.chartobj.resize({height: 720})
     else
         o.main.className = "chartWrapper"
+        o.main.childNodes[2].style.minHeight = ""
         o.buttons['fullscreen'].title = "Switch to fullscreen"
         o.buttons['fullscreen'].childNodes[0].className = 'fa fa-plus-square'
         if o.config.donut
             o.config.donut.width = 50
             switchChartType(o, o.config, 'donut')
         if o.config.linked
-          o.chartobj.resize({height: 600})
+          bb = o.main.childNodes[2].getBoundingClientRect()
+          o.chartobj.resize({height: bb.height})
         else
           o.chartobj.resize({height: 240})
     return true
@@ -144,7 +149,7 @@ chartToSvg = (o, asSVG) ->
     svgdiv = o.chartdiv.getElementsByTagName('svg')[0]
     svgcopy = svgdiv.cloneNode(true)
     copyCSS(svgcopy, svgdiv)
-    rect = svgdiv.getBoundingClientRect()
+    rect = o.main.getBoundingClientRect()
     svgcopy.setAttribute('xlink', 'http://www.w3.org/1999/xlink')
     
     source = (new XMLSerializer()).serializeToString(svgcopy)
@@ -156,7 +161,6 @@ chartToSvg = (o, asSVG) ->
     if asSVG
         downloadBlob('chart.svg', url)
     else
-        
         img = new HTML('img', { width: rect.width, height: rect.height, src: url})
         img.onload = () ->
             canvas = new HTML('canvas', { width: rect.width, height: rect.height})

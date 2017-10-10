@@ -3,14 +3,14 @@ charts_linked = (obj, nodes, links, options) ->
   llcolors = genColors(nodes.length+1, 0.55, 0.475, true)
   licolors = genColors(nodes.length+1, 0.3, 0.35, true)
   lla = 0
+  obj.className = "chartChart linkedChart"
   svg = d3.select(obj).append("svg")
     .attr("width", "100%")#llwidth)
     .attr("height", "600")# llheight)
   g = svg.append("g")
-  obj.style.minHeight = "600px"
   bb = obj.getBoundingClientRect()
   llwidth = bb.width
-  llheight = bb.height
+  llheight = Math.max(600, bb.height)
   
   tooltip = d3.select("body").append("div")	
     .attr("class", "link_tooltip")				
@@ -125,8 +125,6 @@ charts_linked = (obj, nodes, links, options) ->
   svg
     .call( d3.behavior.zoom().center([llwidth / 2, llheight / 2]).scaleExtent([0.333, 4]).on("zoom", linked_zoom)  )
 
-  
-  
   
   return [
     {
