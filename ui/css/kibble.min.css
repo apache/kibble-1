@@ -7,8 +7,9 @@
 }
 .link_node text {
     font: bold 12px sans-serif;
-    fill: charcoal;
-    text-shadow: 0 1px 0 #fff;
+    fill: black;
+    stroke-width: 0.55;
+    stroke: rgba(255,255,255,0.9);
 }
 .link_link {
     fill: none;
