@@ -2,15 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Dashboard - Apache Kibble</title>
+    <title>Relationships - Apache Kibble</title>
     <meta name="msapplication-TileColor" content="#5bc0de" />
     <meta name="msapplication-TileImage" content="images/background.png" />
     <link rel="icon" type="image/png" sizes="48x48" href="images/kibble-favicon.png">
-    
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.2.0/animate.min.css">
     <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/Uniform.js/2.1.2/themes/default/css/uniform.default.min.css">
 
     <!-- Metis core stylesheet -->
     <link rel="stylesheet" href="css/kibble.min.css">
@@ -23,10 +22,10 @@
       <img class="logo" src="images/kibble-logo-white.png"/>
       <ul>
         <a href="organisations.html?page=org"><li><i class="fa fa-home"></i> Organisation</li></a>
-        <a href="dashboard.html?page=repos" class="selected"><li><i class="fa fa-bar-chart-o"></i> Data Points</li></a>
+        <a href="dashboard.html?page=repos"><li><i class="fa fa-bar-chart-o"></i> Data Points</li></a>
         <a href="engagement.html?page=factors"><li><i class="fa fa-cubes"></i> Engagement</li></a>
         <a href="dashboard.html?page=people"><li><i class="fa fa-user"></i> Contributors</li></a>
-        <a href="relationships.html?page=code-rel"><li><i class="fa fa-group"></i> Relationships</li></a>
+        <a href="relationships.html?page=relations" class="selected"><li><i class="fa fa-group"></i> Relationships</li></a>
         <a href="dashboard.html?page=publish"><li><i class="fa fa-cloud-download"></i> Exports</li></a>
         <a href="apidoc.html"><li><i class="fa fa-book"></i> API Docs</li></a>
         <a href="javascript:void(signout());"><li><i class="fa fa-sign-out"></i> Log Off</li></a>
@@ -36,7 +35,7 @@
       <div class="searchbar">
         &nbsp;
       </div>
-      Data Points for the Apache Software Foundation
+      Contributor relationships
     </nav>
     <div>
     <nav class="menu">
@@ -64,10 +63,9 @@
       </div>
       <div class="sidemenu">
       <ul>
-        <a href="dashboard.html?page=repos"><li>Code Repositories</li></a>
-        <a href="dashboard.html?page=issues"><li>Issue Trackers</li></a>
-        <a href="dashboard.html?page=mail"><li>Mailing Lists</li></a>
-        <a href="dashboard.html?page=repos"><li>Forums</li></a>
+        <a href="relationshiups.html?page=code-rel"><li>Code relationships</li></a>
+        <a href="relationshiups.html?page=mail-rel"><li>Mailing list relationships</li></a>
+        <a href="relationshiups.html?page=issue-rel"><li>Issue tracker relationships</li></a>
       </ul>
       </div>
     </nav>
@@ -81,7 +79,7 @@
       </div>
     </div>
     </div>
-    <div id="chartWrapperHiddenMaster" style="display:none;"></div>
+    <div id="chartWrapperHiddenMaster" style=display:none;"></div>
     <!--jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
@@ -95,6 +93,6 @@
     <script type="text/javascript" src="js/kibble.v1.js"></script>
     <script src="js/moment/moment.min.js"></script>
     <script src="js/datepicker/daterangepicker.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.jquery.min.js" type="text/javascript" data-rocketoptimized="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.jquery.min.js" type="text/javascript" data-rocketoptimized="true"></script>
   </body>
 </html>

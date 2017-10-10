@@ -236,7 +236,7 @@ nav.menu > div.sidemenu > ul > a > li {
     padding-top:10px;
     margin-left: -4px;
     min-width: 48px;
-    font-weight: normal;
+    font-size: 0.8rem;
     font-family: montserrat light, sans-serif;
     background: #DDD;    
 }
@@ -244,7 +244,7 @@ nav.menu > div.sidemenu > ul > a > li {
 nav.menu > div.sidemenu > ul > a > li {
     text-decoration: none;
     color: #445;
-    font-size: 13px;
+    font-size: 1.2rem;
 }
 
 nav.menu > div.sidemenu > ul > a > li:hover {
