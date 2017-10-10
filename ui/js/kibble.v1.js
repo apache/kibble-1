@@ -429,11 +429,7 @@ charts_linked = function(obj, nodes, links, options) {
     d3.selectAll("text").style("opacity", null);
     return d3.selectAll("path").style("stroke-opacity", null);
   });
-  node.append("svg:a").attr("xlink:href", (function(_this) {
-    return function(d) {
-      return d.name;
-    };
-  })(this)).append("text").attr("dx", 13).attr("dy", ".35em").text((function(_this) {
+  node.append("text").attr("dx", 13).attr("dy", ".35em").text((function(_this) {
     return function(d) {
       return d.name;
     };
