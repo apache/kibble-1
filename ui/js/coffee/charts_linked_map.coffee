@@ -94,6 +94,7 @@ charts_linked = (obj, nodes, links, options) ->
       .on("mouseover", (d) ->
         #alert(d.id)
         lTargets.push(d.id)
+        d3.selectAll("path").style("stroke-opacity", "0.1")
         d3.selectAll("path").filter((e) => gatherTargets(d,e) ).style("stroke-opacity", "1")
         d3.selectAll("circle").filter((e) => e.id not in lTargets ).style("opacity", "0.2")
         d3.selectAll("text").filter((e) => e.id not in lTargets ).style("opacity", "0.2")
@@ -101,9 +102,9 @@ charts_linked = (obj, nodes, links, options) ->
       .on("mouseout", (d) ->
         #alert(d.id)
         lTargets = []
-        d3.selectAll("path").filter((e) => e.source == d or e.target == d ).style("stroke-opacity", "")
         d3.selectAll("circle").style("opacity", null)
         d3.selectAll("text").style("opacity", null)
+        d3.selectAll("path").style("stroke-opacity", null)
         )
   
   

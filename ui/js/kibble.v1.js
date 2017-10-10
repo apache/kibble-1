@@ -405,6 +405,7 @@ charts_linked = function(obj, nodes, links, options) {
     };
   })(this)).on("mouseover", function(d) {
     lTargets.push(d.id);
+    d3.selectAll("path").style("stroke-opacity", "0.1");
     d3.selectAll("path").filter((function(_this) {
       return function(e) {
         return gatherTargets(d, e);
@@ -424,13 +425,9 @@ charts_linked = function(obj, nodes, links, options) {
     })(this)).style("opacity", "0.2");
   }).on("mouseout", function(d) {
     lTargets = [];
-    d3.selectAll("path").filter((function(_this) {
-      return function(e) {
-        return e.source === d || e.target === d;
-      };
-    })(this)).style("stroke-opacity", "");
     d3.selectAll("circle").style("opacity", null);
-    return d3.selectAll("text").style("opacity", null);
+    d3.selectAll("text").style("opacity", null);
+    return d3.selectAll("path").style("stroke-opacity", null);
   });
   node.append("svg:a").attr("xlink:href", (function(_this) {
     return function(d) {
