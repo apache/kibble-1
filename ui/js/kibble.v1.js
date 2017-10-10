@@ -316,8 +316,9 @@ charts_linechart = function(obj, data, options) {
 };
 
 charts_linked = function(obj, nodes, links, options) {
-  var avg, bb, edges, force, g, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip;
+  var avg, bb, edges, force, g, lcolors, licolors, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip;
   llcolors = genColors(nodes.length + 1, 0.55, 0.475, true);
+  licolors = genColors(nodes.length + 1, 0.3, 0.35, true);
   lla = 0;
   svg = d3.select(obj).append("svg").attr("width", "100%").attr("height", "600");
   g = svg.append("g");
@@ -344,15 +345,21 @@ charts_linked = function(obj, nodes, links, options) {
     return edges.push({
       source: sourceNode,
       target: targetNode,
+      s: e.source,
       value: e.value,
       name: e.name,
       tooltip: e.tooltip
     });
   });
   force.nodes(nodes).links(edges).start();
+  lcolors = {};
+  nodes.forEach(function(e) {
+    return lcolors[e.id] = licolors[lla++];
+  });
+  lla = 0;
   link = g.selectAll(".link").data(edges).enter().append("path").attr("class", "link_link").attr("style", (function(_this) {
     return function(d) {
-      return "stroke-width: " + d.value + ";";
+      return "stroke-width: " + d.value + "; stroke: " + lcolors[d.s] + ";";
     };
   })(this)).on("mouseover", function(d) {
     if (d.tooltip) {
