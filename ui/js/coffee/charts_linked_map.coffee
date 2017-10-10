@@ -46,6 +46,8 @@ charts_linked = (obj, nodes, links, options) ->
       .data(edges)
       .enter().append("path")
       .attr("class", "link_link")
+      .attr("data-source", (d) => d.source.id)
+      .attr("data-target", (d) => d.target.id)
       .attr("style", (d) =>
         "stroke-width: #{d.value}; stroke: #{lcolors[d.s]};"
       ).on("mouseover", (d) ->
@@ -58,6 +60,7 @@ charts_linked = (obj, nodes, links, options) ->
                 .style("top", (d3.event.pageY - 28) + "px");	
             )
       .on("mouseout", (d) ->
+            d3.select(this).style("stroke-opacity", "0.375")
             tooltip.transition()		
                 .duration(200)		
                 .style("opacity", 0);	
@@ -71,11 +74,20 @@ charts_linked = (obj, nodes, links, options) ->
 
   node.append("circle")
       .attr("class", "link_node")
+      .attr("data-source", (d) => d.id)
       .attr("style", (d) ->
         lla++
         return "fill: #{llcolors[lla-1]};"
       )
-      .attr("r", (d) -> d.size)
+      .attr("r", (d) => d.size)
+      .on("mouseover", (d) ->
+        #alert(d.id)
+        d3.selectAll("path").filter((e) => e.source == d or e.target == d ).style("stroke-opacity", "1")
+        )
+      .on("mouseout", (d) ->
+        #alert(d.id)
+        d3.selectAll("path").filter((e) => e.source == d or e.target == d ).style("stroke-opacity", "")
+        )
   
   
 
@@ -95,6 +107,7 @@ charts_linked = (obj, nodes, links, options) ->
                 .style("top", (d3.event.pageY - 28) + "px");	
             )
       .on("mouseout", (d) ->
+            #d3.selectAll(".link").filter( (e) => e.source == this.id ).style("stroke-opacity", "0.375")
             tooltip.transition()		
                 .duration(200)		
                 .style("opacity", 0);	
