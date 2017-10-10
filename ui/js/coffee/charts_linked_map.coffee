@@ -25,7 +25,7 @@ charts_linked = (obj, nodes, links, options) ->
   links.forEach((e) ->
     sourceNode = nodes.filter((n) => n.id == e.source)[0]
     targetNode = nodes.filter((n) => n.id == e.target)[0]
-    edges.push({source: sourceNode, target: targetNode, value: e.value});
+    edges.push({source: sourceNode, target: targetNode, value: e.value, name: e.name, tooltip: e.tooltip});
   )
   
   force
@@ -39,6 +39,19 @@ charts_linked = (obj, nodes, links, options) ->
       .attr("class", "link_link")
       .attr("style", (d) =>
         "stroke-width: #{d.value};"
+      ).on("mouseover", (d) ->
+        if d.tooltip
+            tooltip.transition()		
+                .duration(100)		
+                .style("opacity", .9);		
+            tooltip.html("<b>#{d.name}:</b><br/>" + d.tooltip.replace("\n", "<br/>"))
+                .style("left", (d3.event.pageX + 20) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px");	
+            )
+      .on("mouseout", (d) ->
+            tooltip.transition()		
+                .duration(200)		
+                .style("opacity", 0);	
       )
 
   node = g.selectAll(".node")

@@ -221,7 +221,9 @@ def run(API, environ, indata, session):
             doc = {
                 'source': fr,
                 'target': to,
-                'value': max(1, (size/max_shared) * 8)
+                'value': max(1, (size/max_shared) * 8),
+                'name': "%s &#8596; %s" % (fr, to),
+                'tooltip': "%u committers in common" % size
             }
             links.append(doc)
     
