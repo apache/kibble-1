@@ -316,7 +316,7 @@ charts_linechart = function(obj, data, options) {
 };
 
 charts_linked = function(obj, nodes, links, options) {
-  var bb, edges, force, g, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg;
+  var bb, edges, force, g, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip;
   llcolors = genColors(nodes.length + 1, 0.55, 0.475, true);
   lla = 0;
   svg = d3.select(obj).append("svg").attr("width", "100%").attr("height", "600");
@@ -325,6 +325,7 @@ charts_linked = function(obj, nodes, links, options) {
   bb = obj.getBoundingClientRect();
   llwidth = bb.width;
   llheight = bb.height;
+  tooltip = d3.select("body").append("div").attr("class", "link_tooltip").style("opacity", 0);
   force = d3.layout.force().gravity(.05).distance(llheight / 8).charge(-80).size([llwidth, llheight]);
   edges = [];
   links.forEach(function(e) {
@@ -366,7 +367,14 @@ charts_linked = function(obj, nodes, links, options) {
     return function(d) {
       return d.name;
     };
-  })(this));
+  })(this)).on("mouseover", function(d) {
+    if (d.tooltip) {
+      tooltip.transition().duration(100).style("opacity", .9);
+      return tooltip.html(("<b>" + d.name + ":</b><br/>") + d.tooltip.replace("\n", "<br/>")).style("left", (d3.event.pageX + 20) + "px").style("top", (d3.event.pageY - 28) + "px");
+    }
+  }).on("mouseout", function(d) {
+    return tooltip.transition().duration(200).style("opacity", 0);
+  });
   force.on("tick", function() {
     link.attr("d", function(d) {
       var dr, dx, dy;
