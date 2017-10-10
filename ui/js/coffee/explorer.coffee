@@ -171,7 +171,7 @@ mailexplorer = (json, state) ->
         opt.value = ""
         slen = 0
         for item in json.sources
-            if item.type == 'mail'
+            if item.type in ['mail', 'ponymail', 'pipermail', 'hyperkitty']
                 slen++
         opt.text = "All " + slen + " mailing lists"
         list.appendChild(opt)
@@ -179,7 +179,7 @@ mailexplorer = (json, state) ->
             return if (a.sourceURL == b.sourceURL) then 0 else (if a.sourceURL > b.sourceURL then 1 else -1)
             )
         for item in json.sources
-            if item.type == 'mail'
+            if item.type in ['mail', 'ponymail', 'pipermail', 'hyperkitty']
                 opt = document.createElement('option')
                 opt.value = item.sourceID
                 ezURL = null
@@ -205,6 +205,7 @@ mailexplorer = (json, state) ->
                 updateWidgets('top5', null, { source: source })
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
+                updateWidgets('relationship', null, { source: source })
                 
         )
         
