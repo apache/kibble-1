@@ -14,13 +14,16 @@ charts_linked = (obj, nodes, links, options) ->
   tooltip = d3.select("body").append("div")	
     .attr("class", "link_tooltip")				
     .style("opacity", 0);
-    
+  
+  avg = links.length / nodes.length
+  
   force = d3.layout.force()
-      .gravity(.05)
+      .gravity(0.015)
       .distance(llheight/8)
-      .charge(-80)
+      .charge(-200/Math.log10(nodes.length))
+      .linkStrength(0.2/avg)
       .size([llwidth, llheight])
-
+  
   edges = []
   links.forEach((e) ->
     sourceNode = nodes.filter((n) => n.id == e.source)[0]
@@ -67,6 +70,8 @@ charts_linked = (obj, nodes, links, options) ->
         return "fill: #{llcolors[lla-1]};"
       )
       .attr("r", (d) -> d.size)
+  
+  
 
   node.append("svg:a")
       .attr("xlink:href", (d) => d.name)
@@ -97,7 +102,12 @@ charts_linked = (obj, nodes, links, options) ->
         dr = Math.sqrt(dx * dx + dy * dy)
         return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y
     )
-  
+    node.attr("cx",(d) =>
+        d.x = Math.max(d.size, Math.min(llwidth - d.size, d.x))
+        )
+      .attr("cy", (d) =>
+        d.y = Math.max(d.size, Math.min(llheight - d.size, d.y))
+      )
     node.attr("transform", (d) => ("translate(" + d.x + "," + d.y + ")"))
   )
   linked_zoom = () ->
@@ -107,7 +117,7 @@ charts_linked = (obj, nodes, links, options) ->
         else
           g.attr("transform", "scale(" + d3.event.scale + ")");
   svg
-    .call( d3.behavior.zoom().center([llwidth / 2, llheight / 2]).scaleExtent([0.5, 4]).on("zoom", linked_zoom)  )
+    .call( d3.behavior.zoom().center([llwidth / 2, llheight / 2]).scaleExtent([0.333, 4]).on("zoom", linked_zoom)  )
 
   
   
