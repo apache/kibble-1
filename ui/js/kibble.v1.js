@@ -357,7 +357,15 @@ charts_linked = function(obj, nodes, links, options) {
     return lcolors[e.id] = licolors[lla++];
   });
   lla = 0;
-  link = g.selectAll(".link").data(edges).enter().append("path").attr("class", "link_link").attr("style", (function(_this) {
+  link = g.selectAll(".link").data(edges).enter().append("path").attr("class", "link_link").attr("data-source", (function(_this) {
+    return function(d) {
+      return d.source.id;
+    };
+  })(this)).attr("data-target", (function(_this) {
+    return function(d) {
+      return d.target.id;
+    };
+  })(this)).attr("style", (function(_this) {
     return function(d) {
       return "stroke-width: " + d.value + "; stroke: " + lcolors[d.s] + ";";
     };
@@ -367,14 +375,33 @@ charts_linked = function(obj, nodes, links, options) {
       return tooltip.html(("<b>" + d.name + ":</b><br/>") + d.tooltip.replace("\n", "<br/>")).style("left", (d3.event.pageX + 20) + "px").style("top", (d3.event.pageY - 28) + "px");
     }
   }).on("mouseout", function(d) {
+    d3.select(this).style("stroke-opacity", "0.375");
     return tooltip.transition().duration(200).style("opacity", 0);
   });
   node = g.selectAll(".node").data(nodes).enter().append("g").attr("class", "link_node").call(force.drag);
-  node.append("circle").attr("class", "link_node").attr("style", function(d) {
+  node.append("circle").attr("class", "link_node").attr("data-source", (function(_this) {
+    return function(d) {
+      return d.id;
+    };
+  })(this)).attr("style", function(d) {
     lla++;
     return "fill: " + llcolors[lla - 1] + ";";
-  }).attr("r", function(d) {
-    return d.size;
+  }).attr("r", (function(_this) {
+    return function(d) {
+      return d.size;
+    };
+  })(this)).on("mouseover", function(d) {
+    return d3.selectAll("path").filter((function(_this) {
+      return function(e) {
+        return e.source === d || e.target === d;
+      };
+    })(this)).style("stroke-opacity", "1");
+  }).on("mouseout", function(d) {
+    return d3.selectAll("path").filter((function(_this) {
+      return function(e) {
+        return e.source === d || e.target === d;
+      };
+    })(this)).style("stroke-opacity", "");
   });
   node.append("svg:a").attr("xlink:href", (function(_this) {
     return function(d) {
