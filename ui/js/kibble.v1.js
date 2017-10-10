@@ -316,7 +316,7 @@ charts_linechart = function(obj, data, options) {
 };
 
 charts_linked = function(obj, nodes, links, options) {
-  var bb, edges, force, g, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip;
+  var avg, bb, edges, force, g, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip;
   llcolors = genColors(nodes.length + 1, 0.55, 0.475, true);
   lla = 0;
   svg = d3.select(obj).append("svg").attr("width", "100%").attr("height", "600");
@@ -326,7 +326,8 @@ charts_linked = function(obj, nodes, links, options) {
   llwidth = bb.width;
   llheight = bb.height;
   tooltip = d3.select("body").append("div").attr("class", "link_tooltip").style("opacity", 0);
-  force = d3.layout.force().gravity(.05).distance(llheight / 8).charge(-80).size([llwidth, llheight]);
+  avg = links.length / nodes.length;
+  force = d3.layout.force().gravity(0.015).distance(llheight / 8).charge(-200 / Math.log10(nodes.length)).linkStrength(0.2 / avg).size([llwidth, llheight]);
   edges = [];
   links.forEach(function(e) {
     var sourceNode, targetNode;
@@ -392,6 +393,15 @@ charts_linked = function(obj, nodes, links, options) {
       dr = Math.sqrt(dx * dx + dy * dy);
       return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
     });
+    node.attr("cx", (function(_this) {
+      return function(d) {
+        return d.x = Math.max(d.size, Math.min(llwidth - d.size, d.x));
+      };
+    })(this)).attr("cy", (function(_this) {
+      return function(d) {
+        return d.y = Math.max(d.size, Math.min(llheight - d.size, d.y));
+      };
+    })(this));
     return node.attr("transform", (function(_this) {
       return function(d) {
         return "translate(" + d.x + "," + d.y + ")";
@@ -407,7 +417,7 @@ charts_linked = function(obj, nodes, links, options) {
       return g.attr("transform", "scale(" + d3.event.scale + ")");
     }
   };
-  svg.call(d3.behavior.zoom().center([llwidth / 2, llheight / 2]).scaleExtent([0.5, 4]).on("zoom", linked_zoom));
+  svg.call(d3.behavior.zoom().center([llwidth / 2, llheight / 2]).scaleExtent([0.333, 4]).on("zoom", linked_zoom));
   return [
     {
       svg: svg,
