@@ -1648,7 +1648,7 @@ sourceexplorer = function(json, state) {
 };
 
 mailexplorer = function(json, state) {
-  var ID, ezURL, h, item, len, len1, list, m, opt, org, q, ref, ref1, slen, u;
+  var ID, ezURL, h, item, len, len1, list, m, opt, org, q, ref, ref1, ref2, ref3, slen, u;
   org = json.organisation;
   h = document.createElement('h4');
   if (json.tag) {
@@ -1664,7 +1664,7 @@ mailexplorer = function(json, state) {
   ref = json.sources;
   for (q = 0, len = ref.length; q < len; q++) {
     item = ref[q];
-    if (item.type === 'mail') {
+    if ((ref1 = item.type) === 'mail' || ref1 === 'ponymail' || ref1 === 'pipermail' || ref1 === 'hyperkitty') {
       slen++;
     }
   }
@@ -1681,10 +1681,10 @@ mailexplorer = function(json, state) {
       }
     }
   });
-  ref1 = json.sources;
-  for (u = 0, len1 = ref1.length; u < len1; u++) {
-    item = ref1[u];
-    if (item.type === 'mail') {
+  ref2 = json.sources;
+  for (u = 0, len1 = ref2.length; u < len1; u++) {
+    item = ref2[u];
+    if ((ref3 = item.type) === 'mail' || ref3 === 'ponymail' || ref3 === 'pipermail' || ref3 === 'hyperkitty') {
       opt = document.createElement('option');
       opt.value = item.sourceID;
       ezURL = null;
@@ -1723,7 +1723,10 @@ mailexplorer = function(json, state) {
     updateWidgets('factors', null, {
       source: source
     });
-    return updateWidgets('trends', null, {
+    updateWidgets('trends', null, {
+      source: source
+    });
+    return updateWidgets('relationship', null, {
       source: source
     });
   });
