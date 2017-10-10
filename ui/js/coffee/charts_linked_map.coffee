@@ -76,7 +76,7 @@ charts_linked = (obj, nodes, links, options) ->
   node.append("svg:a")
       .attr("xlink:href", (d) => d.name)
       .append("text")
-      .attr("dx", 12)
+      .attr("dx", 13)
       .attr("dy", ".35em")
       .text((d) => d.name)
       .on("mouseover", (d) ->
