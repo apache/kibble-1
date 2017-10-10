@@ -1,6 +1,7 @@
 
 charts_linked = (obj, nodes, links, options) ->
   llcolors = genColors(nodes.length+1, 0.55, 0.475, true)
+  licolors = genColors(nodes.length+1, 0.3, 0.35, true)
   lla = 0
   svg = d3.select(obj).append("svg")
     .attr("width", "100%")#llwidth)
@@ -28,20 +29,25 @@ charts_linked = (obj, nodes, links, options) ->
   links.forEach((e) ->
     sourceNode = nodes.filter((n) => n.id == e.source)[0]
     targetNode = nodes.filter((n) => n.id == e.target)[0]
-    edges.push({source: sourceNode, target: targetNode, value: e.value, name: e.name, tooltip: e.tooltip});
+    edges.push({source: sourceNode, target: targetNode, s: e.source, value: e.value, name: e.name, tooltip: e.tooltip});
   )
   
   force
       .nodes(nodes)
       .links(edges)
       .start()
-
+  lcolors = {}
+  nodes.forEach((e) ->
+    lcolors[e.id] = licolors[lla++]
+    
+  )
+  lla = 0
   link = g.selectAll(".link")
       .data(edges)
       .enter().append("path")
       .attr("class", "link_link")
       .attr("style", (d) =>
-        "stroke-width: #{d.value};"
+        "stroke-width: #{d.value}; stroke: #{lcolors[d.s]};"
       ).on("mouseover", (d) ->
         if d.tooltip
             tooltip.transition()		
