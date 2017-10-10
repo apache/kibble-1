@@ -26,6 +26,8 @@ import copy
 import re
 import math
 
+badBots = r"(JIRA|Hudson|jira|jenkins|GitHub|git@|dev@|bugzilla|gerrit)"
+
 def run(API, environ, indata, session):
     
     # We need to be logged in for this!
@@ -105,7 +107,7 @@ def run(API, environ, indata, session):
     for doc in res['aggregations']['per_ml']['buckets']:
         sourceID = doc['key']
         emails = doc['doc_count']
-        if re.search(r"(JIRA|Hudson|jira|jenkins|GitHub|git@|dev@)", sourceID): # No bots
+        if re.search(badBots, sourceID): # No bots
             continue
         if emails > (span/86400)*4: # More than 4/day and we consider you a bot!
             continue
