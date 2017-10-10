@@ -16,6 +16,19 @@
     stroke-opacity: .15;
 }
 
+.link_tooltip {	
+    position: absolute;			
+    text-align: center;			
+    min-width: 60px;					
+    min-height: 28px;					
+    padding: 4px;				
+    font: 12px sans-serif;		
+    background: rgba(0,0,0,0.6);	
+    color: #FFF;
+    border-radius: 8px;			
+    pointer-events: none;			
+}
+
 
 .sourceTypeIcon {
    float: left;

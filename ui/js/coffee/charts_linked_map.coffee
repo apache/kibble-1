@@ -10,6 +10,11 @@ charts_linked = (obj, nodes, links, options) ->
   bb = obj.getBoundingClientRect()
   llwidth = bb.width
   llheight = bb.height
+  
+  tooltip = d3.select("body").append("div")	
+    .attr("class", "link_tooltip")				
+    .style("opacity", 0);
+    
   force = d3.layout.force()
       .gravity(.05)
       .distance(llheight/8)
@@ -48,7 +53,7 @@ charts_linked = (obj, nodes, links, options) ->
         lla++
         return "fill: #{llcolors[lla-1]};"
       )
-      .attr("r", (d) -> d.size);
+      .attr("r", (d) -> d.size)
 
   node.append("svg:a")
       .attr("xlink:href", (d) => d.name)
@@ -56,6 +61,20 @@ charts_linked = (obj, nodes, links, options) ->
       .attr("dx", 12)
       .attr("dy", ".35em")
       .text((d) => d.name)
+      .on("mouseover", (d) ->
+        if d.tooltip
+            tooltip.transition()		
+                .duration(100)		
+                .style("opacity", .9);		
+            tooltip.html("<b>#{d.name}:</b><br/>" + d.tooltip.replace("\n", "<br/>"))
+                .style("left", (d3.event.pageX + 20) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px");	
+            )
+      .on("mouseout", (d) ->
+            tooltip.transition()		
+                .duration(200)		
+                .style("opacity", 0);	
+      )
 
   
   force.on("tick", () ->
@@ -77,7 +96,8 @@ charts_linked = (obj, nodes, links, options) ->
   svg
     .call( d3.behavior.zoom().center([llwidth / 2, llheight / 2]).scaleExtent([0.5, 4]).on("zoom", linked_zoom)  )
 
-    
+  
+  
   
   return [
     {
