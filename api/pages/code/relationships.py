@@ -107,6 +107,7 @@ def run(API, environ, indata, session):
     max_commits = 0
     max_links = 0
     max_shared = 0
+    max_authors = 0
     
     # For each repo, count commits and gather data on authors
     for doc in res['aggregations']['per_repo']['buckets']:
@@ -142,6 +143,7 @@ def run(API, environ, indata, session):
     repo_links = {}
     repo_notoriety = {}
     repodatas = {}
+    repo_authors = {}
 
     # Grab data of all sources
     for ID, repo in repos.items():
@@ -186,12 +188,19 @@ def run(API, environ, indata, session):
         if ID not in repo_notoriety:
             repo_notoriety[ID] = set()
         repo_notoriety[ID].update(mylinks.keys()) # How many projects is this repo connected to?
+        
+        if ID not in repo_authors:
+            repo_authors[ID] = set()
+        repo_authors[ID].update(repo) # How many projects is this repo connected to?
+        
         if ID != oID:
             repo_commits[ID] = repo_commits.get(ID, 0) + repo_commits[oID]
             if repo_commits[ID] > max_commits:
                 max_commits = repo_commits[ID] # Used for calculating max link thickness
         if len(repo_notoriety[ID]) > max_links:
-            max_links = len(repo_notoriety[ID]) # Used for calculating max sphere size in charts
+            max_links = len(repo_notoriety[ID])
+        if len(repo_authors[ID]) > max_authors:
+            max_authors = len(repo_authors[ID]) # Used for calculating max sphere size in charts
         
     # Now, pull it all together!
     nodes = []
@@ -203,13 +212,15 @@ def run(API, environ, indata, session):
             fr, to = k.split('@')
             if fr == sourceID or to == sourceID:
                 lsize += 1
+        asize = len(repo_authors[sourceID])
         doc = {
             'id': sourceID,
             'name': sourceID,
             'commits': repo_commits[sourceID],
+            'authors': asize,
             'links': lsize,
-            'size': max(5, (1 - abs(math.log10(repo_commits[sourceID] / max_commits))) * 45),
-            'tooltip': "%u connections, %u commits" % (lsize, repo_commits[sourceID])
+            'size': max(5, (1 - abs(math.log10(asize / max_authors))) * 45),
+            'tooltip': "%u connections, %u contributors, %u commits" % (lsize, asize, repo_commits[sourceID])
         }
         nodes.append(doc)
         existing_repos.append(sourceID)
