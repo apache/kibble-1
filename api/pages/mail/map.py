@@ -78,13 +78,15 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
     if indata.get('email'):
         query['query']['bool']['must'].append({'term': {'sender': indata.get('email')}})
+    if indata.get('search'):
+        query['query']['bool']['must'].append({'match': {'subject': indata.get('search')}})
     
     # Get number of commits, this period, per repo
     query['aggs'] = {
             'per_ml': {
                 'terms': {
-                    'field': 'replyto.keyword',
-                    'size': 125
+                    'field': 'replyto.keyword' if not indata.get('author') else 'sender',
+                    'size': 100
                 }                
             }
         }
@@ -116,13 +118,13 @@ def run(API, environ, indata, session):
         query['aggs'] = {
             'per_ml': {
                 'terms': {
-                    'field': 'sender',
+                    'field': 'sender' if not indata.get('author') else 'replyto.keyword',
                     'size': 5000
                 }                
             }
         }
         xquery = copy.deepcopy(query)
-        xquery['query']['bool']['must'].append({'term': {'replyto.keyword': sourceID}})
+        xquery['query']['bool']['must'].append({'term': {'replyto.keyword' if not indata.get('author') else 'sender': sourceID}})
         xres = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="email",

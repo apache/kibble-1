@@ -1826,6 +1826,9 @@ components:
         collapse:
           type: string
           description: for some widgets, this collapses sources based on a regex
+        search:
+          type: string
+          description: for some widgets, this enables sub-filtering based on searches
     Sloc:
       properties:
         count:
