@@ -320,12 +320,12 @@ charts_linked = function(obj, nodes, links, options) {
   llcolors = genColors(nodes.length + 1, 0.55, 0.475, true);
   licolors = genColors(nodes.length + 1, 0.3, 0.35, true);
   lla = 0;
+  obj.className = "chartChart linkedChart";
   svg = d3.select(obj).append("svg").attr("width", "100%").attr("height", "600");
   g = svg.append("g");
-  obj.style.minHeight = "600px";
   bb = obj.getBoundingClientRect();
   llwidth = bb.width;
-  llheight = bb.height;
+  llheight = Math.max(600, bb.height);
   tooltip = d3.select("body").append("div").attr("class", "link_tooltip").style("opacity", 0);
   avg = links.length / nodes.length;
   force = d3.layout.force().gravity(0.015).distance(llheight / 8).charge(-200 / Math.log10(nodes.length)).linkStrength(0.2 / avg).size([llwidth, llheight]);
@@ -736,19 +736,22 @@ chartWrapperButtons = {
 xxCharts = {};
 
 fScreen = function(o) {
-  var xclass;
+  var bb, xclass;
   xclass = o.main.getAttribute('class');
   if (!xclass.match('chartModal')) {
     o.main.className = "chartModal chartWrapper";
+    o.main.style.minHeight = "100% !important";
     o.buttons['fullscreen'].childNodes[0].className = 'fa fa-minus-square';
     o.buttons['fullscreen'].title = "Restore window";
+    o.main.childNodes[2].style.minHeight = (window.innerHeight - 60) + "px";
     if (o.config.donut) {
       o.config.donut.width = 120;
       switchChartType(o, o.config, 'donut');
     }
     if (o.config.linked) {
+      bb = o.main.childNodes[2].getBoundingClientRect();
       o.chartobj.resize({
-        height: 1000
+        height: bb.height
       });
     } else {
       o.chartobj.resize({
@@ -757,6 +760,7 @@ fScreen = function(o) {
     }
   } else {
     o.main.className = "chartWrapper";
+    o.main.childNodes[2].style.minHeight = "";
     o.buttons['fullscreen'].title = "Switch to fullscreen";
     o.buttons['fullscreen'].childNodes[0].className = 'fa fa-plus-square';
     if (o.config.donut) {
@@ -764,8 +768,9 @@ fScreen = function(o) {
       switchChartType(o, o.config, 'donut');
     }
     if (o.config.linked) {
+      bb = o.main.childNodes[2].getBoundingClientRect();
       o.chartobj.resize({
-        height: 600
+        height: bb.height
       });
     } else {
       o.chartobj.resize({
@@ -839,7 +844,7 @@ chartToSvg = function(o, asSVG) {
   svgdiv = o.chartdiv.getElementsByTagName('svg')[0];
   svgcopy = svgdiv.cloneNode(true);
   copyCSS(svgcopy, svgdiv);
-  rect = svgdiv.getBoundingClientRect();
+  rect = o.main.getBoundingClientRect();
   svgcopy.setAttribute('xlink', 'http://www.w3.org/1999/xlink');
   source = (new XMLSerializer()).serializeToString(svgcopy);
   source = source.replace(/(\w+)?:?xlink=/g, 'xmlns:xlink=');
