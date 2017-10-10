@@ -70,8 +70,19 @@ charts_linked = (obj, nodes, links, options) ->
       .data(nodes)
     .enter().append("g")
       .attr("class", "link_node")
+      .attr("data-source", (d) => d.id)
       .call(force.drag);
-
+  
+  lTargets = []
+  
+  gatherTargets = (d, e) ->
+    if e.source == d or e.target == d
+      lTargets.push(e.source.id)
+      lTargets.push(e.target.id)
+      return true
+    return false
+  
+  
   node.append("circle")
       .attr("class", "link_node")
       .attr("data-source", (d) => d.id)
@@ -82,11 +93,17 @@ charts_linked = (obj, nodes, links, options) ->
       .attr("r", (d) => d.size)
       .on("mouseover", (d) ->
         #alert(d.id)
-        d3.selectAll("path").filter((e) => e.source == d or e.target == d ).style("stroke-opacity", "1")
+        lTargets.push(d.id)
+        d3.selectAll("path").filter((e) => gatherTargets(d,e) ).style("stroke-opacity", "1")
+        d3.selectAll("circle").filter((e) => e.id not in lTargets ).style("opacity", "0.2")
+        d3.selectAll("text").filter((e) => e.id not in lTargets ).style("opacity", "0.2")
         )
       .on("mouseout", (d) ->
         #alert(d.id)
+        lTargets = []
         d3.selectAll("path").filter((e) => e.source == d or e.target == d ).style("stroke-opacity", "")
+        d3.selectAll("circle").style("opacity", null)
+        d3.selectAll("text").style("opacity", null)
         )
   
   
