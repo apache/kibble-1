@@ -109,9 +109,7 @@ charts_linked = (obj, nodes, links, options) ->
   
   
 
-  node.append("svg:a")
-      .attr("xlink:href", (d) => d.name)
-      .append("text")
+  node.append("text")
       .attr("dx", 13)
       .attr("dy", ".35em")
       .text((d) => d.name)

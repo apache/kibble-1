@@ -11,6 +11,7 @@
     stroke-width: 1;
     stroke-position: outside;
     stroke: rgba(255,255,255,0.75);
+    cursor: help;
 }
 .link_link {
     fill: none;
