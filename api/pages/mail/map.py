@@ -82,7 +82,7 @@ def run(API, environ, indata, session):
             'per_ml': {
                 'terms': {
                     'field': 'replyto.keyword',
-                    'size': 75
+                    'size': 125
                 }                
             }
         }
@@ -120,7 +120,7 @@ def run(API, environ, indata, session):
             }
         }
         xquery = copy.deepcopy(query)
-        xquery['query']['bool']['must'].append({'match': {'replyto': sourceID}})
+        xquery['query']['bool']['must'].append({'term': {'replyto.keyword': sourceID}})
         xres = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="email",
@@ -129,7 +129,8 @@ def run(API, environ, indata, session):
         )
         authors = []
         for person in xres['aggregations']['per_ml']['buckets']:
-            authors.append(person['key'])
+            pk = person['key']
+            authors.append(pk)
         if emails > max_emails:
             max_emails = emails
         repos[sourceID] = authors
@@ -173,7 +174,7 @@ def run(API, environ, indata, session):
                             xlinks.append(author)
                     lname = "%s||%s" % (ID, xID) # Link name
                     rname = "%s||%s" % (xID, ID) # Reverse link name
-                    if len(xlinks) > 0 and not rname in repo_links:
+                    if len(xlinks) > 0 and rname not in repo_links:
                         mylinks[xID] = len(xlinks)
                         repo_links[lname] = repo_links.get(lname, 0) + len(xlinks) # How many contributors in common between project A and B?
                         if repo_links[lname] > max_shared:
@@ -199,7 +200,7 @@ def run(API, environ, indata, session):
     nodes = []
     links = []
     existing_repos = []
-    for sourceID in repo_notoriety.keys():
+    for sourceID, ns in repo_notoriety.items():
         lsize = 0
         for k in repo_links.keys():
             fr, to = k.split('||')
@@ -208,7 +209,7 @@ def run(API, environ, indata, session):
         asize = len(repo_authors[sourceID])
         doc = {
             'id': sourceID,
-            'name': repodatas[sourceID]['_source']['name'],
+            'name': repodatas[sourceID]['_source'].get('name', sourceID),
             'replies': repo_commits[sourceID],
             'authors': asize,
             'links': lsize,
