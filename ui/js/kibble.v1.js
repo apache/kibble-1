@@ -373,7 +373,7 @@ charts_linked = function(obj, nodes, links, options) {
     return function(d) {
       return d.name;
     };
-  })(this)).append("text").attr("dx", 12).attr("dy", ".35em").text((function(_this) {
+  })(this)).append("text").attr("dx", 13).attr("dy", ".35em").text((function(_this) {
     return function(d) {
       return d.name;
     };
