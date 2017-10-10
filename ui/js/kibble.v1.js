@@ -318,7 +318,7 @@ charts_linechart = function(obj, data, options) {
 charts_linked = function(obj, nodes, links, options) {
   var avg, bb, edges, force, g, lcolors, licolors, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip;
   llcolors = genColors(nodes.length + 1, 0.55, 0.475, true);
-  licolors = genColors(nodes.length + 1, 0.3, 0.35, true);
+  licolors = genColors(nodes.length + 1, 0.375, 0.35, true);
   lla = 0;
   obj.className = "chartChart linkedChart";
   svg = d3.select(obj).append("svg").attr("width", "100%").attr("height", "600");

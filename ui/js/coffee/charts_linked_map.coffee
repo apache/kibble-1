@@ -1,7 +1,7 @@
 
 charts_linked = (obj, nodes, links, options) ->
   llcolors = genColors(nodes.length+1, 0.55, 0.475, true)
-  licolors = genColors(nodes.length+1, 0.3, 0.35, true)
+  licolors = genColors(nodes.length+1, 0.375, 0.35, true)
   lla = 0
   obj.className = "chartChart linkedChart"
   svg = d3.select(obj).append("svg")
