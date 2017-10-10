@@ -434,7 +434,6 @@ widgets:
 ###### RELATIONSHIPS
 
 ## CODE
-### EMAIL
     code-rel:
         title: "Code/committer relationships"
         rows:
@@ -464,4 +463,35 @@ widgets:
                         type:   "relationship"
                         source: "code/relationships"
                         name:   "Project relationships"
+                        blocks: 12
+## EMAIL
+    mail-rel:
+        title: "Mailing list relationships"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+                    -
+                        type:   mailpicker
+                        blocks: 4
+                        source: "sources"
+                        eargs:
+                            types: ['mail', 'ponymail', 'pipermail', 'hyperkitty']
+                        name:   Mailing list picker"
+            -
+                name: "Trends"
+                children:
+                    -
+                        type:   "relationship"
+                        source: "mail/relationships"
+                        name:   "Mailing list relationships"
                         blocks: 12
