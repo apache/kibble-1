@@ -316,7 +316,7 @@ charts_linechart = function(obj, data, options) {
 };
 
 charts_linked = function(obj, nodes, links, options) {
-  var avg, bb, edges, force, g, lcolors, licolors, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip;
+  var avg, bb, edges, force, g, gatherTargets, lTargets, lcolors, licolors, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip;
   llcolors = genColors(nodes.length + 1, 0.55, 0.475, true);
   licolors = genColors(nodes.length + 1, 0.375, 0.35, true);
   lla = 0;
@@ -378,7 +378,20 @@ charts_linked = function(obj, nodes, links, options) {
     d3.select(this).style("stroke-opacity", "0.375");
     return tooltip.transition().duration(200).style("opacity", 0);
   });
-  node = g.selectAll(".node").data(nodes).enter().append("g").attr("class", "link_node").call(force.drag);
+  node = g.selectAll(".node").data(nodes).enter().append("g").attr("class", "link_node").attr("data-source", (function(_this) {
+    return function(d) {
+      return d.id;
+    };
+  })(this)).call(force.drag);
+  lTargets = [];
+  gatherTargets = function(d, e) {
+    if (e.source === d || e.target === d) {
+      lTargets.push(e.source.id);
+      lTargets.push(e.target.id);
+      return true;
+    }
+    return false;
+  };
   node.append("circle").attr("class", "link_node").attr("data-source", (function(_this) {
     return function(d) {
       return d.id;
@@ -391,17 +404,33 @@ charts_linked = function(obj, nodes, links, options) {
       return d.size;
     };
   })(this)).on("mouseover", function(d) {
-    return d3.selectAll("path").filter((function(_this) {
+    lTargets.push(d.id);
+    d3.selectAll("path").filter((function(_this) {
       return function(e) {
-        return e.source === d || e.target === d;
+        return gatherTargets(d, e);
       };
     })(this)).style("stroke-opacity", "1");
+    d3.selectAll("circle").filter((function(_this) {
+      return function(e) {
+        var ref;
+        return ref = e.id, indexOf.call(lTargets, ref) < 0;
+      };
+    })(this)).style("opacity", "0.2");
+    return d3.selectAll("text").filter((function(_this) {
+      return function(e) {
+        var ref;
+        return ref = e.id, indexOf.call(lTargets, ref) < 0;
+      };
+    })(this)).style("opacity", "0.2");
   }).on("mouseout", function(d) {
-    return d3.selectAll("path").filter((function(_this) {
+    lTargets = [];
+    d3.selectAll("path").filter((function(_this) {
       return function(e) {
         return e.source === d || e.target === d;
       };
     })(this)).style("stroke-opacity", "");
+    d3.selectAll("circle").style("opacity", null);
+    return d3.selectAll("text").style("opacity", null);
   });
   node.append("svg:a").attr("xlink:href", (function(_this) {
     return function(d) {
