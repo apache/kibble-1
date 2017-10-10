@@ -495,3 +495,34 @@ widgets:
                         source: "mail/relationships"
                         name:   "Mailing list relationships"
                         blocks: 12
+## ISSUE TRACKERS
+    issue-rel:
+        title: "Mailing list relationships"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+                    -
+                        type:   mailpicker
+                        blocks: 4
+                        source: "sources"
+                        eargs:
+                            types: ['jira', 'bugzilla', 'issue']
+                        name:   Issue tracker picker"
+            -
+                name: "Trends"
+                children:
+                    -
+                        type:   "relationship"
+                        source: "issue/relationships"
+                        name:   "Issue tracker relationships"
+                        blocks: 12

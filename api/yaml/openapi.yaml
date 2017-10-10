@@ -611,6 +611,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /api/issue/relationships:
+    get:
+      summary: Shows a breakdown of contributor relationships between issue trackers
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows a breakdown of contributor relationships between issue trackers
+      security:
+        - cookieAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/issue/retention:
     get:
       summary: Shows retention metrics for a set of issue trackers over a given period of time
