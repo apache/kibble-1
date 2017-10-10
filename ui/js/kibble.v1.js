@@ -343,7 +343,9 @@ charts_linked = function(obj, nodes, links, options) {
     return edges.push({
       source: sourceNode,
       target: targetNode,
-      value: e.value
+      value: e.value,
+      name: e.name,
+      tooltip: e.tooltip
     });
   });
   force.nodes(nodes).links(edges).start();
@@ -351,7 +353,14 @@ charts_linked = function(obj, nodes, links, options) {
     return function(d) {
       return "stroke-width: " + d.value + ";";
     };
-  })(this));
+  })(this)).on("mouseover", function(d) {
+    if (d.tooltip) {
+      tooltip.transition().duration(100).style("opacity", .9);
+      return tooltip.html(("<b>" + d.name + ":</b><br/>") + d.tooltip.replace("\n", "<br/>")).style("left", (d3.event.pageX + 20) + "px").style("top", (d3.event.pageY - 28) + "px");
+    }
+  }).on("mouseout", function(d) {
+    return tooltip.transition().duration(200).style("opacity", 0);
+  });
   node = g.selectAll(".node").data(nodes).enter().append("g").attr("class", "link_node").call(force.drag);
   node.append("circle").attr("class", "link_node").attr("style", function(d) {
     lla++;
