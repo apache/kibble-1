@@ -495,6 +495,39 @@ widgets:
                         source: "mail/relationships"
                         name:   "Mailing list relationships"
                         blocks: 12
+                        
+## VIP AUTHOR MAP
+    mail-map:
+        title: "Important email authors"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+                    -
+                        type:   mailpicker
+                        blocks: 4
+                        source: "sources"
+                        eargs:
+                            types: ['mail', 'ponymail', 'pipermail', 'hyperkitty']
+                        name:   Mailing list picker"
+            -
+                name: "Trends"
+                children:
+                    -
+                        type:   "relationship"
+                        source: "mail/map"
+                        name:   "Discussion relationships"
+                        blocks: 12
+                        
 ## ISSUE TRACKERS
     issue-rel:
         title: "Mailing list relationships"
