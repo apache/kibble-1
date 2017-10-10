@@ -183,7 +183,7 @@ def run(API, environ, indata, session):
                         repo_links[lname] = repo_links.get(lname, 0) + len(xlinks) # How many contributors in common between project A and B?
                         if repo_links[lname] > max_shared:
                             max_shared = repo_links[lname]
-        if not ID in repo_notoriety:
+        if ID not in repo_notoriety:
             repo_notoriety[ID] = set()
         repo_notoriety[ID].update(mylinks.keys()) # How many projects is this repo connected to?
         if ID != oID:
@@ -198,12 +198,18 @@ def run(API, environ, indata, session):
     links = []
     existing_repos = []
     for sourceID in repo_notoriety.keys():
+        lsize = 0
+        for k in repo_links.keys():
+            fr, to = k.split('@')
+            if fr == sourceID or to == sourceID:
+                lsize += 1
         doc = {
             'id': sourceID,
             'name': sourceID,
             'commits': repo_commits[sourceID],
-            'links': len(repo_notoriety[sourceID]),
-            'size': max(5, (1 - abs(math.log10(repo_commits[sourceID] / max_commits))) * 45)
+            'links': lsize,
+            'size': max(5, (1 - abs(math.log10(repo_commits[sourceID] / max_commits))) * 45),
+            'tooltip': "%u connections, %u commits" % (lsize, repo_commits[sourceID])
         }
         nodes.append(doc)
         existing_repos.append(sourceID)
