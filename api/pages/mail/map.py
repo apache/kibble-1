@@ -77,7 +77,7 @@ def run(API, environ, indata, session):
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
     if indata.get('search'):
-        query['query']['bool']['must'].append({'match': {'subject': indata.get('search')}})
+        query['query']['bool']['must'].append({'regexp': {'subject': indata.get('search')}})
     
     if indata.get('email'):
         query['query']['bool']['minimum_should_match'] = 1
