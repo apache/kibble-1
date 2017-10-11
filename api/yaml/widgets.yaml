@@ -545,7 +545,7 @@ widgets:
                         source: "views"
                         name:   "Quick filter"
                     -
-                        type:   mailpicker
+                        type:   issuepicker
                         blocks: 4
                         source: "sources"
                         eargs:
