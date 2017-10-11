@@ -213,6 +213,7 @@ def run(API, environ, indata, session):
         asize = len(repo_authors[sourceID])
         doc = {
             'id': sourceID,
+            'gravatar': hashlib.md5(sourceID.lower().encode('utf-8')).hexdigest(),
             'name': repodatas[sourceID]['_source'].get('name', sourceID),
             'replies': repo_commits[sourceID],
             'authors': asize,

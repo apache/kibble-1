@@ -67,6 +67,27 @@ charts_linked = (obj, nodes, links, options) ->
                 .style("opacity", 0);	
       )
 
+   
+  defs = svg.append("defs")
+  nodes.forEach( (n) ->
+    if n.gravatar
+      defs.append("pattern")
+      .attr("id", "gravatar-" + n.id)
+      .attr("patternUnits", "userSpaceOnUse")
+      .attr("width", n.size*2)
+      .attr("height", n.size*2)
+      .attr("x", n.size)
+      .attr("y", n.size)
+      .append("image")
+      .attr("width", n.size*2)
+      .attr("height", n.size*2)
+      .attr("x", "0")
+      .attr("y", "0")
+      .attr("xlink:href", "https://secure.gravatar.com/avatar/#{n.gravatar}.png?d=identicon")
+    else
+      n.gravatar = false
+  )  
+  
   node = g.selectAll(".node")
       .data(nodes)
     .enter().append("g")
@@ -85,6 +106,7 @@ charts_linked = (obj, nodes, links, options) ->
   
   uptop = svg.append("g")
   x = null
+ 
   node.append("circle")
       .attr("class", "link_node")
       .attr("data-source", (d) => d.id)
@@ -92,9 +114,13 @@ charts_linked = (obj, nodes, links, options) ->
         lla++
         return llcolors[lla-1]
       )
-      .attr("style", (d) ->
-        return "fill: #{d3.select(this).attr('data-color')};"
+      .style("fill", (d) ->
+        if d.gravatar
+          return "url(#gravatar-#{d.id})"
+        else
+          return "#{d3.select(this).attr('data-color')}"
       )
+      .style("stroke", "black")
       .attr("r", (d) => d.size)
       .on("mouseover", (d) ->
         #alert(d.id)
