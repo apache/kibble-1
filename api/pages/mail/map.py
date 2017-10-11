@@ -76,11 +76,16 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    if indata.get('email'):
-        query['query']['bool']['must'].append({'term': {'sender': indata.get('email')}})
     if indata.get('search'):
         query['query']['bool']['must'].append({'match': {'subject': indata.get('search')}})
     
+    if indata.get('email'):
+        query['query']['bool']['minimum_should_match'] = 1
+        query['query']['bool']['should'] = [
+            {'term': {'replyto.keyword': indata.get('email')}},
+            {'term': {'sender': indata.get('email')}},
+            ]
+        
     # Get number of commits, this period, per repo
     query['aggs'] = {
             'per_ml': {
@@ -105,6 +110,10 @@ def run(API, environ, indata, session):
     max_shared = 0
     max_authors = 0
     
+    if indata.get('email'):
+            del query['query']['bool']['should']
+            del query['query']['bool']['minimum_should_match']
+    
     # For each repo, count commits and gather data on authors
     for doc in res['aggregations']['per_ml']['buckets']:
         sourceID = doc['key']
@@ -114,6 +123,7 @@ def run(API, environ, indata, session):
         if emails > (span/86400)*4: # More than 4/day and we consider you a bot!
             continue
         
+            
         # Gather the unique authors/committers
         query['aggs'] = {
             'per_ml': {
@@ -124,6 +134,7 @@ def run(API, environ, indata, session):
             }
         }
         xquery = copy.deepcopy(query)
+        
         xquery['query']['bool']['must'].append({'term': {'replyto.keyword' if not indata.get('author') else 'sender': sourceID}})
         xres = session.DB.ES.search(
             index=session.DB.dbname,
@@ -164,6 +175,7 @@ def run(API, environ, indata, session):
             m = re.search(indata.get('collapse'), repodata['_source']['email'])
             if m:
                 ID = m.group(1)
+        xlinks = []
         for xID, xrepo in repos.items():
             if xID in repodatas:
                 xrepodata = repodatas[xID]
@@ -172,17 +184,16 @@ def run(API, environ, indata, session):
                     if m:
                         xID = m.group(1)
                 if xID != ID:
-                    xlinks = []
-                    for author in xrepo:
-                        if author in repo:
-                            xlinks.append(author)
-                    lname = "%s||%s" % (ID, xID) # Link name
-                    rname = "%s||%s" % (xID, ID) # Reverse link name
-                    if len(xlinks) > 0 and rname not in repo_links:
-                        mylinks[xID] = len(xlinks)
-                        repo_links[lname] = repo_links.get(lname, 0) + len(xlinks) # How many contributors in common between project A and B?
-                        if repo_links[lname] > max_shared:
-                            max_shared = repo_links[lname]
+                    
+                    if ID in xrepo:
+                        xlinks.append(xID)
+                        lname = "%s||%s" % (ID, xID) # Link name
+                        rname = "%s||%s" % (xID, ID) # Reverse link name
+                        if len(xlinks) > 0 and rname not in repo_links:
+                            mylinks[ID] = mylinks.get(ID, 0) + 1
+                            repo_links[lname] = repo_links.get(lname, 0) + len(xlinks) # How many contributors in common between project A and B?
+                            if repo_links[lname] > max_shared:
+                                max_shared = repo_links[lname]
         if ID not in repo_notoriety:
             repo_notoriety[ID] = set()
         repo_notoriety[ID].update(mylinks.keys()) # How many projects is this repo connected to?
