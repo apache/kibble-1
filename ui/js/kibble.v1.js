@@ -316,7 +316,7 @@ charts_linechart = function(obj, data, options) {
 };
 
 charts_linked = function(obj, nodes, links, options) {
-  var avg, bb, edges, force, g, gatherTargets, lTargets, lcolors, licolors, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip, uptop, x;
+  var avg, bb, defs, edges, force, g, gatherTargets, lTargets, lcolors, licolors, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip, uptop, x;
   llcolors = genColors(nodes.length + 1, 0.55, 0.475, true);
   licolors = genColors(nodes.length + 1, 0.375, 0.35, true);
   lla = 0;
@@ -382,6 +382,14 @@ charts_linked = function(obj, nodes, links, options) {
     d3.select(this).style("stroke-opacity", "0.375");
     return tooltip.transition().duration(200).style("opacity", 0);
   });
+  defs = svg.append("defs");
+  nodes.forEach(function(n) {
+    if (n.gravatar) {
+      return defs.append("pattern").attr("id", "gravatar-" + n.id).attr("patternUnits", "userSpaceOnUse").attr("width", n.size * 2).attr("height", n.size * 2).attr("x", n.size).attr("y", n.size).append("image").attr("width", n.size * 2).attr("height", n.size * 2).attr("x", "0").attr("y", "0").attr("xlink:href", "https://secure.gravatar.com/avatar/" + n.gravatar + ".png?d=identicon");
+    } else {
+      return n.gravatar = false;
+    }
+  });
   node = g.selectAll(".node").data(nodes).enter().append("g").attr("class", "link_node").attr("data-source", (function(_this) {
     return function(d) {
       return d.id;
@@ -407,9 +415,13 @@ charts_linked = function(obj, nodes, links, options) {
       lla++;
       return llcolors[lla - 1];
     };
-  })(this)).attr("style", function(d) {
-    return "fill: " + (d3.select(this).attr('data-color')) + ";";
-  }).attr("r", (function(_this) {
+  })(this)).style("fill", function(d) {
+    if (d.gravatar) {
+      return "url(#gravatar-" + d.id + ")";
+    } else {
+      return "" + (d3.select(this).attr('data-color'));
+    }
+  }).style("stroke", "black").attr("r", (function(_this) {
     return function(d) {
       return d.size;
     };
