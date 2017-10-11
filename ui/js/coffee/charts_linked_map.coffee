@@ -138,7 +138,8 @@ charts_linked = (obj, nodes, links, options) ->
       .on("mouseout", (d) ->
         #alert(d.id)
         lTargets = []
-        x.selectAll("*").remove()
+        if x
+          x.selectAll("*").remove()
         d3.selectAll("circle").style("opacity", null)
         d3.selectAll("text").style("opacity", null)
         d3.selectAll("path").style("stroke-opacity", null)
