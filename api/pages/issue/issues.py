@@ -97,7 +97,8 @@ def run(API, environ, indata, session):
     for bucket in res['aggregations']['commits']['buckets']:
         ts = int(bucket['key'] / 1000)
         count = bucket['doc_count']
-        timeseries[ts] = {'opened': count}
+        timeseries[ts] = timeseries.get(ts, { 'opened': 0, 'closed': 0})
+        timeseries[ts]['opened'] += count
         
     
     ####################################################################
@@ -127,6 +128,8 @@ def run(API, environ, indata, session):
             }
     if viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+    if indata.get('source'):
+        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     if indata.get('email'):
         query['query']['bool']['must'].append({'term': {'issueCloser': indata.get('email')}})
     
@@ -152,7 +155,7 @@ def run(API, environ, indata, session):
         if not ts in timeseries:
             timeseries[ts] = {'opened': 0, 'closed': count}
         else:
-            timeseries[ts]['closed'] = count
+            timeseries[ts]['closed'] = timeseries[ts].get('closed', 0) + count
     
     ts = []
     for k, v in timeseries.items():
