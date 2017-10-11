@@ -86,6 +86,7 @@ filterPerson = (email) ->
     updateWidgets('contacts', null, { email: email })
     updateWidgets('top5', null, { email: email })
     updateWidgets('trends', null, { email: email })
+    updateWidgets('relationship', null, { email: email })
     updateWidgets('viewpicker', null, { email: email })
     globArgs.email = email
               

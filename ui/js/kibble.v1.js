@@ -6478,6 +6478,9 @@ filterPerson = function(email) {
   updateWidgets('trends', null, {
     email: email
   });
+  updateWidgets('relationship', null, {
+    email: email
+  });
   updateWidgets('viewpicker', null, {
     email: email
   });
