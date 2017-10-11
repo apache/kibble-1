@@ -316,7 +316,7 @@ charts_linechart = function(obj, data, options) {
 };
 
 charts_linked = function(obj, nodes, links, options) {
-  var avg, bb, edges, force, g, gatherTargets, lTargets, lcolors, licolors, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip;
+  var avg, bb, edges, force, g, gatherTargets, lTargets, lcolors, licolors, link, linked_zoom, lla, llcolors, llheight, llwidth, node, svg, tooltip, uptop, x;
   llcolors = genColors(nodes.length + 1, 0.55, 0.475, true);
   licolors = genColors(nodes.length + 1, 0.375, 0.35, true);
   lla = 0;
@@ -357,7 +357,11 @@ charts_linked = function(obj, nodes, links, options) {
     return lcolors[e.id] = licolors[lla++];
   });
   lla = 0;
-  link = g.selectAll(".link").data(edges).enter().append("path").attr("class", "link_link").attr("data-source", (function(_this) {
+  link = g.selectAll(".link").data(edges).enter().append("path").attr("class", "link_link").attr("id", (function(_this) {
+    return function(d) {
+      return d.name;
+    };
+  })(this)).attr("data-source", (function(_this) {
     return function(d) {
       return d.source.id;
     };
@@ -392,25 +396,41 @@ charts_linked = function(obj, nodes, links, options) {
     }
     return false;
   };
+  uptop = svg.append("g");
+  x = null;
   node.append("circle").attr("class", "link_node").attr("data-source", (function(_this) {
     return function(d) {
       return d.id;
     };
+  })(this)).attr("data-color", (function(_this) {
+    return function(d) {
+      lla++;
+      return llcolors[lla - 1];
+    };
   })(this)).attr("style", function(d) {
-    lla++;
-    return "fill: " + llcolors[lla - 1] + ";";
+    return "fill: " + (d3.select(this).attr('data-color')) + ";";
   }).attr("r", (function(_this) {
     return function(d) {
       return d.size;
     };
   })(this)).on("mouseover", function(d) {
     lTargets.push(d.id);
-    d3.selectAll("path").style("stroke-opacity", "0.1");
+    d3.selectAll("path").style("stroke-opacity", "0.075");
     d3.selectAll("path").filter((function(_this) {
       return function(e) {
         return gatherTargets(d, e);
       };
-    })(this)).style("stroke-opacity", "1");
+    })(this)).style("stroke-opacity", "1").style("z-index", "20");
+    d3.selectAll("path").filter((function(_this) {
+      return function(e) {
+        return e.source === d || e.target;
+      };
+    })(this)).each((function(_this) {
+      return function(o) {
+        x = d3.select(_this).insert("g", ":first-child").style("stroke", "red !important");
+        return x.append("use").attr("xlink:href", "#" + o.name);
+      };
+    })(this));
     d3.selectAll("circle").filter((function(_this) {
       return function(e) {
         var ref;
@@ -425,6 +445,7 @@ charts_linked = function(obj, nodes, links, options) {
     })(this)).style("opacity", "0.2");
   }).on("mouseout", function(d) {
     lTargets = [];
+    x.selectAll("*").remove();
     d3.selectAll("circle").style("opacity", null);
     d3.selectAll("text").style("opacity", null);
     return d3.selectAll("path").style("stroke-opacity", null);

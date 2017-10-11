@@ -46,6 +46,7 @@ charts_linked = (obj, nodes, links, options) ->
       .data(edges)
       .enter().append("path")
       .attr("class", "link_link")
+      .attr("id", (d) => d.name)
       .attr("data-source", (d) => d.source.id)
       .attr("data-target", (d) => d.target.id)
       .attr("style", (d) =>
@@ -82,26 +83,36 @@ charts_linked = (obj, nodes, links, options) ->
       return true
     return false
   
-  
+  uptop = svg.append("g")
+  x = null
   node.append("circle")
       .attr("class", "link_node")
       .attr("data-source", (d) => d.id)
-      .attr("style", (d) ->
+      .attr("data-color", (d) =>
         lla++
-        return "fill: #{llcolors[lla-1]};"
+        return llcolors[lla-1]
+      )
+      .attr("style", (d) ->
+        return "fill: #{d3.select(this).attr('data-color')};"
       )
       .attr("r", (d) => d.size)
       .on("mouseover", (d) ->
         #alert(d.id)
         lTargets.push(d.id)
-        d3.selectAll("path").style("stroke-opacity", "0.1")
-        d3.selectAll("path").filter((e) => gatherTargets(d,e) ).style("stroke-opacity", "1")
+        d3.selectAll("path").style("stroke-opacity", "0.075")
+        d3.selectAll("path").filter((e) => gatherTargets(d,e) ).style("stroke-opacity", "1").style("z-index", "20")
+        d3.selectAll("path").filter((e) => e.source == d or e.target).each((o) =>
+          
+          x = d3.select(this).insert("g", ":first-child").style("stroke", "red !important")
+          x.append("use").attr("xlink:href", "#" + o.name)
+        )
         d3.selectAll("circle").filter((e) => e.id not in lTargets ).style("opacity", "0.2")
         d3.selectAll("text").filter((e) => e.id not in lTargets ).style("opacity", "0.2")
         )
       .on("mouseout", (d) ->
         #alert(d.id)
         lTargets = []
+        x.selectAll("*").remove()
         d3.selectAll("circle").style("opacity", null)
         d3.selectAll("text").style("opacity", null)
         d3.selectAll("path").style("stroke-opacity", null)
