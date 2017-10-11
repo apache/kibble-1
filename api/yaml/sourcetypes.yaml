@@ -44,7 +44,7 @@ ponymail:
 
 pipermail:
     title: "Pipermail archive"
-    regex: "https?://.+/archives/.+/"
+    regex: "https?://.+/(archives|pipermail)/.+/"
     example: "https://www.redhat.com/archives/libvir-list/"
 
 gerrit:
