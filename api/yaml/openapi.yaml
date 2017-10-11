@@ -1829,6 +1829,9 @@ components:
         search:
           type: string
           description: for some widgets, this enables sub-filtering based on searches
+        links:
+          type: integer
+          description: for relationship maps, this denotes the minimum link strength (no. of connections) that makes up a link.
     Sloc:
       properties:
         count:

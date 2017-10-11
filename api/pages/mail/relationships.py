@@ -100,6 +100,7 @@ def run(API, environ, indata, session):
     max_links = 0
     max_shared = 0
     max_authors = 0
+    minLinks = indata.get('links', 1)
     
     # For each repo, count commits and gather data on authors
     for doc in res['aggregations']['per_ml']['buckets']:
@@ -172,7 +173,7 @@ def run(API, environ, indata, session):
                             xlinks.append(author)
                     lname = "%s||%s" % (ID, xID) # Link name
                     rname = "%s||%s" % (xID, ID) # Reverse link name
-                    if len(xlinks) > 0 and not rname in repo_links:
+                    if len(xlinks) >= minLinks and not rname in repo_links:
                         mylinks[xID] = len(xlinks)
                         repo_links[lname] = repo_links.get(lname, 0) + len(xlinks) # How many contributors in common between project A and B?
                         if repo_links[lname] > max_shared:

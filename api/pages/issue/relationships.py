@@ -153,6 +153,7 @@ def run(API, environ, indata, session):
     repo_notoriety = {}
     repodatas = {}
     repo_authors = {}
+    minLinks = indata.get('links', 1)
 
     # Grab data of all sources
     for ID, repo in repos.items():
@@ -189,7 +190,7 @@ def run(API, environ, indata, session):
                             xlinks.append(author)
                     lname = "%s@%s" % (ID, xID) # Link name
                     rname = "%s@%s" % (xID, ID) # Reverse link name
-                    if len(xlinks) > 0 and not rname in repo_links:
+                    if len(xlinks) >= minLinks and not rname in repo_links:
                         mylinks[xID] = len(xlinks)
                         repo_links[lname] = repo_links.get(lname, 0) + len(xlinks) # How many contributors in common between project A and B?
                         if repo_links[lname] > max_shared:
