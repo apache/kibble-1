@@ -425,7 +425,47 @@ multiviewexplorer = (json, state) ->
                     updateWidgets('trends', null, x)
                     updateWidgets('radar', null, x)
               )
-            
+        
+subFilterGlob = null
+subFilter = () ->
+        source = subFilterGlob
+        if source == ""
+                source = null
+        tName = 'subfilter'
+        globArgs[tName] = source
+        x = {}
+        x[tName] = source
+        updateWidgets('sourcepicker', null, x)
+        updateWidgets('repopicker', null, x)
+        updateWidgets('issuepicker', null, x)
+        updateWidgets('mailpicker', null, x)
+        updateWidgets('logpicker', null, x)
+        updateWidgets('donut', null, x)
+        updateWidgets('line', null, x)
+        updateWidgets('contacts', null, x)
+        updateWidgets('top5', null, x)
+        updateWidgets('factors', null, x)
+        updateWidgets('trends', null, x)
+        updateWidgets('radar', null, x)
+        updateWidgets('widget', null, x)
+        updateWidgets('relationship', null, x)
+        updateWidgets('treemap', null, x)
+        updateWidgets('report', null, x)
+        updateWidgets('mvp', null, x)
+        updateWidgets('comstat', null, x)
+        updateWidgets('worldmap', null, x)
+        
+        $( "a" ).each( () ->
+            url = $(this).attr('href')
+            if url
+                m = url.match(/^(.+\?page=[-a-z]+.*)(?:&subfilter=[a-f0-9]+)?(.*)$/)
+                if m
+                    if source
+                            $(this).attr('href', "#{m[1]}&subfilter=#{source}#{m[2]}")
+                    else
+                            $(this).attr('href', "#{m[1]}#{m[2]}")
+        )
+
 viewexplorer = (json, state) ->
         org = json.organisation
         h = document.createElement('h4')
@@ -499,6 +539,14 @@ viewexplorer = (json, state) ->
                 )
                 
         )
+        
+        # Quick filter
+        state.widget.inject(new HTML('br'))
+        i = new HTML('input', {type: 'text', value: globArgs.subfilter, onChange: 'subFilterGlob = this.value;', placeholder: 'sub-filter'})
+        b = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-success', type: 'button', onClick: 'subFilter();', value: "sub-filter"})
+        state.widget.inject(i)
+        state.widget.inject(b)
+            
         
         if globArgs.email
                 div = new HTML('div', {}, "Currently filtering results based on " + globArgs.email + ". - ")
