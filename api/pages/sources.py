@@ -72,7 +72,8 @@ def run(API, environ, indata, session):
         viewList = []
         if indata.get('view'):
             viewList = session.getView(indata.get('view'))
-        
+        if indata.get('subfilter') and indata.get('quick'):
+            viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
         
         
         sources = []
