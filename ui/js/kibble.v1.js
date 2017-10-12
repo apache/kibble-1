@@ -2124,7 +2124,7 @@ subFilter = function() {
     var m, url;
     url = $(this).attr('href');
     if (url) {
-      m = url.match(/^(.+\?page=[-a-z]+.*)(?:&subfilter=[a-f0-9]+)?(.*)$/);
+      m = url.match(/^(.+\?page=[-a-z]+.*?)(?:&subfilter=[^&]+)?(.*)$/);
       if (m) {
         if (source) {
           return $(this).attr('href', m[1] + "&subfilter=" + source + m[2]);
@@ -2137,7 +2137,7 @@ subFilter = function() {
 };
 
 viewexplorer = function(json, state) {
-  var ID, b, div, h, i, item, len, list, opt, org, q, ref, tName;
+  var ID, b, div, h, i, item, len, list, opt, org, q, ref, source, tName;
   org = json.organisation;
   h = document.createElement('h4');
   h.appendChild(document.createTextNode("Select a view to use:"));
@@ -2245,6 +2245,23 @@ viewexplorer = function(json, state) {
   });
   state.widget.inject(i);
   state.widget.inject(b);
+  if (globArgs.subfilter && globArgs.subfilter.length > 0) {
+    source = globArgs.subfilter;
+    $("a").each(function() {
+      var m, url;
+      url = $(this).attr('href');
+      if (url) {
+        m = url.match(/^(.+\?page=[-a-z]+.*?)(?:&subfilter=[a-f0-9]+)?(.*)$/);
+        if (m) {
+          if (source) {
+            return $(this).attr('href', m[1] + "&subfilter=" + source + m[2]);
+          } else {
+            return $(this).attr('href', "" + m[1] + m[2]);
+          }
+        }
+      }
+    });
+  }
   if (globArgs.email) {
     div = new HTML('div', {}, "Currently filtering results based on " + globArgs.email + ". - ");
     div.inject(new HTML('a', {

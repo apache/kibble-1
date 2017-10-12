@@ -458,13 +458,14 @@ subFilter = () ->
         $( "a" ).each( () ->
             url = $(this).attr('href')
             if url
-                m = url.match(/^(.+\?page=[-a-z]+.*)(?:&subfilter=[a-f0-9]+)?(.*)$/)
+                m = url.match(/^(.+\?page=[-a-z]+.*?)(?:&subfilter=[^&]+)?(.*)$/)
                 if m
                     if source
                             $(this).attr('href', "#{m[1]}&subfilter=#{source}#{m[2]}")
                     else
                             $(this).attr('href', "#{m[1]}#{m[2]}")
         )
+        
 
 viewexplorer = (json, state) ->
         org = json.organisation
@@ -546,7 +547,19 @@ viewexplorer = (json, state) ->
         b = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-success', type: 'button', onClick: 'subFilter();', value: "sub-filter"})
         state.widget.inject(i)
         state.widget.inject(b)
-            
+        
+        if globArgs.subfilter and globArgs.subfilter.length > 0
+                source = globArgs.subfilter
+                $( "a" ).each( () ->
+                        url = $(this).attr('href')
+                        if url
+                            m = url.match(/^(.+\?page=[-a-z]+.*?)(?:&subfilter=[a-f0-9]+)?(.*)$/)
+                            if m
+                                if source
+                                        $(this).attr('href', "#{m[1]}&subfilter=#{source}#{m[2]}")
+                                else
+                                        $(this).attr('href', "#{m[1]}#{m[2]}")
+                    )
         
         if globArgs.email
                 div = new HTML('div', {}, "Currently filtering results based on " + globArgs.email + ". - ")
