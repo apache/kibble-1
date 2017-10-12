@@ -33,6 +33,45 @@ import time
 
 class KibbleSession(object):
     
+    def getView(self, viewID):
+        if self.DB.ES.exists(index=self.DB.dbname, doc_type="view", id = viewID):
+            view = self.DB.ES.get(index=self.DB.dbname, doc_type="view", id = viewID)
+            return view['_source']['sourceList']
+        return []
+    
+    def subFilter(self, subfilter, view = []):
+        if len(subfilter) == 0:
+            return view
+        dOrg = self.user['defaultOrganisation'] or "apache"
+        res = self.DB.ES.search(
+                index=self.DB.dbname,
+                doc_type="source",
+                size = 5000,
+                body = {
+                    'query': {
+                        'bool': {
+                            'must': [
+                                {'term': {
+                                'organisation': dOrg
+                                }
+                            },
+                                {'regexp': {
+                            'sourceURL': ".*%s.*" % subfilter
+                        }}]
+                        }
+                        
+                    }
+                }
+            )
+        sources = []
+        for doc in res['hits']['hits']:
+            sid = doc['_source']['sourceID']
+            if (not view) or (sid in view):
+                sources.append(sid)
+        if not sources:
+            sources = ['x'] # blank return to not show eeeeverything
+        return sources
+            
     def logout(self):
         """Log out user and wipe cookie"""
         if self.user and self.cookie:

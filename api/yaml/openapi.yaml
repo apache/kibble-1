@@ -1832,6 +1832,9 @@ components:
         links:
           type: integer
           description: for relationship maps, this denotes the minimum link strength (no. of connections) that makes up a link.
+        subfilter:
+          type: string
+          description: Quickly defined view by sub-filtering the existing view and matching on sourceURLs
     Sloc:
       properties:
         count:
