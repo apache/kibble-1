@@ -181,19 +181,29 @@ def run(API, environ, indata, session):
     ]
     
     counts = {}
+    totExp = 0
     for person, age in activePeople.items():
+        totExp += time.time() - allPeople[person]
         for el in sorted(groups, key = lambda x: x[1], reverse = True):
             if allPeople[person] <= time.time() - el[1]:
                 counts[el[0]] = counts.get(el[0], 0) + 1
                 break
-          
+    avgyr = (totExp / (86400*365)) / len(activePeople)
     
     ts = sorted(ts, key = lambda x: x['date'])
     
+    avgm = ""
+    yr = int(avgyr)
+    ym = round((avgyr-yr)*12)
+    if yr >= 1:
+        avgm += "%u year%s" % (yr, "s" if yr != 1 else "")
+    if ym > 0:
+        avgm += "%s%u month%s" % (", " if yr > 0 else "", ym, "s" if ym != 1 else "")
     JSON_OUT = {
-        'text': "This shows Contributor retention as calculated over a %u year timespan.." % hl,
+        'text': "This shows Contributor retention as calculated over a %u year timespan. The average experience of currently active people is %s." % (hl, avgm),
         'timeseries': ts,
         'counts': counts,
+        'averageYears': avgyr,
         'okay': True,
         'responseTime': time.time() - now,
     }
