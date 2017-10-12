@@ -49,6 +49,7 @@ def run(API, environ, indata, session):
     peopleSeen = {}
     activePeople = {}
     allPeople = {}
+    FoundSomething = False
     
     ny = 1970
     while ny < cy or (ny == cy and nm <= tnow.month):
@@ -101,8 +102,9 @@ def run(API, environ, indata, session):
             )
         
         globcount = res['count']
-        if globcount == 0:
+        if globcount == 0 and not FoundSomething:
             continue
+        FoundSomething = True
         
         # Get top 1000 committers this period
         query['aggs'] = {

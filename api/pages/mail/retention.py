@@ -51,6 +51,7 @@ def run(API, environ, indata, session):
     allPeople = {}
     
     ny = 1970
+    FoundSomething = False
     while ny < cy or (ny == cy and nm <= tnow.month):
         d = datetime.date(ny, nm, 1)
         t = time.mktime(d.timetuple())
@@ -102,9 +103,9 @@ def run(API, environ, indata, session):
             )
         
         globcount = res['count']
-        if globcount == 0:
+        if globcount == 0 and not FoundSomething:
             continue
-        
+        FoundSomething = True
         # Get top 1000 committers this period
         query['aggs'] = {
                 'by_author': {
@@ -149,7 +150,7 @@ def run(API, environ, indata, session):
         retained = len(activePeople) - added
         
         ts.append({
-            'date': t,
+            'date': tf,
             'People who (re)joined': added,
             'People who quit': lost,
             'People retained': retained,
