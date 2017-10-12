@@ -31,9 +31,10 @@ def run(API, environ, indata, session):
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
-        if session.DB.ES.exists(index=session.DB.dbname, doc_type="view", id = indata['view']):
-            view = session.DB.ES.get(index=session.DB.dbname, doc_type="view", id = indata['view'])
-            viewList = view['_source']['sourceList']
+        viewList = session.getView(indata.get('view'))
+    if indata.get('subfilter'):
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
+    
     
     # Fetch all sources for default org
     dOrg = session.user['defaultOrganisation'] or "apache"
