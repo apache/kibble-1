@@ -6227,10 +6227,62 @@ radar = function(json, state) {
 };
 
 relationship = function(json, state) {
-  var chart, div;
+  var chart, div, i, id, invchk, invlbl, opt, q, sigsel;
   div = document.createElement('div');
   state.widget.inject(div, true);
-  return chart = new Chart(div, 'relationship', json, {});
+  chart = new Chart(div, 'relationship', json, {});
+  id = Math.floor(Math.random() * 987654321).toString(16);
+  invchk = new HTML('input', {
+    "class": "uniform",
+    style: {
+      marginRight: "10px"
+    },
+    id: "author_" + id,
+    type: 'checkbox',
+    checked: globArgs.author,
+    name: 'author',
+    value: 'true'
+  });
+  invchk.addEventListener("change", function() {
+    var author;
+    author = null;
+    if (this.checked) {
+      author = 'true';
+      globArgs['author'] = 'true';
+    }
+    return updateWidgets('relationship', null, {
+      author: author
+    });
+  });
+  invlbl = new HTML('label', {
+    "for": "author_" + id
+  }, "Inverse map (sender <-> recipient)");
+  state.widget.inject(invchk);
+  state.widget.inject(invlbl);
+  state.widget.inject(new HTML('br'));
+  state.widget.inject(new HTML('span', {}, "Minimum signal strength: "));
+  sigsel = new HTML('select', {
+    id: "signal_" + id
+  });
+  for (i = q = 1; q <= 5; i = ++q) {
+    opt = new HTML('option', {
+      value: i,
+      selected: String(i) === globArgs.links ? "selected" : null
+    }, String(i));
+    sigsel.inject(opt);
+  }
+  sigsel.addEventListener("change", function() {
+    var links;
+    links = null;
+    if (this.value) {
+      links = this.value;
+      globArgs['links'] = links;
+    }
+    return updateWidgets('relationship', null, {
+      links: links
+    });
+  });
+  return state.widget.inject(sigsel);
 };
 
 rcollate = function(list) {
