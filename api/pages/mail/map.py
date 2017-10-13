@@ -91,7 +91,7 @@ def run(API, environ, indata, session):
             'per_ml': {
                 'terms': {
                     'field': 'replyto.keyword' if not indata.get('author') else 'sender',
-                    'size': 100
+                    'size': 150
                 }                
             }
         }
@@ -109,6 +109,7 @@ def run(API, environ, indata, session):
     max_links = 0
     max_shared = 0
     max_authors = 0
+    minLinks = indata.get('links', 1)
     
     if indata.get('email'):
             del query['query']['bool']['should']
@@ -189,7 +190,7 @@ def run(API, environ, indata, session):
                         xlinks.append(xID)
                         lname = "%s||%s" % (ID, xID) # Link name
                         rname = "%s||%s" % (xID, ID) # Reverse link name
-                        if len(xlinks) > 0 and rname not in repo_links:
+                        if len(xlinks) > 0 and rname not in repo_links and len(xlinks) > minLinks:
                             mylinks[ID] = mylinks.get(ID, 0) + 1
                             repo_links[lname] = repo_links.get(lname, 0) + len(xlinks) # How many contributors in common between project A and B?
                             if repo_links[lname] > max_shared:
