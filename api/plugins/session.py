@@ -47,6 +47,7 @@ class KibbleSession(object):
                 index=self.DB.dbname,
                 doc_type="source",
                 size = 5000,
+                _source_include = ['sourceURL', 'sourceID'],
                 body = {
                     'query': {
                         'bool': {
@@ -54,10 +55,7 @@ class KibbleSession(object):
                                 {'term': {
                                 'organisation': dOrg
                                 }
-                            },
-                                {'regexp': {
-                            'sourceURL': ".*%s.*" % subfilter
-                        }}]
+                            }]
                         }
                         
                     }
@@ -66,7 +64,8 @@ class KibbleSession(object):
         sources = []
         for doc in res['hits']['hits']:
             sid = doc['_source']['sourceID']
-            if (not view) or (sid in view):
+            m = re.search(subfilter, doc['_source']['sourceURL'], re.IGNORECASE)
+            if m and ((not view) or (sid in view)):
                 sources.append(sid)
         if not sources:
             sources = ['x'] # blank return to not show eeeeverything
