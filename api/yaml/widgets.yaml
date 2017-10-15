@@ -577,6 +577,14 @@ widgets:
                         source: "views"
                         name:   "Quick filter"
             -
+                name: "Biography"
+                children:
+                    -
+                        type:   "bio"
+                        source: "bio/bio"
+                        name:   "Contributor biography"
+                        blocks: 12
+            -
                 name: "Trends"
                 children:
                     -
