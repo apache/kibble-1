@@ -79,6 +79,8 @@ def run(API, environ, indata, session):
         url = re.sub(r".+/([^/]+?)(?:\.git)?$", r"\1", repo['sourceURL'])
         if 'sloc' in repo:
             count = repo['sloc'].get('loc', 0)
+            if not count:
+                count = 0
             toprepos.append([url, count])
         
     toprepos = sorted(toprepos, key = lambda x: int(x[1]), reverse = True)
