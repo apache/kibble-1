@@ -33,6 +33,61 @@
     z-index: 2000;
 }
 
+.bio-image {
+   padding: 8px;
+   margin: 8px;
+   border: 1px solid #999;
+   border-radius: 2px;
+   float: left;
+}
+
+.bio-profile {
+   padding: 8px;
+   margin: 8px;
+   border: 1px solid #999;
+   border-radius: 2px;
+   background: #EEE;
+   min-height: 144px;
+   float: left;
+}
+
+.bio-profile h3 {
+   font-size: 1.75rem;
+}
+
+.bio-profile h2,h3 {
+   float: none;
+   margin: 2px;
+}
+
+.bio-profile hr {
+   border-top: 1px solid #AAA;
+   border-bottom: 1px solid #FFF;
+   margin: 1px;
+}
+
+.bio-fact {
+   border-right: 1px dotted #999;
+   padding: 4px;
+   margin: 4px;
+   float: left;
+   text-align: center;
+}
+
+.bio-fact:last-child {
+   border-right: none;
+}
+
+.bio-fact strong {
+   font-size: 12px;
+   text-transform: uppercase !important;
+   font-weight: normal;
+}
+
+.bio-fact span {
+   font-size: 16px;
+   font-weight: bold;
+}
 
 .sourceTypeIcon {
    float: left;
