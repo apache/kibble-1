@@ -1613,6 +1613,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /api/bio/trends:
+    get:
+      summary: Shows a quick trend summary of the past 6 months for a contributor
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows a quick trend summary of the past 6 months for a contributor
+      security:
+        - cookieAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   securitySchemes:
     cookieAuth:

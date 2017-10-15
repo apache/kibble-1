@@ -559,3 +559,71 @@ widgets:
                         source: "issue/relationships"
                         name:   "Issue tracker relationships"
                         blocks: 12
+
+## BIOGRAPHY
+    biography:
+        title: "Contributor Biography"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+            -
+                name: "Trends"
+                children:
+                    -
+                        type:   "trends"
+                        source: "bio/trends"
+                        name:   "Contributor activity"
+                        blocks: 12
+            -
+                name: "Code changes"
+                children:
+                    -
+                        type:           line
+                        source:         code/changes
+                        target:         ""
+                        name:           "Lines changed"
+                        blocks:         4
+                    -
+                        type:           line
+                        source:         code/commits
+                        target:         ""
+                        name:           "Commits"
+                        blocks:         4
+                    -
+                        type:           donut
+                        source:         code/top-commits
+                        target:         ""
+                        name:           "Top repositories"
+                        blocks:         4
+            -
+                name: "Issue tracker activity"
+                children:
+                    -
+                        type:           line
+                        source:         issue/issues
+                        target:         ""
+                        name:           "Issues opened/closed"
+                        blocks:         4
+                    -
+                        type:           top5
+                        source:         issue/top
+                        target:         ""
+                        name:           "Most active issues"
+                        blocks:         4
+                    -
+                        type:           donut
+                        source:         issue/top-trackers
+                        target:         ""
+                        name:           "Top issue trackers"
+                        blocks:         4
+                    
