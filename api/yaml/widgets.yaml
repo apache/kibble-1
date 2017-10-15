@@ -638,8 +638,13 @@ widgets:
                 name: "Mail Map"
                 children:
                     -
+                        type:   "line"
+                        source: "mail/timeseries"
+                        name:   "Email sent"
+                        blocks: 6
+                    -
                         type:   "relationship"
                         source: "mail/map"
                         name:   "Email mapping"
-                        blocks: 12
+                        blocks: 6
             
