@@ -34,7 +34,12 @@ make5 = (obj, json, pos) ->
             filter = new HTML('a', { class: "title", href:"javascript: void(filterPerson('#{item.email}'));"}, "[filter]")
             rightInner.inject(filter)
         else if item.url
-            title = new HTML('a', { class: "title", href:item.url}, txt(item.name))
+            if item.title
+                item.tooltip = item.title
+                if item.title.length > 40
+                    item.title = item.title.toString().substring(0,40) + "..."
+                item.name += ": " + item.title
+            title = new HTML('a', { title: item.tooltip, class: "title", href:item.url}, txt(item.name))
             rightInner.inject(title)
         else
             title = new HTML('a', { class: "title"}, txt(item.name))
