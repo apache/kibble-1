@@ -109,7 +109,22 @@ def run(API, environ, indata, session):
     firstAuthor = None
     if res['hits']['hits']:
         firstAuthor = res['hits']['hits'][0]['_source']['ts']
-        
+    
+    
+    # COUNT EMAIL, CODE, LINES CHANGED
+    del query['sort']
+    del query['size']
+    no_emails = session.DB.ES.count(
+            index=session.DB.dbname,
+            doc_type="email",
+            body = query
+        )['count']
+    
+    no_commits = session.DB.ES.count(
+            index=session.DB.dbname,
+            doc_type="code_commit",
+            body = query
+        )['count']
     
     JSON_OUT = {
         'found': True,
@@ -121,7 +136,9 @@ def run(API, environ, indata, session):
             'gravatar': hashlib.md5(person['email'].lower().encode('utf-8')).hexdigest(),
             'firstEmail': firstEmail,
             'firstCommit': firstCommit,
-            'firstAuthor': firstAuthor
+            'firstAuthor': firstAuthor,
+            'emails': no_emails,
+            'commits': no_commits
         },
         'okay': True,
         'responseTime': time.time() - now
