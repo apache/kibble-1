@@ -630,7 +630,7 @@ widgets:
                         blocks:         4
                     -
                         type:           donut
-                        source:         issue/top-trackers
+                        source:         issue/top-count
                         target:         ""
                         name:           "Top issue trackers"
                         blocks:         4

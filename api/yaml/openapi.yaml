@@ -1693,6 +1693,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /api/issue/top-count:
+    get:
+      summary: Shows top 25 issue trackers by issues
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Shows top 25 issue trackers by issues
+      security:
+        - cookieAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          description: 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   securitySchemes:
     cookieAuth:
