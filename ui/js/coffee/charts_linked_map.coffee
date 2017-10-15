@@ -123,7 +123,6 @@ charts_linked = (obj, nodes, links, options) ->
       .style("stroke", "black")
       .attr("r", (d) => d.size)
       .on("mouseover", (d) ->
-        #alert(d.id)
         lTargets.push(d.id)
         d3.selectAll("path").style("stroke-opacity", "0.075")
         d3.selectAll("path").filter((e) => gatherTargets(d,e) ).style("stroke-opacity", "1").style("z-index", "20")
@@ -136,7 +135,6 @@ charts_linked = (obj, nodes, links, options) ->
         d3.selectAll("text").filter((e) => e.id not in lTargets ).style("opacity", "0.2")
         )
       .on("mouseout", (d) ->
-        #alert(d.id)
         lTargets = []
         if x
           x.selectAll("*").remove()
@@ -147,10 +145,12 @@ charts_linked = (obj, nodes, links, options) ->
   
   
 
-  node.append("text")
+  node.append("a")
+      .attr("href", (d) => if not d.gravatar then "#" else "contributors.html?page=biography&email=#{d.id}")
+      .append("text")
       .attr("dx", 13)
       .attr("dy", ".35em")
-      .text((d) => d.name)
+      .text((d) => d.name)      
       .on("mouseover", (d) ->
         if d.tooltip
             tooltip.transition()		
