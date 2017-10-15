@@ -48,7 +48,7 @@ def run(API, environ, indata, session):
         which = 'author_email'
         role = 'author'
     
-    interval = indata.get('interval', 'day')
+    interval = indata.get('interval', 'month')
     
     
     ####################################################################
