@@ -70,6 +70,7 @@
    border-right: 1px dotted #999;
    padding: 4px;
    margin: 4px;
+   padding-right: 12px;
    float: left;
    text-align: center;
 }
