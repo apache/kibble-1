@@ -6511,7 +6511,7 @@ make5 = function(obj, json, pos) {
     if (item.email) {
       title = new HTML('a', {
         "class": "title",
-        href: "contributors.html?pages=biography&email=" + item.email
+        href: "contributors.html?page=biography&email=" + item.email
       }, txt(item.name));
       rightInner.inject(title);
       rightInner.inject(" - ");
