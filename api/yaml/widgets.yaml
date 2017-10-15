@@ -634,4 +634,12 @@ widgets:
                         target:         ""
                         name:           "Top issue trackers"
                         blocks:         4
-                    
+            -
+                name: "Mail Map"
+                children:
+                    -
+                        type:   "relationship"
+                        source: "mail/map"
+                        name:   "Email mapping"
+                        blocks: 12
+            
