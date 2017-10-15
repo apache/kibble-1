@@ -41,7 +41,7 @@ def run(API, environ, indata, session):
     
     dOrg = session.user['defaultOrganisation'] or "apache"
     
-    pid = hashlib.sha1( ("%s%s" % (dOrg, indata.get('email'))).encode('ascii', errors='replace')).hexdigest()
+    pid = hashlib.sha1( ("%s%s" % (dOrg, indata.get('email', '???'))).encode('ascii', errors='replace')).hexdigest()
     person = {}
     if session.DB.ES.exists(index=session.DB.dbname, doc_type="person", id = pid):
         person = session.DB.ES.get(index=session.DB.dbname, doc_type="person", id = pid)['_source']
@@ -137,6 +137,8 @@ def run(API, environ, indata, session):
             'firstEmail': firstEmail,
             'firstCommit': firstCommit,
             'firstAuthor': firstAuthor,
+            'tags': person.get('tags', []),
+            'alts': person.get('alts', []),
             'emails': no_emails,
             'commits': no_commits
         },
