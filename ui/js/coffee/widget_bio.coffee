@@ -13,20 +13,19 @@ bio = (json, state) ->
             firstemail = "Never"
             if json.bio.firstEmail
                 firstemail = new Date(json.bio.firstEmail*1000).toDateString()
-            obj.innerHTML += '
-                <div class="media event">
-                    <a class="pull-left">
-                        <img style="width: 128px; height: 128px;" src="https://secure.gravatar.com/avatar/' + json.bio.gravatar + '.png?d=identicon&size=128"/>
-                    </a>
-                    <div class="media-body">
-                        <h1>'+json.bio.name+'</h1>
-                        <h2>' + json.bio.email + '</h2><br/>
-                        <h3>First code commit: ' + firstcommit + '</h3>
-                        <h3>First code authorship: ' + firstauthor + '</h3>
-                        <h3>First email sent: ' + firstemail + '</h3>                        
-                    </div>
-                </div>
-                '
+        
+            bioOuter = new HTML('div', { class: 'media-event'} )
+            bioOuter.inject(new HTML('a', { class: 'pull-left'},
+                                         new HTML('img', { style: "width: 128px; height: 128px;", src: 'https://secure.gravatar.com/avatar/' + json.bio.gravatar + '.png?d=identicon&size=128'})
+                                         ))
+            bioInner = new HTML('div',  class: 'media-body')
+            bioInner.inject(new HTML('h2', {}, json.bio.name))
+            bioInner.inject(new HTML('h3', {}, json.bio.email))
+            bioInner.inject(new HTML('h4', {}, 'First code commit: ' + firstcommit))
+            bioInner.inject(new HTML('h4', {}, 'First code authorship: ' + firstauthor))
+            bioInner.inject(new HTML('h4', {}, 'First email: ' + firstemail))
+            bioOuter.inject(bioInner)
+            obj.appendChild(bioOuter)
             namecard = mk('h2')
             groups = []
             if json.bio.tags
