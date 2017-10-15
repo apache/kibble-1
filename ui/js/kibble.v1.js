@@ -4461,7 +4461,7 @@ altemail = function(hash) {
 };
 
 bio = function(json, state) {
-  var a, a2, egroups, firstauthor, firstcommit, firstemail, groups, len, len1, namecard, obj, q, ref, ref1, sp, tag, u;
+  var a, a2, bioInner, bioOuter, egroups, firstauthor, firstcommit, firstemail, groups, len, len1, namecard, obj, q, ref, ref1, sp, tag, u;
   obj = document.createElement('div');
   if (json.found) {
     firstcommit = "Never";
@@ -4476,7 +4476,25 @@ bio = function(json, state) {
     if (json.bio.firstEmail) {
       firstemail = new Date(json.bio.firstEmail * 1000).toDateString();
     }
-    obj.innerHTML += '<div class="media event"> <a class="pull-left"> <img style="width: 128px; height: 128px;" class="img-circle img-responsive" src="https://secure.gravatar.com/avatar/' + json.bio.gravatar + '.png?d=identicon&size=192"/> </a> <div class="media-body"> <h1>' + json.bio.name + '</h1> <h2>' + json.bio.email + '</h2> <h3>First code commit: ' + firstcommit + '</h3> <h3>First code authorship: ' + firstauthor + '</h3> <h3>First email sent: ' + firstemail + '</h3> </div> </div>';
+    bioOuter = new HTML('div', {
+      "class": 'media-event'
+    });
+    bioOuter.inject(new HTML('a', {
+      "class": 'pull-left'
+    }, new HTML('img', {
+      style: "width: 128px; height: 128px;",
+      src: 'https://secure.gravatar.com/avatar/' + json.bio.gravatar + '.png?d=identicon&size=128'
+    })));
+    bioInner = new HTML('div', {
+      "class": 'media-body'
+    });
+    bioInner.inject(new HTML('h2', {}, json.bio.name));
+    bioInner.inject(new HTML('h3', {}, json.bio.email));
+    bioInner.inject(new HTML('h4', {}, 'First code commit: ' + firstcommit));
+    bioInner.inject(new HTML('h4', {}, 'First code authorship: ' + firstauthor));
+    bioInner.inject(new HTML('h4', {}, 'First email: ' + firstemail));
+    bioOuter.inject(bioInner);
+    obj.appendChild(bioOuter);
     namecard = mk('h2');
     groups = [];
     if (json.bio.tags) {
