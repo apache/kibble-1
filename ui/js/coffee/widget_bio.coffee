@@ -16,11 +16,11 @@ bio = (json, state) ->
             obj.innerHTML += '
                 <div class="media event">
                     <a class="pull-left">
-                        <img style="width: 128px; height: 128px;" class="img-circle img-responsive" src="https://secure.gravatar.com/avatar/' + json.bio.gravatar + '.png?d=identicon&size=192"/>
+                        <img style="width: 128px; height: 128px;" src="https://secure.gravatar.com/avatar/' + json.bio.gravatar + '.png?d=identicon&size=128"/>
                     </a>
                     <div class="media-body">
                         <h1>'+json.bio.name+'</h1>
-                        <h2>' + json.bio.email + '</h2>
+                        <h2>' + json.bio.email + '</h2><br/>
                         <h3>First code commit: ' + firstcommit + '</h3>
                         <h3>First code authorship: ' + firstauthor + '</h3>
                         <h3>First email sent: ' + firstemail + '</h3>                        
