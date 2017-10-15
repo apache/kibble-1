@@ -81,7 +81,7 @@ def run(API, environ, indata, session):
             count = repo['sloc'].get('loc', 0)
             toprepos.append([url, count])
         
-    toprepos = sorted(toprepos, key = lambda x: x[1], reverse = True)
+    toprepos = sorted(toprepos, key = lambda x: int(x[1]), reverse = True)
     top = toprepos[0:24]
     if len(toprepos) > 25:
         count = 0
