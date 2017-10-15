@@ -455,7 +455,7 @@ h2 {
 .x_title h2 {
     display: block;
     float: left;
-    margin-top: 2px;
+    margin-top: 0px;
     font-size: 1.3em !important;
     font-weight: bold;
     text-overflow: ellipsis;
@@ -471,8 +471,7 @@ h2 {
 }
 
 .x_content {
-    padding: 0 5px 6px;
-    
+    padding: 0 5px 12px;
     width: 100%;
     float: left;
     clear: both;
@@ -489,10 +488,11 @@ h2 {
 
 .snoot_widget {
     color: #333;
-    margin-bottom: 10px;
     height: 100%;
     box-sizing: border-box;
     flex: 1;
+    padding: 6px;
+    padding-bottom: 0px;
 }
 
 .orgItem {
