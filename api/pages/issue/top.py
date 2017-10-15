@@ -92,6 +92,7 @@ def run(API, environ, indata, session):
         doc = bucket['_source']
         doc['source'] = doc.get('url', '#')
         doc['name'] = doc.get('key', 'unknown')
+        doc['subject'] = doc.get('title')
         doc['count'] = doc.get('comments', 0)
         top.append(doc)
     
