@@ -15,15 +15,43 @@ bio = (json, state) ->
                 firstemail = new Date(json.bio.firstEmail*1000).toDateString()
         
             bioOuter = new HTML('div', { class: 'media-event'} )
-            bioOuter.inject(new HTML('a', { class: 'pull-left'},
+            bioOuter.inject(new HTML('a', { class: 'pull-left bio-image'},
                                          new HTML('img', { style: "width: 128px; height: 128px;", src: 'https://secure.gravatar.com/avatar/' + json.bio.gravatar + '.png?d=identicon&size=128'})
                                          ))
-            bioInner = new HTML('div',  class: 'media-body')
+            bioInner = new HTML('div',  class: 'media-body bio-profile')
             bioInner.inject(new HTML('h2', {}, json.bio.name))
             bioInner.inject(new HTML('h3', {}, json.bio.email))
-            bioInner.inject(new HTML('h4', {}, 'First code commit: ' + firstcommit))
-            bioInner.inject(new HTML('h4', {}, 'First code authorship: ' + firstauthor))
-            bioInner.inject(new HTML('h4', {}, 'First email: ' + firstemail))
+            bioInner.inject(new HTML('hr', {}))
+            bioInner.inject(new HTML('div', {class: 'bio-fact'},
+                                     [
+                                        new HTML('strong', {}, 'First code commit'),
+                                        new HTML('br'),
+                                        new HTML('span', {}, firstcommit)
+                                     ]))
+            bioInner.inject(new HTML('div', {class: 'bio-fact'},
+                                     [
+                                        new HTML('strong', {}, 'First code authorship'),
+                                        new HTML('br'),
+                                        new HTML('span', {}, firstauthor)
+                                     ]))
+            bioInner.inject(new HTML('div', {class: 'bio-fact'},
+                                     [
+                                        new HTML('strong', {}, 'First email'),
+                                        new HTML('br'),
+                                        new HTML('span', {}, firstemail)
+                                     ]))
+            bioInner.inject(new HTML('div', {class: 'bio-fact'},
+                                     [
+                                        new HTML('strong', {}, 'Commits'),
+                                        new HTML('br'),
+                                        new HTML('span', {}, json.bio.commits.pretty())
+                                     ]))
+            bioInner.inject(new HTML('div', {class: 'bio-fact'},
+                                     [
+                                        new HTML('strong', {}, 'Emails'),
+                                        new HTML('br'),
+                                        new HTML('span', {}, json.bio.emails.pretty())
+                                     ]))
             bioOuter.inject(bioInner)
             obj.appendChild(bioOuter)
             namecard = mk('h2')
