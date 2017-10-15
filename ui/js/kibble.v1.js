@@ -6552,7 +6552,15 @@ make5 = function(obj, json, pos) {
       }, "[filter]");
       rightInner.inject(filter);
     } else if (item.url) {
+      if (item.title) {
+        item.tooltip = item.title;
+        if (item.title.length > 40) {
+          item.title = item.title.toString().substring(0, 40) + "...";
+        }
+        item.name += ": " + item.title;
+      }
       title = new HTML('a', {
+        title: item.tooltip,
         "class": "title",
         href: item.url
       }, txt(item.name));
