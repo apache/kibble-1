@@ -464,7 +464,15 @@ charts_linked = function(obj, nodes, links, options) {
     d3.selectAll("text").style("opacity", null);
     return d3.selectAll("path").style("stroke-opacity", null);
   });
-  node.append("text").attr("dx", 13).attr("dy", ".35em").text((function(_this) {
+  node.append("a").attr("href", (function(_this) {
+    return function(d) {
+      if (!d.gravatar) {
+        return "#";
+      } else {
+        return "contributors.html?page=biography&email=" + d.id;
+      }
+    };
+  })(this)).append("text").attr("dx", 13).attr("dy", ".35em").text((function(_this) {
     return function(d) {
       return d.name;
     };
