@@ -95,7 +95,7 @@ class OpenAPI():
         
         # Now check for valid format of input data
         for field in formdata:
-            if field not in pdef['properties']:
+            if 'properties' not in pdef or field not in pdef['properties'] :
                 raise OpenAPIException("Unknown input field '%s' in %s!" % (field, where))
             if 'type' not in pdef['properties'][field]:
                 raise OpenAPIException("OpenAPI mismatch: Field '%s' was found in api.yaml, but no format was specified in specs!" % field)
