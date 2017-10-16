@@ -1834,7 +1834,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Sloc'
+                items:
+                  $ref: '#/components/schemas/Organisation'
+                type: array
           description: 200 Response
         default:
           content:
