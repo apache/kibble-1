@@ -14,13 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys, os, os.path
+KIBBLE_VERSION = '0.1.0' # ABI/API compat demarcation.
+KIBBLE_DB_VERSION = 1 # First database revision
 
+import sys
 
 if sys.version_info <= (3, 3):
     print("This script requires Python 3.4 or higher")
     sys.exit(-1)
 
+import os
 import getpass
 import subprocess
 import argparse
@@ -178,7 +181,12 @@ def createIndex():
             'verified': True,                   # Account verified via email?
             'userlevel': "admin"                # User level (user/admin)
         }
+    dbdoc = {
+        'apiversion': KIBBLE_VERSION,           # Log current API version
+        'dbversion': KIBBLE_DB_VERSION          # Log the database revision we accept (might change!)
+    }
     es.index(index=dbname, doc_type='useraccount', id = adminName, body = doc)
+    es.index(index=dbname, doc_type='api', id = 'current', body = dbdoc)
     print("Account created!")
 
 try:
@@ -206,6 +214,10 @@ if len(m) == 1:
     m.append(25)
     
 myconfig = {
+    'api': {
+        'version': KIBBLE_VERSION,
+        'database': KIBBLE_DB_VERSION
+    },
     'elasticsearch': {
         'host': hostname,
         'port': port,
