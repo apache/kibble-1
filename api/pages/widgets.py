@@ -14,7 +14,34 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+########################################################################
+# OPENAPI-URI: /api/widgets/{pageid}
+########################################################################
+#    get:
+#      summary: Shows the widget layout for a specific page
+#      security:
+#        - cookieAuth: []
+#      parameters:
+#        - name: pageid
+#          in: path
+#          description: Page ID to fetch design for
+#          required: true
+#          schema:
+#            type: string
+#      responses:
+#        '200':
+#          description: 200 Response
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/WidgetDesign'
+#        default:
+#          description: unexpected error
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/Error'
+########################################################################
 """
 This is the widget design handler for Kibble
 """
