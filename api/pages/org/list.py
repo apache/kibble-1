@@ -46,8 +46,10 @@
 #     '200':
 #       content:
 #         application/json:
-#           schema:
-#             $ref: '#/components/schemas/Sloc'
+#           type: array
+#           items:
+#             schema:
+#               $ref: '#/components/schemas/Organisation'
 #       description: 200 Response
 #     default:
 #       content:
