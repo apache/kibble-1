@@ -82,6 +82,37 @@ components:
       - id
       - name
       - desc
+    Organisation:
+      properties:
+        admins:
+          description: An array containing the IDs of the admins of this org
+          exammple:
+          - foo@bar
+          - bar@foo
+          type: array
+        description:
+          description: A short (optional) description of the organisation
+          example: demo, inc. is awesome
+          type: string
+        docCount:
+          description: The number of source objects gathered from this organisation
+          example: 973624
+          type: integer
+        id:
+          description: the ID of the organisation, can be anything.
+          example: demo
+          type: string
+        name:
+          description: The name of the organisation to create
+          example: Kibble, Inc.
+          type: string
+        sourceCount:
+          description: The number of sources in this organisation
+          example: 45
+          type: integer
+      required:
+      - id
+      - name
     Sloc:
       properties:
         count:
