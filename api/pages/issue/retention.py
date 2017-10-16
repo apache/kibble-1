@@ -90,7 +90,7 @@ def run(API, environ, indata, session):
         viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
     
     
-    hl = indata.get('span', 1) # By default, we define a contributor as active if having committer in the past year
+    hl = indata.get('span', 12) # By default, we define a contributor as active if having committer in the past year
     tnow = datetime.date.today()
     nm = tnow.month - (tnow.month % 3)
     ny = tnow.year
@@ -208,7 +208,7 @@ def run(API, environ, indata, session):
         
         prune = []
         for k, v in activePeople.items():
-            if v < (t - (hl*366*86400)):
+            if v < (t - (hl*30.45*86400)):
                 prune.append(k)
                 lost += 1
         
@@ -251,7 +251,7 @@ def run(API, environ, indata, session):
     if ym > 0:
         avgm += "%s%u month%s" % (", " if yr > 0 else "", ym, "s" if ym != 1 else "")
     JSON_OUT = {
-        'text': "This shows Contributor retention as calculated over a %u year timespan. The average experience of currently active people is %s." % (hl, avgm),
+        'text': "This shows Contributor retention as calculated over a %u month timespan. The average experience of currently active people is %s." % (hl, avgm),
         'timeseries': ts,
         'counts': counts,
         'averageYears': avgyr,

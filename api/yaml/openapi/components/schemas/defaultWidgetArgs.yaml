@@ -43,7 +43,7 @@ properties:
     description: for some widget, this fetches all sources
     type: boolean
   span:
-    description: For factor charts, denotes the number of years to calculate a factor
+    description: For factor charts, denotes the number of months to base factors on
       from
     example: 2
     type: integer
