@@ -160,7 +160,11 @@ class OpenAPI():
     def dumpExamples(self, pdef, array = False):
         schema = None
         if 'schema' in pdef:
-            schema = pdef['schema']['$ref']
+            if 'type' in pdef['schema'] and pdef['schema']['type'] == 'array':
+                array = True
+                schema = pdef['schema']['items']['$ref']
+            else:
+                schema = pdef['schema']['$ref']
         if '$ref' in pdef:
             schema = pdef['$ref']
         if schema:
