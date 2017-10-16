@@ -46,9 +46,9 @@
 #     '200':
 #       content:
 #         application/json:
-#           type: array
-#           items:
-#             schema:
+#           schema:
+#             type: array
+#             items:
 #               $ref: '#/components/schemas/Organisation'
 #       description: 200 Response
 #     default:
