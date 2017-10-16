@@ -1,3 +1,4 @@
+
 openapi: 3.0.0
 info:
   version: 1.0.0
@@ -6,2206 +7,2216 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-paths:
-  /api/org/trends:
-    get:
-      summary: Shows a quick trend summary of the past 6 months for your org
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trend'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows a quick trend summary of the past 6 months for your org
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/org/sourcetypes:
-    get:
-      summary: Lists the available source types supported by Kibble
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SourceTypes'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Lists the available source types supported by Kibble
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/org/list:
-    get:
-      summary: Lists the organisations you belong to (or all, if admin)
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trend'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Lists the organisations you belong to (or all, if admin)
-      security:
-        - cookieAuth: []
-      requestBody:
-        description: Nothing...
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    put:
-      summary: Create a new organisation
-      security:
-        - cookieAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewOrg'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionCompleted'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                            
-  /api/account:
-    put:
-      summary: Create a new account
-      requestBody:
-        description: User credentials
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserAccount'
-      responses:
-        '200':
-          description: 200 response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionCompleted'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    patch:
-      summary: Edit an account
-      requestBody:
-        description: User credentials
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserAccountEdit'
-      responses:
-        '200':
-          description: 200 response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionCompleted'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    delete:
-      security:
-        - cookieAuth: []
-      summary: Delete an account
-      requestBody:
-        description: User ID
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserName'
-      responses:
-        '200':
-          description: 200 response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionCompleted'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/session:
-    get:
-      security:
-        - cookieAuth: []
-      summary: Display your login details
-      responses:
-        '200':
-          description: 200 response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserData'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    put:
-      summary: Log in
-      requestBody:
-        description: User credentials
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserCredentials'
-      responses:
-        '200':
-          description: Login successful
-          headers:
-            Set-Cookie:
-                schema:
-                    type: string
-                    example: 77488a26-23c2-4e29-94a1-6a0738f6a3ff
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionCompleted'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    delete:
-      summary: Log out (remove session)
-      security:
-        - cookieAuth: []
-      requestBody:
-        description: Nada
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Empty'
-      responses:
-        '200':
-          description: Logout successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionCompleted'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/code/sloc:
-    get:
-      summary: Shows a breakdown of lines of code for one or more sources
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows a breakdown of lines of code for one or more sources
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/code/relationships:
-    get:
-      summary: Shows a breakdown of contributor relationships between repositories
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows a breakdown of contributor relationships between repositories
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/code/trends:
-    get:
-      summary: Shows trend data for a set of repos over a given period of time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trend'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows trend data for a set of repos over a given period of time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trend'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/code/pony:
-    get:
-      summary: Shows pony factor data for a set of repos over a given period of time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Factor'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows pony factor data for a set of repos over a given period of time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Factor'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/code/retention:
-    get:
-      summary: Shows retention metrics for a set of repos over a given period of time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Factor'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows retention metrics for a set of repos over a given period of time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Factor'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/mail/map:
-    get:
-      summary: Shows a breakdown of email author reply mappings
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows a breakdown of email author reply mappings
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/mail/relationships:
-    get:
-      summary: Shows a breakdown of contributor relationships between mailing lists
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows a breakdown of contributor relationships between mailing lists
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/mail/trends:
-    get:
-      summary: Shows a quick email trend summary of the past 6 months for your org
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trend'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows a quick email trend summary of the past 6 months for your org
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trend'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/mail/retention:
-    get:
-      summary: Shows retention metrics for a set of mailing lists over a given period of time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Factor'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows retention metrics for a set of mailing lists over a given period of time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Factor'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/issue/relationships:
-    get:
-      summary: Shows a breakdown of contributor relationships between issue trackers
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows a breakdown of contributor relationships between issue trackers
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/issue/retention:
-    get:
-      summary: Shows retention metrics for a set of issue trackers over a given period of time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Factor'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows retention metrics for a set of issue trackers over a given period of time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Factor'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/issue/trends:
-    get:
-      summary: Shows trend data for a set of issue trackers over a given period of time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trend'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows trend data for a set of issue trackers over a given period of time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trend'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/issue/issues:
-    get:
-      summary: Shows timeseries of issues opened/closed over time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows timeseries of issues opened/closed over time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/code/pony-timeseries:
-    get:
-      summary: Shows timeseries of Pony Factor over time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows timeseries of Pony Factor over time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/mail/pony-timeseries:
-    get:
-      summary: Shows timeseries of Pony Factor over time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows timeseries of Pony Factor over time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/issue/pony-timeseries:
-    get:
-      summary: Shows timeseries of Pony Factor over time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows timeseries of Pony Factor over time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/issue/actors:
-    get:
-      summary: Shows timeseries of no. of people opening/closing issues over time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows timeseries of no. of people opening/closing issues over time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/issue/age:
-    get:
-      summary: Shows timeseries of no. of open tickets by age
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows timeseries of no. of open tickets by age
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/code/committers:
-    get:
-      summary: Shows the top N of committers
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CommitterList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows trend data for a set of repos over a given period of time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CommitterList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/issue/closers:
-    get:
-      summary: Shows the top N of issue closers
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CommitterList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows the top N of issue closers
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CommitterList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/issue/openers:
-    get:
-      summary: Shows the top N of issue openers
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CommitterList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows the top N of issue openers
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CommitterList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                
-  /api/issue/top:
-    get:
-      summary: Shows the top N issues by interactions
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TopList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows the top N issues by interactions
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TopList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                
-  /api/code/commits:
-    get:
-      summary: Show commits as a timeseries
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Show commits as a timeseries
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/code/changes:
-    get:
-      summary: Show insertions/deletions as a timeseries
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Show insertions/deletions as a timeseries
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/code/evolution:
-    get:
-      summary: Show code evolution as a timeseries
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Show code evolution as a timeseries
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/code/top-commits:
-    get:
-      summary: Shows top 25 repos by commit volume
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows top 25 repos by commit volume
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/code/top-sloc:
-    get:
-      summary: Shows top 25 repos by lines of code
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows top 25 repos by lines of code
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/sources:
-    get:
-      summary: Fetches a list of all sources for this organisation
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SourceList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Fetches a list of all sources for this organisation
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SourceList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    
-    delete:
-      summary: Delete an existing source
-      security:
-        - cookieAuth: []
-      requestBody:
-        description: Source ID info
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SourceID'
-    patch:
-      summary: Edit an existing source
-      security:
-        - cookieAuth: []
-      requestBody:
-        description: New source data to set
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Source'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionCompleted'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    put:
-      summary: Add a new source
-      security:
-        - cookieAuth: []
-      requestBody:
-        description: New source data to add
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SourceList'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionCompleted'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/views:
-    get:
-      summary: Fetches a list of all views (filters) for this user
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ViewList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Fetches a list of all views (filters) for this user
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ViewList'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    patch:
-      summary: Edit an existing source
-      security:
-        - cookieAuth: []
-      requestBody:
-        description: New source data to set
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/editView'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionCompleted'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    put:
-      summary: Add a new view
-      security:
-        - cookieAuth: []
-      requestBody:
-        description: New view data to add
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/editView'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionCompleted'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    delete:
-      summary: Delete a new view
-      security:
-        - cookieAuth: []
-      requestBody:
-        description: View to delete
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/editView'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActionCompleted'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  '/api/widgets/{pageid}':
-    get:
-      summary: Shows the widget layout for a specific page
-      security:
-        - cookieAuth: []
-      parameters:
-        - name: pageid
-          in: path
-          description: Page ID to fetch design for
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WidgetDesign'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/bio/trends:
-    get:
-      summary: Shows a quick trend summary of the past 6 months for a contributor
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Trend'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows a quick trend summary of the past 6 months for a contributor
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Sloc'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/bio/bio:
-    get:
-      summary: Shows some facts about a contributor
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Biography'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows some facts about a contributor
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Biography'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/issue/top-count:
-    get:
-      summary: Shows top 25 issue trackers by issues
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows top 25 issue trackers by issues
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /api/mail/timeseries:
-    get:
-      summary: Shows email sent over time
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Shows email sent over time
-      security:
-        - cookieAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/defaultWidgetArgs'
-      responses:
-        '200':
-          description: 200 Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Timeseries'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
 components:
-  securitySchemes:
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: kibble_session
   schemas:
-    Error:
-      required:
-        - code
-        - reason
-      properties:
-        code:
-          description: "HTTP Error Code"
-          type: integer
-          format: int16
-          example: 403
-        reason:
-          description: "Human readable error message"
-          type: string
-          example: "You need to be logged in to view this endpoint!"
     ActionCompleted:
-      required:
-        - message
       properties:
         message:
+          description: Acknowledgement message
+          example: Action completed
           type: string
-          description: "Acknowledgement message"
-          example: "Action completed"
-    Source:
       required:
-        - type
-        - sourceURL
+      - message
+    Biography:
       properties:
-        sourceID:
-          description: "The SourceID of this source"
+        foo:
+          description: TO-DO!
           type: string
-        type:
-          description: "The type of source (git, svn, bugzilla, mail, etc)"
-          type: string
-        sourceURL:
-          description: "The origin URL of this source."
-          type: string
-        organisation:
-          description: "The organisation this source belongs to"
-          type: string
-        username:
-          description: "optional username for auth"
-          type: string
-        password:
-          description: "optional password for auth"
-          type: string
-        cookie:
-          description: "optional session cookie for auth"
-          type: string
-    SourceList:
-      required:
-        - sources
-      properties:
-        okay:
-          type: boolean
-        organisation:
-          type: string
-          description: "The organisation these sources belong to"
-        sources:
-          description: "The sources in this organisation"
-          type: array
-          items:
-            $ref: '#/components/schemas/Source'
-    editView:
-      properties:
-        sources:
-          type: array
-        id:
-          type: string
-        public:
-          type: boolean
-        name:
-          type: string
-    View:
-      required:
-        - id
-      properties:
-        id:
-          type: string
-          description: "The ID of this view. to be used with other API queries"
-          example: "abcdef67126734271"
-        public:
-          description: Whether to make this a global view (admins only!)
-          type: boolean
-        name:
-          type: string
-          description: "The name of this view"
-          example: "Big Data Projects"
-        organisation:
-          type: string
-          description: "The organisation this view belongs to"
-          example: "apache"
-        sources:
-          description: "The sources within this view"
-          type: array
-          items:
-            $ref: '#/components/schemas/Source'
-    ViewList:
-      required:
-        - okay
-        - organisation
-        - views
-      properties:
-        okay:
-          type: boolean
-        organisation:
-          description: "The organisation these views belong to"
-          type: string
-          example: "apache"
-        sources:
-          description: "A list of sources within this org"
-          type: array
-          items:
-            $ref: '#/components/schemas/Source'
-        views:
-          type: array
-          description: "The view available"
-          items:
-            $ref: '#/components/schemas/View'
-    UserCredentials:
-      required:
-        - email
-        - password
-      properties:
-        email:
-          type: string
-          example: guest@kibble.live
-          description: "Username (email)"
-        password:
-          type: string
-          example: "kibbledemo"
-          description: "User password"
-    UserData:
-      properties:
-        username:
-          type: string
-          description: "The username (email) of the user"
-          example: "guest@kibble.live"
-        displayName:
-          type: string
-          description: "The display-name of the user"
-          example: "Kibble Guest"
-        defaultOrganisation:
-          type: string
-          description: "The default organisation. This is where Kibble will collect data from."
-          example: "apache"
-        organisations:
-          description: "A list of organisations you belong to"
-          example: ["apache", "demo"]
-          type: array
-          items:
-            type: string
-        userLevel:
-          description: "User level (user/owner/admin)"
-          example: "user"
-          type: string
-    defaultWidgetArgs:
-      properties:
-        view:
-          type: string
-          description: "ID Of optional view to use"
-          example: "abcdef12345678"
-        quick:
-          type: boolean
-          description: "Turns on quick data for some endpoints, returning only sparse data (thus less traffic)"
-          example: false
-        page:
-          type: string
-        source:
-          type: string
-          description: "If specified, only compile data on this specific sourceID"
-          example: "abcdef12345678"
-        from:
-          type: integer
-          description: "If specified, compile data from this timestamp onwards"
-          example: 1400000000
-        to:
-          type: integer
-          description: "If specified, only compile data up until here"
-          example: 1503483273
-        author:
-          type: boolean
-          description: "Turns on author view for code results, as opposed to the default committer view"
-        unique:
-          type: boolean
-          description: "Only compile data from unique commits, ignore duplicates"
-        interval:
-          description: "If fetching histograms, this specifies the interval to pack figures into. Can be day, week, month, quarter or year"
-          type: string
-          example: "month"
-        types:
-          description: "If set, only return data from sources matching these types"
-          type: array
-          example: ['jira', 'bugzilla']
-        span:
-          description: "For factor charts, denotes the number of years to calculate a factor from"
-          type: integer
-          example: 2
-        sources:
-          type: boolean
-          description: for some widget, this fetches all sources
-        email:
-          type: string
-          description: filter sources based on an email (a person)
-        collapse:
-          type: string
-          description: for some widgets, this collapses sources based on a regex
-        search:
-          type: string
-          description: for some widgets, this enables sub-filtering based on searches
-        links:
-          type: integer
-          description: for relationship maps, this denotes the minimum link strength (no. of connections) that makes up a link.
-        subfilter:
-          type: string
-          description: Quickly defined view by sub-filtering the existing view and matching on sourceURLs
-    Sloc:
-      properties:
-        count:
-          type: object
-    Trend:
-      properties:
-        okay:
-          type: boolean
-        trends:
-          type: object
     CommitterList:
       properties:
         okay:
           type: boolean
         people:
           type: object
-    Timeseries:
+    Empty:
+      properties:
+        id:
+          description: optional object ID
+          type: string
+        page:
+          description: optional page id
+          type: string
+      required: []
+    Error:
+      properties:
+        code:
+          description: HTTP Error Code
+          example: 403
+          format: int16
+          type: integer
+        reason:
+          description: Human readable error message
+          example: You need to be logged in to view this endpoint!
+          type: string
+      required:
+      - code
+      - reason
+    Factor:
+      properties:
+        factors:
+          items:
+            type: object
+          type: array
+        okay:
+          type: boolean
+      required:
+      - okay
+      - factors
+    NewOrg:
+      properties:
+        desc:
+          description: A short description of the organisation
+          example: Kibble, inc. is awesome
+          type: string
+        id:
+          description: the ID of the organisation, can be anything.
+          example: demo
+          type: string
+        name:
+          description: The name of the organisation to create
+          example: Kibble, Inc.
+          type: string
+      required:
+      - id
+      - name
+      - desc
+    Sloc:
+      properties:
+        count:
+          type: object
+    Source:
+      properties:
+        cookie:
+          description: optional session cookie for auth
+          type: string
+        organisation:
+          description: The organisation this source belongs to
+          type: string
+        password:
+          description: optional password for auth
+          type: string
+        sourceID:
+          description: The SourceID of this source
+          type: string
+        sourceURL:
+          description: The origin URL of this source.
+          type: string
+        type:
+          description: The type of source (git, svn, bugzilla, mail, etc)
+          type: string
+        username:
+          description: optional username for auth
+          type: string
+      required:
+      - type
+      - sourceURL
+    SourceID:
+      properties:
+        id:
+          description: source ID
+          type: string
+      required:
+      - id
+    SourceList:
       properties:
         okay:
           type: boolean
-        timeseries:
-          type: array
+        organisation:
+          description: The organisation these sources belong to
+          type: string
+        sources:
+          description: The sources in this organisation
           items:
-            $ref: "#/components/schemas/TimeseriesObject"
+            $ref: '#/components/schemas/Source'
+          type: array
+      required:
+      - sources
+    SourceType:
+      properties:
+        description:
+          example: Git repositories
+          type: string
+        regex:
+          example: https?://.*/.+\.git
+          type: string
+        title:
+          example: git
+          type: string
+    SourceTypes:
+      properties:
+        git:
+          schema:
+            $ref: '#/components/schemas/SourceType'
+          type: object
+    Timeseries:
+      properties:
         interval:
           type: string
-    TimeseriesObject:
-      required:
-        - date
-      properties:
-        date:
-          type: integer
-          description: "Seconds since UNIX epoch"
-          example: 1508273
-        $item:
-          type: integer
-          description: "A timeseries object"
-          example: 50
-        $otheritem:
-          type: integer
-          description: "A timeseries object"
-          example: 26
-    WidgetDesign:
-      properties:
-        title:
-          type: string
-        rows:
-          type: array
+        okay:
+          type: boolean
+        timeseries:
           items:
-            $ref: '#/components/schemas/WidgetRow'
+            $ref: '#/components/schemas/TimeseriesObject'
+          type: array
+    TimeseriesObject:
+      properties:
+        $item:
+          description: A timeseries object
+          example: 50
+          type: integer
+        $otheritem:
+          description: A timeseries object
+          example: 26
+          type: integer
+        date:
+          description: Seconds since UNIX epoch
+          example: 1508273
+          type: integer
+      required:
+      - date
     TopList:
       properties:
         title:
           type: string
         top:
-          type: array
           items:
             type: object
-    WidgetRow:
-      properties:
-        name:
-          type: string
-        children:
           type: array
-          items:
-            $ref: '#/components/schemas/WidgetApp'
-    WidgetApp:
-      required:
-        - type
-        - name
-        - blocks
-      properties:
-        type:
-          type: string
-          description: The type of widget
-          example: "My Widget"
-        name:
-          type: string
-          description: The title of the widget app
-          example: "Widget Title"
-        blocks:
-          type: integer
-          description: Size (width) in UI blocks of the app
-          example: 4
-        source:
-          type: string
-          description: The API endpoint to get data from
-          example: code-evolution
-        datatype:
-          type: string
-          description: The top category of this data
-          example: repo
-        target:
-          type: string
-        representation:
-          type: string
-          description: The visual representation style of this widget
-          example: donut
-        text:
-          type: string
-          description: Text to insert into the widget (if paragraph type widget)
-    Factor:
-      required:
-        - okay
-        - factors
+    Trend:
       properties:
         okay:
           type: boolean
-        factors:
-          type: array
-          items:
-            type: object
+        trends:
+          type: object
     UserAccount:
-      required:
-        - email
-        - password
-        - displayname
       properties:
-        email:
-          type: string
-          example: "guest@kibble.live"
-          description: "Desired username (email address)"
-        password:
-          type: string
-          example: "kibbledemo"
-          description: "Desired password for the account"
         displayname:
+          description: A display name (e.g. full name) for the account
+          example: Kibble Guest
           type: string
-          example: "Kibble Guest"
-          description: "A display name (e.g. full name) for the account"
+        email:
+          description: Desired username (email address)
+          example: guest@kibble.live
+          type: string
+        password:
+          description: Desired password for the account
+          example: kibbledemo
+          type: string
+      required:
+      - email
+      - password
+      - displayname
     UserAccountEdit:
+      properties:
+        defaultOrganisation:
+          description: If editing an account, this sets the default org (if a member
+            of it)
+          example: demo
+          type: string
+        displayname:
+          description: A display name (e.g. full name) for the account
+          example: Kibble Guest
+          type: string
+        email:
+          description: Desired username (email address)
+          example: guest@kibble.live
+          type: string
+        password:
+          description: Desired password for the account
+          example: kibbledemo
+          type: string
       required:
-        - email
+      - email
+    UserCredentials:
       properties:
         email:
+          description: Username (email)
+          example: guest@kibble.live
           type: string
-          example: "guest@kibble.live"
-          description: "Desired username (email address)"
         password:
+          description: User password
+          example: kibbledemo
           type: string
-          example: "kibbledemo"
-          description: "Desired password for the account"
-        displayname:
-          type: string
-          example: "Kibble Guest"
-          description: "A display name (e.g. full name) for the account"
-        defaultOrganisation:
-          type: string
-          example: demo
-          description: If editing an account, this sets the default org (if a member of it)
-    UserName:
       required:
-        - username
+      - email
+      - password
+    UserData:
+      properties:
+        defaultOrganisation:
+          description: The default organisation. This is where Kibble will collect
+            data from.
+          example: apache
+          type: string
+        displayName:
+          description: The display-name of the user
+          example: Kibble Guest
+          type: string
+        organisations:
+          description: A list of organisations you belong to
+          example:
+          - apache
+          - demo
+          items:
+            type: string
+          type: array
+        userLevel:
+          description: User level (user/owner/admin)
+          example: user
+          type: string
+        username:
+          description: The username (email) of the user
+          example: guest@kibble.live
+          type: string
+    UserName:
       properties:
         username:
+          example: kibbleguest
           type: string
-          example: "kibbleguest"
-    NewOrg:
       required:
-        - id
-        - name
-        - desc
+      - username
+    View:
       properties:
         id:
+          description: The ID of this view. to be used with other API queries
+          example: abcdef67126734271
           type: string
-          example: demo
-          description: the ID of the organisation, can be anything.
+        name:
+          description: The name of this view
+          example: Big Data Projects
+          type: string
+        organisation:
+          description: The organisation this view belongs to
+          example: apache
+          type: string
+        public:
+          description: Whether to make this a global view (admins only!)
+          type: boolean
+        sources:
+          description: The sources within this view
+          items:
+            $ref: '#/components/schemas/Source'
+          type: array
+      required:
+      - id
+    ViewList:
+      properties:
+        okay:
+          type: boolean
+        organisation:
+          description: The organisation these views belong to
+          example: apache
+          type: string
+        sources:
+          description: A list of sources within this org
+          items:
+            $ref: '#/components/schemas/Source'
+          type: array
+        views:
+          description: The view available
+          items:
+            $ref: '#/components/schemas/View'
+          type: array
+      required:
+      - okay
+      - organisation
+      - views
+    WidgetApp:
+      properties:
+        blocks:
+          description: Size (width) in UI blocks of the app
+          example: 4
+          type: integer
+        datatype:
+          description: The top category of this data
+          example: repo
+          type: string
+        name:
+          description: The title of the widget app
+          example: Widget Title
+          type: string
+        representation:
+          description: The visual representation style of this widget
+          example: donut
+          type: string
+        source:
+          description: The API endpoint to get data from
+          example: code-evolution
+          type: string
+        target:
+          type: string
+        text:
+          description: Text to insert into the widget (if paragraph type widget)
+          type: string
+        type:
+          description: The type of widget
+          example: My Widget
+          type: string
+      required:
+      - type
+      - name
+      - blocks
+    WidgetDesign:
+      properties:
+        rows:
+          items:
+            $ref: '#/components/schemas/WidgetRow'
+          type: array
+        title:
+          type: string
+    WidgetRow:
+      properties:
+        children:
+          items:
+            $ref: '#/components/schemas/WidgetApp'
+          type: array
         name:
           type: string
-          example: Kibble, Inc.
-          description: The name of the organisation to create
-        desc:
-          type: string
-          example: Kibble, inc. is awesome
-          description: A short description of the organisation
-    SourceID:
-      required:
-        - id
+    defaultWidgetArgs:
       properties:
-        id:
-          description: source ID
+        author:
+          description: Turns on author view for code results, as opposed to the default
+            committer view
+          type: boolean
+        collapse:
+          description: for some widgets, this collapses sources based on a regex
           type: string
-    Empty:
-      required: []
-      properties:
+        email:
+          description: filter sources based on an email (a person)
+          type: string
+        from:
+          description: If specified, compile data from this timestamp onwards
+          example: 1400000000
+          type: integer
+        interval:
+          description: If fetching histograms, this specifies the interval to pack
+            figures into. Can be day, week, month, quarter or year
+          example: month
+          type: string
+        links:
+          description: for relationship maps, this denotes the minimum link strength
+            (no. of connections) that makes up a link.
+          type: integer
         page:
-            description: optional page id
-            type: string
-        id:
-            description: optional object ID
-            type: string
-    Biography:
-      properties:
-        foo:
           type: string
-          description: TO-DO!
-    SourceTypes:
+        quick:
+          description: Turns on quick data for some endpoints, returning only sparse
+            data (thus less traffic)
+          example: false
+          type: boolean
+        search:
+          description: for some widgets, this enables sub-filtering based on searches
+          type: string
+        source:
+          description: If specified, only compile data on this specific sourceID
+          example: abcdef12345678
+          type: string
+        sources:
+          description: for some widget, this fetches all sources
+          type: boolean
+        span:
+          description: For factor charts, denotes the number of years to calculate
+            a factor from
+          example: 2
+          type: integer
+        subfilter:
+          description: Quickly defined view by sub-filtering the existing view and
+            matching on sourceURLs
+          type: string
+        to:
+          description: If specified, only compile data up until here
+          example: 1503483273
+          type: integer
+        types:
+          description: If set, only return data from sources matching these types
+          example:
+          - jira
+          - bugzilla
+          type: array
+        unique:
+          description: Only compile data from unique commits, ignore duplicates
+          type: boolean
+        view:
+          description: ID Of optional view to use
+          example: abcdef12345678
+          type: string
+    editView:
       properties:
-        git:
-          type: object
-          schema:
-            $ref: "#/components/schemas/SourceType"
-    SourceType:
-      properties:
-        title:
-            type: string
-            example: git
-        description:
-            type: string
-            example: Git repositories
-        regex:
-            type: string
-            example: https?://.*/.+\.git
-          
+        id:
+          type: string
+        name:
+          type: string
+        public:
+          type: boolean
+        sources:
+          type: array
+  securitySchemes:
+    cookieAuth:
+      in: cookie
+      name: kibble_session
+      type: apiKey
+paths:
+  /api/account:
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserName'
+        description: User ID
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Delete an account
+    patch:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountEdit'
+        description: User credentials
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Edit an account
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccount'
+        description: User credentials
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Create a new account
+  /api/bio/bio:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Biography'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows some facts about a contributor
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Biography'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows some facts about a contributor
+  /api/bio/trends:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a quick trend summary of the past 6 months for a contributor
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a quick trend summary of the past 6 months for a contributor
+  /api/code/changes:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Show insertions/deletions as a timeseries
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Show insertions/deletions as a timeseries
+  /api/code/commits:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Show commits as a timeseries
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Show commits as a timeseries
+  /api/code/committers:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N of committers
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows trend data for a set of repos over a given period of time
+  /api/code/evolution:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Show code evolution as a timeseries
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Show code evolution as a timeseries
+  /api/code/pony:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factor'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows pony factor data for a set of repos over a given period of time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factor'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows pony factor data for a set of repos over a given period of time
+  /api/code/pony-timeseries:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of Pony Factor over time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of Pony Factor over time
+  /api/code/relationships:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a breakdown of contributor relationships between repositories
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a breakdown of contributor relationships between repositories
+  /api/code/retention:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factor'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows retention metrics for a set of repos over a given period of time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factor'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows retention metrics for a set of repos over a given period of time
+  /api/code/sloc:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a breakdown of lines of code for one or more sources
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a breakdown of lines of code for one or more sources
+  /api/code/top-commits:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows top 25 repos by commit volume
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows top 25 repos by commit volume
+  /api/code/top-sloc:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows top 25 repos by lines of code
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows top 25 repos by lines of code
+  /api/code/trends:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows trend data for a set of repos over a given period of time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows trend data for a set of repos over a given period of time
+  /api/issue/actors:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of no. of people opening/closing issues over time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of no. of people opening/closing issues over time
+  /api/issue/age:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of no. of open tickets by age
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of no. of open tickets by age
+  /api/issue/closers:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N of issue closers
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N of issue closers
+  /api/issue/issues:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of issues opened/closed over time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of issues opened/closed over time
+  /api/issue/openers:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N of issue openers
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N of issue openers
+  /api/issue/pony-timeseries:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of Pony Factor over time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of Pony Factor over time
+  /api/issue/relationships:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a breakdown of contributor relationships between issue trackers
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a breakdown of contributor relationships between issue trackers
+  /api/issue/retention:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factor'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows retention metrics for a set of issue trackers over a given period
+        of time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factor'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows retention metrics for a set of issue trackers over a given period
+        of time
+  /api/issue/top:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N issues by interactions
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N issues by interactions
+  /api/issue/top-count:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows top 25 issue trackers by issues
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows top 25 issue trackers by issues
+  /api/issue/trends:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows trend data for a set of issue trackers over a given period of
+        time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows trend data for a set of issue trackers over a given period of
+        time
+  /api/mail/map:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a breakdown of email author reply mappings
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a breakdown of email author reply mappings
+  /api/mail/pony-timeseries:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of Pony Factor over time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of Pony Factor over time
+  /api/mail/relationships:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a breakdown of contributor relationships between mailing lists
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a breakdown of contributor relationships between mailing lists
+  /api/mail/retention:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factor'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows retention metrics for a set of mailing lists over a given period
+        of time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factor'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows retention metrics for a set of mailing lists over a given period
+        of time
+  /api/mail/timeseries:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows email sent over time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows email sent over time
+  /api/mail/trends:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a quick email trend summary of the past 6 months for your org
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a quick email trend summary of the past 6 months for your org
+  /api/org/list:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Lists the organisations you belong to (or all, if admin)
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+        description: Nothing...
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Lists the organisations you belong to (or all, if admin)
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewOrg'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Create a new organisation
+  /api/org/sourcetypes:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceTypes'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Lists the available source types supported by Kibble
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Lists the available source types supported by Kibble
+  /api/org/trends:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a quick trend summary of the past 6 months for your org
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sloc'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows a quick trend summary of the past 6 months for your org
+  /api/session:
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Empty'
+        description: Nada
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: Logout successful
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Log out (remove session)
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserData'
+          description: 200 response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Display your login details
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+        description: User credentials
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: Login successful
+          headers:
+            Set-Cookie:
+              schema:
+                example: 77488a26-23c2-4e29-94a1-6a0738f6a3ff
+                type: string
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Log in
+  /api/sources:
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceID'
+        description: Source ID info
+        required: true
+      security:
+      - cookieAuth: []
+      summary: Delete an existing source
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Fetches a list of all sources for this organisation
+    patch:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Source'
+        description: New source data to set
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Edit an existing source
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Fetches a list of all sources for this organisation
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceList'
+        description: New source data to add
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Add a new source
+  /api/views:
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/editView'
+        description: View to delete
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Delete a new view
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Fetches a list of all views (filters) for this user
+    patch:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/editView'
+        description: New source data to set
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Edit an existing source
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Fetches a list of all views (filters) for this user
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/editView'
+        description: New view data to add
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Add a new view
+  /api/widgets/{pageid}:
+    get:
+      parameters:
+      - description: Page ID to fetch design for
+        in: path
+        name: pageid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetDesign'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the widget layout for a specific page
