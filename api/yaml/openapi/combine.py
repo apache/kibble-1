@@ -103,6 +103,20 @@ def construct():
                         cyml = "\n".join([line[2:] for line in cyml.split("\n")])
                         defs = yaml.load(cyml)
                         yml['paths'][apath] = defs
+        else:
+            fname = d
+            if fname.endswith(".py"):
+                fpath = "%s/%s" % (apidir, fname)
+                print("Scanning %s" % fpath)
+                contents = open(fpath, "r").read()
+                m = re.search(r"OPENAPI-URI: (\S+)\n##+\n([\s\S]+?)##+", contents)
+                if m:
+                    apath = m.group(1)
+                    cyml = m.group(2)
+                    print("Weaving in API path %s" % apath)
+                    cyml = "\n".join([line[2:] for line in cyml.split("\n")])
+                    defs = yaml.load(cyml)
+                    yml['paths'][apath] = defs
     apidir = os.path.abspath("%s/components" % bpath)
     print("Scanning %s" % apidir)
     for d in os.listdir(apidir):
@@ -114,7 +128,7 @@ def construct():
                     yml['components'][d] = yml['components'].get(d, {})
                     fpath = "%s/%s" % (cdir, fname)
                     print("Scanning %s" % fpath)
-                    defs = yaml.load(cyml)
+                    defs = yaml.load(open(fpath))
                     yml['components'][d][fname.replace(".yaml", "")] = defs
     ypath = os.path.abspath("%s/../openapi.yaml" % bpath)
     with open(ypath, "w") as f:
