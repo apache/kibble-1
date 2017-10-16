@@ -1,0 +1,24 @@
+########################################################################
+# ViewList                                                             #
+########################################################################
+properties:
+  okay:
+    type: boolean
+  organisation:
+    description: The organisation these views belong to
+    example: apache
+    type: string
+  sources:
+    description: A list of sources within this org
+    items:
+      $ref: '#/components/schemas/Source'
+    type: array
+  views:
+    description: The view available
+    items:
+      $ref: '#/components/schemas/View'
+    type: array
+required:
+- okay
+- organisation
+- views

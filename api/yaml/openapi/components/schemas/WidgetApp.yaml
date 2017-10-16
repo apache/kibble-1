@@ -1,0 +1,37 @@
+########################################################################
+# WidgetApp                                                            #
+########################################################################
+properties:
+  blocks:
+    description: Size (width) in UI blocks of the app
+    example: 4
+    type: integer
+  datatype:
+    description: The top category of this data
+    example: repo
+    type: string
+  name:
+    description: The title of the widget app
+    example: Widget Title
+    type: string
+  representation:
+    description: The visual representation style of this widget
+    example: donut
+    type: string
+  source:
+    description: The API endpoint to get data from
+    example: code-evolution
+    type: string
+  target:
+    type: string
+  text:
+    description: Text to insert into the widget (if paragraph type widget)
+    type: string
+  type:
+    description: The type of widget
+    example: My Widget
+    type: string
+required:
+- type
+- name
+- blocks

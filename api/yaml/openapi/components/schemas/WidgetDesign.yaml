@@ -1,0 +1,10 @@
+########################################################################
+# WidgetDesign                                                         #
+########################################################################
+properties:
+  rows:
+    items:
+      $ref: '#/components/schemas/WidgetRow'
+    type: array
+  title:
+    type: string

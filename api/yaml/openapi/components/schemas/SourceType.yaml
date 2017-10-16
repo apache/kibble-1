@@ -1,0 +1,13 @@
+########################################################################
+# SourceType                                                           #
+########################################################################
+properties:
+  description:
+    example: Git repositories
+    type: string
+  regex:
+    example: https?://.*/.+\.git
+    type: string
+  title:
+    example: git
+    type: string

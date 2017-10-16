@@ -1,0 +1,28 @@
+########################################################################
+# Source                                                               #
+########################################################################
+properties:
+  cookie:
+    description: optional session cookie for auth
+    type: string
+  organisation:
+    description: The organisation this source belongs to
+    type: string
+  password:
+    description: optional password for auth
+    type: string
+  sourceID:
+    description: The SourceID of this source
+    type: string
+  sourceURL:
+    description: The origin URL of this source.
+    type: string
+  type:
+    description: The type of source (git, svn, bugzilla, mail, etc)
+    type: string
+  username:
+    description: optional username for auth
+    type: string
+required:
+- type
+- sourceURL

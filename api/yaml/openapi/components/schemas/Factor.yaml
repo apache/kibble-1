@@ -1,0 +1,13 @@
+########################################################################
+# Factor                                                               #
+########################################################################
+properties:
+  factors:
+    items:
+      type: object
+    type: array
+  okay:
+    type: boolean
+required:
+- okay
+- factors

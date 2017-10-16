@@ -1,0 +1,16 @@
+########################################################################
+# SourceList                                                           #
+########################################################################
+properties:
+  okay:
+    type: boolean
+  organisation:
+    description: The organisation these sources belong to
+    type: string
+  sources:
+    description: The sources in this organisation
+    items:
+      $ref: '#/components/schemas/Source'
+    type: array
+required:
+- sources

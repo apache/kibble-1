@@ -1,0 +1,10 @@
+########################################################################
+# WidgetRow                                                            #
+########################################################################
+properties:
+  children:
+    items:
+      $ref: '#/components/schemas/WidgetApp'
+    type: array
+  name:
+    type: string

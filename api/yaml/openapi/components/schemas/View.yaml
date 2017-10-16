@@ -1,0 +1,26 @@
+########################################################################
+# View                                                                 #
+########################################################################
+properties:
+  id:
+    description: The ID of this view. to be used with other API queries
+    example: abcdef67126734271
+    type: string
+  name:
+    description: The name of this view
+    example: Big Data Projects
+    type: string
+  organisation:
+    description: The organisation this view belongs to
+    example: apache
+    type: string
+  public:
+    description: Whether to make this a global view (admins only!)
+    type: boolean
+  sources:
+    description: The sources within this view
+    items:
+      $ref: '#/components/schemas/Source'
+    type: array
+required:
+- id

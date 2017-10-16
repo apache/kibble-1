@@ -1,0 +1,18 @@
+########################################################################
+# TimeseriesObject                                                     #
+########################################################################
+properties:
+  $item:
+    description: A timeseries object
+    example: 50
+    type: integer
+  $otheritem:
+    description: A timeseries object
+    example: 26
+    type: integer
+  date:
+    description: Seconds since UNIX epoch
+    example: 1508273
+    type: integer
+required:
+- date

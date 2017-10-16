@@ -1,0 +1,20 @@
+########################################################################
+# NewOrg                                                               #
+########################################################################
+properties:
+  desc:
+    description: A short description of the organisation
+    example: Kibble, inc. is awesome
+    type: string
+  id:
+    description: the ID of the organisation, can be anything.
+    example: demo
+    type: string
+  name:
+    description: The name of the organisation to create
+    example: Kibble, Inc.
+    type: string
+required:
+- id
+- name
+- desc

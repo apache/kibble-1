@@ -1,0 +1,20 @@
+########################################################################
+# UserAccount                                                          #
+########################################################################
+properties:
+  displayname:
+    description: A display name (e.g. full name) for the account
+    example: Kibble Guest
+    type: string
+  email:
+    description: Desired username (email address)
+    example: guest@kibble.live
+    type: string
+  password:
+    description: Desired password for the account
+    example: kibbledemo
+    type: string
+required:
+- email
+- password
+- displayname

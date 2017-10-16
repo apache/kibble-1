@@ -1,0 +1,11 @@
+########################################################################
+# Empty                                                                #
+########################################################################
+properties:
+  id:
+    description: optional object ID
+    type: string
+  page:
+    description: optional page id
+    type: string
+required: []

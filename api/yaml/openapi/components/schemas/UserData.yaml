@@ -1,0 +1,29 @@
+########################################################################
+# UserData                                                             #
+########################################################################
+properties:
+  defaultOrganisation:
+    description: The default organisation. This is where Kibble will collect data
+      from.
+    example: apache
+    type: string
+  displayName:
+    description: The display-name of the user
+    example: Kibble Guest
+    type: string
+  organisations:
+    description: A list of organisations you belong to
+    example:
+    - apache
+    - demo
+    items:
+      type: string
+    type: array
+  userLevel:
+    description: User level (user/owner/admin)
+    example: user
+    type: string
+  username:
+    description: The username (email) of the user
+    example: guest@kibble.live
+    type: string

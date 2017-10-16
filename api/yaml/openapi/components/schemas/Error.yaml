@@ -1,0 +1,16 @@
+########################################################################
+# Error                                                                #
+########################################################################
+properties:
+  code:
+    description: HTTP Error Code
+    example: 403
+    format: int16
+    type: integer
+  reason:
+    description: Human readable error message
+    example: You need to be logged in to view this endpoint!
+    type: string
+required:
+- code
+- reason

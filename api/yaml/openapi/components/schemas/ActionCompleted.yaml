@@ -1,0 +1,10 @@
+########################################################################
+# ActionCompleted                                                      #
+########################################################################
+properties:
+  message:
+    description: Acknowledgement message
+    example: Action completed
+    type: string
+required:
+- message

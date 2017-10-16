@@ -1,0 +1,12 @@
+########################################################################
+# Timeseries                                                           #
+########################################################################
+properties:
+  interval:
+    type: string
+  okay:
+    type: boolean
+  timeseries:
+    items:
+      $ref: '#/components/schemas/TimeseriesObject'
+    type: array
