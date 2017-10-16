@@ -22,8 +22,8 @@
 ### Using gunicorn for WSGI:
  
  You can use gunicorn (gunicorn3) for the WSGI application, by following these steps:
+ * Install gunicorn (or gunicorn3, since this is a python3 application)
  * Add the following to your HTTPd vhost configuration: ProxyPass /api/ http://localhost:8080/
  * in /var/www/kibble/api, run: `gunicorn3 -b 127.0.0.1:8080 -w 10 -t 120 -D handler:application`
 
 Visiting $yourhost/api/ should now fire off WSGI via gunicorn.
-
