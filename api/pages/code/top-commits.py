@@ -14,6 +14,54 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+########################################################################
+# OPENAPI-URI: /api/code/top-commits
+########################################################################
+# get:
+#   responses:
+#     '200':
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Timeseries'
+#       description: 200 Response
+#     default:
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Error'
+#       description: unexpected error
+#   security:
+#   - cookieAuth: []
+#   summary: Shows top 25 repos by commit volume
+# post:
+#   requestBody:
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '#/components/schemas/defaultWidgetArgs'
+#   responses:
+#     '200':
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Timeseries'
+#       description: 200 Response
+#     default:
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Error'
+#       description: unexpected error
+#   security:
+#   - cookieAuth: []
+#   summary: Shows top 25 repos by commit volume
+# 
+########################################################################
+
+
+
+
 
 """
 This is the TopN repos by commits list renderer for Kibble

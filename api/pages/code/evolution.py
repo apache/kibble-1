@@ -14,6 +14,54 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+########################################################################
+# OPENAPI-URI: /api/code/evolution
+########################################################################
+# get:
+#   responses:
+#     '200':
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Timeseries'
+#       description: 200 Response
+#     default:
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Error'
+#       description: unexpected error
+#   security:
+#   - cookieAuth: []
+#   summary: Show code evolution as a timeseries
+# post:
+#   requestBody:
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '#/components/schemas/defaultWidgetArgs'
+#   responses:
+#     '200':
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Timeseries'
+#       description: 200 Response
+#     default:
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Error'
+#       description: unexpected error
+#   security:
+#   - cookieAuth: []
+#   summary: Show code evolution as a timeseries
+# 
+########################################################################
+
+
+
+
 
 """
 This is the TopN committers list renderer for Kibble

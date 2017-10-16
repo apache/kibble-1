@@ -14,6 +14,79 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+########################################################################
+# OPENAPI-URI: /api/org/list
+########################################################################
+# get:
+#   responses:
+#     '200':
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Trend'
+#       description: 200 Response
+#     default:
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Error'
+#       description: unexpected error
+#   security:
+#   - cookieAuth: []
+#   summary: Lists the organisations you belong to (or all, if admin)
+# post:
+#   requestBody:
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '#/components/schemas/defaultWidgetArgs'
+#     description: Nothing...
+#     required: true
+#   responses:
+#     '200':
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Sloc'
+#       description: 200 Response
+#     default:
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Error'
+#       description: unexpected error
+#   security:
+#   - cookieAuth: []
+#   summary: Lists the organisations you belong to (or all, if admin)
+# put:
+#   requestBody:
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '#/components/schemas/NewOrg'
+#     required: true
+#   responses:
+#     '200':
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/ActionCompleted'
+#       description: 200 Response
+#     default:
+#       content:
+#         application/json:
+#           schema:
+#             $ref: '#/components/schemas/Error'
+#       description: unexpected error
+#   security:
+#   - cookieAuth: []
+#   summary: Create a new organisation
+# 
+########################################################################
+
+
+
+
 
 """
 This is the Org list renderer for Kibble
