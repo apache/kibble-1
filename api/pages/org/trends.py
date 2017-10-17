@@ -85,8 +85,8 @@ def run(API, environ, indata, session):
             view = session.DB.ES.get(index=session.DB.dbname, doc_type="view", id = indata['view'])
             viewList = view['_source']['sourceList']
     
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
+    dateTo = int(time.time())
+    dateFrom = dateTo - (86400*30*3) # Default to a quarter
     if dateFrom < 0:
         dateFrom = 0
     dateYonder = dateFrom - (dateTo - dateFrom)
@@ -203,12 +203,12 @@ def run(API, environ, indata, session):
         "authors": {
             'before': no_authors_before,
             'after': no_authors,
-            'title': "Contributors this period"
+            'title': "Contributors this quarter"
         },
         'commits': {
             'before': no_commits_before,
             'after': no_commits,
-            'title': "Commits this period"
+            'title': "Commits this quarter"
         }
     }
     
