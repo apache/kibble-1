@@ -238,7 +238,7 @@ def run(API, environ, indata, session):
                         xlinks.append(xID)
                         lname = "%s||%s" % (ID, xID) # Link name
                         rname = "%s||%s" % (xID, ID) # Reverse link name
-                        if len(xlinks) > 0 and rname not in repo_links and len(xlinks) > minLinks:
+                        if len(xlinks) > 0 and rname not in repo_links and len(xlinks) >= minLinks:
                             mylinks[ID] = mylinks.get(ID, 0) + 1
                             repo_links[lname] = repo_links.get(lname, 0) + len(xlinks) # How many contributors in common between project A and B?
                             if repo_links[lname] > max_shared:
