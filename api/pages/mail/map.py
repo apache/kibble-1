@@ -243,6 +243,8 @@ def run(API, environ, indata, session):
                             repo_links[lname] = repo_links.get(lname, 0) + len(xlinks) # How many contributors in common between project A and B?
                             if repo_links[lname] > max_shared:
                                 max_shared = repo_links[lname]
+                        elif rname in repo_links:
+                            repo_links[rname] = repo_links.get(rname, 0) + len(xlinks)
         if ID not in repo_notoriety:
             repo_notoriety[ID] = set()
         repo_notoriety[ID].update(mylinks.keys()) # How many projects is this repo connected to?
