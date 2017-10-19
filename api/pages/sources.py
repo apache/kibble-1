@@ -198,6 +198,9 @@ def run(API, environ, indata, session):
                     }
                 sources.append(xdoc)
             else:
+                # Creds should be anonymous here
+                if 'creds' in doc:
+                    del doc['creds']
                 sources.append(doc)
         
         JSON_OUT = {
