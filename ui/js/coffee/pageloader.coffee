@@ -106,6 +106,7 @@ setupPage = (json, state) ->
                 when 'comstat' then widget.load(comstat)
                 when 'worldmap' then widget.load(worldmap)
                 when 'orglist' then widget.load(orglist)
+                when 'membership' then widget.load(membershipList)
 
 
 

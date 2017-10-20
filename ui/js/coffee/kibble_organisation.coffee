@@ -100,3 +100,42 @@ orglist = (json, state) ->
         
         state.widget.inject(fieldset)
         
+
+inviteMember = (eml, admin) ->
+    put('org/members', { email: eml, admin: admin}, null, memberInvited)
+    
+removeMember = (eml, admin) ->
+    xdelete('org/members', { email: eml, admin: admin}, null, memberInvited)
+
+memberInvited = (json, state) ->
+    window.setTimeout(
+        () ->
+            location.reload()
+        , 1000
+        )
+
+membershipList = (json, state) ->
+    list = new HTML('table')
+    
+    for member in json.members
+        tr = new HTML('tr')
+        eml = new HTML('td', { style: { padding: "5px"}}, member)
+        isAdmin = member in json.admins
+        admin = new HTML('td', { style: { padding: "5px"}}, if isAdmin then "Admin" else "Member")
+        alink = new HTML('a', { href: "javascript:void(inviteMember('#{member}', true));"}, "Make admin")
+        if isAdmin
+            alink = new HTML('a', { href: "javascript:void(inviteMember('#{member}', false));"}, "Remove as admin")
+        admopt = new HTML('td', { style: { padding: "5px"}}, alink)
+        
+        # Remove member
+        dlink = new HTML('a', { href: "javascript:void(removeMember('#{member}'));"}, "Remove from oganisation")
+        delopt = new HTML('td', { style: { padding: "5px"}}, dlink)
+        
+        tr.inject(eml)
+        tr.inject(admin)
+        tr.inject(admopt)
+        tr.inject(delopt)
+        list.inject(tr)
+        
+    state.widget.inject(list, true)
+    
