@@ -30,4 +30,43 @@ kibbleLogin = (email, password) ->
 
 signout = () ->
     xdelete('session', {}, {}, () -> location.href = 'login.html')
+
+accountCallback = (json, state) ->
+    obj = get('signup')
+    obj.innerHTML = ""
+    h = new HTML('h3', {}, "Account created!")
+    obj.appendChild(h)
+    if json.verified
+        t = new HTML('p', {}, "You can now log in and use your account")
+    else
+        t = new HTML('p', {}, "Please check your email account for a verification email.")
+    obj.appendChild(t)
     
+kibbleSignup = (form) ->
+    email = form.email.value
+    displayName = form.displayname.value
+    password = form.password.value
+    password2 = form.password2.value
+    
+    # Passwords must match
+    if password != password2
+        alert("Passwords must match!")
+        return false
+    
+    # Username must be >= 2 chars
+    if displayName.length < 2
+        alert("Please enter a proper display name!")
+        return false
+    
+    # Email must be valid
+    if not email.match(/([^@]+@[^.]+\.[^.])/)
+        alert("Please enter a valid email address!")
+        return false
+    
+    put('account', {
+        email: email,
+        password: password,
+        displayname: displayName
+    }, null, accountCallback)
+    
+    return false

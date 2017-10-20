@@ -39,11 +39,11 @@
           </form>
         </div>
         <div id="signup" class="tab-pane">
-          <form action="index.html">
-            <input type="email" placeholder="Email address" class="form-control top">
-            <input type="text" placeholder="Your full name" class="form-control top">
-            <input type="password" placeholder="password" class="form-control middle">
-            <input type="password" placeholder="re-password" class="form-control bottom">
+          <form action="index.html" onsubmit="return kibbleSignup(this.elements);">
+            <input name="email" type="email" placeholder="Email address" class="form-control top">
+            <input name="displayname" type="text" placeholder="Your full name" class="form-control top">
+            <input name="password" type="password" placeholder="password" class="form-control middle">
+            <input name="password2" type="password" placeholder="re-password" class="form-control bottom">
             <button class="btn btn-lg btn-success btn-block" type="submit">Register</button>
           </form>
         </div>
