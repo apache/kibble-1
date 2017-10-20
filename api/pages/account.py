@@ -101,11 +101,33 @@ import json
 import re
 import time
 import bcrypt
+import hashlib
+import smtplib
+import email.message
+
+
+def sendCode(session, addr, code):
+    msg = email.message.EmailMessage()
+    msg['To'] = addr
+    msg['From'] = session.config['mail']['sender']
+    msg['Subject'] = "Please verify your account"
+    msg.set_content("""\
+Hi there!
+Please verify your account by visiting:
+%s/api/verify/%s
+
+With regards,
+Apache Kibble.
+"""
+    )
+    s = smtplib.SMTP("%s:%s" % (session.config['mail']['mailhost'], session.config['mail']['mailport']))
+    s.send_message(msg)
+    s.quit()
 
 def run(API, environ, indata, session):
     
     method = environ['REQUEST_METHOD']
-    
+
     # Add a new account??
     if method == "PUT":
         u = indata['email']
@@ -133,6 +155,19 @@ def run(API, environ, indata, session):
         salt = bcrypt.gensalt()
         pwd = bcrypt.hashpw(p.encode('utf-8'), salt).decode('ascii')
         
+        # Verification code, if needed
+        vsalt = bcrypt.gensalt()
+        vcode = hashlib.sha1(vsalt).hexdigest()
+        
+        # Auto-verify unless verification is enabled.
+        # This is so previously unverified accounts don'thave to verify
+        # if we later turn verification on.
+        verified = True
+        if session.config['accounts'].get('verify'):
+            verified = False
+            sendCode(sesion, u, vcode) # Send verification email
+            # If verification email fails, skip account creation.
+        
         doc = {
             'email': u,                         # Username (email)
             'password': pwd,                    # Hashed password
@@ -140,9 +175,11 @@ def run(API, environ, indata, session):
             'organisations': [],                # Orgs user belongs to (default is none)
             'ownerships': [],                   # Orgs user owns (default is none)
             'defaultOrganisation': None,        # Default org for user
-            'verified': False,                  # Account verified via email?
+            'verified': verified,               # Account verified via email?
+            'vcode': vcode,                     # Verification code
             'userlevel': "user"                 # User level (user/admin)
         }
+        
         
         # If we have auto-invite on, check if there are orgs to invite to
         if 'autoInvite' in session.config['accounts']:
