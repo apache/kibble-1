@@ -2568,7 +2568,7 @@ memberInvited = function(json, state) {
 
 membershipList = function(json, state) {
   var admin, admopt, alink, btn, delopt, dlink, eml, h, inp, isAdmin, len, list, member, q, ref, tr;
-  h = new HTML('h3', {}, "Invite a member to this organisation");
+  h = new HTML('h3', {}, "Invite a member to " + userAccount.defaultOrganisation);
   state.widget.inject(h, true);
   inp = new HTML('input', {
     id: "email",
@@ -2584,11 +2584,22 @@ membershipList = function(json, state) {
   state.widget.inject(inp);
   state.widget.inject(btn);
   state.widget.inject(new HTML('hr'));
-  list = new HTML('table');
+  h = new HTML('h3', {}, "Current membership of " + userAccount.defaultOrganisation + ":");
+  state.widget.inject(h);
+  list = new HTML('table', {
+    style: {
+      margin: "20px",
+      border: "1px solid #666"
+    }
+  });
   ref = json.members;
   for (q = 0, len = ref.length; q < len; q++) {
     member = ref[q];
-    tr = new HTML('tr');
+    tr = new HTML('tr', {
+      style: {
+        borderBottom: "1px solid #666"
+      }
+    });
     eml = new HTML('td', {
       style: {
         padding: "5px"
