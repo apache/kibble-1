@@ -114,6 +114,10 @@ def run(API, environ, indata, session):
             doc = session.DB.ES.get(index=session.DB.dbname, doc_type='useraccount', id = u)
             hp = doc['_source']['password']
             if bcrypt.hashpw(p.encode('utf-8'), hp.encode('utf-8')).decode('ascii') == hp:
+                # If verification is enabled, make sure account is verified
+                if session.config['accounts'].get('verify'):
+                    if doc['_source']['verified'] == False:
+                        raise API.exception(403, "Your account needs to be verified first. Check your inbox!")
                 sessionDoc = {
                     'cid': u,
                     'id': session.cookie,
