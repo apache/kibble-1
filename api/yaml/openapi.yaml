@@ -2229,6 +2229,35 @@ paths:
       security:
       - cookieAuth: []
       summary: Add a new source
+  /api/verify/{email}/{vcode}:
+    get:
+      parameters:
+      - description: Email address of account
+        in: path
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: Verification code
+        in: path
+        name: vcode
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Verify an account
   /api/views:
     delete:
       requestBody:
