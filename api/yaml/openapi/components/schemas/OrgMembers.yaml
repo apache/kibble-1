@@ -1,0 +1,17 @@
+########################################################################
+# Organisation Member List                                             #
+########################################################################
+properties:
+  admins:
+    description: An array containing the IDs of the admins of this org
+    type: array
+    exammple: ['foo@bar', 'bar@foo']
+  members:
+    description: An array containing the IDs of the members of this org
+    type: array
+    exammple: ['foo@bar', 'bar@foo']
+required:
+- admins
+- members
+
+
