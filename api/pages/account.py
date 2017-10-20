@@ -118,7 +118,7 @@ Please verify your account by visiting:
 
 With regards,
 Apache Kibble.
-"""
+""" % (session.url, code)
     )
     s = smtplib.SMTP("%s:%s" % (session.config['mail']['mailhost'], session.config['mail']['mailport']))
     s.send_message(msg)
