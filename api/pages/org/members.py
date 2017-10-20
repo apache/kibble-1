@@ -163,16 +163,24 @@ def run(API, environ, indata, session):
                 doc['_source']['organisations'].append(orgid)
                 session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = newmember, body = doc['_source'])
             
-            # If adding as admin, we have to get the org doc and modify it
+            
+            # Get org doc from ES
+            doc = session.DB.ES.get(index=session.DB.dbname, doc_type='organisation', id = orgid)
             if isadmin:
-                # Get org doc from ES
-                doc = session.DB.ES.get(index=session.DB.dbname, doc_type='organisation', id = orgid)
                 if newmember not in doc['_source']['admins']:
                     doc['_source']['admins'].append(newmember)
                     # Override old doc
                     session.DB.ES.index(index=session.DB.dbname, doc_type='organisation', id = orgid, body = doc['_source'])
                     time.sleep(1) # Bleh!!
-                
+            
+            # If an admin, and not us, and reinvited, we purge the admin bit
+            elif newmember in doc['_source']['admins']:
+                if newmember == session.user['email']:
+                    raise API.exception(403, "You can't remove yourself from an organisation.")
+                doc['_source']['admins'].remove(newmember)
+                # Override old doc
+                session.DB.ES.index(index=session.DB.dbname, doc_type='organisation', id = orgid, body = doc['_source'])
+                time.sleep(1) # Bleh!!
             yield json.dumps({"okay": True, "message": "Member invited!!"})
             
             return
