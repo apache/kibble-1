@@ -225,6 +225,10 @@ def run(API, environ, indata, session):
         if not session.DB.ES.exists(index=session.DB.dbname, doc_type='organisation', id = orgid):
             raise API.exception(403, "No such organisation!")
         
+        # Only admins should be able to view this!
+        if not canInvite(session):
+            raise API.exception(403, "Only organisation owners can view this list.")
+        
         # Find everyone affiliated with this org
         query = {
                     'query': {
