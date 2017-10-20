@@ -647,4 +647,15 @@ widgets:
                         source: "mail/map"
                         name:   "Email mapping"
                         blocks: 6
-            
+## ORGANISATION MEMBERSHIP
+    org-users:
+        title: "Organisation Membership"
+        rows:
+            -
+                name: "Organisation membership"
+                children:
+                    -
+                        type:   "membership"
+                        source: "org/members"
+                        name:   "Organisation members"
+                        blocks: 12
