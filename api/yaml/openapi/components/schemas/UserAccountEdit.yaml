@@ -19,5 +19,9 @@ properties:
     description: Desired password for the account
     example: kibbledemo
     type: string
+  admin:
+    description: when adding users to orgs, this signifies ownership
+    type: boolean
+    example: false
 required:
 - email
