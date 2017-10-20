@@ -82,6 +82,23 @@ components:
       - id
       - name
       - desc
+    OrgMembers:
+      properties:
+        admins:
+          description: An array containing the IDs of the admins of this org
+          exammple:
+          - foo@bar
+          - bar@foo
+          type: array
+        members:
+          description: An array containing the IDs of the members of this org
+          exammple:
+          - foo@bar
+          - bar@foo
+          type: array
+      required:
+      - admins
+      - members
     Organisation:
       properties:
         admins:
@@ -241,6 +258,10 @@ components:
       - displayname
     UserAccountEdit:
       properties:
+        admin:
+          description: when adding users to orgs, this signifies ownership
+          example: false
+          type: boolean
         defaultOrganisation:
           description: If editing an account, this sets the default org (if a member
             of it)
@@ -447,8 +468,8 @@ components:
           description: for some widget, this fetches all sources
           type: boolean
         span:
-          description: For factor charts, denotes the number of years to calculate
-            a factor from
+          description: For factor charts, denotes the number of months to base factors
+            on from
           example: 2
           type: integer
         subfilter:
@@ -1870,6 +1891,96 @@ paths:
       security:
       - cookieAuth: []
       summary: Create a new organisation
+  /api/org/members:
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountEdit'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Remove a person from an organisation
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgMembers'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Lists the members of an organisation
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+        description: Nothing...
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/OrgMembers'
+                type: array
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Lists the members of an organisation
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountEdit'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCompleted'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Invite a person to an organisation
   /api/org/sourcetypes:
     get:
       responses:
