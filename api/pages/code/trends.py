@@ -310,7 +310,7 @@ def run(API, environ, indata, session):
         },
         'changes': {
             'before': insertions + deletions,
-            'after': insertions_before + deletions,
+            'after': insertions_before + deletions_before,
             'title': "Lines changed this period"
         }
     }
