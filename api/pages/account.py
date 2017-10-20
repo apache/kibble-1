@@ -114,11 +114,11 @@ def sendCode(session, addr, code):
     msg.set_content("""\
 Hi there!
 Please verify your account by visiting:
-%s/api/verify/%s
+%s/api/verify/%s/%s
 
 With regards,
 Apache Kibble.
-""" % (session.url, code)
+""" % (session.url, addr, code)
     )
     s = smtplib.SMTP("%s:%s" % (session.config['mail']['mailhost'], session.config['mail']['mailport']))
     s.send_message(msg)
