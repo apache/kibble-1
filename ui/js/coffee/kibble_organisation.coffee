@@ -129,10 +129,10 @@ membershipList = (json, state) ->
     # Existing membership list
     h = new HTML('h3', {}, "Current membership of #{userAccount.defaultOrganisation}:")
     state.widget.inject(h)
-    list = new HTML('table')
+    list = new HTML('table', { style: { margin: "20px", border: "1px solid #666"}})
     
     for member in json.members
-        tr = new HTML('tr')
+        tr = new HTML('tr', { style: { borderBottom: "1px solid #666"}})
         eml = new HTML('td', { style: { padding: "5px"}}, member)
         isAdmin = member in json.admins
         admin = new HTML('td', { style: { padding: "5px"}}, if isAdmin then "Admin" else "Member")
