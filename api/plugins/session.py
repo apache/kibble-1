@@ -100,7 +100,15 @@ class KibbleSession(object):
         self.headers = [('Content-Type', 'application/json')]
         self.cookie = None
         
+        # Construct the URL we're visiting
+        self.url = "%s://%s" % (environ['wsgi.url_scheme'], environ.get('HTTP_HOST', environ.get('SERVER_NAME')))
+        if environ['wsgi.url_scheme'] == 'https' and environ['SERVER_PORT'] != '443':
+               self.url += ':' + environ['SERVER_PORT']
+        elif environ['wsgi.url_scheme'] == 'http' and environ['SERVER_PORT'] != '80':
+               self.url += ':' + environ['SERVER_PORT']
+        self.url += environ.get('SCRIPT_NAME', '/')
         
+        # Get Kibble cookie
         cookie = None
         cookies = None
         if 'HTTP_COOKIE' in environ:
