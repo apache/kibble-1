@@ -165,7 +165,7 @@ def run(API, environ, indata, session):
         verified = True
         if session.config['accounts'].get('verify'):
             verified = False
-            sendCode(sesion, u, vcode) # Send verification email
+            sendCode(session, u, vcode) # Send verification email
             # If verification email fails, skip account creation.
         
         doc = {
@@ -189,7 +189,7 @@ def run(API, environ, indata, session):
                     doc['organisations'].append(ai['organisation'])
                 
         session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = u, body = doc)
-        yield json.dumps({"message": "Account created!"})
+        yield json.dumps({"message": "Account created!", "verified": verified})
         return
     
     # We need to be logged in for the rest of this!
