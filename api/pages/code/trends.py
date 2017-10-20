@@ -309,8 +309,8 @@ def run(API, environ, indata, session):
             'title': "Commits this period"
         },
         'changes': {
-            'before': insertions + deletions,
-            'after': insertions_before + deletions_before,
+            'before': insertions_before + deletions_before,
+            'after': insertions + deletions,
             'title': "Lines changed this period"
         }
     }
