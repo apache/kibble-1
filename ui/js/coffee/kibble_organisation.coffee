@@ -117,7 +117,7 @@ memberInvited = (json, state) ->
 membershipList = (json, state) ->
     
     # Invite member form
-    h = new HTML('h3', {}, "Invite a member to this organisation")
+    h = new HTML('h3', {}, "Invite a member to #{userAccount.defaultOrganisation}")
     state.widget.inject(h, true)
     inp = new HTML('input', {id: "email", type: "text", placeholder: "email@ddres"})
     btn = new HTML('input', {type: 'button', class: 'btn btn-success', value: "Invite member", onclick: 'inviteMember(get("email").value, false);'})
@@ -127,6 +127,8 @@ membershipList = (json, state) ->
     
     
     # Existing membership list
+    h = new HTML('h3', {}, "Current membership of #{userAccount.defaultOrganisation}:")
+    state.widget.inject(h)
     list = new HTML('table')
     
     for member in json.members
