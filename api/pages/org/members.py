@@ -188,6 +188,10 @@ def run(API, environ, indata, session):
             isadmin = indata.get('admin', False)
             orgid = session.user['defaultOrganisation'] or "apache"
             
+            # We can't remove ourselves!
+            if memberid == session.user['email']:
+                raise API.exception(403, "You can't remove yourself from an organisation.")
+            
             # Make sure the org exists
             if not session.DB.ES.exists(index=session.DB.dbname, doc_type='organisation', id = orgid):
                 raise API.exception(403, "No such organisation!")
