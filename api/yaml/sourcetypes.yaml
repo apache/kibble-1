@@ -33,6 +33,9 @@ bugzilla:
     title: "BugZilla Project"
     regex: https?://.+/jsonrpc\.cgi?\s+.+
     example: "https://bz.apache.org/bugzilla/jsonrpc.cgi Apache2"
+    optauth:
+        - username
+        - password
 
 ponymail:
     title: "Pony Mail Archive"
