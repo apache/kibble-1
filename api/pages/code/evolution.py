@@ -146,9 +146,10 @@ def run(API, environ, indata, session):
             if breakdown:
                 pass
             else:
-                item['blanks'] = item.get('blanks', 0) + int(updates['blank'])
-                item['comments'] = item.get('comments', 0) + int(updates['comments'])
-                item['code'] = item.get('code', 0) + int(updates['loc'])
+                
+                item['blanks'] = item.get('blanks', 0) + (updates['blank'] or 0)
+                item['comments'] = item.get('comments', 0) + (updates['comments'] or 0)
+                item['code'] = item.get('code', 0) + (updates['loc'] or 0)
                 
         res = session.DB.ES.scroll(scroll_id = sid, scroll = '1m')
         sid = res['_scroll_id']
