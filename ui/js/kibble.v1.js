@@ -1547,47 +1547,47 @@ explorer = function(json, state) {
     chk.checked = true;
   }
   chk.addEventListener("change", function() {
-    var unique;
+    var author, unique;
     unique = null;
     if (this.checked) {
-      unique = 'true';
-      globArgs['unique'] = 'true';
+      author = 'true';
+      globArgs['author'] = 'true';
     }
     updateWidgets('donut', null, {
-      unique: unique
+      author: author
     });
     updateWidgets('line', null, {
-      unique: unique
+      author: author
     });
     updateWidgets('contacts', null, {
-      unique: unique
+      author: author
     });
     updateWidgets('top5', null, {
-      unique: unique
+      author: author
     });
     updateWidgets('factors', null, {
-      source: source
+      author: author
     });
     updateWidgets('trends', null, {
-      unique: unique
+      author: author
     });
     updateWidgets('relationship', null, {
-      unique: unique
+      author: author
     });
     updateWidgets('mvp', null, {
-      unique: unique
+      author: author
     });
     return updateWidgets('comstat', null, {
-      source: source
+      author: author
     });
   });
   state.widget.inject(chk);
   label = document.createElement('label');
   label.setAttribute("for", id);
-  label.setAttribute("title", "Check this box to only view unique commits across the organisation");
-  chk.setAttribute("title", "Check this box to only view unique commits across the organisation");
+  label.setAttribute("title", "Check this box to authorships instead of committerships");
+  chk.setAttribute("title", "Check this box to authorships instead of committerships");
   label.style.paddingLeft = '5px';
-  label.appendChild(document.createTextNode('Unique commits only'));
+  label.appendChild(document.createTextNode('Show authors'));
   return state.widget.inject(label);
 };
 
