@@ -78,26 +78,26 @@ explorer = (json, state) ->
         chk.addEventListener("change", () ->
                 unique = null
                 if this.checked
-                        unique = 'true'
-                        globArgs['unique'] = 'true'
+                        author = 'true'
+                        globArgs['author'] = 'true'
                 
-                updateWidgets('donut', null, { unique: unique })
-                updateWidgets('line', null, { unique: unique })
-                updateWidgets('contacts', null, { unique: unique })
-                updateWidgets('top5', null, { unique: unique })
-                updateWidgets('factors', null, { source: source })
-                updateWidgets('trends', null, { unique: unique })
-                updateWidgets('relationship', null, {unique: unique})
-                updateWidgets('mvp', null, {unique: unique})
-                updateWidgets('comstat', null, { source: source })
+                updateWidgets('donut', null, { author: author })
+                updateWidgets('line', null, { author: author })
+                updateWidgets('contacts', null, { author: author })
+                updateWidgets('top5', null, { author: author })
+                updateWidgets('factors', null, { author: author })
+                updateWidgets('trends', null, { author: author })
+                updateWidgets('relationship', null, {author: author})
+                updateWidgets('mvp', null, {author: author})
+                updateWidgets('comstat', null, { author: author })
                 )
         state.widget.inject(chk)
         label = document.createElement('label')
         label.setAttribute("for", id)
-        label.setAttribute("title", "Check this box to only view unique commits across the organisation")
-        chk.setAttribute("title", "Check this box to only view unique commits across the organisation")
+        label.setAttribute("title", "Check this box to authorships instead of committerships")
+        chk.setAttribute("title", "Check this box to authorships instead of committerships")
         label.style.paddingLeft = '5px'
-        label.appendChild(document.createTextNode('Unique commits only'))
+        label.appendChild(document.createTextNode('Show authors'))
         state.widget.inject(label)
 
 
