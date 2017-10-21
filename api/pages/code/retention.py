@@ -227,7 +227,7 @@ def run(API, environ, indata, session):
             if allPeople[person] <= time.time() - el[1]:
                 counts[el[0]] = counts.get(el[0], 0) + 1
                 break
-    avgyr = (totExp / (86400*365)) / len(activePeople)
+    avgyr = (totExp / (86400*365)) / max(len(activePeople),1)
     
     ts = sorted(ts, key = lambda x: x['date'])
     avgm = ""
