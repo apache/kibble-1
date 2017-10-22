@@ -71,6 +71,15 @@ import json
 import time
 import hashlib
 
+# This creates an empty timeseries object with
+# all categories initialized as 0 opened, 0 closed.
+def makeTS(dist):
+    ts = {}
+    for k in dist:
+        ts[k + ' opened'] = 0
+        ts[k + ' closed'] = 0
+    return ts
+
 def run(API, environ, indata, session):
     
     # We need to be logged in for this!
@@ -166,7 +175,7 @@ def run(API, environ, indata, session):
         for bucket in res['aggregations']['commits']['buckets']:
             ts = int(bucket['key'] / 1000)
             count = bucket['doc_count']
-            timeseries[ts] = timeseries.get(ts, {iType + ' opened': 0, iType + ' closed': count})
+            timeseries[ts] = timeseries.get(ts, makeTS(distinct))
             timeseries[ts][iType + ' opened'] = timeseries[ts].get(iType + ' opened', 0) + count
             
         
@@ -226,10 +235,8 @@ def run(API, environ, indata, session):
         for bucket in res['aggregations']['commits']['buckets']:
             ts = int(bucket['key'] / 1000)
             count = bucket['doc_count']
-            if not ts in timeseries:
-                timeseries[ts] = {iType + ' opened': 0, iType + ' closed': count}
-            else:
-                timeseries[ts][iType + ' closed'] = timeseries[ts].get(iType + ' closed', 0) + count
+            timeseries[ts] = timeseries.get(ts, makeTS(distinct))
+            timeseries[ts][iType + ' closed'] = timeseries[ts].get(iType + ' closed', 0) + count
         
     ts = []
     for k, v in timeseries.items():
