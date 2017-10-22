@@ -1789,6 +1789,46 @@ paths:
       security:
       - cookieAuth: []
       summary: Shows email sent over time
+  /api/mail/timeseries-single:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows email sent over time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows email sent over time
   /api/mail/top-authors:
     get:
       responses:
