@@ -297,5 +297,33 @@ class Chart
          if type == 'relationship'
             [@chartobj, @config] = charts_linked(@chartdiv, data.nodes, data.links, options)
         
+        # If this data source has distinguishable categories
+        # show a checkbox to toggle it.
+        if data.distinguishable
+          id = Math.floor(Math.random() * 987654321).toString(16)
+          chk = document.createElement('input')
+          chk.setAttribute("type", "checkbox")
+          chk.setAttribute("id", id)
+          chk.style.marginLeft = '10px'
+          if globArgs.distinguish and globArgs.distinguish == 'true'
+                  chk.checked = true
+          chk.addEventListener("change", () ->
+                  distinguish = null
+                  if this.checked
+                          distinguish = 'true'
+                          globArgs['distinguish'] = 'true'
+                  
+                  updateWidgets('line', null, { distinguish: distinguish })
+                  )
+          @main.inject(mk('br'))
+          @main.inject(chk)
+          label = document.createElement('label')
+          label.setAttribute("for", id)
+          label.setAttribute("title", "Check this box to distinguish between sub-categories in this chart")
+          chk.setAttribute("title", "Check this box to distinguish between sub-categories in this chart")
+          label.style.paddingLeft = '5px'
+          label.appendChild(document.createTextNode('Toggle category breakdown'))
+          @main.inject(label)
+          
         return @main
     
