@@ -434,6 +434,11 @@ components:
         collapse:
           description: for some widgets, this collapses sources based on a regex
           type: string
+        distinguish:
+          description: Enables distinguishing different types of data objects, subject
+            to the individual API endpoint
+          example: false
+          type: boolean
         email:
           description: filter sources based on an email (a person)
           type: string
