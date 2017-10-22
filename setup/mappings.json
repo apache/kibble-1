@@ -61,7 +61,7 @@
                     "index": "not_analyzed"
                 },
                 "organisations": {
-                    "type": "object"
+                    "type": "string"
                 },
                 "ownerships": {
                     "type": "string"
