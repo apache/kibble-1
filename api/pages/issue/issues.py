@@ -167,7 +167,7 @@ def run(API, environ, indata, session):
             ts = int(bucket['key'] / 1000)
             count = bucket['doc_count']
             timeseries[ts] = timeseries.get(ts, {iType + ' opened': 0, iType + ' closed': count})
-            timeseries[ts][iType + ' opened'] = timeseries[ts].get(iType + ' opened') + count
+            timeseries[ts][iType + ' opened'] = timeseries[ts].get(iType + ' opened', 0) + count
             
         
         ####################################################################
