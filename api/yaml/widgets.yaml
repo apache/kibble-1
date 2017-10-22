@@ -382,54 +382,30 @@ widgets:
                         name:   "Mailing list trends"
                         blocks: 12
             -
-                name: "Issue tracker timeline"
+                name: "Email timeline"
                 children:
                     -
                         type:       "line"
-                        datatype:   "issue"
+                        datatype:   "mail"
                         blocks:     4
-                        source:     "issue/issues"
-                        name:       "Issues opened/closed"
-                        target:     ""
-                    -
-                        type:       "line"
-                        datatype:   "issue"
-                        blocks:     4
-                        source:     "issue/actors"
-                        name:       "Openers/Closers of issues"
-                        target:     ""
-                    -
-                        type:       "line"
-                        datatype:   "issue"
-                        blocks:     4
-                        source:     "issue/age"
-                        name:       "Issue age"
-                        target:     ""
-            -
-                name: "Issues and handlers"
-                children:
-                    -
-                        type:       "top5"
-                        datatype:   "issue"
-                        blocks:     4
-                        source:     "issue/openers"
-                        name:       "Top 5 issue openers"
+                        source:     "mail/timeseries"
+                        name:       "Email, topics, authors over time"
                         target:     ""
                     -
                         type:       "top5"
-                        datatype:   "issue"
+                        datatype:   "mail"
                         blocks:     4
-                        source:     "issue/closers"
-                        name:       "Top 5 issue closers"
+                        source:     "mail/top-authors"
+                        name:       "Most active authors"
                         target:     ""
                     -
                         type:       "top5"
-                        datatype:   "issue"
+                        datatype:   "mail"
                         blocks:     4
-                        source:     "issue/top"
-                        name:       "Most active issues"
+                        source:     "mail/top-topics"
+                        name:       "Most active topics"
                         target:     ""
-
+            
 
 ###### RELATIONSHIPS
 
