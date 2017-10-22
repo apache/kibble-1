@@ -108,9 +108,9 @@ def run(API, environ, indata, session):
                         'must': [
                             {'range':
                                 {
-                                    'ts': {
-                                        'from': dateFrom,
-                                        'to': dateTo
+                                    'date': {
+                                        'from': time.strftime("%Y/%m/%d 0:0:0", time.gmtime(dateFrom)),
+                                        'to': time.strftime("%Y/%m/%d 23:59:59", time.gmtime(dateTo))
                                     }
                                 }
                             },
@@ -134,27 +134,45 @@ def run(API, environ, indata, session):
     
     # Get number of committers, this period
     query['aggs'] = {
-            'commits': {
+            'timeseries': {
                 'date_histogram': {
                     'field': 'date',
                     'interval': interval
-                }                
+                },
+                'aggs': {
+                    'email': {
+                        'sum': {
+                            'field': 'emails'
+                        }
+                    },
+                    'topics': {
+                        'sum': {
+                            'field': 'topics'
+                        }
+                    },
+                    'authors': {
+                        'sum': {
+                            'field': 'authors'
+                        }
+                    }
+                }
             }
         }
     res = session.DB.ES.search(
             index=session.DB.dbname,
-            doc_type="email",
+            doc_type="mailstats",
             size = 0,
             body = query
         )
     
     timeseries = []
-    for bucket in res['aggregations']['commits']['buckets']:
+    for bucket in res['aggregations']['timeseries']['buckets']:
         ts = int(bucket['key'] / 1000)
-        count = bucket['doc_count']
         timeseries.append({
             'date': ts,
-            'email': count
+            'emails': bucket['email']['value'],
+            'topics': bucket['topics']['value'],
+            'authors': bucket['authors']['value']
         })
     
     JSON_OUT = {
