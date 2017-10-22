@@ -615,7 +615,7 @@ widgets:
                 children:
                     -
                         type:   "line"
-                        source: "mail/timeseries"
+                        source: "mail/timeseries-single"
                         name:   "Email sent"
                         blocks: 6
                     -
