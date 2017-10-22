@@ -70,6 +70,9 @@ This is the TopN committers list renderer for Kibble
 import json
 import time
 import hashlib
+import re
+
+ROBITS = r"(git|jira|jenkins|gerrit)@"
 
 def run(API, environ, indata, session):
     
@@ -128,7 +131,7 @@ def run(API, environ, indata, session):
             'authors': {
                 'terms': {
                     'field': 'sender',
-                    'size': 25
+                    'size': 30
                 }
             }            
         }
@@ -142,6 +145,9 @@ def run(API, environ, indata, session):
     people = {}
     for bucket in res['aggregations']['authors']['buckets']:
         email = bucket['key']
+        # By default, we want to see humans, not bots on this list!
+        if re.match(ROBITS, email):
+            continue 
         count = bucket['doc_count']
         sha = hashlib.sha1( ("%s%s" % (dOrg, email)).encode('utf-8') ).hexdigest()
         if session.DB.ES.exists(index=session.DB.dbname,doc_type="person",id = sha):
