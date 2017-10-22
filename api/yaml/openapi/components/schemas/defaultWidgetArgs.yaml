@@ -68,3 +68,7 @@ properties:
     description: ID Of optional view to use
     example: abcdef12345678
     type: string
+  distinguish:
+    description: Enables distinguishing different types of data objects, subject to the individual API endpoint
+    type: boolean
+    example: false
