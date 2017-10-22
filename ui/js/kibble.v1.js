@@ -1063,7 +1063,7 @@ stackChart = function(o, config, chart) {
 
 Chart = (function() {
   function Chart(parent, type, data, options) {
-    var btn, btnDiv, btns, chartWrapperColors, cid, el, hObj, i, inner, len, len1, q, ref, ref1, ref2, ref3, ref4, u;
+    var btn, btnDiv, btns, chartWrapperColors, chk, cid, el, hObj, i, id, inner, label, len, len1, q, ref, ref1, ref2, ref3, ref4, u;
     cid = parseInt(Math.random() * 1000000).toString(16);
     this.cid = cid;
     xxCharts[cid] = this;
@@ -1147,6 +1147,36 @@ Chart = (function() {
     }
     if (type === 'relationship') {
       ref4 = charts_linked(this.chartdiv, data.nodes, data.links, options), this.chartobj = ref4[0], this.config = ref4[1];
+    }
+    if (data.distinguishable) {
+      id = Math.floor(Math.random() * 987654321).toString(16);
+      chk = document.createElement('input');
+      chk.setAttribute("type", "checkbox");
+      chk.setAttribute("id", id);
+      chk.style.marginLeft = '10px';
+      if (globArgs.distinguish && globArgs.distinguish === 'true') {
+        chk.checked = true;
+      }
+      chk.addEventListener("change", function() {
+        var distinguish;
+        distinguish = null;
+        if (this.checked) {
+          distinguish = 'true';
+          globArgs['distinguish'] = 'true';
+        }
+        return updateWidgets('line', null, {
+          distinguish: distinguish
+        });
+      });
+      this.main.inject(mk('br'));
+      this.main.inject(chk);
+      label = document.createElement('label');
+      label.setAttribute("for", id);
+      label.setAttribute("title", "Check this box to distinguish between sub-categories in this chart");
+      chk.setAttribute("title", "Check this box to distinguish between sub-categories in this chart");
+      label.style.paddingLeft = '5px';
+      label.appendChild(document.createTextNode('Toggle category breakdown'));
+      this.main.inject(label);
     }
     return this.main;
   }
