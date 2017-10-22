@@ -90,6 +90,15 @@
    font-weight: bold;
 }
 
+.media-body>p {
+   margin: 0px;
+}
+
+.media.event {
+   margin-top: 5px !important;
+   border-bottom: 0.5px solid #CCC;
+}
+
 .sourceTypeIcon {
    float: left;
    border: 2px solid #116BE0;
