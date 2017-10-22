@@ -252,6 +252,7 @@ def run(API, environ, indata, session):
         'timeseries': ts,
         'interval': interval,
         'okay': True,
+        'distinguishable': True,
         'responseTime': time.time() - now
     }
     yield json.dumps(JSON_OUT)
