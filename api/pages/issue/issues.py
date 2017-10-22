@@ -92,120 +92,145 @@ def run(API, environ, indata, session):
     
     interval = indata.get('interval', 'month')
     
+    # By default, we lump PRs and issues into the same category
+    distinct = {
+        'issues': ['issue', 'pullrequest']
+    }
     
-    ####################################################################
-    # ISSUES OPENED                                                    #
-    ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
-    query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'created': {
-                                        'from': dateFrom,
-                                        'to': dateTo
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-    # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-    elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    if indata.get('email'):
-        query['query']['bool']['must'].append({'term': {'issueCreator': indata.get('email')}})
-    
-    # Get number of opened ones, this period
-    query['aggs'] = {
-            'commits': {
-                'date_histogram': {
-                    'field': 'createdDate',
-                    'interval': interval
-                }                
-            }
+    # If requested, we split them into two
+    if indata.get('distinguish', False):
+        distinct = {
+            'issues':        ['issue'],
+            'pull requests': ['pullrequest']
         }
-    res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="issue",
-            size = 0,
-            body = query
-        )
     
     timeseries = {}
-    for bucket in res['aggregations']['commits']['buckets']:
-        ts = int(bucket['key'] / 1000)
-        count = bucket['doc_count']
-        timeseries[ts] = timeseries.get(ts, { 'opened': 0, 'closed': 0})
-        timeseries[ts]['opened'] += count
-        
     
-    ####################################################################
-    # ISSUES CLOSED                                                    #
-    ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
-    query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
+    # For each category and the issue types that go along with that,
+    # grab opened and closed over time.
+    for iType, iValues in distinct.items():
+        ####################################################################
+        # ISSUES OPENED                                                    #
+        ####################################################################
+        dOrg = session.user['defaultOrganisation'] or "apache"
+        query = {
+                    'query': {
+                        'bool': {
+                            'must': [
+                                {'range':
+                                    {
+                                        'created': {
+                                            'from': dateFrom,
+                                            'to': dateTo
+                                        }
+                                    }
+                                },
                                 {
-                                    'closed': {
-                                        'from': dateFrom,
-                                        'to': dateTo
+                                    'term': {
+                                        'organisation': dOrg
+                                    }
+                                },
+                                {
+                                    'terms': {
+                                        'issuetype': iValues
                                     }
                                 }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
+        # Source-specific or view-specific??
+        if indata.get('source'):
+            query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+        elif viewList:
+            query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        if indata.get('email'):
+            query['query']['bool']['must'].append({'term': {'issueCreator': indata.get('email')}})
+        
+        # Get number of opened ones, this period
+        query['aggs'] = {
+                'commits': {
+                    'date_histogram': {
+                        'field': 'createdDate',
+                        'interval': interval
+                    }                
+                }
             }
-    if viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-    if indata.get('email'):
-        query['query']['bool']['must'].append({'term': {'issueCloser': indata.get('email')}})
-    
-    # Get number of closed ones, this period
-    query['aggs'] = {
-            'commits': {
-                'date_histogram': {
-                    'field': 'closedDate',
-                    'interval': interval
-                }                
+        res = session.DB.ES.search(
+                index=session.DB.dbname,
+                doc_type="issue",
+                size = 0,
+                body = query
+            )
+        
+        for bucket in res['aggregations']['commits']['buckets']:
+            ts = int(bucket['key'] / 1000)
+            count = bucket['doc_count']
+            timeseries[ts] = timeseries.get(ts, {iType + ' opened': 0, iType + ' closed': count})
+            timeseries[ts][iType + ' opened'] = timeseries[ts].get(iType + ' opened') + count
+            
+        
+        ####################################################################
+        # ISSUES CLOSED                                                    #
+        ####################################################################
+        dOrg = session.user['defaultOrganisation'] or "apache"
+        query = {
+                    'query': {
+                        'bool': {
+                            'must': [
+                                {'range':
+                                    {
+                                        'closed': {
+                                            'from': dateFrom,
+                                            'to': dateTo
+                                        }
+                                    }
+                                },
+                                {
+                                    'term': {
+                                        'organisation': dOrg
+                                    }
+                                },
+                                {
+                                    'terms': {
+                                        'issuetype': iValues
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+        if viewList:
+            query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        if indata.get('source'):
+            query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+        if indata.get('email'):
+            query['query']['bool']['must'].append({'term': {'issueCloser': indata.get('email')}})
+        
+        # Get number of closed ones, this period
+        query['aggs'] = {
+                'commits': {
+                    'date_histogram': {
+                        'field': 'closedDate',
+                        'interval': interval
+                    }                
+                }
             }
-        }
-    res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="issue",
-            size = 0,
-            body = query
-        )
-    
-    for bucket in res['aggregations']['commits']['buckets']:
-        ts = int(bucket['key'] / 1000)
-        count = bucket['doc_count']
-        if not ts in timeseries:
-            timeseries[ts] = {'opened': 0, 'closed': count}
-        else:
-            timeseries[ts]['closed'] = timeseries[ts].get('closed', 0) + count
-    
+        res = session.DB.ES.search(
+                index=session.DB.dbname,
+                doc_type="issue",
+                size = 0,
+                body = query
+            )
+        
+        for bucket in res['aggregations']['commits']['buckets']:
+            ts = int(bucket['key'] / 1000)
+            count = bucket['doc_count']
+            if not ts in timeseries:
+                timeseries[ts] = {iType + ' opened': 0, iType + ' closed': count}
+            else:
+                timeseries[ts][iType + ' closed'] = timeseries[ts].get(iType + ' closed', 0) + count
+        
     ts = []
     for k, v in timeseries.items():
         v['date'] = k
