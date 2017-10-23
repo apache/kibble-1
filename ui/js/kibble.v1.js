@@ -2175,7 +2175,7 @@ subFilter = function() {
 };
 
 viewexplorer = function(json, state) {
-  var ID, b, div, h, i, item, len, list, opt, org, q, ref, source, tName;
+  var ID, b, div, h, i, item, len, list, opt, org, q, rb, ref, source, tName;
   org = json.organisation;
   h = document.createElement('h4');
   h.appendChild(document.createTextNode("Select a view to use:"));
@@ -2281,8 +2281,18 @@ viewexplorer = function(json, state) {
     onClick: 'subFilter();',
     value: "sub-filter"
   });
+  rb = new HTML('input', {
+    style: {
+      marginLeft: '10px'
+    },
+    "class": 'btn btn-small btn-danger',
+    type: 'button',
+    onClick: 'subFilterGlob=""; subFilter();',
+    value: "reset"
+  });
   state.widget.inject(i);
   state.widget.inject(b);
+  state.widget.inject(rb);
   if (globArgs.subfilter && globArgs.subfilter.length > 0) {
     source = globArgs.subfilter;
     $("a").each(function() {
