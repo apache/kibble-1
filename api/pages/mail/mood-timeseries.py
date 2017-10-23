@@ -186,7 +186,7 @@ def run(API, environ, indata, session):
         moods = {}
         emls = tz['doc_count']
         for mood in M:
-            moods[mood] = tz.get(mood, {'value':0})['value'] / max(1, emls)
+            moods[mood] = int (100 * tz.get(mood, {'value':0})['value'] / max(1, emls))
         moods['date'] = int(tz['key']/1000)
         timeseries.append(moods)
     
