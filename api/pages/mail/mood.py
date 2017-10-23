@@ -115,10 +115,12 @@ def run(API, environ, indata, session):
     
     moods = {}
     years = 0
+    emls = 0
     for hit in res['hits']['hits']:
         doc = hit['_source']
         if 'mood' in doc:
             mood = doc['mood']
+            emls += 1
             for k, v in mood.items():
                 moods[k] = moods.get(k, [0,0])
                 moods[k][0] += 1
@@ -126,7 +128,7 @@ def run(API, environ, indata, session):
 
     mood_compiled = {}
     for k, v in moods.items():
-        mood_compiled[k] = int( (v[1] / v[0]) * 100)
+        mood_compiled[k] = int( (v[1] / min(1,emls)) * 100)
     JSON_OUT = {
         'counts': mood_compiled,
         'okay': True
