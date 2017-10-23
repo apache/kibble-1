@@ -660,10 +660,18 @@ widgets:
                             types: ['mail', 'ponymail', 'pipermail', 'hyperkitty']
                         name:   Mailing list picker"
             -
-                name: "Trends"
+                name: "Current mood"
                 children:
                     -
                         type:   "line"
                         source: "mail/mood"
-                        name:   "Mailing list mood"
+                        name:   "Overall mail mood"
+                        blocks: 12
+            -
+                name: "Mood over time"
+                children:
+                    -
+                        type:   "line"
+                        source: "mail/mood-timeseries"
+                        name:   "Mood over time"
                         blocks: 12
