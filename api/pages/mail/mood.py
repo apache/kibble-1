@@ -68,6 +68,7 @@ This is the email mood renderer for Kibble
 """
 
 import json
+import time
 
 def run(API, environ, indata, session):
     
