@@ -128,7 +128,7 @@ def run(API, environ, indata, session):
 
     mood_compiled = {}
     for k, v in moods.items():
-        mood_compiled[k] = int( (v[1] / min(1,emls)) * 100)
+        mood_compiled[k] = int( (v[1] / max(1,emls)) * 100)
     JSON_OUT = {
         'counts': mood_compiled,
         'okay': True
