@@ -105,41 +105,79 @@ def run(API, environ, indata, session):
                                 'term': {
                                     'organisation': dOrg
                                 }
-                            }
+                            },
+                            { 'exists': {
+                                'field': 'mood'
+                                }
+                             }
                         ]
                     }
-                },
-                'sort': [{'ts': 'desc'}]
+                }
             }
     # Source-specific or view-specific??
     if indata.get('source'):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-        
+    
+    emls = session.DB.ES.count(
+            index=session.DB.dbname,
+            doc_type="email",
+            body = query
+        )['count']
+    
+    query['aggs'] = {
+                'joy': {
+                    'sum': {
+                        'field': 'mood.joy'
+                    }                
+                },
+                'sadness': {
+                    'sum': {
+                        'field': 'mood.sadness'
+                    }                
+                },
+                'tentative': {
+                    'sum': {
+                        'field': 'mood.tentative'
+                    }                
+                },
+                'confident': {
+                    'sum': {
+                        'field': 'mood.confident'
+                    }                
+                },
+                'anger': {
+                    'sum': {
+                        'field': 'mood.anger'
+                    }                
+                },
+                'fear': {
+                    'sum': {
+                        'field': 'mood.fear'
+                    }                
+                },
+                'analytical': {
+                    'sum': {
+                        'field': 'mood.analytical'
+                    }                
+                }
+    }
     res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="email",
-            size = 5000,
+            size = 0,
             body = query
         )
     
     moods = {}
     years = 0
-    emls = 0
-    for hit in res['hits']['hits']:
-        doc = hit['_source']
-        if 'mood' in doc:
-            mood = doc['mood']
-            emls += 1
-            for k, v in mood.items():
-                moods[k] = moods.get(k, [0,0])
-                moods[k][0] += 1
-                moods[k][1] += v
-
+    
+    for mood, el in res['aggregations'].items():
+        moods[mood] = el['value']
     mood_compiled = {}
     for k, v in moods.items():
-        mood_compiled[k] = int( (v[1] / max(1,emls)) * 100)
+        mood_compiled[k] = int( (v / max(1,emls)) * 100)
     JSON_OUT = {
         'counts': mood_compiled,
         'okay': True
