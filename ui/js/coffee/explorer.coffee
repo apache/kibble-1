@@ -545,8 +545,10 @@ viewexplorer = (json, state) ->
         state.widget.inject(new HTML('br'))
         i = new HTML('input', {type: 'text', value: globArgs.subfilter, onChange: 'subFilterGlob = this.value;', placeholder: 'sub-filter'})
         b = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-success', type: 'button', onClick: 'subFilter();', value: "sub-filter"})
+        rb = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-danger', type: 'button', onClick: 'subFilterGlob=""; subFilter();', value: "reset"})
         state.widget.inject(i)
         state.widget.inject(b)
+        state.widget.inject(rb)
         
         if globArgs.subfilter and globArgs.subfilter.length > 0
                 source = globArgs.subfilter
