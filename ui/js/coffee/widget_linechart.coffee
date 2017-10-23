@@ -20,38 +20,39 @@ linechart = (json, state) ->
         cats = new Array()
         dates = new Array()
         catdata = {}
-        if not json.timeseries.sort
+        if not isArray(json.timeseries) and not json.counts
           div.innerHTML = "No data available"
           state.widget.inject(div, true)
           return
-        json.timeseries.sort((a,b) => a.date - b.date)
-        for point in json.timeseries
-          for key, val of point
-            if key != 'date' and not (key in cats)
-              cats.push(key)
-              catdata[key] = new Array()
-        
-        for point in json.timeseries
-          m = moment(point.date*1000)
-          rv = m.format("MMM, YYYY")
-          
-          if json.histogram == "daily" || json.interval == 'day'
-            rv =  m.format("MMMM DD, YYYY")
-          if json.interval == 'year'
-            rv = m.format("YYYY")
-          else if json.interval == 'quarter'
-            rv = "Q" +m.format("Q, YYYY")
-          else if json.interval == 'week'
-            rv = "Week " +m.format("W, YYYY")
-          dates.push (rv)
-          for key, val of point
-            if key != 'date'
-              if key == 'deletions'
-                val = -val
-              catdata[key].push(val)
-          for cat in cats
-            if not cat in point
-              catdata[cat].push(0)
+        if json.timeseries
+                json.timeseries.sort((a,b) => a.date - b.date)
+                for point in json.timeseries
+                  for key, val of point
+                    if key != 'date' and not (key in cats)
+                      cats.push(key)
+                      catdata[key] = new Array()
+                
+                for point in json.timeseries
+                  m = moment(point.date*1000)
+                  rv = m.format("MMM, YYYY")
+                  
+                  if json.histogram == "daily" || json.interval == 'day'
+                    rv =  m.format("MMMM DD, YYYY")
+                  if json.interval == 'year'
+                    rv = m.format("YYYY")
+                  else if json.interval == 'quarter'
+                    rv = "Q" +m.format("Q, YYYY")
+                  else if json.interval == 'week'
+                    rv = "Week " +m.format("W, YYYY")
+                  dates.push (rv)
+                  for key, val of point
+                    if key != 'date'
+                      if key == 'deletions'
+                        val = -val
+                      catdata[key].push(val)
+                  for cat in cats
+                    if not cat in point
+                      catdata[cat].push(0)
               
         catseries = []
         type = 'spline'

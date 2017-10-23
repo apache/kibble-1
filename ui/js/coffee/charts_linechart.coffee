@@ -77,18 +77,21 @@ charts_linechart = (obj, data, options) ->
                 
         asDataArray = ts
     else
-        for k, v of data
+        for k, v of data.counts
             asList.push(k)
-            asTypes[k] = linetype
+            asTypes[k] = 'bar'
             tmpArray = [k]
-            for dataPoint in v
-                tmpArray.push(dataPoint)
+            if isArray(v)
+                for dataPoint in v
+                    tmpArray.push(dataPoint)
+            else
+                tmpArray.push(v)
             asDataArray.push(tmpArray)
             a++
     config = {
         bindto: obj,
         data: {
-          x: 'x',
+          x: if data.timeseries then 'x' else null,
           #xFormat: '%s',
           columns: asDataArray,
           types: asTypes,
