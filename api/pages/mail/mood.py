@@ -83,6 +83,8 @@ def run(API, environ, indata, session):
     if indata.get('subfilter'):
         viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
     
+    dateTo = indata.get('to', int(time.time()))
+    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
     
     # Fetch all sources for default org
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -90,6 +92,14 @@ def run(API, environ, indata, session):
                 'query': {
                     'bool': {
                         'must': [
+                            {'range':
+                                {
+                                    'ts': {
+                                        'from': dateFrom,
+                                        'to': dateTo
+                                    }
+                                }
+                            },
                             {
                                 'term': {
                                     'organisation': dOrg
