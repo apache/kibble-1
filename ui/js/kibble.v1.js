@@ -193,7 +193,7 @@ charts_linechart_stacked = (function(_this) {
 })(this);
 
 charts_linechart = function(obj, data, options) {
-  var a, aa, asDataArray, asList, asTypes, axisData, c, config, dataPoint, dateFormat, el, k, key, len, len1, len2, linetype, ndate, q, ref, stacked, tmpArray, ts, u, v, val, xts, xx;
+  var a, aa, asDataArray, asList, asTypes, axisData, c, config, dataPoint, dateFormat, el, k, key, len, len1, len2, linetype, ndate, q, ref, ref1, stacked, tmpArray, ts, u, v, val, xts, xx;
   linetype = options && options.linetype ? options.linetype : 'line';
   stacked = options && options.stacked ? options.stacked : false;
   if (options && options.filled && linetype === "line") {
@@ -265,14 +265,19 @@ charts_linechart = function(obj, data, options) {
     }
     asDataArray = ts;
   } else {
-    for (k in data) {
-      v = data[k];
+    ref1 = data.counts;
+    for (k in ref1) {
+      v = ref1[k];
       asList.push(k);
-      asTypes[k] = linetype;
+      asTypes[k] = 'bar';
       tmpArray = [k];
-      for (aa = 0, len2 = v.length; aa < len2; aa++) {
-        dataPoint = v[aa];
-        tmpArray.push(dataPoint);
+      if (isArray(v)) {
+        for (aa = 0, len2 = v.length; aa < len2; aa++) {
+          dataPoint = v[aa];
+          tmpArray.push(dataPoint);
+        }
+      } else {
+        tmpArray.push(v);
       }
       asDataArray.push(tmpArray);
       a++;
@@ -281,7 +286,7 @@ charts_linechart = function(obj, data, options) {
   config = {
     bindto: obj,
     data: {
-      x: 'x',
+      x: data.timeseries ? 'x' : null,
       columns: asDataArray,
       types: asTypes,
       groups: stacked ? [asList] : [[]]
@@ -5622,56 +5627,58 @@ linechart = function(json, state) {
   cats = new Array();
   dates = new Array();
   catdata = {};
-  if (!json.timeseries.sort) {
+  if (!isArray(json.timeseries) && !json.counts) {
     div.innerHTML = "No data available";
     state.widget.inject(div, true);
     return;
   }
-  json.timeseries.sort((function(_this) {
-    return function(a, b) {
-      return a.date - b.date;
-    };
-  })(this));
-  ref = json.timeseries;
-  for (q = 0, len = ref.length; q < len; q++) {
-    point = ref[q];
-    for (key in point) {
-      val = point[key];
-      if (key !== 'date' && !(indexOf.call(cats, key) >= 0)) {
-        cats.push(key);
-        catdata[key] = new Array();
-      }
-    }
-  }
-  ref1 = json.timeseries;
-  for (u = 0, len1 = ref1.length; u < len1; u++) {
-    point = ref1[u];
-    m = moment(point.date * 1000);
-    rv = m.format("MMM, YYYY");
-    if (json.histogram === "daily" || json.interval === 'day') {
-      rv = m.format("MMMM DD, YYYY");
-    }
-    if (json.interval === 'year') {
-      rv = m.format("YYYY");
-    } else if (json.interval === 'quarter') {
-      rv = "Q" + m.format("Q, YYYY");
-    } else if (json.interval === 'week') {
-      rv = "Week " + m.format("W, YYYY");
-    }
-    dates.push(rv);
-    for (key in point) {
-      val = point[key];
-      if (key !== 'date') {
-        if (key === 'deletions') {
-          val = -val;
+  if (json.timeseries) {
+    json.timeseries.sort((function(_this) {
+      return function(a, b) {
+        return a.date - b.date;
+      };
+    })(this));
+    ref = json.timeseries;
+    for (q = 0, len = ref.length; q < len; q++) {
+      point = ref[q];
+      for (key in point) {
+        val = point[key];
+        if (key !== 'date' && !(indexOf.call(cats, key) >= 0)) {
+          cats.push(key);
+          catdata[key] = new Array();
         }
-        catdata[key].push(val);
       }
     }
-    for (aa = 0, len2 = cats.length; aa < len2; aa++) {
-      cat = cats[aa];
-      if (ref2 = !cat, indexOf.call(point, ref2) >= 0) {
-        catdata[cat].push(0);
+    ref1 = json.timeseries;
+    for (u = 0, len1 = ref1.length; u < len1; u++) {
+      point = ref1[u];
+      m = moment(point.date * 1000);
+      rv = m.format("MMM, YYYY");
+      if (json.histogram === "daily" || json.interval === 'day') {
+        rv = m.format("MMMM DD, YYYY");
+      }
+      if (json.interval === 'year') {
+        rv = m.format("YYYY");
+      } else if (json.interval === 'quarter') {
+        rv = "Q" + m.format("Q, YYYY");
+      } else if (json.interval === 'week') {
+        rv = "Week " + m.format("W, YYYY");
+      }
+      dates.push(rv);
+      for (key in point) {
+        val = point[key];
+        if (key !== 'date') {
+          if (key === 'deletions') {
+            val = -val;
+          }
+          catdata[key].push(val);
+        }
+      }
+      for (aa = 0, len2 = cats.length; aa < len2; aa++) {
+        cat = cats[aa];
+        if (ref2 = !cat, indexOf.call(point, ref2) >= 0) {
+          catdata[cat].push(0);
+        }
       }
     }
   }
