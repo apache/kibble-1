@@ -2267,6 +2267,7 @@ viewexplorer = function(json, state) {
   });
   state.widget.inject(new HTML('br'));
   i = new HTML('input', {
+    id: 'subfilter',
     type: 'text',
     value: globArgs.subfilter,
     onChange: 'subFilterGlob = this.value;',
@@ -2287,7 +2288,7 @@ viewexplorer = function(json, state) {
     },
     "class": 'btn btn-small btn-danger',
     type: 'button',
-    onClick: 'subFilterGlob=""; subFilter();',
+    onClick: 'get("subfilter").value=""; subFilterGlob=""; subFilter();',
     value: "reset"
   });
   state.widget.inject(i);
