@@ -219,6 +219,7 @@ def run(API, environ, indata, session):
         mood_compiled = global_mood_compiled
         
     JSON_OUT = {
+        'distinguishable': True,
         'text': txt,
         'counts': mood_compiled,
         'okay': True
