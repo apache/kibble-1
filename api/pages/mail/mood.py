@@ -214,7 +214,7 @@ def run(API, environ, indata, session):
         for mood, el in res['aggregations'].items():
             moods[mood] = el['value']
         for k, v in moods.items():
-            mood_compiled[k] = int(100 * int( (v / max(1,emls)) * 100) / global_mood_compiled.get(k, 100))
+            mood_compiled[k] = int(100 * int( (v / max(1,emls)) * 100) / max(1, global_mood_compiled.get(k, 100)))
     else:
         mood_compiled = global_mood_compiled
         
