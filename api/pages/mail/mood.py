@@ -87,7 +87,7 @@ def run(API, environ, indata, session):
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
     
-    # Fetch all sources for default org
+    # Start off with a query for the entire org (we want to compare)
     dOrg = session.user['defaultOrganisation'] or "apache"
     query = {
                 'query': {
@@ -114,18 +114,15 @@ def run(API, environ, indata, session):
                     }
                 }
             }
-    # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-    elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
     
-    emls = session.DB.ES.count(
+    # Count all emails, for averaging scores
+    gemls = session.DB.ES.count(
             index=session.DB.dbname,
             doc_type="email",
             body = query
         )['count']
     
+    # Add aggregations for moods
     query['aggs'] = {
                 'joy': {
                     'sum': {
@@ -163,22 +160,66 @@ def run(API, environ, indata, session):
                     }                
                 }
     }
-    res = session.DB.ES.search(
+    
+    
+    global_mood_compiled = {}
+    mood_compiled = {}
+    txt = "This chart shows the seven mood types as they average on the emails in this period."
+    # If we're comparing against all lists, first do a global query
+    # and compile moods overall
+    if indata.get('distinguish'):
+        txt = "This chart shows the seven mood types on the selected lists as they compare against all mailing lists in the database."
+        global_moods = {}
+        
+        gres = session.DB.ES.search(
+                index=session.DB.dbname,
+                doc_type="email",
+                size = 0,
+                body = query
+            )
+        for mood, el in gres['aggregations'].items():
+            global_moods[mood] = el['value']
+        for k, v in global_moods.items():
+            global_mood_compiled[k] = int( (v / max(1,gemls)) * 100)
+    
+    # Now, if we have a view (or not distinguishing), ...
+    ss = False
+    if indata.get('source'):
+        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+        ss = True
+    elif viewList:
+        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        ss = True
+        
+    # If we have a view enabled (and distinguish), compile local view against global view
+    # Else, just copy global as local
+    if ss or not indata.get('distinguish'):
+        res = session.DB.ES.search(
+                    index=session.DB.dbname,
+                    doc_type="email",
+                    size = 0,
+                    body = query
+                )
+        
+        del query['aggs'] # we have to remove these to do a count()
+        emls = session.DB.ES.count(
             index=session.DB.dbname,
             doc_type="email",
-            size = 0,
             body = query
-        )
-    
-    moods = {}
-    years = 0
-    
-    for mood, el in res['aggregations'].items():
-        moods[mood] = el['value']
-    mood_compiled = {}
-    for k, v in moods.items():
-        mood_compiled[k] = int( (v / max(1,emls)) * 100)
+        )['count']
+        
+        moods = {}
+        years = 0
+        
+        for mood, el in res['aggregations'].items():
+            moods[mood] = el['value']
+        for k, v in moods.items():
+            mood_compiled[k] = int(100 * int( (v / max(1,emls)) * 100) / global_mood_compiled.get(k, 100))
+    else:
+        mood_compiled = global_mood_compiled
+        
     JSON_OUT = {
+        'text': txt,
         'counts': mood_compiled,
         'okay': True
     }
