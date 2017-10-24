@@ -164,11 +164,11 @@ def run(API, environ, indata, session):
     
     global_mood_compiled = {}
     mood_compiled = {}
-    txt = "This chart shows the seven mood types as they average on the emails in this period."
+    txt = "This chart shows the seven mood types as they average on the emails in this period. A score of 100 means a sentiment is highly visible in most emails."
     # If we're comparing against all lists, first do a global query
     # and compile moods overall
     if indata.get('distinguish'):
-        txt = "This chart shows the seven mood types on the selected lists as they compare against all mailing lists in the database."
+        txt = "This chart shows the seven mood types on the selected lists as they compare against all mailing lists in the database. A score of 100 here means the sentiment conforms to averages across all lists."
         global_moods = {}
         
         gres = session.DB.ES.search(
