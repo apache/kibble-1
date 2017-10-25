@@ -292,6 +292,8 @@ class Chart
             [@chartobj, @config] = charts_linechart(@chartdiv, data, options)
         if type == 'donut'
             [@chartobj, @config] = charts_donutchart(@chartdiv, data, 15)
+         if type == 'gauge'
+            [@chartobj, @config] = charts_gaugechart(@chartdiv, data)
         if type == 'radar'
             [@chartobj, @config] = charts_radarchart(@chartdiv, data)
          if type == 'relationship'
@@ -314,6 +316,7 @@ class Chart
                           globArgs['distinguish'] = 'true'
                   
                   updateWidgets('line', null, { distinguish: distinguish })
+                  updateWidgets('gauge', null, { distinguish: distinguish })
                   )
           @main.inject(mk('br'))
           @main.inject(chk)
@@ -323,6 +326,35 @@ class Chart
           chk.setAttribute("title", "Check this box to distinguish between sub-categories in this chart")
           label.style.paddingLeft = '5px'
           label.appendChild(document.createTextNode('Toggle category breakdown'))
+          @main.inject(label)
+        
+        # If this data source has relative weightings
+        # show a checkbox to toggle it.
+        if data.relativeMode
+          id = Math.floor(Math.random() * 987654321).toString(16)
+          chk = document.createElement('input')
+          chk.setAttribute("type", "checkbox")
+          chk.setAttribute("id", id)
+          chk.style.marginLeft = '10px'
+          if globArgs.relative and globArgs.relative == 'true'
+                  chk.checked = true
+          chk.addEventListener("change", () ->
+                  relative = null
+                  if this.checked
+                          relative = 'true'
+                          globArgs['relative'] = 'true'
+                  
+                  updateWidgets('line', null, { relative: relative })
+                  updateWidgets('gauge', null, { relative: relative })
+                  )
+          @main.inject(mk('br'))
+          @main.inject(chk)
+          label = document.createElement('label')
+          label.setAttribute("for", id)
+          label.setAttribute("title", "Check this box to use relative weighting")
+          chk.setAttribute("title", "Check this box to use relative weighting")
+          label.style.paddingLeft = '5px'
+          label.appendChild(document.createTextNode('Toggle relative/comparative mode'))
           @main.inject(label)
           
         return @main
