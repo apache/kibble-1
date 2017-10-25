@@ -216,18 +216,29 @@ def run(API, environ, indata, session):
         for mood, el in res['aggregations'].items():
             moods[mood] = el['value']
         for k, v in moods.items():
-            mood_compiled[k] = int(100 * int( (v / max(1,emls)) * 100) / max(1, global_mood_compiled.get(k, 100)))
+            mood_compiled[k] = int(100 * int( ( v / max(1,emls)) * 100) / max(1, global_mood_compiled.get(k, 100)))
     else:
         mood_compiled = global_mood_compiled
-    MAX = max(mood_compiled.values())
-    bads = (mood_compiled.get('anger', 0) + mood_compiled.get('fear', 0) + mood_compiled.get('sadness', 0) + mood_compiled.get('disgust', 0)) / 4
-    neutrals = (mood_compiled.get('tentative', 0) + mood_compiled.get('analytical', 0) /2)
-    goods = (mood_compiled.get('joy', 0) + mood_compiled.get('confident', 0)) / 2
-    happ = 25
-    happ /= bads
-    happ *= goods
-    swingometer = max(0, min(100, happ/(max(100, MAX)/100)))
     
+    # If relative mode and a field is missing, assume 100 (norm)
+    if indata.get('relative'):
+        for M in ['joy', 'sadness', 'tentative', 'confident', 'anger', 'fear', 'analytical', 'disgust']:
+            if mood_compiled.get(M, 0) == 0:
+                mood_compiled[M] = 100
+    
+    # Compile an overall happiness level
+    bads = (mood_compiled.get('anger', 0) + mood_compiled.get('fear', 0) + mood_compiled.get('sadness', 0) + mood_compiled.get('disgust', 0)) / 2
+    neutrals = (mood_compiled.get('tentative', 0) + mood_compiled.get('analytical', 0) ) / 4
+    goods = (mood_compiled.get('joy', 0) + mood_compiled.get('confident', 0))
+    MAX = max(goods, bads)
+    happ = neutrals
+    if bads > 0:
+        happ -= (bads/MAX)*50
+    if goods > 0:
+        happ += (goods/MAX)*50
+    swingometer = max(0, min(100, happ))
+    
+    # JSON out!
     JSON_OUT = {
         'relativeMode': True,
         'text': txt,
