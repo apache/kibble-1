@@ -165,10 +165,12 @@ def run(API, environ, indata, session):
     global_mood_compiled = {}
     mood_compiled = {}
     txt = "This chart shows the seven mood types as they average on the emails in this period. A score of 100 means a sentiment is highly visible in most emails."
+    gtxt = "This shows the overall estimated mood as a gauage from terrible to good."
     # If we're comparing against all lists, first do a global query
     # and compile moods overall
-    if indata.get('distinguish'):
+    if indata.get('relative'):
         txt = "This chart shows the seven mood types on the selected lists as they compare against all mailing lists in the database. A score of 100 here means the sentiment conforms to averages across all lists."
+        gtxt = "This shows the overall estimated mood copmpared to all lists, as a gauage from terrible to good."
         global_moods = {}
         
         gres = session.DB.ES.search(
@@ -217,11 +219,20 @@ def run(API, environ, indata, session):
             mood_compiled[k] = int(100 * int( (v / max(1,emls)) * 100) / max(1, global_mood_compiled.get(k, 100)))
     else:
         mood_compiled = global_mood_compiled
-        
+    bads = (mood_compiled.get('anger', 0)*1.25 + mood_compiled.get('fear', 0)*1.25 + mood_compiled.get('sadness', 0) + mood_compiled.get('disgust', 0)*1.5) / 4
+    neutrals = (mood_compiled.get('tentative', 0) + mood_compiled.get('analytical', 0) /2)
+    goods = (mood_compiled.get('joy', 0)*1.5 + mood_compiled.get('confident', 0)) / 2
+    swingometer = max(0, min(100, 50 + goods - bads))
+    
     JSON_OUT = {
-        'distinguishable': True,
+        'relativeMode': True,
         'text': txt,
         'counts': mood_compiled,
-        'okay': True
+        'okay': True,
+        'gauge': {
+            'key': 'Happiness',
+            'value': swingometer,
+            'text': gtxt
+        }
     }
     yield json.dumps(JSON_OUT)
