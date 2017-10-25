@@ -33,5 +33,8 @@ gauge = (json, state) ->
     lmain = new HTML('div')
     state.widget.inject(lmain, true)
     
+    if json.gauge and json.gauge.text
+        lmain.inject(new HTML('p', {}, json.gauge.text))
+    
     gaugeChart = new Chart(lmain, 'gauge', json)
 
