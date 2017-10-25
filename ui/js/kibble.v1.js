@@ -225,6 +225,9 @@ gauge = function(json, state) {
   var gaugeChart, lmain;
   lmain = new HTML('div');
   state.widget.inject(lmain, true);
+  if (json.gauge && json.gauge.text) {
+    lmain.inject(new HTML('p', {}, json.gauge.text));
+  }
   return gaugeChart = new Chart(lmain, 'gauge', json);
 };
 
