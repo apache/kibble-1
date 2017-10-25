@@ -170,7 +170,7 @@ def run(API, environ, indata, session):
     # and compile moods overall
     if indata.get('relative'):
         txt = "This chart shows the seven mood types on the selected lists as they compare against all mailing lists in the database. A score of 100 here means the sentiment conforms to averages across all lists."
-        gtxt = "This shows the overall estimated mood copmpared to all lists, as a gauage from terrible to good."
+        gtxt = "This shows the overall estimated mood compared to all lists, as a guage from terrible to good."
         global_moods = {}
         
         gres = session.DB.ES.search(
