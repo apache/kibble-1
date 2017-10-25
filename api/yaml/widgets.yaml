@@ -666,7 +666,12 @@ widgets:
                         type:   "line"
                         source: "mail/mood"
                         name:   "Overall mail mood"
-                        blocks: 12
+                        blocks: 6
+                    -
+                        type:   "gauge"
+                        source: "mail/mood"
+                        name:   "Mood gauge"
+                        blocks: 6
             -
                 name: "Mood over time"
                 children:
