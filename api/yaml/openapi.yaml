@@ -462,6 +462,11 @@ components:
             data (thus less traffic)
           example: false
           type: boolean
+        relative:
+          description: Enables relative comparison mode for API endpoints that have
+            this feature.
+          example: false
+          type: boolean
         search:
           description: for some widgets, this enables sub-filtering based on searches
           type: string
