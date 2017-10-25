@@ -219,10 +219,11 @@ def run(API, environ, indata, session):
             mood_compiled[k] = int(100 * int( (v / max(1,emls)) * 100) / max(1, global_mood_compiled.get(k, 100)))
     else:
         mood_compiled = global_mood_compiled
+    MAX = max(mood_compiled.values())
     bads = (mood_compiled.get('anger', 0)*1.25 + mood_compiled.get('fear', 0)*1.25 + mood_compiled.get('sadness', 0) + mood_compiled.get('disgust', 0)*1.5) / 4
     neutrals = (mood_compiled.get('tentative', 0) + mood_compiled.get('analytical', 0) /2)
     goods = (mood_compiled.get('joy', 0)*1.5 + mood_compiled.get('confident', 0)) / 2
-    swingometer = max(0, min(100, 50 + goods - bads))
+    swingometer = max(0, min(100, (50 + goods - bads) / max(1, (MAX/100))))
     
     JSON_OUT = {
         'relativeMode': True,
