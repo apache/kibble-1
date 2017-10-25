@@ -195,7 +195,7 @@ def run(API, environ, indata, session):
         
     # If we have a view enabled (and distinguish), compile local view against global view
     # Else, just copy global as local
-    if ss or not indata.get('distinguish'):
+    if ss or not indata.get('relative'):
         res = session.DB.ES.search(
                     index=session.DB.dbname,
                     doc_type="email",
