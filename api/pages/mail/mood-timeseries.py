@@ -180,7 +180,7 @@ def run(API, environ, indata, session):
         )
     
     timeseries = []
-    M = ['joy', 'sadness', 'tentative', 'confident', 'anger', 'fear', 'analytical']
+    M = ['joy', 'sadness', 'tentative', 'confident', 'anger', 'fear', 'analytical', 'disgust']
     
     for tz in res['aggregations']['history']['buckets']:
         moods = {}
