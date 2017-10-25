@@ -15,7 +15,7 @@ charts_gaugechart = (obj, data) ->
         color: {
             pattern: ['#FF0000', '#F97600', '#F6C600', '#60B044'],
             threshold: {
-                values: [30, 60, 90, 100]
+                values: [25, 55, 80, 100]
             }
         },
         tooltip: {
