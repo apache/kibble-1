@@ -110,6 +110,7 @@ updateWidgets = (type, target, eargs) ->
                         delete widget.args.eargs[k]
             switch widget.args.type
                 when 'donut' then widget.load(donut)
+                when 'gauge' then widget.load(gauge)
                 when 'radar' then widget.load(radar)
                 when 'paragraph' then widget.load(paragraph)
                 when 'line' then widget.load(linechart)

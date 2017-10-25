@@ -28,6 +28,7 @@ updateTimeseriesWidgets = (range) ->
             updateWidgets('factors', null, { to: to, from: from})
             updateWidgets('trends', null, { to: to, from: from})
             updateWidgets('donut', null, { to: to, from: from})
+            updateWidgets('gauge', null, { to: to, from: from})
             updateWidgets('radar', null, { to: to, from: from})
             updateWidgets('relationship', null, { to: to, from: from})
             updateWidgets('treemap', null, { to: to, from: from})

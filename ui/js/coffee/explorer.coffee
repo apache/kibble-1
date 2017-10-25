@@ -56,6 +56,7 @@ explorer = (json, state) ->
                         source = null
                 globArgs.source = source
                 updateWidgets('donut', null, { source: source })
+                updateWidgets('gauge', null, { source: source })
                 updateWidgets('line', null, { source: source })
                 updateWidgets('contacts', null, { source: source })
                 updateWidgets('top5', null, { source: source })
@@ -82,6 +83,7 @@ explorer = (json, state) ->
                         globArgs['author'] = 'true'
                 
                 updateWidgets('donut', null, { author: author })
+                updateWidgets('gauge', null, { author: author })
                 updateWidgets('line', null, { author: author })
                 updateWidgets('contacts', null, { author: author })
                 updateWidgets('top5', null, { author: author })
@@ -145,6 +147,7 @@ sourceexplorer = (json, state) ->
                         source = null
                 globArgs.source = source
                 updateWidgets('donut', null, { source: source })
+                updateWidgets('gauge', null, { source: source })
                 updateWidgets('line', null, { source: source })
                 updateWidgets('contacts', null, { source: source })
                 updateWidgets('top5', null, { source: source })
@@ -200,6 +203,7 @@ mailexplorer = (json, state) ->
                         source = null
                 globArgs.source = source
                 updateWidgets('donut', null, { source: source })
+                updateWidgets('gauge', null, { source: source })
                 updateWidgets('line', null, { source: source })
                 updateWidgets('contacts', null, { source: source })
                 updateWidgets('top5', null, { source: source })
@@ -253,6 +257,7 @@ logexplorer = (json, state) ->
                         source = null
                 globArgs.source = source
                 updateWidgets('donut', null, { source: source })
+                updateWidgets('gauge', null, { source: source })
                 updateWidgets('line', null, { source: source })
                 updateWidgets('worldmap', null, { source: source })
                 updateWidgets('top5', null, { source: source })
@@ -307,6 +312,7 @@ issueexplorer = (json, state) ->
                         source = null
                 globArgs.source = source
                 updateWidgets('donut', null, { source: source })
+                updateWidgets('gauge', null, { source: source })
                 updateWidgets('line', null, { source: source })
                 updateWidgets('contacts', null, { source: source })
                 updateWidgets('top5', null, { source: source })
@@ -364,6 +370,7 @@ imexplorer = (json, state) ->
                         source = null
                 globArgs.source = source
                 updateWidgets('donut', null, { source: source })
+                updateWidgets('gauge', null, { source: source })
                 updateWidgets('line', null, { source: source })
                 updateWidgets('contacts', null, { source: source })
                 updateWidgets('top5', null, { source: source })
@@ -418,6 +425,7 @@ multiviewexplorer = (json, state) ->
                     x = {}
                     x[tName] = source
                     updateWidgets('donut', null, x)
+                    updateWidgets('gauge', null, x)
                     updateWidgets('line', null, x)
                     updateWidgets('contacts', null, x)
                     updateWidgets('top5', null, x)
@@ -441,6 +449,7 @@ subFilter = () ->
         updateWidgets('mailpicker', null, x)
         updateWidgets('logpicker', null, x)
         updateWidgets('donut', null, x)
+        updateWidgets('gauge', null, x)
         updateWidgets('line', null, x)
         updateWidgets('contacts', null, x)
         updateWidgets('top5', null, x)
@@ -514,6 +523,7 @@ viewexplorer = (json, state) ->
                 updateWidgets('mailpicker', null, x)
                 updateWidgets('logpicker', null, x)
                 updateWidgets('donut', null, x)
+                updateWidgets('gauge', null, x)
                 updateWidgets('line', null, x)
                 updateWidgets('contacts', null, x)
                 updateWidgets('top5', null, x)
@@ -638,6 +648,7 @@ widgetexplorer = (json, state) ->
                 x[tName] = source
                 updateWidgets('widget', null, x)
                 updateWidgets('donut', null, x)
+                updateWidgets('gauge', null, x)
                 updateWidgets('line', null, x)
                 updateWidgets('contacts', null, x)
                 updateWidgets('top5', null, x)
