@@ -72,3 +72,8 @@ properties:
     description: Enables distinguishing different types of data objects, subject to the individual API endpoint
     type: boolean
     example: false
+  relative:
+    description: Enables relative comparison mode for API endpoints that have this feature.
+    type: boolean
+    example: false
+    
