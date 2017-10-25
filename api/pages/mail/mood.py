@@ -227,15 +227,24 @@ def run(API, environ, indata, session):
                 mood_compiled[M] = 100
     
     # Compile an overall happiness level
-    bads = (mood_compiled.get('anger', 0) + mood_compiled.get('fear', 0) + mood_compiled.get('sadness', 0) + mood_compiled.get('disgust', 0)) / 2
-    neutrals = (mood_compiled.get('tentative', 0) + mood_compiled.get('analytical', 0) ) / 4
-    goods = (mood_compiled.get('joy', 0) + mood_compiled.get('confident', 0))
-    MAX = max(goods, bads)
-    happ = neutrals
+    MAX = max(max(mood_compiled.values()),1)
+    X = 100 if indata.get('relative') else 0
+    bads = X
+    for B in ['sadness', 'anger', 'fear', 'disgust']:
+        if mood_compiled.get(B) and mood_compiled[B] > X:
+            bads += mood_compiled[B]
+    
+    happ = 50
+    
+    goods = X
+    for B in ['joy', 'confident']:
+        if mood_compiled.get(B) and mood_compiled[B] > X:
+            goods += mood_compiled[B]
+    MAX = max(MAX, bads, goods)
     if bads > 0:
-        happ -= (bads/MAX)*50
+        happ -= (50*bads/MAX)
     if goods > 0:
-        happ += (goods/MAX)*50
+        happ += (50*goods/MAX)
     swingometer = max(0, min(100, happ))
     
     # JSON out!
