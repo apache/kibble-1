@@ -162,7 +162,7 @@ sourcelist = (json, state) ->
         
             borked = false
             steps = ['sync', 'census', 'count', 'evolution']
-            if source.type == 'mail'
+            if source.type in ['mail', 'ponymail', 'pipermail', 'hyperkitty']
                 steps = ['mail']
             if source.type in ['jira', 'bugzilla']
                 steps = ['issues']
