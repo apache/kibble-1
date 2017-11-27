@@ -4070,7 +4070,7 @@ getSourceType = function(main, t) {
 };
 
 sourcelist = function(json, state) {
-  var aa, ab, act, borked, cl, color, d, dbtn, desc, div, el, firstRun, h, ic, icons, img, item, lastException, lastFailure, lastUpdate, len, len1, len2, len3, lu, m, q, ref, ref1, ref2, ref3, ref4, retval, running, slist, source, sources, st, status, steps, t, tbody, u, vlist;
+  var aa, ab, act, borked, cl, color, d, dbtn, desc, div, el, firstRun, h, ic, icons, img, item, lastException, lastFailure, lastUpdate, len, len1, len2, len3, lu, m, q, ref, ref1, ref2, ref3, ref4, ref5, retval, running, slist, source, sources, st, status, steps, t, tbody, u, vlist;
   slist = mk('div');
   vlist = new HTML('div');
   if (json.sources) {
@@ -4140,16 +4140,16 @@ sourcelist = function(json, state) {
       });
       borked = false;
       steps = ['sync', 'census', 'count', 'evolution'];
-      if (source.type === 'mail') {
+      if ((ref2 = source.type) === 'mail' || ref2 === 'ponymail' || ref2 === 'pipermail' || ref2 === 'hyperkitty') {
         steps = ['mail'];
       }
-      if ((ref2 = source.type) === 'jira' || ref2 === 'bugzilla') {
+      if ((ref3 = source.type) === 'jira' || ref3 === 'bugzilla') {
         steps = ['issues'];
       }
-      if ((ref3 = source.type) === 'gerrit' || ref3 === 'gitlab' || ref3 === 'github') {
+      if ((ref4 = source.type) === 'gerrit' || ref4 === 'gitlab' || ref4 === 'github') {
         steps = ['sync', 'census', 'count', 'evolution', 'issues'];
       }
-      if ((ref4 = source.type) === 'irc' || ref4 === 'stats') {
+      if ((ref5 = source.type) === 'irc' || ref5 === 'stats') {
         steps = ['census'];
       }
       for (ab = 0, len3 = steps.length; ab < len3; ab++) {
