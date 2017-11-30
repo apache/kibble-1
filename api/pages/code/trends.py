@@ -256,7 +256,7 @@ def run(API, environ, indata, session):
             body = query
         )
     no_committers_before = res['aggregations']['commits']['value']
-    no_authors_before = res['aggregations']['commits']['value']
+    no_authors_before = res['aggregations']['authors']['value']
     
     # Get number of insertions, this period
     query['aggs'] = {
