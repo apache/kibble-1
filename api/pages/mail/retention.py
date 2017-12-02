@@ -103,7 +103,7 @@ def run(API, environ, indata, session):
     
     ny = 1970
     FoundSomething = False
-    while ny < cy or (ny == cy and nm <= tnow.month):
+    while ny < cy or (ny == cy and (nm+3) <= tnow.month):
         d = datetime.date(ny, nm, 1)
         t = time.mktime(d.timetuple())
         nm += 3
