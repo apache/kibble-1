@@ -2825,7 +2825,7 @@ membershipList = function(json, state) {
     }, alink);
     dlink = new HTML('a', {
       href: "javascript:void(removeMember('" + member + "'));"
-    }, "Remove from oganisation");
+    }, "Remove from organisation");
     delopt = new HTML('td', {
       style: {
         padding: "5px"
