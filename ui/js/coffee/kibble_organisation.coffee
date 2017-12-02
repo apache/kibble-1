@@ -142,7 +142,7 @@ membershipList = (json, state) ->
         admopt = new HTML('td', { style: { padding: "5px"}}, alink)
         
         # Remove member
-        dlink = new HTML('a', { href: "javascript:void(removeMember('#{member}'));"}, "Remove from oganisation")
+        dlink = new HTML('a', { href: "javascript:void(removeMember('#{member}'));"}, "Remove from organisation")
         delopt = new HTML('td', { style: { padding: "5px"}}, dlink)
         
         tr.inject(eml)
