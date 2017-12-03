@@ -306,7 +306,7 @@ sourceadd = (json, state) ->
         obj.inject(keyValueForm('textarea', 'source', 'Source URL:', "For example: " + el.example + ". You can add multiple sources, one per line."))
         
         if el.optauth
-            obj.inject("Optional authentication options:")
+            obj.inject((if el.authrequired then "Required" else "Optional") + " authentication options:")
             for abit in el.optauth
                 obj.inject(keyValueForm('text', "#{abit}", abit))
         btn = new HTML('input', {class: "btn btn-primary btn-block", type: "button", onclick: "addSources('#{type}', this.form);", value: "Add source(s)"})
