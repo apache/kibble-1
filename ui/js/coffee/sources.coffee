@@ -303,7 +303,7 @@ sourceadd = (json, state) ->
         div.inject(opt)
         div.inject(lbl)
         obj.inject(new HTML('p', {}, el.description or ""))
-        obj.inject(keyValueForm('textarea', 'source', 'Source URL:', "For example: " + el.example + ". You can add multiple sources, one per line."))
+        obj.inject(keyValueForm('textarea', 'source', 'Source URL/ID:', "For example: " + el.example + ". You can add multiple sources, one per line."))
         
         if el.optauth
             obj.inject((if el.authrequired then "Required" else "Optional") + " authentication options:")
