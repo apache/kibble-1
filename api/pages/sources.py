@@ -130,6 +130,7 @@ import json
 import re
 import time
 import hashlib
+import yaml
 
 def canModifySource(session):
     """ Determine if the user can edit sources in this org """
@@ -216,16 +217,17 @@ def run(API, environ, indata, session):
         if canModifySource(session):
             new = 0
             old = 0
+            stypes = yaml.load(open("yaml/sourcetypes.yaml"))
             for source in indata.get('sources', []):
                 sourceURL = source['sourceURL']
                 sourceType = source['type']
                 creds = {}
-                if 'username' in source and len(source['username']) > 0:
-                    creds['username'] = source['username']
-                if 'password' in source and len(source['password']) > 0:
-                    creds['password'] = source['password']
-                if 'cookie' in source and len(source['cookie']) > 0:
-                    creds['cookie'] = source['cookie']
+                if not sourceType in stypes:
+                    raise API.exception(400, "Attempt to add unknown source type!")
+                if 'optauth' in stypes[sourceType]:
+                    for el in stypes[sourceType]['optauth']:
+                        if el in source and len(source[el]) > 0:
+                            creds[el] = source[el]
                 sourceID = hashlib.sha224( ("%s-%s" % (sourceType, sourceURL)).encode('utf-8') ).hexdigest()
                 
                 dOrg = session.user['defaultOrganisation'] or "apache"
