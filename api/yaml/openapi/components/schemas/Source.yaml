@@ -23,6 +23,18 @@ properties:
   username:
     description: optional username for auth
     type: string
+  token:
+    description: API token
+    type: string
+  token_secret:
+    description: API secret token (for some apps)
+    type: string
+  consumer_key:
+    description: consumer key (for some apps)
+    type: string
+  consumer_secret:
+    description: consumer secret (for some apps)
+    type: string
 required:
 - type
 - sourceURL
