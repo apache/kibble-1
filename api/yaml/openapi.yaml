@@ -136,6 +136,12 @@ components:
           type: object
     Source:
       properties:
+        consumer_key:
+          description: consumer key (for some apps)
+          type: string
+        consumer_secret:
+          description: consumer secret (for some apps)
+          type: string
         cookie:
           description: optional session cookie for auth
           type: string
@@ -150,6 +156,12 @@ components:
           type: string
         sourceURL:
           description: The origin URL of this source.
+          type: string
+        token:
+          description: API token
+          type: string
+        token_secret:
+          description: API secret token (for some apps)
           type: string
         type:
           description: The type of source (git, svn, bugzilla, mail, etc)
