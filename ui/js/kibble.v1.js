@@ -4353,9 +4353,9 @@ sourceadd = function(json, state) {
     div.inject(opt);
     div.inject(lbl);
     obj.inject(new HTML('p', {}, el.description || ""));
-    obj.inject(keyValueForm('textarea', 'source', 'Source URL:', el.example + "\nYou can add multiple sources, one per line."));
+    obj.inject(keyValueForm('textarea', 'source', 'Source URL:', "For example: " + el.example + ". You can add multiple sources, one per line."));
     if (el.optauth) {
-      obj.inject("Optional authentication options:");
+      obj.inject((el.authrequired ? "Required" : "Optional") + " authentication options:");
       ref = el.optauth;
       for (q = 0, len = ref.length; q < len; q++) {
         abit = ref[q];
