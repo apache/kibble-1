@@ -55,3 +55,14 @@ gerrit:
     regex: "https?://.+/r/.+"
     example: https://review.rdoproject.org/r/puppet/puppet-designate
 
+twitter:
+    title: "Twitter Handle"
+    regex: (@.+)
+    example: "@ApacheKibble"
+    authrequired: true
+    optauth:
+        - token
+        - token_secret
+        - consumer_key
+        - consumer_secret
+    
