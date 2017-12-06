@@ -168,6 +168,21 @@ def run(API, environ, indata, session):
                     'sum': {
                         'field': 'mood.analytical'
                     }                
+                },
+                'positive': {
+                    'sum': {
+                        'field': 'mood.positive'
+                    }                
+                },
+                'neutral': {
+                    'sum': {
+                        'field': 'mood.neutral'
+                    }                
+                },
+                'negative': {
+                    'sum': {
+                        'field': 'mood.negative'
+                    }                
                 }
             }
          }
@@ -180,7 +195,7 @@ def run(API, environ, indata, session):
         )
     
     timeseries = []
-    M = ['joy', 'sadness', 'tentative', 'confident', 'anger', 'fear', 'analytical', 'disgust']
+    M = ['joy', 'sadness', 'tentative', 'confident', 'anger', 'fear', 'analytical', 'disgust', 'positive', 'neutral', 'negative']
     
     for tz in res['aggregations']['history']['buckets']:
         moods = {}

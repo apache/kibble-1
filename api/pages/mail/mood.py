@@ -158,6 +158,21 @@ def run(API, environ, indata, session):
                     'sum': {
                         'field': 'mood.analytical'
                     }                
+                },
+                'positive': {
+                    'sum': {
+                        'field': 'mood.positive'
+                    }                
+                },
+                'neutral': {
+                    'sum': {
+                        'field': 'mood.neutral'
+                    }                
+                },
+                'negative': {
+                    'sum': {
+                        'field': 'mood.negative'
+                    }                
                 }
     }
     
@@ -222,7 +237,7 @@ def run(API, environ, indata, session):
     
     # If relative mode and a field is missing, assume 100 (norm)
     if indata.get('relative'):
-        for M in ['joy', 'sadness', 'tentative', 'confident', 'anger', 'fear', 'analytical', 'disgust']:
+        for M in ['joy', 'sadness', 'tentative', 'confident', 'anger', 'fear', 'analytical', 'disgust', 'negative', 'neutral', 'positive']:
             if mood_compiled.get(M, 0) == 0:
                 mood_compiled[M] = 100
     
@@ -230,14 +245,14 @@ def run(API, environ, indata, session):
     MAX = max(max(mood_compiled.values()),1)
     X = 100 if indata.get('relative') else 0
     bads = X
-    for B in ['sadness', 'anger', 'fear', 'disgust']:
+    for B in ['sadness', 'anger', 'fear', 'disgust', 'negative']:
         if mood_compiled.get(B) and mood_compiled[B] > X:
             bads += mood_compiled[B]
     
     happ = 50
     
     goods = X
-    for B in ['joy', 'confident']:
+    for B in ['joy', 'confident', 'positive']:
         if mood_compiled.get(B) and mood_compiled[B] > X:
             goods += mood_compiled[B]
     MAX = max(MAX, bads, goods)
