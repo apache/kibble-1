@@ -179,12 +179,12 @@ def run(API, environ, indata, session):
     
     global_mood_compiled = {}
     mood_compiled = {}
-    txt = "This chart shows the seven mood types as they average on the emails in this period. A score of 100 means a sentiment is highly visible in most emails."
+    txt = "This chart shows the ten potential mood types as they average on the emails in this period. A score of 100 means a sentiment is highly visible in most emails."
     gtxt = "This shows the overall estimated mood as a gauge from terrible to good."
     # If we're comparing against all lists, first do a global query
     # and compile moods overall
     if indata.get('relative'):
-        txt = "This chart shows the seven mood types on the selected lists as they compare against all mailing lists in the database. A score of 100 here means the sentiment conforms to averages across all lists."
+        txt = "This chart shows the ten potential mood types on the selected lists as they compare against all mailing lists in the database. A score of 100 here means the sentiment conforms to averages across all lists."
         gtxt = "This shows the overall estimated mood compared to all lists, as a gauge from terrible to good."
         global_moods = {}
         
