@@ -88,6 +88,12 @@ def run(API, environ, indata, session):
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
     interval = indata.get('interval', 'week')
     
+    # Define moods we know of
+    moods_good = set(['trust', 'joy', 'confident', 'positive'])
+    moods_bad = set(['sadness', 'anger', 'disgust', 'fear', 'negative'])
+    moods_neutral = set(['anticipation', 'surprise', 'tentative', 'analytical', 'neutral'])
+    all_moods = set(moods_good | moods_bad | moods_neutral)
+    
     # Fetch all sources for default org
     dOrg = session.user['defaultOrganisation'] or "apache"
     query = {
@@ -134,59 +140,19 @@ def run(API, environ, indata, session):
                 'interval': interval
             },
             'aggs': {
-                'joy': {
-                    'sum': {
-                        'field': 'mood.joy'
-                    }                
-                },
-                'sadness': {
-                    'sum': {
-                        'field': 'mood.sadness'
-                    }                
-                },
-                'tentative': {
-                    'sum': {
-                        'field': 'mood.tentative'
-                    }                
-                },
-                'confident': {
-                    'sum': {
-                        'field': 'mood.confident'
-                    }                
-                },
-                'anger': {
-                    'sum': {
-                        'field': 'mood.anger'
-                    }                
-                },
-                'fear': {
-                    'sum': {
-                        'field': 'mood.fear'
-                    }                
-                },
-                'analytical': {
-                    'sum': {
-                        'field': 'mood.analytical'
-                    }                
-                },
-                'positive': {
-                    'sum': {
-                        'field': 'mood.positive'
-                    }                
-                },
-                'neutral': {
-                    'sum': {
-                        'field': 'mood.neutral'
-                    }                
-                },
-                'negative': {
-                    'sum': {
-                        'field': 'mood.negative'
-                    }                
-                }
             }
          }
     }
+    
+    # Add aggregations for moods
+    for mood in all_moods:
+        query['aggs']['history']['aggs'][mood] = {
+                    'sum': {
+                        'field': "mood.%s" % mood
+                    }                
+                }
+    
+    
     res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="email",
@@ -195,12 +161,12 @@ def run(API, environ, indata, session):
         )
     
     timeseries = []
-    M = ['joy', 'sadness', 'tentative', 'confident', 'anger', 'fear', 'analytical', 'disgust', 'positive', 'neutral', 'negative']
+    
     
     for tz in res['aggregations']['history']['buckets']:
         moods = {}
         emls = tz['doc_count']
-        for mood in M:
+        for mood in all_moods:
             moods[mood] = int (100 * tz.get(mood, {'value':0})['value'] / max(1, emls))
         moods['date'] = int(tz['key']/1000)
         timeseries.append(moods)

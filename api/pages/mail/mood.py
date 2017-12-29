@@ -87,6 +87,12 @@ def run(API, environ, indata, session):
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
     
+    # Define moods we know of
+    moods_good = set(['trust', 'joy', 'confident', 'positive'])
+    moods_bad = set(['sadness', 'anger', 'disgust', 'fear', 'negative'])
+    moods_neutral = set(['anticipation', 'surprise', 'tentative', 'analytical', 'neutral'])
+    all_moods = set(moods_good | moods_bad | moods_neutral)
+    
     # Start off with a query for the entire org (we want to compare)
     dOrg = session.user['defaultOrganisation'] or "apache"
     query = {
@@ -124,57 +130,14 @@ def run(API, environ, indata, session):
     
     # Add aggregations for moods
     query['aggs'] = {
-                'joy': {
+                
+    }
+    for mood in all_moods:
+        query['aggs'][mood] = {
                     'sum': {
-                        'field': 'mood.joy'
-                    }                
-                },
-                'sadness': {
-                    'sum': {
-                        'field': 'mood.sadness'
-                    }                
-                },
-                'tentative': {
-                    'sum': {
-                        'field': 'mood.tentative'
-                    }                
-                },
-                'confident': {
-                    'sum': {
-                        'field': 'mood.confident'
-                    }                
-                },
-                'anger': {
-                    'sum': {
-                        'field': 'mood.anger'
-                    }                
-                },
-                'fear': {
-                    'sum': {
-                        'field': 'mood.fear'
-                    }                
-                },
-                'analytical': {
-                    'sum': {
-                        'field': 'mood.analytical'
-                    }                
-                },
-                'positive': {
-                    'sum': {
-                        'field': 'mood.positive'
-                    }                
-                },
-                'neutral': {
-                    'sum': {
-                        'field': 'mood.neutral'
-                    }                
-                },
-                'negative': {
-                    'sum': {
-                        'field': 'mood.negative'
+                        'field': "mood.%s" % mood
                     }                
                 }
-    }
     
     
     global_mood_compiled = {}
@@ -195,9 +158,13 @@ def run(API, environ, indata, session):
                 body = query
             )
         for mood, el in gres['aggregations'].items():
+            # If a mood is not present (iow sum is 0), remove it from the equation by setting to -1
+            if el['value'] == 0:
+                el['value'] == -1
             global_moods[mood] = el['value']
         for k, v in global_moods.items():
-            global_mood_compiled[k] = int( (v / max(1,gemls)) * 100)
+            if v >= 0:
+                global_mood_compiled[k] = int( (v / max(1,gemls)) * 100)
     
     # Now, if we have a view (or not distinguishing), ...
     ss = False
@@ -229,15 +196,18 @@ def run(API, environ, indata, session):
         years = 0
         
         for mood, el in res['aggregations'].items():
+            if el['value'] == 0:
+                el['value'] == -1
             moods[mood] = el['value']
         for k, v in moods.items():
-            mood_compiled[k] = int(100 * int( ( v / max(1,emls)) * 100) / max(1, global_mood_compiled.get(k, 100)))
+            if v > 0:
+                mood_compiled[k] = int(100 * int( ( v / max(1,emls)) * 100) / max(1, global_mood_compiled.get(k, 100)))
     else:
         mood_compiled = global_mood_compiled
     
     # If relative mode and a field is missing, assume 100 (norm)
     if indata.get('relative'):
-        for M in ['joy', 'sadness', 'tentative', 'confident', 'anger', 'fear', 'analytical', 'disgust', 'negative', 'neutral', 'positive']:
+        for M in all_moods:
             if mood_compiled.get(M, 0) == 0:
                 mood_compiled[M] = 100
     
@@ -245,14 +215,14 @@ def run(API, environ, indata, session):
     MAX = max(max(mood_compiled.values()),1)
     X = 100 if indata.get('relative') else 0
     bads = X
-    for B in ['sadness', 'anger', 'fear', 'disgust', 'negative']:
+    for B in moods_bad:
         if mood_compiled.get(B) and mood_compiled[B] > X:
             bads += mood_compiled[B]
     
     happ = 50
     
     goods = X
-    for B in ['joy', 'confident', 'positive']:
+    for B in moods_good:
         if mood_compiled.get(B) and mood_compiled[B] > X:
             goods += mood_compiled[B]
     MAX = max(MAX, bads, goods)
