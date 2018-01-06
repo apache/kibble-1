@@ -95,6 +95,10 @@ def run(API, environ, indata, session):
     cy = ny
     ts = []
     
+    if nm < 1:
+        nm += 12
+        ny = ny - 1
+    
     peopleSeen = {}
     activePeople = {}
     allPeople = {}

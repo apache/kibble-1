@@ -94,6 +94,10 @@ def run(API, environ, indata, session):
     ny = tnow.year
     ts = []
     
+    if nm < 1:
+        nm += 12
+        ny = ny - 1
+    
     while ny > 1970:
         d = datetime.date(ny, nm, 1)
         t = time.mktime(d.timetuple())
