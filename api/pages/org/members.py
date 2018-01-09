@@ -128,7 +128,7 @@ def canInvite(session):
     
     dOrg = session.user['defaultOrganisation'] or "apache"
     if session.DB.ES.exists(index=session.DB.dbname, doc_type="org", id= dOrg):
-        xorg = session.DB.ES.get(index=session.DB.dbname, doc_type="org", id= dOrg)['_source']
+        xorg = session.DB.ES.get(index=session.DB.dbname, doc_type="organisation", id= dOrg)['_source']
         if session.user['email'] in xorg['admins']:
             return True
 
