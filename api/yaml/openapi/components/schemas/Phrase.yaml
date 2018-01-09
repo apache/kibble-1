@@ -1,0 +1,15 @@
+########################################################################
+# Error                                                                #
+########################################################################
+properties:
+  phrase:
+    description: The key phrase
+    example: Ponies are awesome
+    type: string
+  count:
+    description: The number of documents containing this as a key phrase
+    example: 25
+    type: integer
+required:
+- phrase
+- count

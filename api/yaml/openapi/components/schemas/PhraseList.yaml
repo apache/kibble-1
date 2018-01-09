@@ -1,0 +1,15 @@
+########################################################################
+# PhraseList                                                           #
+########################################################################
+properties:
+  okay:
+    type: boolean
+  phrases:
+    description: A list of key phrases
+    items:
+      $ref: '#/components/schemas/Phrase'
+    type: array
+required:
+- okay
+- phrases
+
