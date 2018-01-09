@@ -130,6 +130,31 @@ components:
       required:
       - id
       - name
+    Phrase:
+      properties:
+        count:
+          description: The number of documents containing this as a key phrase
+          example: 25
+          type: integer
+        phrase:
+          description: The key phrase
+          example: Ponies are awesome
+          type: string
+      required:
+      - phrase
+      - count
+    PhraseList:
+      properties:
+        okay:
+          type: boolean
+        phrases:
+          description: A list of key phrases
+          items:
+            $ref: '#/components/schemas/Phrase'
+          type: array
+      required:
+      - okay
+      - phrases
     Sloc:
       properties:
         count:
@@ -1604,6 +1629,46 @@ paths:
       - cookieAuth: []
       summary: Shows trend data for a set of issue trackers over a given period of
         time
+  /api/mail/keyphrases:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhraseList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the common key phrases in use on one or more mailing lists
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhraseList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the common key phrases in use on one or more mailing lists
   /api/mail/map:
     get:
       responses:
