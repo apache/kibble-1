@@ -217,6 +217,7 @@ last machine. This will balance the load and storage requirements evenly
 across all machines.
 
 
+.. _runscan:
 
 **************
 Running a Scan
@@ -235,3 +236,7 @@ resource that matches the appropriate type. The collected data will be
 pushed to the main data server and be available for visualizations
 instantly.
 
+It may be worth your while to run the scanner inside a timer wrapper,
+as such: ``time python3 src/kibble-scanner.py`` in order to gauge the
+amount of time a scan will take, and adjusting your cron jobs to match
+this.
