@@ -116,9 +116,10 @@ Configuring and Priming the Kibble Instance
 Once you have the components installed and Kibble downloaded, you will
 need to prime the ElasticSearch instance and create a configuration file.
 
-Assuming you have installed kibble in /var/www/kibble, you would set it
+Assuming you wish to install kibble in /var/www/kibble, you would set it
 up by issuing the following:
 
+- ``git clone https://github.com/apache/kibble.git /var/www/kibble``
 - ``cd /var/www/kibble/setup``
 - ``python3 setup.py``
 - Enter the configuration parameters the setup process asks for
