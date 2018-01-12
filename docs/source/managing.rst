@@ -89,9 +89,6 @@ JIRA
    
 Twitter
    This is a Twitter account. Currently not much done there. WIP.
-   
-SVN
-   This is a Subversion directory. It currently does nothing :(
 
 
 Once you have added the resource URLs you wish to analyse, you

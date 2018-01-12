@@ -16,10 +16,6 @@ github:
     optauth:
         - username
         - password
-svn:
-    title: "Subversion repository"
-    regex: "https?://.+/.*"
-    example: "https://svn.apache.org/repos/asf/httpd/httpd"
 
 jira:
     title: "JIRA Project"
