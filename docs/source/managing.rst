@@ -96,7 +96,7 @@ SVN
 
 Once you have added the resource URLs you wish to analyse, you
 can obtain data by following the instructions in the chapter
-:ref:`runscan`
+:ref:`runscan`.
 
 ****************
 Adding New Users
