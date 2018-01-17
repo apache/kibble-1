@@ -110,7 +110,7 @@ comstat = (json, state) ->
             tb = new HTML('tbody')
             for person, i in json.stats.issues.newcomers
                 oemail = person
-                url = json.bios[person].issue[1].sourceURL
+                url = json.bios[person].issue[1].url
                 key = json.bios[person].issue[1].key || url
                 person = json.bios[person].bio
                 if i > 6

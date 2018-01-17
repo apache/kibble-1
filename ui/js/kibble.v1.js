@@ -5449,7 +5449,7 @@ comstat = function(json, state) {
       for (i = u = 0, len1 = ref1.length; u < len1; i = ++u) {
         person = ref1[i];
         oemail = person;
-        url = json.bios[person].issue[1].sourceURL;
+        url = json.bios[person].issue[1].url;
         key = json.bios[person].issue[1].key || url;
         person = json.bios[person].bio;
         if (i > 6) {
