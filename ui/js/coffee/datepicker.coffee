@@ -36,6 +36,7 @@ updateTimeseriesWidgets = (range) ->
             updateWidgets('mvp', null, { to: to, from: from})
             updateWidgets('comstat', null, { to: to, from: from})
             updateWidgets('worldmap', null, { to: to, from: from})
+            updateWidgets('jsondump', null, { to: to, from: from})
                 
 datepicker = (widget) ->
         div = document.createElement('div')

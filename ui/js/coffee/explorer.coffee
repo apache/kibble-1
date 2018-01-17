@@ -64,6 +64,7 @@ explorer = (json, state) ->
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('mvp', null, { source: source })
                 updateWidgets('comstat', null, { source: source })
+                updateWidgets('jsondump', null, { source: source })
               )
         
         
@@ -92,6 +93,7 @@ explorer = (json, state) ->
                 updateWidgets('relationship', null, {author: author})
                 updateWidgets('mvp', null, {author: author})
                 updateWidgets('comstat', null, { author: author })
+                updateWidgets('jsondump', null, { author: author })
                 )
         state.widget.inject(chk)
         label = document.createElement('label')
@@ -155,6 +157,7 @@ sourceexplorer = (json, state) ->
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('mvp', null, { source: source })
                 updateWidgets('comstat', null, { source: source })
+                updateWidgets('jsondump', null, { author: author })
         )
 
 
@@ -463,6 +466,7 @@ subFilter = () ->
         updateWidgets('mvp', null, x)
         updateWidgets('comstat', null, x)
         updateWidgets('worldmap', null, x)
+        updateWidgets('jsondump', null, x)
         
         $( "a" ).each( () ->
             url = $(this).attr('href')
@@ -537,6 +541,7 @@ viewexplorer = (json, state) ->
                 updateWidgets('mvp', null, x)
                 updateWidgets('comstat', null, x)
                 updateWidgets('worldmap', null, x)
+                updateWidgets('jsondump', null, x)
                 
                 $( "a" ).each( () ->
                     url = $(this).attr('href')

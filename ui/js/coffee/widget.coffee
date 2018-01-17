@@ -133,6 +133,7 @@ updateWidgets = (type, target, eargs) ->
                 when 'mvp' then widget.load(mvp)
                 when 'comstat' then widget.load(comstat)
                 when 'worldmap' then widget.load(worldmap)
+                when 'jsondump' then widget.load(jsondump)
 
 class pubWidget
     constructor: (@div, @wid, @config) ->

@@ -108,6 +108,7 @@ setupPage = (json, state) ->
                 when 'worldmap' then widget.load(worldmap)
                 when 'orglist' then widget.load(orglist)
                 when 'membership' then widget.load(membershipList)
+                when 'jsondump' then widget.load(jsondump)
 
 
 
