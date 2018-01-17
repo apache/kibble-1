@@ -665,6 +665,46 @@ paths:
       security:
       - cookieAuth: []
       summary: Shows some facts about a contributor
+  /api/bio/newtimers:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Biography'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows some facts about a contributor
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Biography'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows some facts about a contributor
   /api/bio/trends:
     get:
       responses:
