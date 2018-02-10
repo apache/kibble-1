@@ -100,13 +100,14 @@ Pre-requisites
 Before you install the Kibble Server, please ensure you have the
 following components installed and set up:
 
-- An ElasticSearch instance, version 5.x or newer (does not have to be
-  on the same machine, but it may help speed up processing)
+- An ElasticSearch instance, version 5.x or newer (5.x is currently
+  preferred). Does not have to be on the same machine, but it may help
+  speed up processing.
 - A web server of your choice (Apache HTTP Server, NGINX, lighttp etc)
 - Python 3.4 or newer with the following libraries installed:
 - - elasticsearch
 - - certifi
-- - yaml
+- - pyyaml
 - - bcrypt
 - Gunicorn for Python 3.x (often called gunicorn3) or mod_wsgi
 
@@ -138,6 +139,8 @@ web UI. Kibble is built as a WSGI application, and as such you can
 use mod_wsgi for apache, or proxy to Gunicorn. In this example, we will
 be using the Apache HTTP Server and proxy to Gunicorn:
 
+- Make sure you have mod_proxy and mod_proxy_http loaded (on
+  debian/ubuntu, you would run: `a2enmod proxy_http`)
 - Set up a virtual host in Apache:
 
 ::
@@ -188,12 +191,13 @@ git repository analysis:
 Configuring a Scanner Node
 ###########################
 
-First, check out the scanner source:
+First, check out the scanner source in a file path of your choosing:
 
 ``git clone https://github.com/apache/kibble-scanners.git``
 
-Then edit the ``conf/config.yaml`` file to match both your ElasticSearch
-database and the file layout you wish to use on the scanner machine.
+Then edit the ``conf/config.yaml`` file to match both the ElasticSearch
+database used by the Kibble UI, as well as whatever file layout (data
+and scratch dir) you wish to use on the scanner machine.
 Remember that the scanner must have enough disk space to fully store
 any resources you may be scanning. If you are scanning a large git repository,
 the scanner should have sufficient disk space to store it locally.
