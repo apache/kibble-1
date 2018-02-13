@@ -5379,7 +5379,7 @@ comstat = function(json, state) {
         wh = new Date(json.bios[person].code[0] * 1000.0).toDateString();
         person = json.bios[person].bio;
         dstyle = 'show';
-        if (i > 6) {
+        if (i === 6) {
           m = json.stats.issues.newcomers.length - 7;
           tr = mk('tr', {
             scope: 'row',
@@ -5392,6 +5392,7 @@ comstat = function(json, state) {
             }, "+" + m + " more..."))
           ]);
           tb.inject(tr);
+          dstyle = "none";
         }
         tr = mk('tr', {
           scope: 'row',
@@ -5484,7 +5485,7 @@ comstat = function(json, state) {
         wh = new Date(json.bios[person].issue[0] * 1000.0).toDateString();
         person = json.bios[person].bio;
         dstyle = 'show';
-        if (i > 6) {
+        if (i === 6) {
           m = json.stats.issues.newcomers.length - 7;
           tr = mk('tr', {
             scope: 'row',
@@ -5497,6 +5498,7 @@ comstat = function(json, state) {
             }, "+" + m + " more..."))
           ]);
           tb.inject(tr);
+          dstyle = "none";
         }
         tr = mk('tr', {
           scope: 'row',

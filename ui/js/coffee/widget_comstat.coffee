@@ -62,12 +62,13 @@ comstat = (json, state) ->
                 wh = new Date(json.bios[person].code[0] * 1000.0).toDateString()
                 person = json.bios[person].bio
                 dstyle = 'show'
-                if i > 6
+                if i == 6
                     m = json.stats.issues.newcomers.length - 7
                     tr = mk('tr', {scope: 'row', id: 'comstat_code_more'}, [
                         mk('td', {colspan: "3"}, new HTML('a', { href: 'javascript:void(comShow("code"));'}, "+#{m} more..."))
                         ])
                     tb.inject(tr)
+                    dstyle = "none"
 
                 tr = mk('tr', {scope: 'row', id: "comstat_code_#{i}", style: { display: dstyle}}, [
                     mk('td', {}, new HTML('img', {style: { width: '32px', height: '32px'}, class: "img-circle img-responsive", src:"https://secure.gravatar.com/avatar/#{person.md5}.png?d=identicon"})),
@@ -126,12 +127,13 @@ comstat = (json, state) ->
                 wh = new Date(json.bios[person].issue[0] * 1000.0).toDateString()
                 person = json.bios[person].bio
                 dstyle = 'show'
-                if i > 6
+                if i == 6
                     m = json.stats.issues.newcomers.length - 7
                     tr = mk('tr', {scope: 'row', id: 'comstat_issue_more'}, [
                         mk('td', {colspan: "3"}, new HTML('a', { href: 'javascript:void(comShow("issue"));'}, "+#{m} more..."))
                         ])
                     tb.inject(tr)
+                    dstyle = "none"
 
                 tr = mk('tr', {scope: 'row', id: "comstat_issue_#{i}", style: { display: dstyle}}, [
                     mk('td', {}, new HTML('img', {style: { width: '32px', height: '32px'}, class: "img-circle img-responsive", src:"https://secure.gravatar.com/avatar/#{person.md5}.png?d=identicon"})),
