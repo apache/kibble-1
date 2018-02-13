@@ -5353,6 +5353,11 @@ comstat = function(json, state) {
       tr = mk('tr', {}, [mk('th', {}, "Avatar"), mk('th', {}, "Name"), mk('th', {}, "Address"), mk('th', {}, "First commit")]);
       app(tbl, tr);
       tb = new HTML('tbody');
+      json.stats.code.newcomers.sort((function(_this) {
+        return function(a, b) {
+          return json.bios[b].code[0] - json.bios[a].code[0];
+        };
+      })(this));
       ref = json.stats.code.newcomers;
       for (i = q = 0, len = ref.length; q < len; i = ++q) {
         person = ref[i];
@@ -5446,6 +5451,11 @@ comstat = function(json, state) {
       tr = mk('tr', {}, [mk('th', {}, "Avatar"), mk('th', {}, "Name"), mk('th', {}, "Address"), mk('th', {}, "First issue")]);
       app(tbl, tr);
       tb = new HTML('tbody');
+      json.stats.issues.newcomers.sort((function(_this) {
+        return function(a, b) {
+          return json.bios[b].issue[0] - json.bios[a].issue[0];
+        };
+      })(this));
       ref1 = json.stats.issues.newcomers;
       for (i = u = 0, len1 = ref1.length; u < len1; i = ++u) {
         person = ref1[i];

@@ -47,6 +47,7 @@ comstat = (json, state) ->
                 ])
             app(tbl, tr)
             tb = new HTML('tbody')
+            json.stats.code.newcomers.sort((a,b) => json.bios[b].code[0] - json.bios[a].code[0])
             for person, i in json.stats.code.newcomers
                 oemail = person
                 hash = json.bios[person].code[1].id.split('/')[1]
@@ -109,6 +110,7 @@ comstat = (json, state) ->
                 ])
             app(tbl, tr)
             tb = new HTML('tbody')
+            json.stats.issues.newcomers.sort((a,b) => json.bios[b].issue[0] - json.bios[a].issue[0])
             for person, i in json.stats.issues.newcomers
                 oemail = person
                 url = json.bios[person].issue[1].url
