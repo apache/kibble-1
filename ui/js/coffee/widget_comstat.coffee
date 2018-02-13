@@ -1,3 +1,10 @@
+comShow = (t) ->
+    rows = document.getElementsByTagName("tr")
+    for row in rows
+        if row.getAttribute("id").match("comstat_#{t}_")
+            row.style.display = "show"
+    document.getElementById("comstat_#{t}_more").style.display = "none"
+    
 comstat = (json, state) ->
     
     if json and json.stats
@@ -54,14 +61,15 @@ comstat = (json, state) ->
                 repo = json.bios[person].code[1].sourceURL
                 wh = new Date(json.bios[person].code[0] * 1000.0).toDateString()
                 person = json.bios[person].bio
+                dstyle = 'show'
                 if i > 6
-                    m = json.stats.code.newcomers.length - 7
-                    tr = mk('tr', {scope: 'row'}, [
-                        mk('td', {colspan: "3"}, "+#{m} more...")
+                    m = json.stats.issues.newcomers.length - 7
+                    tr = mk('tr', {scope: 'row', id: 'comstat_code_more'}, [
+                        mk('td', {colspan: "3"}, new HTML('a', { href: 'javascript:void(comShow("code"));'}, "+#{m} more..."))
                         ])
                     tb.inject(tr)
-                    break
-                tr = mk('tr', {scope: 'row'}, [
+
+                tr = mk('tr', {scope: 'row', id: "comstat_code_#{i}", style: { display: dstyle}}, [
                     mk('td', {}, new HTML('img', {style: { width: '32px', height: '32px'}, class: "img-circle img-responsive", src:"https://secure.gravatar.com/avatar/#{person.md5}.png?d=identicon"})),
                     mk('td', {}, mk('a', { href: "?page=people&email=#{oemail}"}, person.name)),
                     mk('td', {}, oemail),
@@ -117,15 +125,15 @@ comstat = (json, state) ->
                 key = json.bios[person].issue[1].key || url
                 wh = new Date(json.bios[person].issue[0] * 1000.0).toDateString()
                 person = json.bios[person].bio
+                dstyle = 'show'
                 if i > 6
                     m = json.stats.issues.newcomers.length - 7
-                    tr = mk('tr', {scope: 'row'}, [
-                        mk('td', {colspan: "3"}, "+#{m} more...")
+                    tr = mk('tr', {scope: 'row', id: 'comstat_issue_more'}, [
+                        mk('td', {colspan: "3"}, new HTML('a', { href: 'javascript:void(comShow("issue"));'}, "+#{m} more..."))
                         ])
                     tb.inject(tr)
-                    break
-                
-                tr = mk('tr', {scope: 'row'}, [
+
+                tr = mk('tr', {scope: 'row', id: "comstat_issue_#{i}", style: { display: dstyle}}, [
                     mk('td', {}, new HTML('img', {style: { width: '32px', height: '32px'}, class: "img-circle img-responsive", src:"https://secure.gravatar.com/avatar/#{person.md5}.png?d=identicon"})),
                     mk('td', {}, mk('a', { href: "?page=people&email=#{oemail}"}, person.name)),
                     mk('td', {}, oemail),
