@@ -5359,7 +5359,7 @@ comstat = function(json, state) {
         oemail = person;
         hash = json.bios[person].code[1].id.split('/')[1];
         repo = json.bios[person].code[1].sourceURL;
-        wh = new Date(json.bios[person].code[0] * 1000.0).toDateSTring();
+        wh = new Date(json.bios[person].code[0] * 1000.0).toDateString();
         person = json.bios[person].bio;
         if (i > 6) {
           m = json.stats.code.newcomers.length - 7;
@@ -5452,7 +5452,7 @@ comstat = function(json, state) {
         oemail = person;
         url = json.bios[person].issue[1].url;
         key = json.bios[person].issue[1].key || url;
-        wh = new Date(json.bios[person].issue[0] * 1000.0).toDateSTring();
+        wh = new Date(json.bios[person].issue[0] * 1000.0).toDateString();
         person = json.bios[person].bio;
         if (i > 6) {
           m = json.stats.issues.newcomers.length - 7;
