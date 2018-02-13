@@ -5453,6 +5453,7 @@ comstat = function(json, state) {
         url = json.bios[person].issue[1].url;
         key = json.bios[person].issue[1].key || url;
         person = json.bios[person].bio;
+        wh = new Date(json.bios[person].code[0] * 1000.0).toDateSTring();
         if (i > 6) {
           m = json.stats.issues.newcomers.length - 7;
           tr = mk('tr', {
@@ -5477,9 +5478,11 @@ comstat = function(json, state) {
             src: "https://secure.gravatar.com/avatar/" + person.md5 + ".png?d=identicon"
           })), mk('td', {}, mk('a', {
             href: "?page=people&email=" + oemail
-          }, person.name)), mk('td', {}, oemail), mk('td', {}, mk('a', {
-            href: url || "#"
-          }, txt(key)))
+          }, person.name)), mk('td', {}, oemail), mk('td', {}, [
+            wh + " (", mk('a', {
+              href: url || "#"
+            }, txt(key)), ")"
+          ])
         ]);
         tb.inject(tr);
       }

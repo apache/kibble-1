@@ -114,6 +114,7 @@ comstat = (json, state) ->
                 url = json.bios[person].issue[1].url
                 key = json.bios[person].issue[1].key || url
                 person = json.bios[person].bio
+                wh = new Date(json.bios[person].code[0] * 1000.0).toDateSTring()
                 if i > 6
                     m = json.stats.issues.newcomers.length - 7
                     tr = mk('tr', {scope: 'row'}, [
@@ -126,7 +127,7 @@ comstat = (json, state) ->
                     mk('td', {}, new HTML('img', {style: { width: '32px', height: '32px'}, class: "img-circle img-responsive", src:"https://secure.gravatar.com/avatar/#{person.md5}.png?d=identicon"})),
                     mk('td', {}, mk('a', { href: "?page=people&email=#{oemail}"}, person.name)),
                     mk('td', {}, oemail),
-                    mk('td', {}, mk('a', { href: url||"#"}, txt(key))),
+                    mk('td', {}, ["#{wh} (", mk('a', { href: url||"#"}, txt(key)), ")"]),
                     ])
                 tb.inject(tr)
             app(tbl, tb)
