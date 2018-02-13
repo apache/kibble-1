@@ -1,7 +1,7 @@
 comShow = (t) ->
     rows = document.getElementsByTagName("tr")
     for row in rows
-        if row.getAttribute("id").match("comstat_#{t}_")
+        if (row.getAttribute("id")||"foo").match("comstat_#{t}_")
             row.style.display = "show"
     document.getElementById("comstat_#{t}_more").style.display = "none"
     

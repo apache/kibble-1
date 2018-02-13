@@ -5307,7 +5307,7 @@ comShow = function(t) {
   rows = document.getElementsByTagName("tr");
   for (q = 0, len = rows.length; q < len; q++) {
     row = rows[q];
-    if (row.getAttribute("id").match("comstat_" + t + "_")) {
+    if ((row.getAttribute("id") || "foo").match("comstat_" + t + "_")) {
       row.style.display = "show";
     }
   }
