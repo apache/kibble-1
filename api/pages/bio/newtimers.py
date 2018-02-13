@@ -319,6 +319,7 @@ def run(API, environ, indata, session):
         person = {}
         if session.DB.ES.exists(index=session.DB.dbname, doc_type="person", id = pid):
             person = session.DB.ES.get(index=session.DB.dbname, doc_type="person", id = pid)['_source']
+        person['md5'] = hashlib.md5(person['email'].encode('utf-8')) # gravatar needed for UI!
         newcomers[email]['bio'] = person
     
     newcomers_code = []
