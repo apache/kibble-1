@@ -55,15 +55,15 @@ comstat = (json, state) ->
             app(tbl, tr)
             tb = new HTML('tbody')
             json.stats.code.newcomers.sort((a,b) => json.bios[b].code[0] - json.bios[a].code[0])
+            dstyle = 'show'
             for person, i in json.stats.code.newcomers
                 oemail = person
                 hash = json.bios[person].code[1].id.split('/')[1]
                 repo = json.bios[person].code[1].sourceURL
                 wh = new Date(json.bios[person].code[0] * 1000.0).toDateString()
                 person = json.bios[person].bio
-                dstyle = 'show'
                 if i == 6
-                    m = json.stats.issues.newcomers.length - 6
+                    m = json.stats.code.newcomers.length - i
                     tr = mk('tr', {scope: 'row', id: 'comstat_code_more'}, [
                         mk('td', {colspan: "3"}, new HTML('a', { href: 'javascript:void(comShow("code"));'}, "+#{m} more..."))
                         ])
@@ -120,15 +120,16 @@ comstat = (json, state) ->
             app(tbl, tr)
             tb = new HTML('tbody')
             json.stats.issues.newcomers.sort((a,b) => json.bios[b].issue[0] - json.bios[a].issue[0])
+            dstyle = 'show'
             for person, i in json.stats.issues.newcomers
                 oemail = person
                 url = json.bios[person].issue[1].url
                 key = json.bios[person].issue[1].key || url
                 wh = new Date(json.bios[person].issue[0] * 1000.0).toDateString()
                 person = json.bios[person].bio
-                dstyle = 'show'
+                
                 if i == 6
-                    m = json.stats.issues.newcomers.length - 6
+                    m = json.stats.issues.newcomers.length - i
                     tr = mk('tr', {scope: 'row', id: 'comstat_issue_more'}, [
                         mk('td', {colspan: "3"}, new HTML('a', { href: 'javascript:void(comShow("issue"));'}, "+#{m} more..."))
                         ])

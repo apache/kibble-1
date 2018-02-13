@@ -5370,6 +5370,7 @@ comstat = function(json, state) {
           return json.bios[b].code[0] - json.bios[a].code[0];
         };
       })(this));
+      dstyle = 'show';
       ref = json.stats.code.newcomers;
       for (i = q = 0, len = ref.length; q < len; i = ++q) {
         person = ref[i];
@@ -5378,9 +5379,8 @@ comstat = function(json, state) {
         repo = json.bios[person].code[1].sourceURL;
         wh = new Date(json.bios[person].code[0] * 1000.0).toDateString();
         person = json.bios[person].bio;
-        dstyle = 'show';
         if (i === 6) {
-          m = json.stats.issues.newcomers.length - 6;
+          m = json.stats.code.newcomers.length - i;
           tr = mk('tr', {
             scope: 'row',
             id: 'comstat_code_more'
@@ -5476,6 +5476,7 @@ comstat = function(json, state) {
           return json.bios[b].issue[0] - json.bios[a].issue[0];
         };
       })(this));
+      dstyle = 'show';
       ref1 = json.stats.issues.newcomers;
       for (i = u = 0, len1 = ref1.length; u < len1; i = ++u) {
         person = ref1[i];
@@ -5484,9 +5485,8 @@ comstat = function(json, state) {
         key = json.bios[person].issue[1].key || url;
         wh = new Date(json.bios[person].issue[0] * 1000.0).toDateString();
         person = json.bios[person].bio;
-        dstyle = 'show';
         if (i === 6) {
-          m = json.stats.issues.newcomers.length - 6;
+          m = json.stats.issues.newcomers.length - i;
           tr = mk('tr', {
             scope: 'row',
             id: 'comstat_issue_more'
