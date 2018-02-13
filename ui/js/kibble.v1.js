@@ -5308,7 +5308,7 @@ comShow = function(t) {
   for (q = 0, len = rows.length; q < len; q++) {
     row = rows[q];
     if ((row.getAttribute("id") || "foo").match("comstat_" + t + "_")) {
-      row.style.display = "show";
+      row.style.display = "table-row";
     }
   }
   return document.getElementById("comstat_" + t + "_more").style.display = "none";
@@ -5370,7 +5370,7 @@ comstat = function(json, state) {
           return json.bios[b].code[0] - json.bios[a].code[0];
         };
       })(this));
-      dstyle = 'show';
+      dstyle = 'table-row';
       ref = json.stats.code.newcomers;
       for (i = q = 0, len = ref.length; q < len; i = ++q) {
         person = ref[i];

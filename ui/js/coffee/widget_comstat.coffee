@@ -2,7 +2,7 @@ comShow = (t) ->
     rows = document.getElementsByTagName("tr")
     for row in rows
         if (row.getAttribute("id")||"foo").match("comstat_#{t}_")
-            row.style.display = "show"
+            row.style.display = "table-row"
     document.getElementById("comstat_#{t}_more").style.display = "none"
     
 comstat = (json, state) ->
@@ -55,7 +55,7 @@ comstat = (json, state) ->
             app(tbl, tr)
             tb = new HTML('tbody')
             json.stats.code.newcomers.sort((a,b) => json.bios[b].code[0] - json.bios[a].code[0])
-            dstyle = 'show'
+            dstyle = 'table-row'
             for person, i in json.stats.code.newcomers
                 oemail = person
                 hash = json.bios[person].code[1].id.split('/')[1]
