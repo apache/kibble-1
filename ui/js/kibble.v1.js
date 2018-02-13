@@ -5303,7 +5303,7 @@ Row = (function() {
 })();
 
 comstat = function(json, state) {
-  var aa, ab, chk, hash, i, js, key, lb, len, len1, len2, len3, m, nl, notice, oemail, p, person, q, ref, ref1, ref2, ref3, repo, row, stbl, tb, tbl, tr, u, url, widget;
+  var aa, ab, chk, hash, i, js, key, lb, len, len1, len2, len3, m, nl, notice, oemail, p, person, q, ref, ref1, ref2, ref3, repo, row, stbl, tb, tbl, tr, u, url, wh, widget;
   if (json && json.stats) {
     row = new Row();
     p = new HTML('p', {}, globArgs.committersOnly === 'true' ? "You are currently only seeing stats for committers. To view statistics for all contributors (committers and authors), please uncheck the box below:" : "You are currently seeing stats for both committership and authorship of code. To view only committership stats, tick the box below:");
@@ -5360,6 +5360,7 @@ comstat = function(json, state) {
         hash = json.bios[person].code[1].id.split('/')[1];
         repo = json.bios[person].code[1].sourceURL;
         person = json.bios[person].bio;
+        wh = new Date(json.bios[person].code[0] * 1000.0).toDateSTring();
         if (i > 6) {
           m = json.stats.code.newcomers.length - 7;
           tr = mk('tr', {
@@ -5384,7 +5385,7 @@ comstat = function(json, state) {
             src: "https://secure.gravatar.com/avatar/" + person.md5 + ".png?d=identicon"
           })), mk('td', {}, mk('a', {
             href: "?page=people&email=" + oemail
-          }, person.name)), mk('td', {}, oemail), mk('td', {}, repo + " / " + hash)
+          }, person.name)), mk('td', {}, oemail), mk('td', {}, wh + " (" + repo + ")")
         ]);
         tb.inject(tr);
       }
