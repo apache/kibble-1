@@ -134,14 +134,15 @@ import yaml
 
 def canModifySource(session):
     """ Determine if the user can edit sources in this org """
-    if session.user['userlevel'] == 'admin':
-        return True
     
     dOrg = session.user['defaultOrganisation'] or "apache"
     if session.DB.ES.exists(index=session.DB.dbname, doc_type="organisation", id= dOrg):
         xorg = session.DB.ES.get(index=session.DB.dbname, doc_type="organisation", id= dOrg)['_source']
         if session.user['email'] in xorg['admins']:
             return True
+        if session.user['userlevel'] == 'admin':
+            return True
+    return False
 
 def run(API, environ, indata, session):
     
@@ -153,12 +154,17 @@ def run(API, environ, indata, session):
     
     if method in ['GET', 'POST']:
         # Fetch organisation data
-        dOrg = session.user['defaultOrganisation'] or "apache"
+        
+        # Make sure we have a default/current org set
+        if 'defaultOrganisation' not in session.user or not session.user['defaultOrganisation']:
+            raise API.exception(400, "You must specify an organisation as default/current in order to add sources.")
+        
+        dOrg = session.user['defaultOrganisation']
         if session.DB.ES.exists(index=session.DB.dbname, doc_type="organisation", id= dOrg):
             org = session.DB.ES.get(index=session.DB.dbname, doc_type="organisation", id= dOrg)['_source']
             del org['admins']
         else:
-            raise API.exception(404, "No such organisation, '%s'" % dOrg)
+            raise API.exception(404, "No such organisation, '%s'" % (dOrg or "(None)"))
         
         sourceTypes = indata.get('types', [])
         # Fetch all sources for default org
@@ -230,7 +236,9 @@ def run(API, environ, indata, session):
                             creds[el] = source[el]
                 sourceID = hashlib.sha224( ("%s-%s" % (sourceType, sourceURL)).encode('utf-8') ).hexdigest()
                 
-                dOrg = session.user['defaultOrganisation'] or "apache"
+                # Make sure we have a default/current org set
+                if 'defaultOrganisation' not in session.user or not session.user['defaultOrganisation']:
+                    raise API.exception(400, "You must first specify an organisation as default/current in order to add sources.")
                 
                 doc = {
                     'organisation': dOrg,
