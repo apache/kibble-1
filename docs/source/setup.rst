@@ -157,7 +157,7 @@ be using the Apache HTTP Server and proxy to Gunicorn:
 
 ::
 
-   cd /var/www/kibble
+   cd /var/www/kibble/api/
    gunicorn -w 10 -b 127.0.0.1:8000 handler:application -t 120 -D
 
 Once httpd is (re)started, you should be able to browse to your new
