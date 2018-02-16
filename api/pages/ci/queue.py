@@ -167,7 +167,7 @@ def run(API, environ, indata, session):
             'queue size': bucket['size']['value'],
 #            'builds blocked': bucket['blocked']['value'],
 #            'builds stuck': bucket['stuck']['value'],
-            'average wait (hours)': int(bucket['wait']['value']/3600),
+            'average wait (hours)': int(bucket['wait']['value']/360)/10,
         })
     
     JSON_OUT = {
