@@ -164,15 +164,8 @@ def run(API, environ, indata, session):
         jobs.append([builds, duration, jobname, ci])
     
     topjobs = sorted(jobs, key = lambda x: int(x[0]), reverse = True)
-    top = topjobs[0:24]
-    if len(topjobs) > 25:
-        count = 0
-        for repo in topjobs[25:]:
-            count += repo[1]
-        top.append(["Other jobs", 1, count, '??'])
-    
     tophash = {}
-    for v in top:
+    for v in topjobs:
         tophash["%s (%s)" % (v[2], v[3])] = v[0]
         
     JSON_OUT = {
