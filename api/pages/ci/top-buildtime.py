@@ -167,9 +167,9 @@ def run(API, environ, indata, session):
     top = topjobs[0:24]
     if len(topjobs) > 25:
         count = 0
-        for repo in topjobs[25:]:
+        for repo in topjobs[24:]:
             count += repo[1]
-        top.append(["Other jobs", 1, count, '??'])
+        top.append([1, count, "Other jobs", '??'])
     
     tophash = {}
     for v in top:
