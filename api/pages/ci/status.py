@@ -161,6 +161,8 @@ def run(API, environ, indata, session):
     
     timeseries = []
     for bucket in res['aggregations']['timeseries']['buckets']:
+        if bucket['doc_count'] == 0:
+            continue
         ts = int(bucket['key'] / 1000)
         timeseries.append({
             'date': ts,
