@@ -5854,7 +5854,7 @@ donut = function(json, state) {
   }
   div = new HTML('div');
   state.widget.inject(div, true);
-  return chartBox = new Chart(div, 'donut', data, 15);
+  return chartBox = new Chart(div, 'donut', data, 25);
 };
 
 factors = function(json, state) {

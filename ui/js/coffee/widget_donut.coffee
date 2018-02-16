@@ -76,6 +76,6 @@ donut = (json, state) ->
         data[el.name] = el.value
     div = new HTML('div')
     state.widget.inject(div, true)
-    chartBox = new Chart(div, 'donut', data, 15)
+    chartBox = new Chart(div, 'donut', data, 25)
     
       
