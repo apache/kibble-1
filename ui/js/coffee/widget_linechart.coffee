@@ -155,7 +155,11 @@ linechart = (json, state) ->
           state.widget.inject(mk('br'))
           state.widget.inject(txt("Select interval: "))
           state.widget.inject(list)
-          for item in ['day','week','month','quarter','year']
+          histograms = ['day','week','month','quarter','year']
+          # Some charts may require finer grained precision (CI Queues etc)
+          if state.widget.wargs and state.widget.wargs.histogram == 'hour'
+                histograms.unshift('hour')
+          for item in histograms
               opt = document.createElement('option')
               opt.value = item
               opt.text = item
