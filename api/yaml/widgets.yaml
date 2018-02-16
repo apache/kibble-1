@@ -740,6 +740,8 @@ widgets:
                         type:   "line"
                         source: "ci/queue"
                         name:   "CI Queue"
+                        wargs:
+                            histogram: hour
                         blocks: 6
                     -
                         type:   "line"
