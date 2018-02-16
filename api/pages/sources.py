@@ -151,6 +151,7 @@ def run(API, environ, indata, session):
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
     
     method = environ['REQUEST_METHOD']
+    dOrg = session.user['defaultOrganisation']
     
     if method in ['GET', 'POST']:
         # Fetch organisation data
@@ -159,7 +160,6 @@ def run(API, environ, indata, session):
         if 'defaultOrganisation' not in session.user or not session.user['defaultOrganisation']:
             raise API.exception(400, "You must specify an organisation as default/current in order to add sources.")
         
-        dOrg = session.user['defaultOrganisation']
         if session.DB.ES.exists(index=session.DB.dbname, doc_type="organisation", id= dOrg):
             org = session.DB.ES.get(index=session.DB.dbname, doc_type="organisation", id= dOrg)['_source']
             del org['admins']
