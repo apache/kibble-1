@@ -711,3 +711,52 @@ widgets:
                         name:   "New contributors"
                         blocks: 12
                     
+
+## CONTINUOUS INTEGRATION
+    ci:
+        title: "Continuous Integration"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+                    -
+                        type:   cipicker
+                        blocks: 4
+                        source: "sources"
+                        name:   "CI picker"
+            -
+                name: "CI queue"
+                children:
+                    -
+                        type:   "line"
+                        source: "ci/queue"
+                        name:   "CI Queue"
+                        blocks: 6
+                    -
+                        type:   "line"
+                        source: "ci/status"
+                        name:   "CI Queue Status"
+                        blocks: 6
+            -
+                name: "Busiest Jobs"
+                children:
+                    -
+                        type:   "donut"
+                        source: "ci/top-buildtime"
+                        name:   "Busiest jobs by build time (in days)"
+                        blocks: 6
+                    -
+                        type:   "donut"
+                        source: "ci/top-buildcount"
+                        name:   "Busiest jobs by build count"
+                        blocks: 6
+                    
