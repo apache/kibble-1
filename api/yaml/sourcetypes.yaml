@@ -54,6 +54,15 @@ gerrit:
     regex: "https?://.+/r/.+"
     example: https://review.rdoproject.org/r/puppet/puppet-designate
 
+jenkins:
+    title: Jenkins CI Server
+    description: A Jenkins CI Server - Grabs all jobs in one go.
+    regex: "https?://.+/"
+    example: https://builds.apache.org/
+    optauth:
+        - username
+        - password
+
 twitter:
     title: "Twitter Handle"
     regex: (@.+)
