@@ -39,6 +39,8 @@ charts_linechart = (obj, data, options) ->
             dateFormat = (x) => "Q" + ([1,2,3,4][Math.floor(x.getMonth()/3)]) + ", " + x.getFullYear()
         if data.histogram and data.histogram == 'monthly'
             dateFormat = '%b, %Y'
+        if data.interval and data.interval == 'hour'
+            dateFormat = '%Y-%m-%d %H:%M'
         if data.histogram and data.histogram == 'yearly'
             dateFormat = '%Y'
         ts = [
