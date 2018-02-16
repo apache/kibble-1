@@ -267,6 +267,9 @@ charts_linechart = function(obj, data, options) {
     if (data.histogram && data.histogram === 'monthly') {
       dateFormat = '%b, %Y';
     }
+    if (data.interval && data.interval === 'hour') {
+      dateFormat = '%Y-%m-%d %H:%M';
+    }
     if (data.histogram && data.histogram === 'yearly') {
       dateFormat = '%Y';
     }
@@ -3636,7 +3639,7 @@ setupPage = function(json, state) {
     r = ref[q];
     row = new Row();
     results.push((function() {
-      var len1, ref1, ref2, ref3, ref4, results1, u;
+      var len1, ref1, ref2, ref3, ref4, ref5, results1, u;
       ref1 = r.children;
       results1 = [];
       for (u = 0, len1 = ref1.length; u < len1; u++) {
@@ -3659,7 +3662,15 @@ setupPage = function(json, state) {
             widget.args.eargs[k] = v;
           }
         }
-        if ((ref4 = child.type) !== 'views' && ref4 !== 'sourcelist') {
+        if (child.wargs) {
+          widget.wargs = {};
+          ref4 = child.wargs;
+          for (k in ref4) {
+            v = ref4[k];
+            widget.wargs[k] = v;
+          }
+        }
+        if ((ref5 = child.type) !== 'views' && ref5 !== 'sourcelist') {
           widget.args.eargs.quick = 'true';
         }
         switch (child.type) {
@@ -5919,7 +5930,7 @@ jsondump = function(json, state) {
 };
 
 linechart = function(json, state) {
-  var aa, ab, cat, catdata, cats, catseries, chartBox, chk, dates, div, filled, from, id, item, key, label, len, len1, len2, len3, list, m, opt, point, q, range, ref, ref1, ref2, ref3, rv, stack, tName, to, type, u, val;
+  var aa, ab, cat, catdata, cats, catseries, chartBox, chk, dates, div, filled, from, histograms, id, item, key, label, len, len1, len2, len3, list, m, opt, point, q, range, ref, ref1, ref2, rv, stack, tName, to, type, u, val;
   div = document.createElement('div');
   if (json.text) {
     div.inject(new HTML('p', {}, json.text));
@@ -6098,9 +6109,12 @@ linechart = function(json, state) {
     state.widget.inject(mk('br'));
     state.widget.inject(txt("Select interval: "));
     state.widget.inject(list);
-    ref3 = ['day', 'week', 'month', 'quarter', 'year'];
-    for (ab = 0, len3 = ref3.length; ab < len3; ab++) {
-      item = ref3[ab];
+    histograms = ['day', 'week', 'month', 'quarter', 'year'];
+    if (state.widget.wargs && state.widget.wargs.histogram === 'hour') {
+      histograms.unshift('hour');
+    }
+    for (ab = 0, len3 = histograms.length; ab < len3; ab++) {
+      item = histograms[ab];
       opt = document.createElement('option');
       opt.value = item;
       opt.text = item;
