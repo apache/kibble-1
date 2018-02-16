@@ -752,7 +752,7 @@ widgets:
                     -
                         type:   "donut"
                         source: "ci/top-buildtime"
-                        name:   "Busiest jobs by build time (in days)"
+                        name:   "Busiest jobs by build time (in hours)"
                         blocks: 6
                     -
                         type:   "donut"
