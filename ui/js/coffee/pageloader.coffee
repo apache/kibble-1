@@ -80,6 +80,7 @@ setupPage = (json, state) ->
                 when 'logpicker' then widget.load(logexplorer)
                 when 'impicker' then widget.load(imexplorer)
                 when 'logpicker' then widget.load(logexplorer)
+                when 'cipicker' then widget.load(ciexplorer)
                 when 'widgetpicker' then widget.load(widgetexplorer)
                 when 'multiviewpicker' then widget.load(multiviewexplorer)
                 when 'donut' then widget.load(donut)

@@ -383,6 +383,62 @@ imexplorer = (json, state) ->
         , false)
         $('select').chosen();
         
+
+ciexplorer = (json, state) ->
+        
+        org = json.organisation
+        if json.tag
+            org.name += " (Filter: " + json.tag + ")"
+        h = document.createElement('h4')
+        h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
+        state.widget.inject(h, true)
+        list = document.createElement('select')
+        state.widget.inject(list)
+        opt = document.createElement('option')
+        opt.value = ""
+        slen = 0
+        for item in json.sources
+            if item.type in ['jenkins','travis','buildbot']
+                slen++
+        opt.text = "All " + slen + " CI Services"
+        list.appendChild(opt)
+        json.sources.sort((a,b) ->
+            return if (a.sourceURL == b.sourceURL) then 0 else (if a.sourceURL > b.sourceURL then 1 else -1)
+            )
+        for item in json.sources
+            if item.type in ['jenkins','travis','buildbot']
+                opt = document.createElement('option')
+                opt.value = item.sourceID
+                ezURL = null
+                n = item.sourceURL.match(/^([a-z]+:\/\/.+?)\/([#\S+]+)$/i)                
+                m = item.sourceURL.match(/^([a-z]+:\/\/.+?)\s(.+)$/i)
+                if n and n.length == 3
+                    ezURL = "#{n[2]} - (#{n[1]})"
+                else if m and m.length == 3
+                    ezURL = "#{m[2]} - (#{m[1]})"
+                opt.text = if ezURL then ezURL else item.sourceURL
+                if globArgs.source and globArgs.source == item.sourceID
+                    opt.selected = 'selected'
+                list.appendChild(opt)
+        
+        ID = Math.floor(Math.random() * 987654321).toString(16)
+        list.setAttribute('id', ID)
+        $("#"+ID).chosen().change(() ->
+                source = this.value
+                
+                if source == ""
+                        source = null
+                globArgs.source = source
+                updateWidgets('donut', null, { source: source })
+                updateWidgets('gauge', null, { source: source })
+                updateWidgets('line', null, { source: source })
+                updateWidgets('contacts', null, { source: source })
+                updateWidgets('top5', null, { source: source })
+                updateWidgets('factors', null, { source: source })
+                updateWidgets('trends', null, { source: source })
+                updateWidgets('relationship', null, { source: source })
+                
+        )
         
 
 multiviewexplorer = (json, state) ->

@@ -126,6 +126,7 @@ updateWidgets = (type, target, eargs) ->
                 when 'issuepicker' then widget.load(issueexplorer)
                 when 'viewpicker' then widget.load(viewexplorer)
                 when 'mailpicker' then widget.load(mailexplorer)
+                when 'cipicker' then widget.load(ciexplorer)
                 when 'logpicker' then widget.load(logexplorer)
                 when 'relationship' then widget.load(relationship)
                 when 'treemap' then widget.load(treemap)
