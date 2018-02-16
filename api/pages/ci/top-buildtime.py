@@ -173,7 +173,7 @@ def run(API, environ, indata, session):
     
     tophash = {}
     for v in top:
-        tophash["%s (%s)" % (v[2], v[3])] = int((v[1]/86400))
+        tophash["%s (%s)" % (v[2], v[3])] = int((v[1]/86400000))
         
     JSON_OUT = {
         'counts': tophash,
