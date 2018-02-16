@@ -175,7 +175,8 @@ def run(API, environ, indata, session):
     
     JSON_OUT = {
         'widgetType': {
-            'chartType': 'line'  # Recommendation for the UI
+            'chartType': 'line',  # Recommendation for the UI
+            'nofill': True
         },
         'timeseries': timeseries,
         'interval': interval,
