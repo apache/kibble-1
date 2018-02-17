@@ -15,6 +15,10 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none; }
+  
+.c3-legend-item text {
+  font: 12px sans-serif !important;
+}
 
 .c3-legend-item-tile,
 .c3-xgrid-focus,
