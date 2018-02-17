@@ -90,6 +90,13 @@ JIRA
 Twitter
    This is a Twitter account. Currently not much done there. WIP.
 
+Jenkins CI
+   This is a Jenkins CI instance. One URL is required, and all sources
+   will be scanned.
+
+Buildbot CI
+   This is a Buildbot instance. One URL is required, and all sources
+   will be scanned in one go.
 
 Once you have added the resource URLs you wish to analyse, you
 can obtain data by following the instructions in the chapter
