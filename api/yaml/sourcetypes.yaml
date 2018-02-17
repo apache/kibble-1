@@ -63,6 +63,15 @@ jenkins:
         - username
         - password
 
+buildbot:
+    title: Buildbot CI Server
+    description: A Buildbot CI Server - Grabs all jobs in one go.
+    regex: "https?://.+/"
+    example: https://ci.apache.org/
+    optauth:
+        - username
+        - password
+
 twitter:
     title: "Twitter Handle"
     regex: (@.+)
