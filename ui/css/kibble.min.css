@@ -269,24 +269,26 @@ select {
 
 nav.menu {
    position: absolute;
-    background: #FFF;
+   
+    background: #008FD5;
     float: left;
-    flex-direction: column;
-    flex: flex-grow;
-    box-sizing: border-box;
-    width: 175px;
+    width: 160px;
     color: #445;
     font-size: 1.1em;
     border-right: 1px solid #999;
     overflow-y: auto;
-    height: 100%;
+    overflow-x: hidden;
+}
+
+#user_image {
+   width: 32px; border: 1.5px solid #FFF; border-radius: 25%; margin-top: 10px;
 }
 
 nav.menu > div.sidemenu > ul {
     margin: 0;
     padding: 0;
     list-style: none;
-    width: 175px;
+    width: 160px;
     float: left;
 }
 nav.menu > div.sidemenu > ul > a:last-child > li{
@@ -302,19 +304,23 @@ nav.menu > div.sidemenu > ul > a > li {
     padding-top:10px;
     margin-left: -4px;
     min-width: 48px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-family: montserrat light, sans-serif;
-    background: #DDD;    
+    background: rgba(0,0,0,0.15);    
 }
 
 nav.menu > div.sidemenu > ul > a > li {
     text-decoration: none;
-    color: #445;
-    font-size: 1.2rem;
+    color: #FFF;
+    font-size: 1.1rem;
 }
 
 nav.menu > div.sidemenu > ul > a > li:hover {
-    background: #EEE;
+    background: #008FD5;
+}
+
+nav.menu > div.sidemenu > ul > a {
+   text-decoration: none;
 }
 
 nav.menu > div.sidemenu> ul > a > li > img {
@@ -323,18 +329,27 @@ nav.menu > div.sidemenu> ul > a > li > img {
 }
 
 nav.menu > div.sidemenu {
-    width: 175px;
+    width: 160px;
     float: left;
     
 }
 
+.sidetitle {
+   color: #FFD;
+   font-weight: bold;
+   font-size: 1.15rem;
+   text-align: center;
+}
+
 nav.menu > div.profile {
-    width: 154px;
+    width: 145px;
     margin: 10px;
-    background: #CCC;
-    border: 2px inset rgba(100,120,140,0.75);
+    background: rgba(0,0,0,0.2);
+    color: #FFF;
+    border: 1px inset rgba(100,120,140,0.75);
     border-radius: 5px;
-    height: 128px;
+    padding: 3px;
+    height: 80px;
     font-size: 11px;
 }
 
@@ -349,7 +364,6 @@ div.wrapper {
 nav.titlebar {
     margin: 0px;
     padding: 0px;
-    background: url(../images/background-bright.png), #EBEFF2;
     height: 46px;
     font-family: Montserrat, sanf-serif;
     font-size: 32px;
@@ -357,18 +371,19 @@ nav.titlebar {
 }
 
 nav.topbar {
-    margin: 0px;
+    margin: 4px auto;
     padding: 0px;
-    background: #323234;
+    background: #F54828;
     height: 40px;
+    border-radius: 4px;
+    width: 1000px;
 }
 
 nav.titlebar > div.searchbar {
-    width: 175px;
+    width: 160px;
     float: left;
-    border-right: 1px groove rgba(0,0,0,0.3);
+
     margin-right: 49px;
-    background: #FFF;
 }
 
 nav.topbar > img.logo {
@@ -376,8 +391,8 @@ nav.topbar > img.logo {
     vertical-align: middle;
     padding: 6px;
     float: left;
-    margin-right: 75px;
-    margin-left: 50px;
+    margin-right: 20px;
+    margin-left: 20px;
 }
 
 nav.topbar > ul {
@@ -385,17 +400,14 @@ nav.topbar > ul {
     padding: 0;
     list-style: none;
 }
-nav.topbar > ul > a:last-child > li{
-    border-right: 1px solid #456;
-}
 
 nav.topbar > ul > a.selected > li {
-    background: linear-gradient(to bottom, #14181B 0, #121317 100%) !important;
+    background: #ED8828;
+    color: #FFF;
 }
 
 nav.topbar > ul > a > li {
     display: inline-block;
-    border-left: 1px solid #456;
     height: 40px;
     padding-left: 10px;
     padding-right: 10px;
@@ -408,11 +420,11 @@ nav.topbar > ul > a > li {
 
 nav.topbar > ul > a > li {
     text-decoration: none;
-    color: #bebebe;
+    color: #EEE;
 }
 
 nav.topbar > ul > a > li:hover {
-    color: #EEE;
+    color: #FFC;
 }
 
 nav.topbar > ul > a > li > img {
@@ -433,14 +445,12 @@ div.wrap2 {
 }
 
 div.wrap3 {
-    background: url(../images/background-bright.png), #EBEFF2;
     padding: 0px;
 }
 
 
 .x_title {
-    background: linear-gradient(to bottom, #3095D9 0, #258CD1 100%);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.065);
+    background: #008FD5;
     box-sizing: border-box;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     border-bottom: 1px solid #d4d4d4;
@@ -465,7 +475,7 @@ h2 {
 .x_title h2 {
     display: block;
     float: left;
-    margin-top: 0px;
+    margin-top: 2px;
     font-size: 1.3em !important;
     font-weight: bold;
     text-overflow: ellipsis;
@@ -486,10 +496,11 @@ h2 {
     float: left;
     clear: both;
     background: #FFF;
-    border: 4px solid #CCC;
+    border: 2px solid #AAA;
     border-radius: 3px;
     height: calc(100% - 42px);
     overflow: visible;
+    
 }
 
 .chartChart {
