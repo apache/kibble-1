@@ -179,17 +179,10 @@ renderAccountInfo = (json, state) ->
         img = document.getElementById('user_image')
         img.setAttribute("src", "https://secure.gravatar.com/avatar/" + json.gravatar + ".png")
     
-        img2 = document.getElementById('user_image2')
-        img2.setAttribute("src", "https://secure.gravatar.com/avatar/" + json.gravatar + ".png")
-    
         name = document.getElementById('user_name')
         name.innerHTML = ""
         name.appendChild(document.createTextNode(json.displayName))
     
-        name2 = document.getElementById('user_name2')
-        name2.innerHTML = ""
-        name2.appendChild(document.createTextNode(json.displayName))
-        
         ulevel = get('user_level')
         ulevel.inject(if json.userlevel == 'admin' then 'Administrator' else if json.defaultOrganisation in json.ownerships then 'Organisation Owner' else 'User')
         
