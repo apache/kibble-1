@@ -614,7 +614,7 @@ viewexplorer = (json, state) ->
         
         # Quick filter
         state.widget.inject(new HTML('br'))
-        i = new HTML('input', {id:'subfilter', type: 'text', value: globArgs.subfilter, onChange: 'subFilterGlob = this.value;', placeholder: 'sub-filter'})
+        i = new HTML('input', {id:'subfilter', size: 16, type: 'text', value: globArgs.subfilter, onChange: 'subFilterGlob = this.value;', placeholder: 'sub-filter'})
         b = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-success', type: 'button', onClick: 'subFilter();', value: "sub-filter"})
         rb = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-danger', type: 'button', onClick: 'get("subfilter").value=""; subFilterGlob=""; subFilter();', value: "reset"})
         state.widget.inject(i)
