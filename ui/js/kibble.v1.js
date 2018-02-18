@@ -2494,6 +2494,7 @@ viewexplorer = function(json, state) {
   state.widget.inject(new HTML('br'));
   i = new HTML('input', {
     id: 'subfilter',
+    size: 16,
     type: 'text',
     value: globArgs.subfilter,
     onChange: 'subFilterGlob = this.value;',
@@ -3855,7 +3856,7 @@ loadPageWidgets = function(page, apiVersion) {
 };
 
 renderAccountInfo = function(json, state) {
-  var div, email, img, img2, len, ma, mli, msp, name, name2, nl, nm, q, ref, ref1, ulevel;
+  var div, email, img, len, ma, mli, msp, name, nl, nm, q, ref, ref1, ulevel;
   if (json.error) {
     div = document.getElementById('innercontents');
     div.style.textAlign = 'center';
@@ -3867,14 +3868,9 @@ renderAccountInfo = function(json, state) {
     userAccount = json;
     img = document.getElementById('user_image');
     img.setAttribute("src", "https://secure.gravatar.com/avatar/" + json.gravatar + ".png");
-    img2 = document.getElementById('user_image2');
-    img2.setAttribute("src", "https://secure.gravatar.com/avatar/" + json.gravatar + ".png");
     name = document.getElementById('user_name');
     name.innerHTML = "";
     name.appendChild(document.createTextNode(json.displayName));
-    name2 = document.getElementById('user_name2');
-    name2.innerHTML = "";
-    name2.appendChild(document.createTextNode(json.displayName));
     ulevel = get('user_level');
     ulevel.inject(json.userlevel === 'admin' ? 'Administrator' : (ref = json.defaultOrganisation, indexOf.call(json.ownerships, ref) >= 0) ? 'Organisation Owner' : 'User');
     nm = get('messages_number');
