@@ -105,7 +105,7 @@ be using the Apache HTTP Server and proxy to Gunicorn:
   debian/ubuntu, you would run: `a2enmod proxy_http`)
 - Set up a virtual host in Apache:
 
-::
+```
   <VirtualHost *:80>
       # Set this to your domain, or add kibble.localhost to /etc/hosts
       ServerName kibble.localhost
@@ -113,19 +113,18 @@ be using the Apache HTTP Server and proxy to Gunicorn:
       # Proxy to gunicorn for /api/ below:
       ProxyPass /api/ http://localhost:8000/api/
    </VirtualHost> 
+```
 - Launch gunicorn as a daemon on port 8000:
-``
-   cd /var/www/kibble/api/
-   gunicorn -w 10 -b 127.0.0.1:8000 handler:application -t 120 -D
-``
+```
+   cd /var/www/kibble/api/ 
+   gunicorn -w 10 -b 127.0.0.1:8000 handler:application -t 120 -D 
+ ```
 
 Once httpd is (re)started, you should be able to browse to your new
 Kibble instance.
 
 ### Installing Scanners ###
 #### Pre-requisites ####
-
-.. _cloc: https://github.com/AlDanial/cloc
 
 The Kibble Scanners rely on the following packages:
 
@@ -137,7 +136,7 @@ The scanners require the following optional components if you wish to enable
 git repository analysis:
 
 - git binaries (GPL License)
-- cloc_ version 1.70 or later (GPL License)
+- [cloc](https://github.com/AlDanial/cloc) version 1.70 or later (GPL License)
 
 #### Configuring a Scanner Node ####
 
@@ -166,9 +165,6 @@ you have decided to use four machines for scanning, the first would have
 a balance of 1/4, the next would be 2/4, then 3/4 and finally 4/4 on the
 last machine. This will balance the load and storage requirements evenly
 across all machines.
-
-
-.. _runscan:
 
 ### Running a Scan ###
 
