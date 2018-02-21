@@ -72,6 +72,16 @@ buildbot:
         - username
         - password
 
+travis:
+    title: Travis CI Server
+    description: The Travis CI Service - Grabs all jobs in one go. Specify .com or .org
+    regex: "https?://travis-ci\.(com|org)/?"
+    example: https://travis-ci.org/
+    authrequired: true
+    optauth:
+        - token
+
+
 twitter:
     title: "Twitter Handle"
     regex: (@.+)
