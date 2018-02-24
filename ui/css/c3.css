@@ -250,6 +250,16 @@
     font-family: sans-serif;
     font-size: 12px;
 }
+
+.chartModalContent td {
+  padding: 3px;
+  text-align: right;
+}
+
+.chartModalContent td:first-child {
+  text-align: left;
+}
+
 .chartModelClose {
     color: #aaa;
     float: right;
