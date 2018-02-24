@@ -241,12 +241,12 @@
 
 .chartModalContent {
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 15vh 15vh 15vh 15vh; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
-    height: 60%;
-    overflow: scroll;
+    overflow-y: scroll;
+    max-height: calc(100vh - 30vh);
     font-family: sans-serif;
     font-size: 12px;
 }
