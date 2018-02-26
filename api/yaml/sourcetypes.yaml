@@ -93,3 +93,11 @@ twitter:
         - consumer_key
         - consumer_secret
     
+discourse:
+    title: Discourse
+    description: A Discourse Forum System.
+    regex: "https?://.+/"
+    example: https://discourse.example.com/
+    optauth:
+        - username
+        - password
