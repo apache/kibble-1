@@ -138,6 +138,7 @@ def run(API, environ, indata, session):
             orgID = doc['_source']['id']
             numDocs = session.DB.ES.count(
                 index=session.DB.dbname,
+                doc_type = '*',
                 body = {'query': { 'term': {'organisation': orgID}}}
                 )['count']
             numSources = session.DB.ES.count(
