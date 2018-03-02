@@ -318,7 +318,6 @@ def run(API, environ, indata, session):
             body = query
         )
     no_closers_before = res['aggregations']['closer']['value']
-    print(res)
     
     trends = {
         "created": {
