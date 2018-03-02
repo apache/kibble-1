@@ -15,7 +15,7 @@
 # limitations under the License.
 
 KIBBLE_VERSION = '0.1.0' # ABI/API compat demarcation.
-KIBBLE_DB_VERSION = 1 # First database revision
+KIBBLE_DB_VERSION = 2 # Second database revision
 
 import sys
 
@@ -147,26 +147,78 @@ def createIndex():
         retry_on_timeout=True
         )
 
+    es6 = True if int(es.info()['version']['number'].split('.')[0]) >= 6 else False
+    if not es6:
+        print("New Kibble installations require ElasticSearch 6.x or newer! You appear to be running %s!" % es.info()['version']['number'])
+        sys.exit(-1)
     # Check if index already exists
     if es.indices.exists(dbname):
         print("Error: ElasticSearch index '%s' already exists!" % dbname)
         sys.exit(-1)
 
-    print("Creating index " + dbname)
-
-    settings = {
-        "number_of_shards" :   shards,
-        "number_of_replicas" : replicas
-    }
-
- 
-    res = es.indices.create(index = dbname, body = {
-                "mappings" : mappings['mappings'],
-                "settings": settings
-            }
-        )
+    types = [
+        'api',
+        # ci_*: CI service stats
+        'ci_build',
+        'ci_queue',
+        # code_* + evolution + file_history: git repo stats
+        'code_commit',
+        'code_commit_unique',
+        'code_modification',
+        'evolution',
+        'file_history',
+        # forum_*: forum stats (SO, Discourse, Askbot etc)
+        'forum_post',
+        'forum_topic',
+        # GitHub stats
+        'ghstats',
+        # im_*: Instant messaging stats
+        'im_stats',
+        'im_ops',
+        'im_msg',
+        'issue',
+        'logstats',
+        # email, mail*: Email statitics
+        'email',
+        'mailstats',
+        'mailtop',
+        # organisation, view, source, publish: UI Org DB
+        'organisation',
+        'view',
+        'publish',
+        'source',
+        # stats: Miscellaneous stats
+        'stats',
+        # social_*: Twitter, Mastodon, Facebook etc
+        'social_follow',
+        'social_followers',
+        'social_follower',
+        'social_person',
+        # uisession, useraccount, message: UI user DB
+        'uisession',
+        'useraccount',
+        'message',
+        # person: contributor DB
+        'person',
+    ]
     
-    print("Index created! %s " % res)
+    for t in types:
+        iname = "%s_%s" % (dbname, t)
+        print("Creating index " + iname)
+    
+        settings = {
+            "number_of_shards" :   shards,
+            "number_of_replicas" : replicas
+        }
+    
+        
+        res = es.indices.create(index = iname, body = {
+                    "mappings" : mappings['mappings'],
+                    "settings": settings
+                }
+            )
+        
+    print("Indices created! %s " % res)
     
     salt = bcrypt.gensalt()
     pwd = bcrypt.hashpw(adminPass.encode('utf-8'), salt).decode('ascii')
@@ -185,8 +237,8 @@ def createIndex():
         'apiversion': KIBBLE_VERSION,           # Log current API version
         'dbversion': KIBBLE_DB_VERSION          # Log the database revision we accept (might change!)
     }
-    es.index(index=dbname, doc_type='useraccount', id = adminName, body = doc)
-    es.index(index=dbname, doc_type='api', id = 'current', body = dbdoc)
+    es.index(index=dbname + '_useraccount', doc_type = '_doc', id = adminName, body = doc)
+    es.index(index=dbname + '_api', doc_type = '_doc', id = 'current', body = dbdoc)
     print("Account created!")
 
 try:
