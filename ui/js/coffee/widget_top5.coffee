@@ -39,6 +39,8 @@ make5 = (obj, json, pos) ->
                 if item.title.length > 40
                     item.title = item.title.toString().substring(0,40) + "..."
                 item.name += ": " + item.title
+            # Sometimes, scanners add a spurious extra slash. nix it.
+            item.url = item.url.replace(/([^:])(\/\/+)/g, '$1/')
             title = new HTML('a', { title: item.tooltip, class: "title", href:item.url}, txt(item.name))
             rightInner.inject(title)
         else
