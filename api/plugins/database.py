@@ -27,6 +27,40 @@ import re
 #import aaa
 import elasticsearch
 
+class KibbleESWrapper(object):
+    """
+       Class for rewriting old-style queries to the new ones,
+       where doc_type is an integral part of the DB name
+    """
+    def __init__(self, ES):
+        self.ES = ES
+    
+    def get(self, index, doc_type, id):
+        return self.ES.get(index = index+'_'+doc_type, doc_type = '_doc', id = id)
+    def exists(self, index, doc_type, id):
+        return self.ES.exists(index = index+'_'+doc_type, doc_type = '_doc', id = id)
+    def delete(self, index, doc_type, id):
+        return self.ES.delete(index = index+'_'+doc_type, doc_type = '_doc', id = id)
+    def index(self, index, doc_type, id, body):
+        return self.ES.index(index = index+'_'+doc_type, doc_type = '_doc', id = id, body = body)
+    def update(self, index, doc_type, id, body):
+        return self.ES.update(index = index+'_'+doc_type, doc_type = '_doc', id = id, body = body)
+    def search(self, index, doc_type, size = 100, _source_include = None, body = None):
+        return self.ES.search(
+            index = index+'_'+doc_type,
+            doc_type = '_doc',
+            size = size,
+            _source_include = _source_include,
+            body = body
+            )
+    def count(self, index, doc_type, body = None):
+        return self.ES.count(
+            index = index+'_'+doc_type,
+            doc_type = '_doc',
+            body = body
+            )
+    
+
 class KibbleDatabase(object):
     def __init__(self, config):
         self.config = config
@@ -42,3 +76,11 @@ class KibbleDatabase(object):
                 max_retries=5,
                 retry_on_timeout=True
             )
+        
+        # IMPORTANT BIT: Figure out if this is ES 6.x or newer.
+        # If so, we're using the new ES DB mappings, and need to adjust ALL
+        # ES calls to match this.
+        es6 = True if int(self.ES.info()['version']['number'].split('.')[0]) >= 6 else False
+        if es6:
+            self.ES = KibbleESWrapper(self.ES)
+        
