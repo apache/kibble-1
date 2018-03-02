@@ -147,7 +147,7 @@ def run(API, environ, indata, session):
     JSON_OUT = {
         'topN': {
             'denoter': 'interactions',
-            'icon': 'bug',
+            'icon': 'comment',
             'items': top
         },
         'okay': True,
