@@ -124,6 +124,7 @@ updateWidgets = (type, target, eargs) ->
                 when 'repopicker' then widget.load(explorer)
                 when 'sourcepicker' then widget.load(sourceexplorer)
                 when 'issuepicker' then widget.load(issueexplorer)
+                when 'forumpicker' then widget.load(forumexplorer)
                 when 'viewpicker' then widget.load(viewexplorer)
                 when 'mailpicker' then widget.load(mailexplorer)
                 when 'cipicker' then widget.load(ciexplorer)
