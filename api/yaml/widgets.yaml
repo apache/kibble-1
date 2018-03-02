@@ -762,3 +762,82 @@ widgets:
                         name:   "Busiest jobs by build count"
                         blocks: 6
                     
+### FORUMS
+    forums:
+        title: "Forums"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+                    -
+                        type:   forumpicker
+                        blocks: 4
+                        source: "sources"
+                        eargs:
+                            types: ['forum', 'discourse', 'askbot']
+                        name:   "Forum picker"
+            -
+                name: "Trends"
+                children:
+                    -
+                        type:   "trends"
+                        source: "forum/trends"
+                        name:   "Forum trends"
+                        blocks: 12
+            -
+                name: "Forum timeline"
+                children:
+                    -
+                        type:       "line"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "forum/issues"
+                        name:       "Topics created/updated"
+                        target:     ""
+                    -
+                        type:       "line"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "forum/actors"
+                        name:       "Creators/Posters of topics"
+                        target:     ""
+                    -
+                        type:       "top5"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "forum/top"
+                        name:       "Most active topics"
+                        target:     ""
+            -
+                name: "Topics and handlers"
+                children:
+                    -
+                        type:       "top5"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "forum/creators"
+                        name:       "Top 5 topic starters"
+                        target:     ""
+                    -
+                        type:       "top5"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "forum/responders"
+                        name:       "Top 5 posters"
+                        target:     ""
+                    -
+                        type:       "donut"
+                        datatype:   "issue"
+                        blocks:     4
+                        source:     "forum/top-count"
+                        name:       "Busiest forums by posts"
+                        target:     ""
