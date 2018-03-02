@@ -1385,6 +1385,287 @@ paths:
       security:
       - cookieAuth: []
       summary: Shows trend data for a set of repos over a given period of time
+  /api/forum/actors:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of no. of people opening/closing issues over time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of no. of people opening topics or replying to them.
+  /api/forum/creators:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N of issue openers
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N of forum topic creators
+  /api/forum/issues:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of issues opened/closed over time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows timeseries of forum topics opened/responded-to over time
+  /api/forum/responders:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N of issue closers
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitterList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N of issue closers
+  /api/forum/top:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N issues by interactions
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows the top N topics by interactions
+  /api/forum/top-count:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows top 25 issue trackers by issues
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows top 25 forums by interactions
+  /api/forum/trends:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows trend data for a set of issue trackers over a given period of
+        time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trend'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows trend data for a set of forums over a given period of time
   /api/issue/actors:
     get:
       responses:
