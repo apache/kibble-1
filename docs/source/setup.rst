@@ -100,9 +100,9 @@ Pre-requisites
 Before you install the Kibble Server, please ensure you have the
 following components installed and set up:
 
-- An ElasticSearch instance, version 5.x or newer (5.x is currently
-  preferred). Does not have to be on the same machine, but it may help
-  speed up processing.
+- An ElasticSearch instance, version 6.x or newer (5.x is supported for
+  existing databases, but not for new setups). Does not have to be on
+  the same machine, but it may help speed up processing.
 - A web server of your choice (Apache HTTP Server, NGINX, lighttp etc)
 - Python 3.4 or newer with the following libraries installed:
 - - elasticsearch
