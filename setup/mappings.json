@@ -57,7 +57,7 @@
             "type": "double"
           },
           "creator": {
-            "type": "double"
+            "type": "keyword"
           },
           "createdDate": {
             "format": "yyyy/MM/dd HH:mm:ss||yyyy/MM/dd||epoch_millis",
