@@ -139,6 +139,11 @@ def run(API, environ, indata, session):
                             'field': 'blocked'
                         }
                     },
+                    'building': {
+                        'avg': {
+                            'field': 'building'
+                        }
+                    },
                     'stuck': {
                         'avg': {
                             'field': 'stuck'
@@ -168,6 +173,7 @@ def run(API, environ, indata, session):
         timeseries.append({
             'date': ts,
             'queue size': bucket['size']['value'],
+            'builds running': bucket['building']['value'],
 #            'builds blocked': bucket['blocked']['value'],
 #            'builds stuck': bucket['stuck']['value'],
             'average wait (hours)': int(bucket['wait']['value']/360)/10,
