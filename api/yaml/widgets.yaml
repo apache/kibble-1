@@ -263,12 +263,22 @@ widgets:
                         source:     code/top-commits
                         name:       "Top repos by commits"
                         target:     ""
+            -
+                name: "Factors"
+                children:
                     -
                         type:       factors
                         datatype:   repo
-                        blocks:     4
+                        blocks:     6
                         source:     code/pony
                         name:       "Pony Factors"
+                        target:     ""
+                    -
+                        type:       factors
+                        datatype:   repo
+                        blocks:     6
+                        source:     code/activity
+                        name:       "Community Activty"
                         target:     ""
 
 ### ISSUE TRACKERS

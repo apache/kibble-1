@@ -905,6 +905,48 @@ paths:
       security:
       - cookieAuth: []
       summary: Shows top 25 jobs by total build time spent
+  /api/code/activity:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factor'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows community activity data for a set of repos over a given period
+        of time
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factor'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows community activity data for a set of repos over a given period
+        of time
   /api/code/changes:
     get:
       responses:
