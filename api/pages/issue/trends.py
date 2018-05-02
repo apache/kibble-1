@@ -69,7 +69,6 @@ This is the Issue trends renderer for Kibble
 
 import json
 import time
-import fractions
 
 def run(API, environ, indata, session):
     
