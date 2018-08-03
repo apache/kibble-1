@@ -709,7 +709,7 @@ widgets:
                 name: "Current key phrases"
                 children:
                     -
-                        type:   "bar"
+                        type:   "line"
                         source: "mail/keyphrases"
                         name:   "Overall key phrases"
                         blocks: 12
