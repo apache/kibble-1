@@ -316,6 +316,10 @@ charts_linechart = function(obj, data, options) {
     ref1 = data.counts || data.phrases;
     for (k in ref1) {
       v = ref1[k];
+      if (isHash(v) && v.count) {
+        k = v.phrase || v.value;
+        v = v.count;
+      }
       asList.push(k);
       asTypes[k] = 'bar';
       tmpArray = [k];
