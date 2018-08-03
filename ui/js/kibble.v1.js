@@ -6029,7 +6029,7 @@ linechart = function(json, state) {
   cats = new Array();
   dates = new Array();
   catdata = {};
-  if (!isArray(json.timeseries) && !json.counts) {
+  if (!isArray(json.timeseries) && !(json.counts || json.phrases)) {
     div.innerHTML = "No data available";
     state.widget.inject(div, true);
     return;
