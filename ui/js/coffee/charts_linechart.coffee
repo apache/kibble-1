@@ -48,7 +48,7 @@ charts_linechart = (obj, data, options) ->
             ]
 
         # Get all timestamps
-        
+
         xts = {}
         for el in data.timeseries
             axisData.x = {
@@ -57,7 +57,7 @@ charts_linechart = (obj, data, options) ->
                         format: dateFormat
                     }
                 }
-            
+
             ndate = new Date(parseInt(el.date)*1000.0)
             ts[0].push(ndate)
             for k, v of el
@@ -67,7 +67,7 @@ charts_linechart = (obj, data, options) ->
                     if xts[k] == undefined
                         xts[k] = []
                     xts[k].push(v)
-                    
+
         for key, val of xts
             xx = [key]
             for el in val
@@ -76,10 +76,10 @@ charts_linechart = (obj, data, options) ->
             asList.push(key)
             asTypes[key] = linetype
             a++
-                
+
         asDataArray = ts
     else
-        for k, v of data.counts
+        for k, v of (data.counts||data.phrases)
             asList.push(k)
             asTypes[k] = 'bar'
             tmpArray = [k]
