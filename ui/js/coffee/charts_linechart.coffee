@@ -80,6 +80,10 @@ charts_linechart = (obj, data, options) ->
         asDataArray = ts
     else
         for k, v of (data.counts||data.phrases)
+            # If we have an array of objects with a .count sub:
+            if isHash(v) and v.count
+              k = v.phrase||v.value
+              v = v.count
             asList.push(k)
             asTypes[k] = 'bar'
             tmpArray = [k]
