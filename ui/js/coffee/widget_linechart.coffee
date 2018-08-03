@@ -20,7 +20,7 @@ linechart = (json, state) ->
         cats = new Array()
         dates = new Array()
         catdata = {}
-        if not isArray(json.timeseries) and not json.counts
+        if not isArray(json.timeseries) and not (json.counts||json.phrases)
           div.innerHTML = "No data available"
           state.widget.inject(div, true)
           return
@@ -31,11 +31,11 @@ linechart = (json, state) ->
                     if key != 'date' and not (key in cats)
                       cats.push(key)
                       catdata[key] = new Array()
-                
+
                 for point in json.timeseries
                   m = moment(point.date*1000)
                   rv = m.format("MMM, YYYY")
-                  
+
                   if json.histogram == "daily" || json.interval == 'day'
                     rv =  m.format("MMMM DD, YYYY")
                   if json.interval == 'year'
@@ -53,7 +53,7 @@ linechart = (json, state) ->
                   for cat in cats
                     if not cat in point
                       catdata[cat].push(0)
-              
+
         catseries = []
         type = 'spline'
         stack = false
@@ -76,24 +76,24 @@ linechart = (json, state) ->
               stack = true
         #if state.widget.args.representation
           #type = state.widget.args.representation
-       
+
         if not state.widget.div.style.height
           div.style.minHeight = "280px"
         else
           div.style.minHeight = "100%"
         if state.widget.fullscreen
           div.style.minHeight = "640px"
-        
-        
+
+
         state.widget.inject(div, true)
-        
-        
+
+
         range = ""
         if state.widget.args.daterangeRaw
                 from = new Date(state.widget.args.daterangeRaw[0]*1000).toDateString()
                 to = new Date(state.widget.args.daterangeRaw[1]*1000).toDateString()
                 range = "between " + from + " and " + to
-        
+
         chartBox = new Chart(div, 'line', json, {title: range, stacked: stack, linetype: type, filled: filled})
         if state.widget.args.source == 'git-evolution'
           # Checkbox for lang breakdown
@@ -109,7 +109,7 @@ linechart = (json, state) ->
                   if this.checked
                           extended = 'true'
                           globArgs['extended'] = 'true'
-                  
+
                   updateWidgets('line', null, { extended: extended })
                   )
           state.widget.inject(mk('br'))
@@ -121,7 +121,7 @@ linechart = (json, state) ->
           label.style.paddingLeft = '5px'
           label.appendChild(document.createTextNode('Toggle language breakdown'))
           state.widget.inject(label)
-          
+
           # Checkbox for discounting markups/docs/build-files
           if globArgs.extended
             id = Math.floor(Math.random() * 987654321).toString(16)
@@ -136,7 +136,7 @@ linechart = (json, state) ->
                     if this.checked
                             codeonly = 'true'
                             globArgs['codeonly'] = 'true'
-                    
+
                     updateWidgets('line', null, { codeonly: codeonly })
                     )
             state.widget.inject(chk)
@@ -147,7 +147,7 @@ linechart = (json, state) ->
             label.style.paddingLeft = '5px'
             label.appendChild(document.createTextNode('Only show programming languages'))
             state.widget.inject(label)
-            
+
         if (not state.public) and json.interval
           tName = 'interval'
           list = document.createElement('select')
@@ -166,7 +166,7 @@ linechart = (json, state) ->
               if (globArgs[tName] and globArgs[tName] == item) or json.interval == item
                   opt.selected = 'selected'
               list.appendChild(opt)
-          
+
           list.addEventListener("change", () ->
                   source = this.value
                   if source == ""
@@ -175,5 +175,5 @@ linechart = (json, state) ->
                   globArgs[tName] = source
                   x = {}
                   x[tName] = source
-                  updateWidgets('line', null, x)                      
+                  updateWidgets('line', null, x)
           , false)
