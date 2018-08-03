@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows the common key phrases in use on one or more mailing lists
-# 
+#
 ########################################################################
 
 
@@ -72,27 +72,27 @@ import time
 import hashlib
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-    
+
     interval = indata.get('interval', 'month')
-    
-    
+
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -130,7 +130,7 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+
     res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="email",
@@ -143,9 +143,12 @@ def run(API, environ, indata, session):
         topN.append( {
             'phrase': bucket['key'],
             'count': bucket['doc_count']
-        })    
-        
+        })
+
     JSON_OUT = {
+        'widgetType': {
+            'chartType': 'bar'
+        },
         'phrases': topN,
         'okay': True,
         'responseTime': time.time() - now
