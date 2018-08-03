@@ -15,7 +15,7 @@ widgets:
                         blocks: 12
                         name: "Organisation trends"
                         source: org/trends
-                        
+
             -
                 name: "Your organisations"
                 children:
@@ -24,7 +24,7 @@ widgets:
                         blocks: 12
                         name: "Your organisations"
                         source: org/list
-                        
+
 ### VIEW EDITOR
     views:
         title: "Views"
@@ -59,8 +59,8 @@ widgets:
                         blocks: 12
                         name: "Existing Sources"
                         source: sources
-            
-                
+
+
     factors:
         title: "Engagement factors"
         rows:
@@ -405,7 +405,7 @@ widgets:
                         source:     "mail/top-topics"
                         name:       "Most active topics"
                         target:     ""
-            
+
 
 ###### RELATIONSHIPS
 
@@ -471,7 +471,7 @@ widgets:
                         source: "mail/relationships"
                         name:   "Mailing list relationships"
                         blocks: 12
-                        
+
 ## VIP AUTHOR MAP
     mail-map:
         title: "Important email authors"
@@ -503,7 +503,7 @@ widgets:
                         source: "mail/map"
                         name:   "Discussion relationships"
                         blocks: 12
-                        
+
 ## ISSUE TRACKERS
     issue-rel:
         title: "Mailing list relationships"
@@ -681,6 +681,40 @@ widgets:
                         name:   "Mood over time"
                         blocks: 12
 
+
+## EMAIL KEY PHRASES
+    mail-kpe:
+        title: "Mailing list key phrases"
+        rows:
+            -
+                name: "Date picker row"
+                children:
+                    -
+                        type:   "datepicker"
+                        blocks: 4
+                        name:   "Date picker"
+                    -
+                        type:   "viewpicker"
+                        blocks: 4
+                        source: "views"
+                        name:   "Quick filter"
+                    -
+                        type:   mailpicker
+                        blocks: 4
+                        source: "sources"
+                        eargs:
+                            types: ['mail', 'ponymail', 'pipermail', 'hyperkitty']
+                        name:   Mailing list picker"
+            -
+                name: "Current key phrases"
+                children:
+                    -
+                        type:   "bar"
+                        source: "mail/keyphrases"
+                        name:   "Overall key phrases"
+                        blocks: 12
+
+
 ## NEWTIMERS (COMSTAT)
     comstat:
         title: "Community Growth"
@@ -710,7 +744,7 @@ widgets:
                         source: "bio/newtimers"
                         name:   "New contributors"
                         blocks: 12
-                    
+
 
 ## CONTINUOUS INTEGRATION
     ci:
@@ -761,7 +795,7 @@ widgets:
                         source: "ci/top-buildcount"
                         name:   "Busiest jobs by build count"
                         blocks: 6
-                    
+
 ### FORUMS
     forums:
         title: "Forums"
