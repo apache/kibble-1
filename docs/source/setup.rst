@@ -207,9 +207,9 @@ Kibble, you should also configure the API service you will be using
 (Watson/Azure/picoAPI etc).
 
 
-#############################
-Balacing Load Across Machines
-#############################
+##############################
+Balancing Load Across Machines
+##############################
 
 If you wish to spread out the analysis load over several machines/VMs,
 you can do so by specifying a ``scanner.balance`` on each node. The balance
