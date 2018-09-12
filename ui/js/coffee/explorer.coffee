@@ -110,7 +110,7 @@ explorer = (json, state) ->
         state.widget.inject(p)
         
         b = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-success', type: 'button', onClick: 'pathFilter();', value: "filter paths"})
-        rb = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-danger', type: 'button', onClick: 'get("pathfilter").value = ""; pathFilter();', value: "reset"})
+        rb = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-danger', type: 'button', onClick: 'get("pathfilter").value = ""; pathFilterGlob = ""; pathFilter();', value: "reset"})
         state.widget.inject(b)
         state.widget.inject(rb)
 
