@@ -494,6 +494,9 @@ components:
           type: integer
         page:
           type: string
+        pathfilter:
+          description: Quickly defined view by sub-filtering commits by paths affected.
+          type: string
         quick:
           description: Turns on quick data for some endpoints, returning only sparse
             data (thus less traffic)
