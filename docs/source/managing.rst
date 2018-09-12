@@ -17,10 +17,14 @@ scanned, but the UI will only display statistics for the current
 (default) organisation you are using. You may switch between
 organisations at your leisure in the UI.
 
-To create your first organisation, go to the "Organisation" tab in the
-top menu. In the `Create a new organisation` field set, you can then
-create a new organisation by filling in the required data. This will
-set up a new organisation and set it as your default (current) one.
+To create your first organisation:
+
+1. Go to the "Organisation" tab in the top menu
+2. Locate the Create a new organisation` field set
+3. Enter the details required for the new organsation
+
+This will set up a new organisation and set it as your default (current)
+one.
 
 Once an organisation has been created, you can then add resources and
 users to it.
