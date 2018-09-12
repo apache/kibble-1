@@ -132,6 +132,16 @@ def run(API, environ, indata, session):
         query['query']['bool']['should'] = [{'term': {'committer_email': indata.get('email')}}, {'term': {'author_email': indata.get('email')}}]
         query['query']['bool']['minimum_should_match'] = 1
     
+    # Path filter?
+    if indata.get('pathfilter'):
+        pf = indata.get('pathfilter')
+        if '!' in pf:
+            pf = pf.replace('!', '')
+            query['query']['bool']['must_not'] = query['query']['bool'].get('must_not', [])
+            query['query']['bool']['must_not'].append({'regexp': {'files_changed': pf}})
+        else:
+            query['query']['bool']['must'].append({'regexp': {'files_changed': pf}})
+    
     # Get top 25 committers this period
     query['aggs'] = {
             'committers': {

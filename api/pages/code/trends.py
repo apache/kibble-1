@@ -129,6 +129,16 @@ def run(API, environ, indata, session):
     if indata.get('email'):
         query['query']['bool']['should'] = [{'term': {'committer_email': indata.get('email')}}, {'term': {'author_email': indata.get('email')}}]
         query['query']['bool']['minimum_should_match'] = 1
+        
+    # Path filter?
+    if indata.get('pathfilter'):
+        pf = indata.get('pathfilter')
+        if '!' in pf:
+            pf = pf.replace('!', '')
+            query['query']['bool']['must_not'] = query['query']['bool'].get('must_not', [])
+            query['query']['bool']['must_not'].append({'regexp': {'files_changed': pf}})
+        else:
+            query['query']['bool']['must'].append({'regexp': {'files_changed': pf}})
     
     # Get number of commits, this period
     res = session.DB.ES.count(
@@ -226,6 +236,16 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        
+    # Path filter?
+    if indata.get('pathfilter'):
+        pf = indata.get('pathfilter')
+        if '!' in pf:
+            pf = pf.replace('!', '')
+            query['query']['bool']['must_not'] = query['query']['bool'].get('must_not', [])
+            query['query']['bool']['must_not'].append({'regexp': {'files_changed': pf}})
+        else:
+            query['query']['bool']['must'].append({'regexp': {'files_changed': pf}})
     
     
     # Get number of commits, this period
