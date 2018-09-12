@@ -51,6 +51,9 @@ properties:
     description: Quickly defined view by sub-filtering the existing view and matching
       on sourceURLs
     type: string
+  pathfilter:
+    description: Quickly defined view by sub-filtering commits by paths affected.
+    type: string
   to:
     description: If specified, only compile data up until here
     example: 1503483273
