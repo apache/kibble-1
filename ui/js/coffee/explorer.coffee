@@ -103,6 +103,16 @@ explorer = (json, state) ->
         label.style.paddingLeft = '5px'
         label.appendChild(document.createTextNode('Show authors'))
         state.widget.inject(label)
+        br = new HTML('br')
+        p = new HTML('input', {id:'pathfilter', size: 32, type: 'text', value: globArgs.pathfilter, onChange: 'pathFilterGlob = this.value;',placeholder: 'optional path-filter'})
+        
+        state.widget.inject(br)
+        state.widget.inject(p)
+        
+        b = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-success', type: 'button', onClick: 'pathFilter();', value: "filter paths"})
+        rb = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-danger', type: 'button', onClick: 'get("pathfilter").value = ""; pathFilter();', value: "reset"})
+        state.widget.inject(b)
+        state.widget.inject(rb)
 
 
 sourceexplorer = (json, state) ->
@@ -591,6 +601,44 @@ subFilter = () ->
                     else
                             $(this).attr('href', "#{m[1]}#{m[2]}")
         )
+
+pathFilterGlob = null
+
+pathFilter = () ->
+        source = pathFilterGlob
+        if source == ""
+                source = null
+        tName = 'pathfilter'
+        globArgs[tName] = source
+        x = {}
+        x[tName] = source
+        updateWidgets('donut', null, x)
+        updateWidgets('gauge', null, x)
+        updateWidgets('line', null, x)
+        updateWidgets('contacts', null, x)
+        updateWidgets('top5', null, x)
+        updateWidgets('factors', null, x)
+        updateWidgets('trends', null, x)
+        updateWidgets('radar', null, x)
+        updateWidgets('widget', null, x)
+        updateWidgets('relationship', null, x)
+        updateWidgets('treemap', null, x)
+        updateWidgets('report', null, x)
+        updateWidgets('mvp', null, x)
+        updateWidgets('comstat', null, x)
+        updateWidgets('worldmap', null, x)
+        updateWidgets('jsondump', null, x)
+        
+        $( "a" ).each( () ->
+            url = $(this).attr('href')
+            if url
+                m = url.match(/^(.+\?page=[-a-z]+.*?)(?:&pathfilter=[^&]+)?(.*)$/)
+                if m
+                    if source
+                            $(this).attr('href', "#{m[1]}&pathfilter=#{source}#{m[2]}")
+                    else
+                            $(this).attr('href', "#{m[1]}#{m[2]}")
+        )
         
 
 viewexplorer = (json, state) ->
@@ -677,6 +725,7 @@ viewexplorer = (json, state) ->
         state.widget.inject(i)
         state.widget.inject(b)
         state.widget.inject(rb)
+        
         
         if globArgs.subfilter and globArgs.subfilter.length > 0
                 source = globArgs.subfilter
