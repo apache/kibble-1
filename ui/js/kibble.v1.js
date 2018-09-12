@@ -1761,7 +1761,7 @@ explorer = function(json, state) {
     },
     "class": 'btn btn-small btn-danger',
     type: 'button',
-    onClick: 'get("pathfilter").value = ""; pathFilter();',
+    onClick: 'get("pathfilter").value = ""; pathFilterGlob = ""; pathFilter();',
     value: "reset"
   });
   state.widget.inject(b);
