@@ -47,7 +47,7 @@ if __name__ != '__main__':
 config = yaml.load(open("yaml/kibble.yaml"))
 
 # Instantiate database connections
-DB = plugins.database.KibbleDatabase(config)
+DB = None
 
 # Load Open API specifications
 KibbleOpenAPI = plugins.openapi.OpenAPI("yaml/openapi.yaml")
@@ -159,6 +159,7 @@ def application(environ, start_response):
     Checks against the pages library, and if submod found, runs
     it and returns the output.
     """
+    DB = plugins.database.KibbleDatabase(config)
     path = environ.get('PATH_INFO', '')
     for regex, function in urls:
         m = re.match(regex, path)
