@@ -218,6 +218,31 @@ components:
           type: array
       required:
       - sources
+    SourceListAdd:
+      properties:
+        okay:
+          type: boolean
+        organisation:
+          description: The organisation these sources belong to
+          type: string
+        sources:
+          description: The sources to add
+          example:
+            sources:
+            - optauth:
+                password: githubpass
+                username: githubuser
+              sourceURL: https://github.com/apache/kibble.git
+              type: github
+            - optauth:
+                cookie: ponycookie
+              sourceURL: https://lists.apache.org/list.html?dev@httpd.apache.org
+              type: ponymail
+          items:
+            $ref: '#/components/schemas/Source'
+          type: array
+      required:
+      - sources
     SourceType:
       properties:
         description:
@@ -2981,8 +3006,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SourceList'
-        description: New source data to add
+              $ref: '#/components/schemas/SourceListAdd'
         required: true
       responses:
         '200':
