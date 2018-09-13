@@ -1,0 +1,36 @@
+########################################################################
+# SourceList                                                           #
+########################################################################
+properties:
+  okay:
+    type: boolean
+  organisation:
+    description: The organisation these sources belong to
+    type: string
+  sources:
+    description: The sources to add
+    items:
+      $ref: '#/components/schemas/Source'
+    type: array
+    example:
+            {"sources": [
+              {
+               "sourceURL": "https://github.com/apache/kibble.git",
+               "type": "github",
+               "optauth": {
+                    "username": "githubuser",
+                    "password": "githubpass"
+                   }
+               },
+               {
+               "sourceURL": "https://lists.apache.org/list.html?dev@httpd.apache.org",
+               "type": "ponymail",
+               "optauth": {
+                    "cookie": "ponycookie"
+                   }
+               }
+    
+              ]
+            }
+required:
+- sources

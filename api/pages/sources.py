@@ -96,8 +96,7 @@
 #     content:
 #       application/json:
 #         schema:
-#           $ref: '#/components/schemas/SourceList'
-#     description: New source data to add
+#           $ref: '#/components/schemas/SourceListAdd'
 #     required: true
 #   responses:
 #     '200':
