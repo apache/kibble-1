@@ -45,11 +45,14 @@ class KibbleESWrapper(object):
         return self.ES.index(index = index+'_'+doc_type, doc_type = '_doc', id = id, body = body)
     def update(self, index, doc_type, id, body):
         return self.ES.update(index = index+'_'+doc_type, doc_type = '_doc', id = id, body = body)
-    def search(self, index, doc_type, size = 100, _source_include = None, body = None):
+    def scroll(self, scroll_id, scroll):
+        return self.ES.scroll(scroll_id = scroll_id, scroll = scroll)
+    def search(self, index, doc_type, size = 100, scroll = None, _source_include = None, body = None):
         return self.ES.search(
             index = index+'_'+doc_type,
             doc_type = '_doc',
             size = size,
+            scroll = scroll,
             _source_include = _source_include,
             body = body
             )
