@@ -137,7 +137,7 @@ def run(API, environ, indata, session):
             for k in res['aggregations']['by_id']['buckets']:
                 if k['key'] not in emails:
                     emails.append(k['key'])
-                    contribs[k['key']] = k['doc_count']
+                contribs[k['key']] = contribs.get(k['key'], 0) + k['doc_count']
             N += 1
             
     people = []
