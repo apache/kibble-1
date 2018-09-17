@@ -2620,6 +2620,29 @@ paths:
       security:
       - cookieAuth: []
       summary: Shows a quick email trend summary of the past 6 months for your org
+  /api/org/contributors:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/contributorList'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Shows contributors for the entire org or matching filters.
   /api/org/list:
     get:
       responses:
