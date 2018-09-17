@@ -3067,3 +3067,25 @@ body.error .logo h1 {
     border-top-left-radius: 0;
     border-top-right-radius: 0
 }
+
+.phonebook_entry {
+   width: 340px;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   height: 40px;
+   border-radius: 3px;
+   border: 1px solid #3336;
+   background: #EEE;
+   display: inline-block;
+   margin: 3px;
+}
+
+.phonebook_entry > a > img {
+   margin: 2px; 
+}
+
+.phonebook_entry > div {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+}
