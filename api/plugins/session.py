@@ -97,7 +97,7 @@ class KibbleSession(object):
         self.config = config
         self.user = None
         self.DB = DB
-        self.headers = [('Content-Type', 'application/json')]
+        self.headers = [('Content-Type', 'application/json; charset=utf-8')]
         self.cookie = None
         
         # Construct the URL we're visiting
