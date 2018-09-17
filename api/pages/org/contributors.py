@@ -109,7 +109,7 @@ def run(API, environ, indata, session):
     emails = []
     contribs = {}
     
-    for field in ['email', 'address', 'author_email', 'assignee', 'issueCreator', 'issueCloser']:
+    for field in ['sender', 'author_email', 'issueCreator', 'issueCloser']:
         N = 0
         while N < 5:
             query['aggs'] = {
@@ -126,7 +126,7 @@ def run(API, environ, indata, session):
             }
             res = session.DB.ES.search(
                     index=session.DB.dbname,
-                    doc_type="*",
+                    doc_type="*,-*_code_commit,-*_file_history",
                     size = 0,
                     body = query
                 )
