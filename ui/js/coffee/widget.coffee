@@ -120,7 +120,7 @@ updateWidgets = (type, target, eargs) ->
                 when 'preferences' then widget.load(preferences)
                 when 'messages' then widget.load(messages)
                 when 'widget' then widget.load(publisher)
-                when 'contacts' then fetchPhonebook({ widget: widget, w: w, letter: 'a', project: target})
+                when 'phonebook' then widget.load(phonebook)
                 when 'repopicker' then widget.load(explorer)
                 when 'sourcepicker' then widget.load(sourceexplorer)
                 when 'issuepicker' then widget.load(issueexplorer)

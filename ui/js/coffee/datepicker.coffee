@@ -35,6 +35,7 @@ updateTimeseriesWidgets = (range) ->
             updateWidgets('report', null, { to: to, from: from})
             updateWidgets('mvp', null, { to: to, from: from})
             updateWidgets('comstat', null, { to: to, from: from})
+            updateWidgets('phonebook', null, { to: to, from: from})
             updateWidgets('worldmap', null, { to: to, from: from})
             updateWidgets('jsondump', null, { to: to, from: from})
                 

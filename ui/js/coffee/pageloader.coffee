@@ -100,7 +100,7 @@ setupPage = (json, state) ->
                 when 'messages' then widget.load(messages)
                 when 'sourcelist' then widget.load(sourcelist)
                 when 'sourceadd' then widget.load(sourceadd)
-                when 'contacts' then setupPhonebook(widget, child)
+                when 'phonebook' then widget.load(phonebook)
                 when 'preferences' then widget.load(preferences)
                 when 'orgadmin' then widget.load(orgadmin)
                 when 'affiliations' then widget.load(affiliation)
