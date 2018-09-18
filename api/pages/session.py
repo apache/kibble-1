@@ -101,6 +101,7 @@ import re
 import time
 import bcrypt
 import hashlib
+import uuid
 
 def run(API, environ, indata, session):
     
@@ -143,6 +144,13 @@ def run(API, environ, indata, session):
     
     # Display the user data for this session
     if method == "GET":
+        
+        # Do we have an API key? If not, make one
+        if not session.user.get('token') or indata.get('newtoken'):
+            token = str(uuid.uuid4())
+            session.user['token'] = token
+            session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = session.user['email'], body = session.user)
+        
         # Run a quick search of all orgs we have.
         res = session.DB.ES.search(
                 index=session.DB.dbname,
@@ -167,7 +175,8 @@ def run(API, environ, indata, session):
             'organisations': session.user['organisations'],
             'ownerships': session.user['ownerships'],
             'gravatar': hashlib.md5(session.user['email'].encode('utf-8')).hexdigest(),
-            'userlevel': session.user['userlevel']
+            'userlevel': session.user['userlevel'],
+            'token': session.user['token']
         }
         yield json.dumps(JSON_OUT)
         return
