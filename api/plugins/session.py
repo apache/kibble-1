@@ -107,34 +107,42 @@ class KibbleSession(object):
         # Get Kibble cookie
         cookie = None
         cookies = None
-        if 'HTTP_COOKIE' in environ:
-            cookies = http.cookies.SimpleCookie(environ['HTTP_COOKIE'])
-        if cookies and 'kibble_session' in cookies:
-            cookie = cookies['kibble_session'].value
-            try:
-                if re.match(r"^[-a-f0-9]+$", cookie): # Validate cookie, must follow UUID4 specs
-                    doc = None
-                    sdoc = self.DB.ES.get(index=self.DB.dbname, doc_type='uisession', id = cookie)
-                    if sdoc and 'cid' in sdoc['_source']:
-                        doc = self.DB.ES.get(index=self.DB.dbname, doc_type='useraccount', id = sdoc['_source']['cid'])
-                    if doc and '_source' in doc:
-                        # Make sure this cookie has been used in the past 7 days, else nullify it.
-                        # Further more, run an update of the session if >1 hour ago since last update.
-                        age = time.time() - sdoc['_source']['timestamp']
-                        if age > (7*86400):
-                            self.DB.ES.delete(index=self.DB.dbname, doc_type='uisession', id = cookie)
-                            sdoc['_source'] = None # Wipe it!
-                            doc = None
-                        elif age > 3600:
-                            sdoc['_source']['timestamp'] = int(time.time()) # Update timestamp in session DB
-                            self.DB.ES.update(index=self.DB.dbname, doc_type='uisession', id = cookie, body = {'doc':sdoc['_source']})
-                        if doc:
-                            self.user = doc['_source']
-                else:
-                    cookie = None
-            except Exception as err:
-                print(err)
-        if not cookie:
-            self.newCookie()
+        if 'HTTP_KIBBLE_TOKEN' in environ:
+            token = environ.get('HTTP_KIBBLE_TOKEN')
+            if re.match(r"^[-a-f0-9]+$", token): # Validate token, must follow UUID4 specs
+                res = self.DB.ES.search(index=self.DB.dbname, doc_type='useraccount', body = {"query": { "match": { "token": token}}})
+                if res['hits']['hits']:
+                    self.user = res['hits']['hits'][0]['_source']
+                    self.newCookie()
+        else:
+            if 'HTTP_COOKIE' in environ:
+                cookies = http.cookies.SimpleCookie(environ['HTTP_COOKIE'])
+            if cookies and 'kibble_session' in cookies:
+                cookie = cookies['kibble_session'].value
+                try:
+                    if re.match(r"^[-a-f0-9]+$", cookie): # Validate cookie, must follow UUID4 specs
+                        doc = None
+                        sdoc = self.DB.ES.get(index=self.DB.dbname, doc_type='uisession', id = cookie)
+                        if sdoc and 'cid' in sdoc['_source']:
+                            doc = self.DB.ES.get(index=self.DB.dbname, doc_type='useraccount', id = sdoc['_source']['cid'])
+                        if doc and '_source' in doc:
+                            # Make sure this cookie has been used in the past 7 days, else nullify it.
+                            # Further more, run an update of the session if >1 hour ago since last update.
+                            age = time.time() - sdoc['_source']['timestamp']
+                            if age > (7*86400):
+                                self.DB.ES.delete(index=self.DB.dbname, doc_type='uisession', id = cookie)
+                                sdoc['_source'] = None # Wipe it!
+                                doc = None
+                            elif age > 3600:
+                                sdoc['_source']['timestamp'] = int(time.time()) # Update timestamp in session DB
+                                self.DB.ES.update(index=self.DB.dbname, doc_type='uisession', id = cookie, body = {'doc':sdoc['_source']})
+                            if doc:
+                                self.user = doc['_source']
+                    else:
+                        cookie = None
+                except Exception as err:
+                    print(err)
+            if not cookie:
+                self.newCookie()
         self.cookie = cookie
         
