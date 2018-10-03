@@ -122,6 +122,7 @@ up by issuing the following:
 
 - ``git clone https://github.com/apache/kibble.git /var/www/kibble``
 - ``cd /var/www/kibble/setup``
+- ``pip3 install -r requirements.txt``
 - ``python3 setup.py``
 - Enter the configuration parameters the setup process asks for
 
@@ -153,7 +154,8 @@ be using the Apache HTTP Server and proxy to Gunicorn:
       ProxyPass /api/ http://localhost:8000/api/
    </VirtualHost>
 
-- Launch gunicorn as a daemon on port 8000:
+- Launch gunicorn as a daemon on port 8000 (if your distro calls
+  gunicorn for Python3 `gunicorn3`, make sure you use that instead):
 
 ::
 
