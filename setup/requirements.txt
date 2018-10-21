@@ -2,3 +2,4 @@ certifi
 pyyaml
 bcrypt
 elasticsearch
+dateutil
