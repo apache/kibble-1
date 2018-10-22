@@ -61,21 +61,34 @@ elif dopip:
         print("pip install elasticsearch certifi")
         sys.exit(-1)
 
+
+# Arguments for non-interactive setups like docker
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument("-e", "--hostname", help="Pre-defined hostname for ElasticSearch (docker setups)")
+arg_parser.add_argument("-p", "--port", help="Pre-defined port for ES (docker setups)")
+arg_parser.add_argument("-d", "--dbname", help="Pre-defined Database prefix (docker setups)")
+arg_parser.add_argument("-s", "--shards", help="Predefined number of ES shards (docker setups)")
+arg_parser.add_argument("-r", "--replicas", help="Predefined number of replicas for ES (docker setups)")
+arg_parser.add_argument("-m", "--mailhost", help="Pre-defined mail server host (docker setups)")
+arg_parser.add_argument("-a", "--autoadmin", action='store_true', help="Generate generic admin account (docker setups)")
+arg_parser.add_argument("-k", "--skiponexist", action='store_true', help="Skip DB creation if DBs exist (docker setups)")
+args = arg_parser.parse_args()
+
 print("Welcome to the Apache Kibble setup script!")
 print("Let's start by determining some settings...")
 print("")
 
 
-hostname = ""
-port = 0
-dbname = ""
-mlserver = ""
+hostname = args.hostname or ""
+port = int(args.port) if args.port else 0
+dbname = args.dbname or ""
+mlserver = args.mailhost or ""
 mldom = ""
 wc = ""
 genname = ""
 wce = False
-shards = 0
-replicas = -1
+shards = int(args.shards) if args.shards else 0
+replicas = int(args.replicas) if args.replicas else -1
 
 while hostname == "":
     hostname = input("What is the hostname of the ElasticSearch server? [localhost]: ")
@@ -125,10 +138,12 @@ while replicas < 0:
         pass
 
 adminName = ""
+adminPass = ""
+if args.autoadmin:
+    adminName = "admin@kibble"
+    adminPass = "kibbleAdmin"
 while adminName == "":
     adminName = input("Enter an email address for the adminstrator account: ")
-
-adminPass = ""
 while adminPass == "":
     adminPass = input("Enter a password for the adminstrator account: ")
     
@@ -152,8 +167,11 @@ def createIndex():
         print("New Kibble installations require ElasticSearch 6.x or newer! You appear to be running %s!" % es.info()['version']['number'])
         sys.exit(-1)
     # Check if index already exists
-    if es.indices.exists(dbname):
-        print("Error: ElasticSearch index '%s' already exists!" % dbname)
+    if es.indices.exists(dbname+"_api"):
+        if args.skiponexist: # Skip this is DB exists and -k added
+            print("DB prefix exists, but --skiponexist used, skipping this step.")
+            return
+        print("Error: ElasticSearch DB prefix '%s' already exists!" % dbname)
         sys.exit(-1)
 
     types = [
