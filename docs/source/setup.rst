@@ -181,12 +181,13 @@ The Kibble Scanners rely on the following packages:
 - Python >= 3.4 with the following packages:
 - - python3-yaml
 - - python3-elasticsearch
+- - python3-certifi
 
 The scanners require the following optional components if you wish to enable
 git repository analysis:
 
 - git binaries (GPL License)
-- cloc_ version 1.70 or later (GPL License)
+- cloc_ version 1.76 or later (GPL License)
 
 
 ###########################
