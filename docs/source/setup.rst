@@ -43,7 +43,7 @@ As a rule of thumb, the Server does not require a lot of disk space
 The scanners require more disk space, but can operate with limited CPU
 and RAM.
 
-As an example, let os examine the Apache Kibble demo instance:
+As an example, let us examine the Apache Kibble demo instance:
 
 - 100 sources (git repos, mailing lists, bug trackers and so on)
 - 3,5 million source objects currently (commits, emails, tickets etc)
@@ -234,7 +234,7 @@ Once you have both scanners and the data server set up, you can begin
 scanning resources for data. Please refer to :ref:`configdatasources`
 for how to set up various resources for scanning via the Web UI.
 
-Scans can be iniated manually, but you may want to set up a cron job to
+Scans can be initiated manually, but you may want to set up a cron job to
 handle daily scans of resources. To start a scan on a scanner machine,
 run the following: ``python3 src/kibble-scanner.py``
 
