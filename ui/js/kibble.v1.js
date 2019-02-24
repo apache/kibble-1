@@ -3007,7 +3007,7 @@ orglist = function(json, state) {
         margin: '30px'
       }
     });
-    legend = new HTML('legend', {}, "Create a new orgsanisation:");
+    legend = new HTML('legend', {}, "Create a new organisation:");
     fieldset.inject(legend);
     fieldset.inject(keyValueForm('text', 'orgname', 'Name of the organisation:', 'Foo, inc.'));
     fieldset.inject(keyValueForm('textarea', 'orgdesc', 'Description:', 'Foo, inc. is awesome and does stuff.'));
