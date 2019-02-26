@@ -86,7 +86,7 @@ orglist = (json, state) ->
         
     if userAccount.userlevel == "admin"
         fieldset = new HTML('fieldset', { style: { float: "left", margin: '30px'}})
-        legend = new HTML('legend', {}, "Create a new orgsanisation:")
+        legend = new HTML('legend', {}, "Create a new organisation:")
         fieldset.inject(legend)
         
         fieldset.inject(keyValueForm('text', 'orgname', 'Name of the organisation:', 'Foo, inc.'))
@@ -153,4 +153,4 @@ membershipList = (json, state) ->
         
     state.widget.inject(list)
     
-    
+
