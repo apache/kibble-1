@@ -26,7 +26,12 @@ properties:
     description: An array containing the IDs of the admins of this org
     type: array
     exammple: ['foo@bar', 'bar@foo']
+  querymethod:
+    description: Update or new
+    example: update
+    type: string
 required:
 - id
 - name
+- querymethod
 
