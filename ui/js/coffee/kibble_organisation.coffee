@@ -68,7 +68,11 @@ edit = (org) ->
     document
         .getElementById 'create_btn'
         .disabled = true
-
+    document
+        .getElementById 'create_btn'
+        .scrollIntoView = false
+    window
+        .scrollTo(0,document.body.scrollHeight)
 orglist = (json, state) ->
     items = []
     if json.organisations.length == 0
@@ -95,7 +99,7 @@ orglist = (json, state) ->
             if not isDefault
                 dbtn = new HTML('input', { style: { marginTop: "10px", width: "120px"},class: "btn btn-primary btn-block", type: "button", onclick: "setDefaultOrg('#{org.id}');", value: "Set as current"})
                 div.inject(dbtn)
-            dbtn = new HTML('input', { style: { marginTop: "10px", width: "120px"},class: "btn btn-primary btn btn-block", type: "button", onclick: "edit({name: '#{org.name}', desc: '#{org.description}', id: '#{org.id}'});", value: "Edit organisation"})
+            dbtn = new HTML('i', { style: { float: "right" }, class: "fa fa-edit", type: "icon", title: "Edit Organisation", onclick: "edit({name: '#{org.name}', desc: '#{org.description}', id: '#{org.id}'});",href: "#create_btn"})
             div.inject(dbtn)
             odiv.inject(new HTML('hr'))
         state.widget.inject(odiv, true)

@@ -2967,7 +2967,9 @@ edit = function(org) {
   document.getElementById('orgname').value = org.name;
   document.getElementById('orgdesc').value = org.desc;
   document.getElementById('orgid').value = org.id;
-  return document.getElementById('create_btn').disabled = true;
+  document.getElementById('create_btn').disabled = true;
+  document.getElementById('create_btn').scrollIntoView = false;
+  return window.scrollTo(0, document.body.scrollHeight);
 };
 
 orglist = function(json, state) {
@@ -3006,15 +3008,15 @@ orglist = function(json, state) {
         });
         div.inject(dbtn);
       }
-      dbtn = new HTML('input', {
+      dbtn = new HTML('i', {
         style: {
-          marginTop: "10px",
-          width: "120px"
+          float: "right"
         },
-        "class": "btn btn-primary btn btn-block",
-        type: "button",
+        "class": "fa fa-edit",
+        type: "icon",
+        title: "Edit Organisation",
         onclick: "edit({name: '" + org.name + "', desc: '" + org.description + "', id: '" + org.id + "'});",
-        value: "Edit organisation"
+        href: "#create_btn"
       });
       div.inject(dbtn);
       odiv.inject(new HTML('hr'));
