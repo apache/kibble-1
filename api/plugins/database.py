@@ -47,6 +47,8 @@ class KibbleESWrapper(object):
         return self.ES.update(index = index+'_'+doc_type, doc_type = '_doc', id = id, body = body)
     def scroll(self, scroll_id, scroll):
         return self.ES.scroll(scroll_id = scroll_id, scroll = scroll)
+    def delete_by_query(self, **kwargs):
+        return self.ES.delete_by_query(**kwargs)
     def search(self, index, doc_type, size = 100, scroll = None, _source_include = None, body = None):
         return self.ES.search(
             index = index+'_'+doc_type,
