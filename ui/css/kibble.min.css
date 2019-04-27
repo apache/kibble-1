@@ -3093,12 +3093,16 @@ body.error .logo h1 {
 .punchcard_tooltip {
     position: absolute;			
     text-align: center;			
-    width: 60px;					
-    height: 28px;					
-    padding: 2px;				
+    min-width: 60px;					
+    min-height: 24px;
+    margin: 8px;
+    margin-top: -10px;
+    padding: 4px;
+    border: 1.25px solid #3338;
+    line-height: 28px;
+    z-index: 1001;
     font: 12px sans-serif;		
-    background: lightsteelblue;	
-    border: 0px;		
-    border-radius: 8px;			
+    background: lightgoldenrodyellow;	
+    border-radius: 6px;			
     pointer-events: none;	
 }
