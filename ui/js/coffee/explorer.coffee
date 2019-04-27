@@ -64,6 +64,7 @@ explorer = (json, state) ->
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('mvp', null, { source: source })
                 updateWidgets('comstat', null, { source: source })
+                updateWidgets('punchcard', null, { source: source })
                 updateWidgets('jsondump', null, { source: source })
               )
         
@@ -89,6 +90,7 @@ explorer = (json, state) ->
                 updateWidgets('phonebook', null, { author: author })
                 updateWidgets('top5', null, { author: author })
                 updateWidgets('factors', null, { author: author })
+                updateWidgets('punchcard', null, { author: author })
                 updateWidgets('trends', null, { author: author })
                 updateWidgets('relationship', null, {author: author})
                 updateWidgets('mvp', null, {author: author})
@@ -166,6 +168,7 @@ sourceexplorer = (json, state) ->
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('mvp', null, { source: source })
+                updateWidgets('punchcard', null, { source: source })
                 updateWidgets('comstat', null, { source: source })
                 updateWidgets('jsondump', null, { source: source })
         )
@@ -222,6 +225,7 @@ mailexplorer = (json, state) ->
                 updateWidgets('top5', null, { source: source })
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
+                updateWidgets('punchcard', null, { source: source })
                 updateWidgets('relationship', null, { source: source })
                 
         )
@@ -276,6 +280,7 @@ logexplorer = (json, state) ->
                 updateWidgets('top5', null, { source: source })
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
+                updateWidgets('punchcard', null, { source: source })
                 
         )
         
@@ -331,6 +336,7 @@ issueexplorer = (json, state) ->
                 updateWidgets('top5', null, { source: source })
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
+                updateWidgets('punchcard', null, { source: source })
                 
         )
         
@@ -388,6 +394,7 @@ forumexplorer = (json, state) ->
                 updateWidgets('top5', null, { source: source })
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
+                updateWidgets('punchcard', null, { source: source })
                 
         )
         
@@ -445,6 +452,7 @@ imexplorer = (json, state) ->
                 updateWidgets('top5', null, { source: source })
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
+                updateWidgets('punchcard', null, { source: source })
                 
         , false)
         $('select').chosen();
@@ -503,6 +511,7 @@ ciexplorer = (json, state) ->
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('relationship', null, { source: source })
+                updateWidgets('punchcard', null, { source: source })
                 
         )
         
@@ -557,6 +566,7 @@ multiviewexplorer = (json, state) ->
                     updateWidgets('factors', null, x)
                     updateWidgets('trends', null, x)
                     updateWidgets('radar', null, x)
+                    updateWidgets('punchcard', null, x)
               )
         
 subFilterGlob = null
@@ -590,6 +600,7 @@ subFilter = () ->
         updateWidgets('comstat', null, x)
         updateWidgets('worldmap', null, x)
         updateWidgets('jsondump', null, x)
+        updateWidgets('punchcard', null, x)
         
         $( "a" ).each( () ->
             url = $(this).attr('href')
@@ -628,6 +639,7 @@ pathFilter = () ->
         updateWidgets('comstat', null, x)
         updateWidgets('worldmap', null, x)
         updateWidgets('jsondump', null, x)
+        updateWidgets('punchcard', null, x)
         
         $( "a" ).each( () ->
             url = $(this).attr('href')
@@ -703,6 +715,7 @@ viewexplorer = (json, state) ->
                 updateWidgets('comstat', null, x)
                 updateWidgets('worldmap', null, x)
                 updateWidgets('jsondump', null, x)
+                updateWidgets('punchcard', null, x)
                 
                 $( "a" ).each( () ->
                     url = $(this).attr('href')
@@ -822,6 +835,7 @@ widgetexplorer = (json, state) ->
                 updateWidgets('factors', null, x)
                 updateWidgets('trends', null, x)
                 updateWidgets('radar', null, x)
+                updateWidgets('punchcard', null, x)
                 
         , false)
             
