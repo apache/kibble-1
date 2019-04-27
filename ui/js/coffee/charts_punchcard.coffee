@@ -48,13 +48,13 @@ charts_punchcard = (obj, data, options) ->
         a = m[0]
         b = m[1]
         ypos = 0
-        xpos = 0.1 + (parseInt(b) - 1) * (0.036)
         if b == '24'
-            v /= 20
+            b = 0
+        xpos = 0.1 + (parseInt(b) ) * (0.036)
         for n,d of days
             if d == a
                 ypos = 0.04 + (n * 0.10)
-        c.push({x: xpos, y: ypos, r: v})
+        c.push({x: xpos, y: ypos, r: v, h: "<span style='font-size:0.9rem;'>#{a}, #{b}:00 -> #{(parseInt(b)+1) % 24}:00 UTC</span><br/>"})
         MAX = Math.max(MAX, v)
     circles = chart.selectAll('svg').data(c).enter().append("circle");
     labels = chart.selectAll('svg').data(days).enter().append('text')
@@ -73,7 +73,7 @@ charts_punchcard = (obj, data, options) ->
             div.transition()
                 .duration(200)		
                 .style("opacity", .9)
-            div	.html(d.r.pretty() + " commits")	
+            div	.html(d.h + d.r.pretty() + " commits")	
                 .style("left", (d3.event.pageX) + "px")		
                 .style("top", (d3.event.pageY - 28) + "px");
         ).on("mouseout", (d) ->
