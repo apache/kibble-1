@@ -1173,6 +1173,46 @@ paths:
       security:
       - cookieAuth: []
       summary: Shows timeseries of Pony Factor over time
+  /api/code/punchcard:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Show commits as a timeseries
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/defaultWidgetArgs'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeseries'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Show commits as a timeseries
   /api/code/relationships:
     get:
       responses:
