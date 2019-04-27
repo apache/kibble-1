@@ -637,10 +637,10 @@ charts_punchcard = function(obj, data, options) {
     a = m[0];
     b = m[1];
     ypos = 0;
-    xpos = 0.1 + (parseInt(b) - 1) * 0.036;
     if (b === '24') {
-      v /= 20;
+      b = 0;
     }
+    xpos = 0.1 + (parseInt(b)) * 0.036;
     for (n in days) {
       d = days[n];
       if (d === a) {
@@ -650,7 +650,8 @@ charts_punchcard = function(obj, data, options) {
     c.push({
       x: xpos,
       y: ypos,
-      r: v
+      r: v,
+      h: "<span style='font-size:0.9rem;'>" + a + ", " + b + ":00 -> " + ((parseInt(b) + 1) % 24) + ":00 UTC</span><br/>"
     });
     MAX = Math.max(MAX, v);
   }
@@ -683,7 +684,7 @@ charts_punchcard = function(obj, data, options) {
       };
     })(this)).on("mouseover", function(d) {
       div.transition().duration(200).style("opacity", .9);
-      return div.html(d.r.pretty() + " commits").style("left", d3.event.pageX + "px").style("top", (d3.event.pageY - 28) + "px");
+      return div.html(d.h + d.r.pretty() + " commits").style("left", d3.event.pageX + "px").style("top", (d3.event.pageY - 28) + "px");
     }).on("mouseout", function(d) {
       return div.transition().duration(200).style("opacity", 0);
     });
