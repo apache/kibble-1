@@ -3106,3 +3106,7 @@ body.error .logo h1 {
     border-radius: 6px;			
     pointer-events: none;	
 }
+
+.show-calendar {
+    right: auto !important;
+}
