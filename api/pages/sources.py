@@ -273,7 +273,7 @@ def run(API, environ, indata, session):
             else:
                 raise API.exception(404, "No such source item")
         else:
-            raise API.exception(403, "You don't have prmission to delete this source.")
+            raise API.exception(403, "You don't have permission to delete this source.")
         
     # Edit a source
     if method == "PATCH":
