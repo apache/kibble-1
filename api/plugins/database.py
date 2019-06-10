@@ -64,6 +64,42 @@ class KibbleESWrapper(object):
             doc_type = '_doc',
             body = body
             )
+
+class KibbleESWrapperSeven(object):
+    """
+       Class for rewriting old-style queries to the >= 7.x ones,
+       where doc_type is an integral part of the DB name and NO DOC_TYPE!
+    """
+    def __init__(self, ES):
+        self.ES = ES
+    
+    def get(self, index, doc_type, id):
+        return self.ES.get(index = index+'_'+doc_type, id = id)
+    def exists(self, index, doc_type, id):
+        return self.ES.exists(index = index+'_'+doc_type, id = id)
+    def delete(self, index, doc_type, id):
+        return self.ES.delete(index = index+'_'+doc_type, id = id)
+    def index(self, index, doc_type, id, body):
+        return self.ES.index(index = index+'_'+doc_type, id = id, body = body)
+    def update(self, index, doc_type, id, body):
+        return self.ES.update(index = index+'_'+doc_type, id = id, body = body)
+    def scroll(self, scroll_id, scroll):
+        return self.ES.scroll(scroll_id = scroll_id, scroll = scroll)
+    def delete_by_query(self, **kwargs):
+        return self.ES.delete_by_query(**kwargs)
+    def search(self, index, doc_type, size = 100, scroll = None, _source_include = None, body = None):
+        return self.ES.search(
+            index = index+'_'+doc_type,
+            size = size,
+            scroll = scroll,
+            _source_include = _source_include,
+            body = body
+            )
+    def count(self, index, doc_type = '*', body = None):
+        return self.ES.count(
+            index = index+'_'+doc_type,
+            body = body
+            )
     
 
 class KibbleDatabase(object):
@@ -82,10 +118,13 @@ class KibbleDatabase(object):
                 retry_on_timeout=True
             )
         
-        # IMPORTANT BIT: Figure out if this is ES 6.x or newer.
+        # IMPORTANT BIT: Figure out if this is ES < 6.x, 6.x or >= 7.x.
         # If so, we're using the new ES DB mappings, and need to adjust ALL
         # ES calls to match this.
         es6 = True if int(self.ES.info()['version']['number'].split('.')[0]) >= 6 else False
-        if es6:
+        es7 = True if int(self.ES.info()['version']['number'].split('.')[0]) >= 7 else False
+        if es7:
+            self.ES = KibbleESWrapperSeven(self.ES)
+        elif es6:
             self.ES = KibbleESWrapper(self.ES)
         
