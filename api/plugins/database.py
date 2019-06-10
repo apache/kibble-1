@@ -92,7 +92,7 @@ class KibbleESWrapperSeven(object):
             index = index+'_'+doc_type,
             size = size,
             scroll = scroll,
-            _source_include = _source_include,
+            _source_includes = _source_include,
             body = body
             )
     def count(self, index, doc_type = '*', body = None):
