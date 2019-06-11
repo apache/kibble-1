@@ -67,8 +67,15 @@ charts_linechart = (obj, data, options) ->
                     if xts[k] == undefined
                         xts[k] = []
                     xts[k].push(v)
-
-        for key, val of xts
+        # If API specifies sort order in charts, follow it
+        keys = []
+        if data.sortOrder
+            keys = data.sortOrder
+        else
+            keys = Object.keys(xts)
+        
+        for key in keys
+            val = xts[key]
             xx = [key]
             for el in val
                 xx.push(el)
@@ -97,6 +104,7 @@ charts_linechart = (obj, data, options) ->
     config = {
         bindto: obj,
         data: {
+          order: null,
           x: if data.timeseries then 'x' else null,
           #xFormat: '%s',
           columns: asDataArray,
