@@ -121,10 +121,9 @@ class KibbleDatabase(object):
         # IMPORTANT BIT: Figure out if this is ES < 6.x, 6.x or >= 7.x.
         # If so, we're using the new ES DB mappings, and need to adjust ALL
         # ES calls to match this.
-        es6 = True if int(self.ES.info()['version']['number'].split('.')[0]) >= 6 else False
-        es7 = True if int(self.ES.info()['version']['number'].split('.')[0]) >= 7 else False
-        if es7:
+        self.ESversion = int(self.ES.info()['version']['number'].split('.')[0])
+        if self.ESversion >= 7:
             self.ES = KibbleESWrapperSeven(self.ES)
-        elif es6:
+        elif self.ESVersion >= 6:
             self.ES = KibbleESWrapper(self.ES)
         
