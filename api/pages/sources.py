@@ -272,8 +272,6 @@ def run(API, environ, indata, session):
                 else:
                 # For ES <= 5.x, just remove from the main index
                     session.DB.ES.delete_by_query(index=session.DB.dbname, body = {'query': {'match': {'sourceID': sourceID}}})
-                # Delete the object itself
-                session.DB.ES.delete(index=session.DB.dbname, doc_type="source", id = sourceID)
                 yield json.dumps({'message': "Source deleted"})
             else:
                 raise API.exception(404, "No such source item")
