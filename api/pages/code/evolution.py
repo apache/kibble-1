@@ -167,6 +167,7 @@ def run(API, environ, indata, session):
             'stack': True
         },
         'timeseries': timeseries,
+        'sortOrder': ['code', 'comments', 'blanks'],
         'okay': True,
         'responseTime': time.time() - now
     }
