@@ -81,9 +81,6 @@ datepicker = (widget) ->
           endDate: if globArgs.to then moment(new Date(globArgs.to*1000)) else moment(),
           minDate: '1970-01-01',
           maxDate: moment().add(2, 'years').format('YYYY-01-01'),
-          dateLimit: {
-            days: 365
-          },
           showDropdowns: true,
           showWeekNumbers: true,
           timePicker: false,
