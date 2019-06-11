@@ -238,7 +238,7 @@ charts_linechart_stacked = (function(_this) {
 })(this);
 
 charts_linechart = function(obj, data, options) {
-  var a, asDataArray, asList, asTypes, axisData, c, config, dataPoint, dateFormat, el, i1, k, key, len, len1, len2, linetype, ndate, q, ref, ref1, stacked, tmpArray, ts, u, v, val, xts, xx;
+  var a, asDataArray, asList, asTypes, axisData, c, config, dataPoint, dateFormat, el, i1, j1, k, key, keys, len, len1, len2, len3, linetype, ndate, q, ref, ref1, stacked, tmpArray, ts, u, v, val, xts, xx;
   linetype = (options && options.linetype) ? options.linetype : 'line';
   stacked = (options && options.stacked) ? options.stacked : false;
   if (options && options.filled && linetype === "line") {
@@ -299,11 +299,18 @@ charts_linechart = function(obj, data, options) {
         }
       }
     }
-    for (key in xts) {
+    keys = [];
+    if (data.sortOrder) {
+      keys = data.sortOrder;
+    } else {
+      keys = Object.keys(xts);
+    }
+    for (u = 0, len1 = keys.length; u < len1; u++) {
+      key = keys[u];
       val = xts[key];
       xx = [key];
-      for (u = 0, len1 = val.length; u < len1; u++) {
-        el = val[u];
+      for (i1 = 0, len2 = val.length; i1 < len2; i1++) {
+        el = val[i1];
         xx.push(el);
       }
       ts.push(xx);
@@ -324,8 +331,8 @@ charts_linechart = function(obj, data, options) {
       asTypes[k] = 'bar';
       tmpArray = [k];
       if (isArray(v)) {
-        for (i1 = 0, len2 = v.length; i1 < len2; i1++) {
-          dataPoint = v[i1];
+        for (j1 = 0, len3 = v.length; j1 < len3; j1++) {
+          dataPoint = v[j1];
           tmpArray.push(dataPoint);
         }
       } else {
@@ -338,6 +345,7 @@ charts_linechart = function(obj, data, options) {
   config = {
     bindto: obj,
     data: {
+      order: null,
       x: data.timeseries ? 'x' : null,
       columns: asDataArray,
       types: asTypes,
