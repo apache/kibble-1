@@ -84,6 +84,8 @@ def run(API, environ, indata, session):
     if indata.get('subfilter'):
         viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
     
+    # We only want build sources, so we can sum up later.
+    viewList = session.subType(['jenkins', 'travis', 'buildbot'], viewList)
     
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
@@ -117,68 +119,84 @@ def run(API, environ, indata, session):
             }
     # Source-specific or view-specific??
     if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-    elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        viewList = [indata.get('source')]
     
-    # Get queue stats
-    query['aggs'] = {
-            'timeseries': {
-                'date_histogram': {
-                    'field': 'date',
-                    'interval': interval
-                },
-                'aggs': {
-                    'size': {
-                        'avg': {
-                            'field': 'size'
-                        }
+    query['query']['bool']['must'].append({'term': {'sourceID': 'x'}})
+    
+    timeseries = []
+    for source in viewList:
+        query['query']['bool']['must'][2] = {'term': {'sourceID': source}}
+        
+        # Get queue stats
+        query['aggs'] = {
+                'timeseries': {
+                    'date_histogram': {
+                        'field': 'date',
+                        'interval': interval
                     },
-                    'blocked': {
-                        'avg': {
-                            'field': 'blocked'
-                        }
-                    },
-                    'building': {
-                        'avg': {
-                            'field': 'building'
-                        }
-                    },
-                    'stuck': {
-                        'avg': {
-                            'field': 'stuck'
-                        }
-                    },
-                    'wait': {
-                        'avg': {
-                            'field': 'avgwait'
+                    'aggs': {
+                        'size': {
+                            'avg': {
+                                'field': 'size'
+                            }
+                        },
+                        'blocked': {
+                            'avg': {
+                                'field': 'blocked'
+                            }
+                        },
+                        'building': {
+                            'avg': {
+                                'field': 'building'
+                            }
+                        },
+                        'stuck': {
+                            'avg': {
+                                'field': 'stuck'
+                            }
+                        },
+                        'wait': {
+                            'avg': {
+                                'field': 'avgwait'
+                            }
                         }
                     }
                 }
             }
-        }
-    res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="ci_queue",
-            size = 0,
-            body = query
-        )
+        res = session.DB.ES.search(
+                index=session.DB.dbname,
+                doc_type="ci_queue",
+                size = 0,
+                body = query
+            )
+
+        for bucket in res['aggregations']['timeseries']['buckets']:
+            ts = int(bucket['key'] / 1000)
+            bucket['wait']['value'] = bucket['wait'].get('value', 0) or 0
+            if bucket['doc_count'] == 0:
+                continue
+            
+            found = False
+            for t in timeseries:
+                if t['date'] == ts:
+                    found = True
+                    t['queue size'] += bucket['size']['value']
+                    t['builds running'] += bucket['building']['value']
+                    t['average wait (hours)'] += bucket['wait']['value']
+                    t['builders'] += 1
+            if not found:
+                timeseries.append({
+                    'date': ts,
+                    'queue size': bucket['size']['value'],
+                    'builds running': bucket['building']['value'],
+                    'average wait (hours)': bucket['wait']['value'],
+                    'builders': 1,
+                })
     
-    timeseries = []
-    for bucket in res['aggregations']['timeseries']['buckets']:
-        ts = int(bucket['key'] / 1000)
-        bucket['wait']['value'] = bucket['wait'].get('value', 0) or 0
-        if bucket['doc_count'] == 0:
-            continue
-        timeseries.append({
-            'date': ts,
-            'queue size': bucket['size']['value'],
-            'builds running': bucket['building']['value'],
-#            'builds blocked': bucket['blocked']['value'],
-#            'builds stuck': bucket['stuck']['value'],
-            'average wait (hours)': int(bucket['wait']['value']/360)/10,
-        })
-    
+    for t in timeseries:
+        t['average wait (hours)'] = int(t['average wait (hours)']/360)/10.0
+        del t['builders']
+        
     JSON_OUT = {
         'widgetType': {
             'chartType': 'line',  # Recommendation for the UI
