@@ -121,6 +121,6 @@ datepicker = (widget) ->
         
         $('#' + id).daterangepicker(datePickerOptions, (start, end, label) ->
                 console.log(start._d.getTime()/1000)
-                updateTimeseriesWidgets([Math.floor(start._d.getTime()/1000), Math.floor(end._d.getTime()/1000)])
+                updateTimeseriesWidgets([Math.Max(0, Math.floor(start._d.getTime()/1000)), Math.Max(3600, Math.floor(end._d.getTime()/1000))])
         );
 
