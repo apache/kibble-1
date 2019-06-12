@@ -5325,7 +5325,7 @@ updateWidgets = function(type, target, eargs) {
     g = [];
     for (k in globArgs) {
       v = globArgs[k];
-      if (k && v) {
+      if (k && (typeof v !== 'undefined' && v !== null)) {
         g.push(k + '=' + v);
       }
     }
@@ -5349,7 +5349,7 @@ updateWidgets = function(type, target, eargs) {
         for (k in eargs) {
           v = eargs[k];
           widget.args.eargs[k] = v;
-          if (!v) {
+          if (typeof v === 'undefined' || v === null) {
             delete widget.args.eargs[k];
           }
         }
