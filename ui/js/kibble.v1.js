@@ -1694,7 +1694,7 @@ datepicker = function(widget) {
   };
   return $('#' + id).daterangepicker(datePickerOptions, function(start, end, label) {
     console.log(start._d.getTime() / 1000);
-    return updateTimeseriesWidgets([Math.floor(start._d.getTime() / 1000), Math.floor(end._d.getTime() / 1000)]);
+    return updateTimeseriesWidgets([Math.Max(0, Math.floor(start._d.getTime() / 1000)), Math.Max(3600, Math.floor(end._d.getTime() / 1000))]);
   });
 };
 
