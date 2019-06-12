@@ -46,7 +46,7 @@ class KibbleSession(object):
         res = self.DB.ES.search(
                 index=self.DB.dbname,
                 doc_type="source",
-                size = 5000,
+                size = 10000,
                 _source_include = ['sourceURL', 'sourceID'],
                 body = {
                     'query': {
@@ -80,7 +80,7 @@ class KibbleSession(object):
         res = self.DB.ES.search(
                 index=self.DB.dbname,
                 doc_type="source",
-                size = 9000,
+                size = 10000,
                 _source_include = ['sourceURL', 'sourceID', 'type'],
                 body = {
                     'query': {
