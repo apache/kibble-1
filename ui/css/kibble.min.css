@@ -19,16 +19,16 @@
     stroke-opacity: .3;
 }
 
-.link_tooltip {	
-    position: absolute;			
-    text-align: center;			
-    min-width: 60px;					
-    min-height: 28px;					
-    padding: 4px;				
-    font: 12px sans-serif;		
-    background: rgba(0,0,0,0.6);	
+.link_tooltip {
+    position: absolute;
+    text-align: center;
+    min-width: 60px;
+    min-height: 28px;
+    padding: 4px;
+    font: 12px sans-serif;
+    background: rgba(0,0,0,0.6);
     color: #FFF;
-    border-radius: 8px;			
+    border-radius: 8px;
     pointer-events: none;
     z-index: 2000;
 }
@@ -121,7 +121,7 @@
 }
 
 .form-control  {
-   
+
     width: 100%;
     height: 34px;
     padding: 6px 12px;
@@ -269,7 +269,7 @@ select {
 
 nav.menu {
    position: absolute;
-   
+
     background: #008FD5;
     float: left;
     width: 160px;
@@ -306,7 +306,7 @@ nav.menu > div.sidemenu > ul > a > li {
     min-width: 48px;
     font-size: 0.75rem;
     font-family: montserrat light, sans-serif;
-    background: rgba(0,0,0,0.15);    
+    background: rgba(0,0,0,0.15);
 }
 
 nav.menu > div.sidemenu > ul > a > li {
@@ -331,7 +331,7 @@ nav.menu > div.sidemenu> ul > a > li > img {
 nav.menu > div.sidemenu {
     width: 160px;
     float: left;
-    
+
 }
 
 .sidetitle {
@@ -365,7 +365,6 @@ nav.titlebar {
     margin: 0px;
     padding: 0px;
     height: 46px;
-    font-family: Montserrat, sanf-serif;
     font-size: 32px;
     color: #223;
 }
@@ -459,7 +458,7 @@ div.wrap3 {
     color: #FFF;
     border-radius: 3px;
     padding: 2px 2px 2px 8px;
-    
+
 }
 
 h2 {
@@ -500,7 +499,7 @@ h2 {
     border-radius: 3px;
     height: calc(100% - 42px);
     overflow: visible;
-    
+
 }
 
 .chartChart {
@@ -648,7 +647,7 @@ h2 {
         -webkit-transition: all .3s ease-in-out;
         -o-transition: all .3s ease-in-out;
         transition: all .3s ease-in-out;
-        
+
         text-overflow: ellipsis;
         white-space: nowrap
     }
@@ -3081,11 +3080,32 @@ body.error .logo h1 {
 }
 
 .phonebook_entry > a > img {
-   margin: 2px; 
+   margin: 2px;
 }
 
 .phonebook_entry > div {
    overflow: hidden;
    text-overflow: ellipsis;
    white-space: nowrap;
+}
+
+.punchcard_tooltip {
+    position: absolute;
+    text-align: center;
+    min-width: 60px;
+    min-height: 24px;
+    margin: 8px;
+    margin-top: -10px;
+    padding: 4px;
+    border: 1.25px solid #3338;
+    line-height: 28px;
+    z-index: 1001;
+    font: 12px sans-serif;		
+    background: lightgoldenrodyellow;	
+    border-radius: 6px;			
+    pointer-events: none;	
+}
+
+.show-calendar {
+    right: auto !important;
 }

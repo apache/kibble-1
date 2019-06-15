@@ -109,7 +109,7 @@ def run(API, environ, indata, session):
                             {'range':
                                 {
                                     'date': {
-                                        'from': time.strftime("%Y/%m/%d 0:0:0", time.gmtime(dateFrom)),
+                                        'from': time.strftime("%Y/%m/%d 00:00:00", time.gmtime(dateFrom)),
                                         'to': time.strftime("%Y/%m/%d 23:59:59", time.gmtime(dateTo))
                                     }
                                 }

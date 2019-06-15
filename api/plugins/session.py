@@ -46,7 +46,7 @@ class KibbleSession(object):
         res = self.DB.ES.search(
                 index=self.DB.dbname,
                 doc_type="source",
-                size = 5000,
+                size = 10000,
                 _source_include = ['sourceURL', 'sourceID'],
                 body = {
                     'query': {
@@ -65,6 +65,45 @@ class KibbleSession(object):
         for doc in res['hits']['hits']:
             sid = doc['_source']['sourceID']
             m = re.search(subfilter, doc['_source']['sourceURL'], re.IGNORECASE)
+            if m and ((not view) or (sid in view)):
+                sources.append(sid)
+        if not sources:
+            sources = ['x'] # blank return to not show eeeeverything
+        return sources
+    
+    def subType(self, stype, view = []):
+        if len(stype) == 0:
+            return view
+        if type(stype) is str:
+            stype = [stype]
+        dOrg = self.user['defaultOrganisation'] or "apache"
+        res = self.DB.ES.search(
+                index=self.DB.dbname,
+                doc_type="source",
+                size = 10000,
+                _source_include = ['sourceURL', 'sourceID', 'type'],
+                body = {
+                    'query': {
+                        'bool': {
+                            'must': [
+                                {'term': {
+                                'organisation': dOrg
+                                }
+                                },
+                                {'terms': {
+                                'type': stype
+                                }
+                                }
+                            ]
+                        }
+                        
+                    }
+                }
+            )
+        sources = []
+        for doc in res['hits']['hits']:
+            sid = doc['_source']['sourceID']
+            m = doc['_source']['type'] in stype
             if m and ((not view) or (sid in view)):
                 sources.append(sid)
         if not sources:

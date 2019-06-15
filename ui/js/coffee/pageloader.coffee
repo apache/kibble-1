@@ -90,6 +90,7 @@ setupPage = (json, state) ->
                 when 'multiviewpicker' then widget.load(multiviewexplorer)
                 when 'donut' then widget.load(donut)
                 when 'gauge' then widget.load(gauge)
+                when 'punchcard' then widget.load(punchcard)
                 when 'widget' then widget.load(publisher)
                 when 'radar' then widget.load(radar)
                 when 'top5' then widget.load(top5)

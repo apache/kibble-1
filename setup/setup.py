@@ -163,9 +163,13 @@ def createIndex():
         )
 
     es6 = True if int(es.info()['version']['number'].split('.')[0]) >= 6 else False
+    es7 = True if int(es.info()['version']['number'].split('.')[0]) >= 7 else False
     if not es6:
         print("New Kibble installations require ElasticSearch 6.x or newer! You appear to be running %s!" % es.info()['version']['number'])
         sys.exit(-1)
+    # If ES >= 7, _doc is invalid and mapping should be rooted
+    if es7:
+        mappings['mappings'] = mappings['mappings']['_doc']
     # Check if index already exists
     if es.indices.exists(dbname+"_api"):
         if args.skiponexist: # Skip this is DB exists and -k added

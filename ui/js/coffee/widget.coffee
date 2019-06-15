@@ -89,7 +89,7 @@ updateWidgets = (type, target, eargs) ->
         globArgs[k] = v
         g = []
         for k,v of globArgs
-                if k and v
+                if k and (typeof v != 'undefined' and v != null)
                     g.push(k + '=' + v)
         gargs = "?" + g.join("&")
         wloc = window.location.pathname + gargs
@@ -106,7 +106,7 @@ updateWidgets = (type, target, eargs) ->
                 widget.args.eargs = widget.args.eargs and widget.args.eargs or {}
                 for k, v of eargs
                     widget.args.eargs[k] = v
-                    if not v
+                    if (typeof v == 'undefined' or v == null)
                         delete widget.args.eargs[k]
             switch widget.args.type
                 when 'donut' then widget.load(donut)
@@ -125,6 +125,7 @@ updateWidgets = (type, target, eargs) ->
                 when 'sourcepicker' then widget.load(sourceexplorer)
                 when 'issuepicker' then widget.load(issueexplorer)
                 when 'forumpicker' then widget.load(forumexplorer)
+                when 'punchcard' then widget.load(punchcard)
                 when 'viewpicker' then widget.load(viewexplorer)
                 when 'mailpicker' then widget.load(mailexplorer)
                 when 'cipicker' then widget.load(ciexplorer)

@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ########################################################################
-# OPENAPI-URI: /api/ci/queue
+# OPENAPI-URI: /api/code/punchcard
 ########################################################################
 # get:
 #   responses:
@@ -33,7 +33,7 @@
 #       description: unexpected error
 #   security:
 #   - cookieAuth: []
-#   summary: Shows email sent over time
+#   summary: Show commits as a timeseries
 # post:
 #   requestBody:
 #     content:
@@ -55,14 +55,16 @@
 #       description: unexpected error
 #   security:
 #   - cookieAuth: []
-#   summary: Shows CI queue over time
+#   summary: Show commits as a timeseries
 # 
 ########################################################################
 
 
 
+
+
 """
-This is the CI queue timeseries renderer for Kibble
+This is the commit punch-card renderer for Kibble
 """
 
 import json
@@ -84,13 +86,17 @@ def run(API, environ, indata, session):
     if indata.get('subfilter'):
         viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
     
-    # We only want build sources, so we can sum up later.
-    viewList = session.subType(['jenkins', 'travis', 'buildbot'], viewList)
     
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
     
-    interval = indata.get('interval', 'month')
+    which = 'committer_email'
+    role = 'committer'
+    if indata.get('author', False):
+        which = 'author_email'
+        role = 'author'
+    
+    interval = indata.get('interval', 'day')
     
     
     ####################################################################
@@ -102,7 +108,7 @@ def run(API, environ, indata, session):
                         'must': [
                             {'range':
                                 {
-                                    'time': {
+                                    'tsday': {
                                         'from': dateFrom,
                                         'to': dateTo
                                     }
@@ -119,88 +125,49 @@ def run(API, environ, indata, session):
             }
     # Source-specific or view-specific??
     if indata.get('source'):
-        viewList = [indata.get('source')]
+        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    elif viewList:
+        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+    if indata.get('email'):
+        query['query']['bool']['should'] = [{'term': {'committer_email': indata.get('email')}}, {'term': {'author_email': indata.get('email')}}]
+        query['query']['bool']['minimum_should_match'] = 1
     
-    query['query']['bool']['must'].append({'term': {'sourceID': 'x'}})
+    # Path filter?
+    if indata.get('pathfilter'):
+        pf = indata.get('pathfilter')
+        if '!' in pf:
+            pf = pf.replace('!', '')
+            query['query']['bool']['must_not'] = query['query']['bool'].get('must_not', [])
+            query['query']['bool']['must_not'].append({'regexp': {'files_changed': pf}})
+        else:
+            query['query']['bool']['must'].append({'regexp': {'files_changed': pf}})
     
-    timeseries = []
-    for source in viewList:
-        query['query']['bool']['must'][2] = {'term': {'sourceID': source}}
-        
-        # Get queue stats
-        query['aggs'] = {
-                'timeseries': {
-                    'date_histogram': {
-                        'field': 'date',
-                        'interval': interval
-                    },
-                    'aggs': {
-                        'size': {
-                            'avg': {
-                                'field': 'size'
-                            }
-                        },
-                        'blocked': {
-                            'avg': {
-                                'field': 'blocked'
-                            }
-                        },
-                        'building': {
-                            'avg': {
-                                'field': 'building'
-                            }
-                        },
-                        'stuck': {
-                            'avg': {
-                                'field': 'stuck'
-                            }
-                        },
-                        'wait': {
-                            'avg': {
-                                'field': 'avgwait'
-                            }
-                        }
-                    }
-                }
+    # Get number of committers, this period
+    query['aggs'] = {
+            'commits': {
+                'date_histogram': {
+                    'field': 'date',
+                    'interval': 'hour',
+                    "format": "E - k"
+                }                
             }
-        res = session.DB.ES.search(
-                index=session.DB.dbname,
-                doc_type="ci_queue",
-                size = 0,
-                body = query
-            )
-
-        for bucket in res['aggregations']['timeseries']['buckets']:
-            ts = int(bucket['key'] / 1000)
-            bucket['wait']['value'] = bucket['wait'].get('value', 0) or 0
-            if bucket['doc_count'] == 0:
-                continue
-            
-            found = False
-            for t in timeseries:
-                if t['date'] == ts:
-                    found = True
-                    t['queue size'] += bucket['size']['value']
-                    t['builds running'] += bucket['building']['value']
-                    t['average wait (hours)'] += bucket['wait']['value']
-                    t['builders'] += 1
-            if not found:
-                timeseries.append({
-                    'date': ts,
-                    'queue size': bucket['size']['value'],
-                    'builds running': bucket['building']['value'],
-                    'average wait (hours)': bucket['wait']['value'],
-                    'builders': 1,
-                })
+        }
+    res = session.DB.ES.search(
+            index=session.DB.dbname,
+            doc_type="code_commit",
+            size = 0,
+            body = query
+        )
     
-    for t in timeseries:
-        t['average wait (hours)'] = int(t['average wait (hours)']/360)/10.0
-        del t['builders']
-        
+    timeseries = {}
+    for bucket in res['aggregations']['commits']['buckets']:
+        ts = bucket['key_as_string']
+        count = bucket['doc_count']
+        timeseries[ts] = timeseries.get(ts, 0) + count
+
     JSON_OUT = {
         'widgetType': {
-            'chartType': 'line',  # Recommendation for the UI
-            'nofill': True
+            'chartType': 'punchcard'  # Recommendation for the UI
         },
         'timeseries': timeseries,
         'interval': interval,

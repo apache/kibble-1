@@ -195,7 +195,7 @@ widgets:
                     -
                         type:       "donut"
                         datatype:   "repo"
-                        blocks:     4
+                        blocks:     3
                         source:     "code/sloc"
                         representation: "sloccount"
                         name:       "Language breakdown"
@@ -203,7 +203,7 @@ widgets:
                     -
                         type:       "donut"
                         datatype:   "repo"
-                        blocks:     4
+                        blocks:     2
                         source:     "code/sloc"
                         representation: "commentcount"
                         name:       "Language breakdown"
@@ -211,10 +211,17 @@ widgets:
                     -
                         type:       "top5"
                         datatype:   "repo"
-                        blocks:     4
+                        blocks:     3
                         source:     "code/committers"
                         representation: "top5"
                         name:       "Top 5 contributors"
+                    -
+                        type:       "punchcard"
+                        datatype:   "repo"
+                        blocks:     4
+                        source:     "code/punchcard"
+                        representation: "punchcard"
+                        name:       "Hourly commit activity across weekdays"
             -
                 name: "Commit history"
                 children:

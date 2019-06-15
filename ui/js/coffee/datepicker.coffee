@@ -34,6 +34,7 @@ updateTimeseriesWidgets = (range) ->
             updateWidgets('treemap', null, { to: to, from: from})
             updateWidgets('report', null, { to: to, from: from})
             updateWidgets('mvp', null, { to: to, from: from})
+            updateWidgets('punchcard', null, { to: to, from: from})
             updateWidgets('comstat', null, { to: to, from: from})
             updateWidgets('phonebook', null, { to: to, from: from})
             updateWidgets('worldmap', null, { to: to, from: from})
@@ -79,10 +80,7 @@ datepicker = (widget) ->
           startDate: if globArgs.from then moment(new Date(globArgs.from*1000)) else moment().subtract(6, 'months'),
           endDate: if globArgs.to then moment(new Date(globArgs.to*1000)) else moment(),
           minDate: '1970-01-01',
-          maxDate: '2020-01-01',
-          dateLimit: {
-            days: 365
-          },
+          maxDate: moment().add(2, 'years').format('YYYY-01-01'),
           showDropdowns: true,
           showWeekNumbers: true,
           timePicker: false,
@@ -123,6 +121,6 @@ datepicker = (widget) ->
         
         $('#' + id).daterangepicker(datePickerOptions, (start, end, label) ->
                 console.log(start._d.getTime()/1000)
-                updateTimeseriesWidgets([Math.floor(start._d.getTime()/1000), Math.floor(end._d.getTime()/1000)])
+                updateTimeseriesWidgets([Math.max(0, Math.floor(start._d.getTime()/1000)), Math.max(3600, Math.floor(end._d.getTime()/1000))])
         );
 

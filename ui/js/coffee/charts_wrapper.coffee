@@ -83,8 +83,11 @@ fScreen = (o) ->
         if o.config.linked
           bb = o.main.childNodes[2].getBoundingClientRect()
           o.chartobj.resize({height: bb.height})
-        else
+        else if not o.config.punchcard
           o.chartobj.resize({height: 720})
+        else if o.config.punchcard
+          o.chartobj.attr('width', '100%')
+          o.chartobj.node().dispatchEvent(new Event('resize'))
     else
         o.main.className = "chartWrapper"
         o.main.childNodes[2].style.minHeight = ""
@@ -97,7 +100,11 @@ fScreen = (o) ->
           bb = o.main.childNodes[2].getBoundingClientRect()
           o.chartobj.resize({height: bb.height})
         else
-          o.chartobj.resize({height: 240})
+          if o.config.punchcard
+            o.chartobj.attr('width', '100%')
+            o.chartobj.node().dispatchEvent(new Event('resize'))
+          else
+            o.chartobj.resize({height: 240})
     return true
 
 
@@ -298,6 +305,9 @@ class Chart
             [@chartobj, @config] = charts_radarchart(@chartdiv, data)
          if type == 'relationship'
             [@chartobj, @config] = charts_linked(@chartdiv, data.nodes, data.links, options)
+         if type == 'punchcard'
+            [@chartobj, @config] = charts_punchcard(@chartdiv, data, options)
+            
         
         # If this data source has distinguishable categories
         # show a checkbox to toggle it.
