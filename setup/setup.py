@@ -259,8 +259,8 @@ def createIndex():
         'apiversion': KIBBLE_VERSION,           # Log current API version
         'dbversion': KIBBLE_DB_VERSION          # Log the database revision we accept (might change!)
     }
-    es.index(index=dbname, doc_type = 'useraccount', id = adminName, body = doc)
-    es.index(index=dbname, doc_type = 'api', id = 'current', body = dbdoc)
+    es.index(index=dbname+'_useraccount', doc_type = '_doc', id = adminName, body = doc)
+    es.index(index=dbname+'_api', doc_type = '_doc', id = 'current', body = dbdoc)
     print("Account created!")
 
 try:
