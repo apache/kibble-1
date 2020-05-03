@@ -13,3 +13,6 @@ For an online demo of the Kibble service, see
 
 See the [documentation](https://apache-kibble.readthedocs.io/) for
 installation, setup and usage instructions.
+
+This is one component of the Kibble Suite. Please also see the 
+[kibble scanners](https://github.com/apache/kibble-scanners) utility.
