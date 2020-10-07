@@ -2,8 +2,7 @@
 
 # Apache Kibble
 
-Apache Kibble is a tool to collect, aggregate and visualize data about open source projects
-maintained by open source projects. It consists of two components:
+Apache Kibble is a tool to collect, aggregate and visualize data about any software project that uses commonly known tools. It consists of two components:
 
 - **Kibble Server** (this repository) - main database and UI Server. It serves as the hub
  for the scanners to connect to, and provides the overall management of sources as well as the
@@ -29,5 +28,5 @@ For installation steps see the [documentation](https://apache-kibble.readthedocs
 
 ## Contributing
 
-We welcomes all contributions that improve the state of the Apache Kibble project. For contribution guidelines
+We welcome all contributions that improve the state of the Apache Kibble project. For contribution guidelines
 check the [CONTRIBUTING.md](/CONTRIBUTING.md).
