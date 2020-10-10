@@ -28,4 +28,6 @@ repos:
     hooks:
       - id: check-yaml
       - id: end-of-file-fixer
+        exclude: ^ui/vendors/.*$
       - id: trailing-whitespace
+        exclude: ^ui/vendors/.*$
