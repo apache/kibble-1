@@ -15,5 +15,5 @@ We also have:
 
 ## Development installation
 
-This project requires Python in higher version than 3.3.
+This project requires Python in higher version than 3.4.
 More information will come soon!
