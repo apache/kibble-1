@@ -26,7 +26,7 @@ import importlib
 import os
 # Define all the submodules we have
 
-rootpath = os.path.dirname(__file__)
+rootpath = os.path.join(os.path.dirname(os.path.realpath(__file__)))
 print("Reading pages from %s" % rootpath)
 
 # Import each submodule into a hash called 'handlers'
@@ -42,6 +42,5 @@ def loadPage(path):
                 p = filepath.replace(rootpath, "")[1:].replace('/', '.')[:-3]
                 xp = p.replace('.', '/')
                 print("Loading endpoint pages.%s as %s" % (p, xp))
-                handlers[xp] = importlib.import_module("pages.%s" % p)
-
+                handlers[xp] = importlib.import_module("api.pages.%s" % p)
 loadPage(rootpath)

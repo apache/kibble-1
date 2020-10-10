@@ -20,17 +20,13 @@ This is the ES library for Apache Kibble.
 It stores the elasticsearch handler and config options.
 """
 
-
-# Main imports
-import cgi
-import re
-#import aaa
 import elasticsearch
+
 
 class KibbleESWrapper(object):
     """
-       Class for rewriting old-style queries to the new ones,
-       where doc_type is an integral part of the DB name
+    Class for rewriting old-style queries to the new ones,
+    where doc_type is an integral part of the DB name
     """
     def __init__(self, ES):
         self.ES = ES
@@ -64,6 +60,7 @@ class KibbleESWrapper(object):
             doc_type = '_doc',
             body = body
             )
+
 
 class KibbleESWrapperSeven(object):
     """
