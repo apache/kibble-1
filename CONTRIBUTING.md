@@ -15,8 +15,29 @@ We also have:
 
 ## Development installation
 
-This project requires Python in higher version than 3.4.
-More information will come soon!
+The easiest option to spin up a development environment is to use our development docker-compose.
+The development image has mounted all Kibble sources so all your local code changes will be automatically
+reflected  in the running app.
+
+First you need to configure the Elasticsearch node:
+```
+docker-compose -f docker-compose-dev.yaml up setup
+```
+Once you see the
+```
+setup_1          | All done, Kibble should...work now :)
+```
+Now you can can launch Apache Kibble ui:
+```
+docker-compose -f docker-compose-dev.yaml up ui
+```
+The ui should be available under `http://0.0.0.0:8000` or `http://localhost:8000`. To log in you can use
+the dummy admin account `admin@kibble` and password `kibbleAdmin`.
+
+You can also start only the API server:
+```
+docker-compose -f docker-compose-dev.yaml up kibble
+```
 
 ## Code Quality
 

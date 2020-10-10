@@ -2,5 +2,6 @@ certifi
 pyyaml
 bcrypt
 elasticsearch
+gunicorn==20.0.4
 pre-commit
 python-dateutil
