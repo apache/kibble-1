@@ -20,7 +20,11 @@ Kibble team
 
 
 **Description:**
-<!--Please provide detailed description of the issue you want to submit.-->
+<!--
+Please provide a detailed description of the issue you want to submit.
+Please tell us how many times the issue occurred.
+Could you tell us how it should work in your opinion?
+-->
 
 **Reproduction steps:**
 <!--Provide steps that allow us to reproduce the issue.-->
@@ -31,12 +35,6 @@ Kibble team
 -->
 **Actual result:**
 <!--Describe actual system behavior.-->
-
-**Excpected result:**
-<!--Information how it should work or how it should work in your opinion.-->
-
-**Reproduction rate:**
-<!--How many times issue occurred.-->
 
 **OS:**
 <!--Tell us what OS you are using.-->
