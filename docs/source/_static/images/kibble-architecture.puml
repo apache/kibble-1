@@ -1,0 +1,25 @@
+@startuml
+actor user
+database elasticsearch
+rectangle "Apache Kibble" {
+  file kibble.yaml
+  rectangle webserver {
+     collections "static files"
+  }
+  rectangle gunicorn {
+     rectangle API
+  }
+  rectangle API
+}
+user <-> webserver: (web app)
+webserver <--> gunicorn: (reverse proxy)
+API <-> elasticsearch
+API <~~ kibble.yaml
+
+rectangle "Apache Kibble Scanners" {
+  collections scanners
+  file config.yaml
+}
+scanners --> elasticsearch
+config.yaml ~> scanners
+@enduml

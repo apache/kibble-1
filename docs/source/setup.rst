@@ -16,7 +16,7 @@ The Kibble Server (kibble)
    This is the main database and UI Server. It serves as the hub for the
    scanners to connect to, and provides the overall management of
    sources as well as the visualizations and API end points.
-   
+
 The Kibble Scanner Applications (kibble-scanners)
    This is a collection of scanning applications each designed to work
    with a specific type of resource (a git repo, a mailing list, a JIRA
@@ -24,6 +24,10 @@ The Kibble Scanner Applications (kibble-scanners)
    Some resources only have one scanner plugin, while others may have
    multiple plugins capable of dealing with specific aspects of a
    resource.
+
+The following diagram shows Kibble architecture:
+
+.. figure:: _static/images/kibble-architecture.png
 
 **********************
 Component Requirements
