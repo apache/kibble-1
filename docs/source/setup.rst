@@ -108,11 +108,7 @@ following components installed and set up:
   existing databases, but not for new setups). Does not have to be on
   the same machine, but it may help speed up processing.
 - A web server of your choice (Apache HTTP Server, NGINX, lighttp etc)
-- Python 3.4 or newer with the following libraries installed:
-- - elasticsearch
-- - certifi
-- - pyyaml
-- - bcrypt
+- Python 3.4 or newer with installed libraries from `setup/requirements.txt`
 - Gunicorn for Python 3.x (often called gunicorn3) or mod_wsgi
 
 ###########################################
@@ -125,10 +121,9 @@ Assuming you wish to install kibble in /var/www/kibble, you would set it
 up by issuing the following:
 
 - ``git clone https://github.com/apache/kibble.git /var/www/kibble``
-- ``cd /var/www/kibble/setup``
-- ``pip3 install -r requirements.txt``
-- ``python3 setup.py``
-- Enter the configuration parameters the setup process asks for
+- ``cd /var/www/kibble``
+- ``pip install -r setup/requirements.txt``
+- ``python setup/setup.py``
 
 This will set up the database, the configuration file, and create your
 initial administrator account for the UI. You can later on do additional
