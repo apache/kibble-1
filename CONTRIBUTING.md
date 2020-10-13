@@ -1,6 +1,6 @@
 # Contributing to Kibble #
 
-## Community 
+## Community
 
 The main development and design discussion happens on our mailing lists.
 We have a list specifically for development, and one for future user questions and feedback.
@@ -21,7 +21,7 @@ More information will come soon!
 ## Code Quality
 
 Apache Kibble project is using [pre-commits](https://pre-commit.com) to ensure the quality of the code.
-We encourage you to use pre-commits, but it's not a required to contribute. Every change is checked
+We encourage you to use pre-commits, but it's not required in order to contribute. Every change is checked
 on CI and if it does not pass the tests it cannot be accepted. If you want to check locally then
 you should install Python3.6 or newer together and run:
 ```bash
