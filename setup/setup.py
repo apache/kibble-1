@@ -172,7 +172,7 @@ def create_es_index(
         # person: contributor DB
         'person',
     ]
-    
+
     for t in types:
         iname = f"{dbname}_{t}"
         print(f"Creating index {iname}")

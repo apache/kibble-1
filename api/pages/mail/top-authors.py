@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows the top N of email authors
-# 
+#
 ########################################################################
 
 
@@ -75,27 +75,27 @@ import re
 ROBITS = r"(git|jira|jenkins|gerrit)@"
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-    
+
     interval = indata.get('interval', 'month')
-    
-    
+
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -125,7 +125,7 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+
     # Get top 25 committers this period
     query['aggs'] = {
             'authors': {
@@ -133,7 +133,7 @@ def run(API, environ, indata, session):
                     'field': 'sender',
                     'size': 30
                 }
-            }            
+            }
         }
     res = session.DB.ES.search(
             index=session.DB.dbname,
@@ -147,7 +147,7 @@ def run(API, environ, indata, session):
         email = bucket['key']
         # By default, we want to see humans, not bots on this list!
         if re.match(ROBITS, email):
-            continue 
+            continue
         count = bucket['doc_count']
         sha = hashlib.sha1( ("%s%s" % (dOrg, email)).encode('utf-8') ).hexdigest()
         if session.DB.ES.exists(index=session.DB.dbname,doc_type="person",id = sha):
@@ -161,12 +161,12 @@ def run(API, environ, indata, session):
             people[email] = person
             people[email]['gravatar'] = hashlib.md5(person.get('email', 'unknown').encode('utf-8')).hexdigest()
             people[email]['count'] = count
-    
+
     topN = []
     for email, person in people.items():
         topN.append(person)
     topN = sorted(topN, key = lambda x: x['count'], reverse = True)
-        
+
     JSON_OUT = {
         'topN': {
             'denoter': 'emails',

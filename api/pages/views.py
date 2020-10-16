@@ -128,7 +128,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Add a new view
-# 
+#
 ########################################################################
 
 
@@ -145,14 +145,14 @@ import time
 import hashlib
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     method = environ['REQUEST_METHOD']
     dOrg = session.user['defaultOrganisation'] or "apache"
-    
+
     # Are we adding a view?
     if method == 'PUT':
         viewID = hashlib.sha224( ("%s-%s-%s" % (time.time(), session.user['email'], dOrg) ).encode('utf-8') ).hexdigest()
@@ -173,7 +173,7 @@ def run(API, environ, indata, session):
         }
         session.DB.ES.index(index=session.DB.dbname, doc_type="view", id = viewID, body = doc)
         yield json.dumps({'okay': True, 'message': "View created"})
-    
+
     # Are we editing (patching) a view?
     if method == 'PATCH':
         viewID = indata.get('id')
@@ -188,7 +188,7 @@ def run(API, environ, indata, session):
                 raise API.exception(403, "You don't own this view, and cannot edit it.")
         else:
             raise API.exception(404, "We couldn't find a view with this ID.")
-    
+
     # Removing a view?
     if method == 'DELETE':
         viewID = indata.get('id')
@@ -201,11 +201,11 @@ def run(API, environ, indata, session):
                 raise API.exception(403, "You don't own this view, and cannot delete it.")
         else:
             raise API.exception(404, "We couldn't find a view with this ID.")
-            
-    
+
+
     if method in ['GET', 'POST']:
         # Fetch all views for default org
-        
+
         res = session.DB.ES.search(
                 index=session.DB.dbname,
                 doc_type="view",
@@ -218,8 +218,8 @@ def run(API, environ, indata, session):
                     }
                 }
             )
-        
-        
+
+
         # Are we looking at someone elses view?
         if indata.get('view'):
             viewID = indata.get('view')
@@ -229,7 +229,7 @@ def run(API, environ, indata, session):
                     blob['_source']['name'] += " (shared by " +  blob['_source']['email'] + ")"
                     res['hits']['hits'].append(blob)
         sources = []
-        
+
         # Include public views??
         if not indata.get('sources', False):
             pres = session.DB.ES.search(
@@ -259,7 +259,7 @@ def run(API, environ, indata, session):
                 if hit['_source']['email'] != session.user['email']:
                     hit['_source']['name'] += " (shared view)"
                     res['hits']['hits'].append(hit)
-        
+
         for hit in res['hits']['hits']:
             doc = hit['_source']
             if doc['organisation'] != dOrg:
@@ -273,7 +273,7 @@ def run(API, environ, indata, session):
                 sources.append(xdoc)
             else:
                 sources.append(doc)
-        
+
         allsources = []
         if indata.get('sources', False):
             res = session.DB.ES.search(
@@ -296,7 +296,7 @@ def run(API, environ, indata, session):
                     'sourceURL': doc['sourceURL']
                     }
                 allsources.append(xdoc)
-        
+
         JSON_OUT = {
             'views': sources,
             'sources': allsources,

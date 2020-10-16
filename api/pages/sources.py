@@ -114,7 +114,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Add a new source
-# 
+#
 ########################################################################
 
 
@@ -133,7 +133,7 @@ import yaml
 
 def canModifySource(session):
     """ Determine if the user can edit sources in this org """
-    
+
     dOrg = session.user['defaultOrganisation'] or "apache"
     if session.DB.ES.exists(index=session.DB.dbname, doc_type="organisation", id= dOrg):
         xorg = session.DB.ES.get(index=session.DB.dbname, doc_type="organisation", id= dOrg)['_source']
@@ -144,30 +144,30 @@ def canModifySource(session):
     return False
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     method = environ['REQUEST_METHOD']
     dOrg = session.user['defaultOrganisation']
-    
+
     if method in ['GET', 'POST']:
         # Fetch organisation data
-        
+
         # Make sure we have a default/current org set
         if 'defaultOrganisation' not in session.user or not session.user['defaultOrganisation']:
             raise API.exception(400, "You must specify an organisation as default/current in order to add sources.")
-        
+
         if session.DB.ES.exists(index=session.DB.dbname, doc_type="organisation", id= dOrg):
             org = session.DB.ES.get(index=session.DB.dbname, doc_type="organisation", id= dOrg)['_source']
             del org['admins']
         else:
             raise API.exception(404, "No such organisation, '%s'" % (dOrg or "(None)"))
-        
+
         sourceTypes = indata.get('types', [])
         # Fetch all sources for default org
-        
+
         res = session.DB.ES.search(
                 index=session.DB.dbname,
                 doc_type="source",
@@ -180,15 +180,15 @@ def run(API, environ, indata, session):
                     }
                 }
             )
-        
+
         # Secondly, fetch the view if we have such a thing enabled
         viewList = []
         if indata.get('view'):
             viewList = session.getView(indata.get('view'))
         if indata.get('subfilter') and indata.get('quick'):
-            viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-        
-        
+            viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
         sources = []
         for hit in res['hits']['hits']:
             doc = hit['_source']
@@ -208,7 +208,7 @@ def run(API, environ, indata, session):
                 if 'creds' in doc:
                     del doc['creds']
                 sources.append(doc)
-        
+
         JSON_OUT = {
             'sources': sources,
             'okay': True,
@@ -216,7 +216,7 @@ def run(API, environ, indata, session):
         }
         yield json.dumps(JSON_OUT)
         return
-    
+
     # Add one or more sources
     if method == "PUT":
         if canModifySource(session):
@@ -234,11 +234,11 @@ def run(API, environ, indata, session):
                         if el in source and len(source[el]) > 0:
                             creds[el] = source[el]
                 sourceID = hashlib.sha224( ("%s-%s" % (sourceType, sourceURL)).encode('utf-8') ).hexdigest()
-                
+
                 # Make sure we have a default/current org set
                 if 'defaultOrganisation' not in session.user or not session.user['defaultOrganisation']:
                     raise API.exception(400, "You must first specify an organisation as default/current in order to add sources.")
-                
+
                 doc = {
                     'organisation': dOrg,
                     'sourceURL': sourceURL,
@@ -259,7 +259,7 @@ def run(API, environ, indata, session):
                 })
         else:
             raise API.exception(403, "You don't have permission to add sources to this organisation.")
-    
+
     # Delete a source
     if method == "DELETE":
         if canModifySource(session):
@@ -277,7 +277,7 @@ def run(API, environ, indata, session):
                 raise API.exception(404, "No such source item")
         else:
             raise API.exception(403, "You don't have permission to delete this source.")
-        
+
     # Edit a source
     if method == "PATCH":
         pass

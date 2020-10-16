@@ -39,7 +39,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows contributors for the entire org or matching filters.
-# 
+#
 ########################################################################
 
 
@@ -57,20 +57,20 @@ import hashlib
 cached_people = {} # Store people we know, so we don't have to fetch them again.
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
-    
+
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     # Fetch all contributors for the org
     dOrg = session.user['defaultOrganisation'] or "apache"
     query = {
@@ -86,13 +86,13 @@ def run(API, environ, indata, session):
                     }
                 }
             }
-    
+
     # Source-specific or view-specific??
     if indata.get('source'):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+
     # Date specific?
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
@@ -108,7 +108,7 @@ def run(API, environ, indata, session):
         )
     emails = []
     contribs = {}
-    
+
     for field in ['sender', 'author_email', 'issueCreator', 'issueCloser']:
         N = 0
         while N < 5:
@@ -121,7 +121,7 @@ def run(API, environ, indata, session):
                             'partition': N,
                             'num_partitions': 5
                          },
-                    }                
+                    }
                 }
             }
             res = session.DB.ES.search(
@@ -139,7 +139,7 @@ def run(API, environ, indata, session):
                     emails.append(k['key'])
                 contribs[k['key']] = contribs.get(k['key'], 0) + k['doc_count']
             N += 1
-            
+
     people = []
     for email in emails:
         pid = hashlib.sha1( ("%s%s" % (dOrg, email)).encode('ascii', errors='replace')).hexdigest()
@@ -160,7 +160,7 @@ def run(API, environ, indata, session):
         if person:
             person['contributions'] = contribs.get(email, 0)
             people.append(person)
-        
+
     JSON_OUT = {
         'people': people,
         'okay': True

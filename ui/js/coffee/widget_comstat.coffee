@@ -4,9 +4,9 @@ comShow = (t) ->
         if (row.getAttribute("id")||"foo").match("comstat_#{t}_")
             row.style.display = "table-row"
     document.getElementById("comstat_#{t}_more").style.display = "none"
-    
+
 comstat = (json, state) ->
-    
+
     if json and json.stats
         row = new Row()
         p = new HTML('p', {},
@@ -21,12 +21,12 @@ comstat = (json, state) ->
             onchange: 'updateWidgets("comstat", null, { committersOnly: this.checked ? "true" : null });'
             })
         lb = new HTML('label', { for: 'comonly' }, "Show only new committers, discard new authors.")
-        
+
         row.inject(p)
         row.inject(chk)
         row.inject(lb)
         state.widget.inject(row.div, true)
-        
+
         if json.stats.code.seen > 0
             row = new Row()
             js = { alphaSort: true, counts: {
@@ -44,7 +44,7 @@ comstat = (json, state) ->
             if json.stats.code.newcomers.length and json.stats.code.newcomers.length >= 0
                 nl = json.stats.code.newcomers.length
             stbl = new Widget(6, { name: "New code contributors (#{nl})" })
-            
+
             tbl = mk('table', {class: "table table-striped"})
             tr = mk('tr', {}, [
                 mk('th', {}, "Avatar"),
@@ -80,7 +80,7 @@ comstat = (json, state) ->
             app(tbl, tb)
             stbl.inject(tbl)
             row.inject(stbl)
-            
+
             if json.stats.code.timeseries and json.stats.code.timeseries.length > 0
                 widget = new Widget(4, {name: "New code contributors over time:", representation: 'bars'})
                 widget.parent = state.widget
@@ -89,9 +89,9 @@ comstat = (json, state) ->
                 widget.json = js
                 widget.callback = linechart
                 linechart(js, { widget: widget})
-            
+
             state.widget.inject(row.div)
-            
+
         if json.stats.issues.seen > 0
             row = new Row()
             js = { alphaSort: true, counts: {
@@ -109,7 +109,7 @@ comstat = (json, state) ->
             if json.stats.issues.newcomers.length and json.stats.issues.newcomers.length >= 0
                 nl = json.stats.issues.newcomers.length
             stbl = new Widget(6, { name: "New issue contributors (#{nl})" })
-            
+
             tbl = mk('table', {class: "table table-striped"})
             tr = mk('tr', {}, [
                 mk('th', {}, "Avatar"),
@@ -127,7 +127,7 @@ comstat = (json, state) ->
                 key = json.bios[person].issue[1].key || url
                 wh = new Date(json.bios[person].issue[0] * 1000.0).toDateString()
                 person = json.bios[person].bio
-                
+
                 if i == 6
                     m = json.stats.issues.newcomers.length - i
                     tr = mk('tr', {scope: 'row', id: 'comstat_issue_more'}, [
@@ -146,7 +146,7 @@ comstat = (json, state) ->
             app(tbl, tb)
             stbl.inject(tbl)
             row.inject(stbl)
-            
+
             if json.stats.issues.timeseries and json.stats.issues.timeseries.length > 0
                 widget = new Widget(6, {name: "New issue contributors over time:", representation: 'bars'})
                 widget.parent = state.widget
@@ -155,15 +155,15 @@ comstat = (json, state) ->
                 widget.json = js
                 widget.callback = linechart
                 linechart(js, { widget: widget})
-            
-            
+
+
             state.widget.inject(row.div)
         if json.stats.converts
             if json.stats.converts.issue_to_code.length and json.stats.converts.issue_to_code.length > 0
                 row = new Row()
-                
+
                 stbl = new Widget(6, { name: "Previous issue contributors who are now contributing code:" })
-                
+
                 tbl = mk('table', {class: "table table-striped"})
                 tr = mk('tr', {}, [
                     mk('th', {}, "Avatar"),
@@ -186,14 +186,14 @@ comstat = (json, state) ->
                 app(tbl, tb)
                 stbl.inject(tbl)
                 row.inject(stbl)
-                
+
                 state.widget.inject(row.div)
-            
+
             if json.stats.converts.email_to_code.length and json.stats.converts.email_to_code.length > 0
                 row = new Row()
-                
+
                 stbl = new Widget(6, { name: "Previous email authors who are now contributing code:" })
-                
+
                 tbl = mk('table', {class: "table table-striped"})
                 tr = mk('tr', {}, [
                     mk('th', {}, "Avatar"),
@@ -216,7 +216,7 @@ comstat = (json, state) ->
                 app(tbl, tb)
                 stbl.inject(tbl)
                 row.inject(stbl)
-                
+
                 state.widget.inject(row.div)
     else
         notice = new HTML('h2', {}, "Community growth stats only works with user-defined views!")

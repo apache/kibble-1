@@ -3,7 +3,7 @@ elasticsearch:
     port:       9200
     ssl:        false
     dbname:     kibble
-    
+
 mail:
     mailhost:   localhost
     mailport:   25
@@ -17,4 +17,3 @@ accounts:
         -
             domain: apache.org
             organisation: apache
-    

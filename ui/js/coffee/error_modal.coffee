@@ -8,10 +8,9 @@ badModal = (str) ->
     modalInner.inject(btndiv)
     btn = new HTML('button', {class: "btn btn-lg btn-success", onclick:"document.body.removeChild(this.parentNode.parentNode.parentNode);"}, "Gotcha!")
     btndiv.inject(btn)
-    
+
     window.setTimeout(() ->
             modalInner.style.visibility = "visible"
             modalInner.style.opacity = 1
         , 10
         )
-

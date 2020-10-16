@@ -90,7 +90,7 @@ BugZilla
 JIRA
    This is a JIRA project. Most JIRA instances will require the login
    credentials of an anonymous account in order to perform API calls.
-   
+
 Twitter
    This is a Twitter account. Currently not much done there. WIP.
 

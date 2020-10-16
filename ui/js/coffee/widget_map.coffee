@@ -1,6 +1,6 @@
 # Donut widget
 worldmap = (json, state) ->
-        
+
     dt = []
     dtl = []
     l = 0
@@ -15,7 +15,7 @@ worldmap = (json, state) ->
             ctotal += details.count
             if details.count > cmax
                 cmax = details.count
-        
+
     lmain = document.createElement('div')
     radius = ['30%', '50%']
     if not state.widget.div.style.height
@@ -29,7 +29,7 @@ worldmap = (json, state) ->
     lmain.style.width = "100%"
     state.widget.inject(lmain, true)
     echartMap = echarts.init(lmain, theme);
-    
+
     echartMap.setOption({
       title: {
             text: "Worldwide distribution by country"
@@ -62,9 +62,9 @@ worldmap = (json, state) ->
         trigger: 'item',
         formatter: (params) ->
             return params.seriesName + '<br/>' + params.name + ' : ' + (params.value||0).pretty();
-        
+
     },
-      
+
       series: [{
         name: state.widget.name,
         type: 'map',
@@ -79,4 +79,3 @@ worldmap = (json, state) ->
       }]
     });
     theme.textStyle.fontSize = 12
-      

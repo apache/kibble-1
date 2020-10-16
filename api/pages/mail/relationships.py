@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows a breakdown of contributor relationships between mailing lists
-# 
+#
 ########################################################################
 
 
@@ -75,24 +75,24 @@ import re
 import math
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-    
-    
+
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -124,14 +124,14 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
     if indata.get('email'):
         query['query']['bool']['must'].append({'term': {'sender': indata.get('email')}})
-    
+
     # Get number of commits, this period, per repo
     query['aggs'] = {
             'per_ml': {
                 'terms': {
                     'field': 'sourceID',
                     'size': 10000
-                }                
+                }
             }
         }
     res = session.DB.ES.search(
@@ -140,7 +140,7 @@ def run(API, environ, indata, session):
             size = 0,
             body = query
         )
-    
+
     repos = {}
     repo_commits = {}
     authorlinks = {}
@@ -149,19 +149,19 @@ def run(API, environ, indata, session):
     max_shared = 0
     max_authors = 0
     minLinks = indata.get('links', 1)
-    
+
     # For each repo, count commits and gather data on authors
     for doc in res['aggregations']['per_ml']['buckets']:
         sourceID = doc['key']
         emails = doc['doc_count']
-        
+
         # Gather the unique authors/committers
         query['aggs'] = {
             'per_ml': {
                 'terms': {
                     'field': 'sender',
                     'size': 10000
-                }                
+                }
             }
         }
         xquery = copy.deepcopy(query)
@@ -179,7 +179,7 @@ def run(API, environ, indata, session):
             max_emails = emails
         repos[sourceID] = authors
         repo_commits[sourceID] = emails
-    
+
     # Now, figure out which repos share the same contributors
     repo_links = {}
     repo_notoriety = {}
@@ -192,7 +192,7 @@ def run(API, environ, indata, session):
         if not session.DB.ES.exists(index=session.DB.dbname, doc_type="source", id = ID):
             continue
         repodatas[ID] = session.DB.ES.get(index=session.DB.dbname, doc_type="source", id = ID)
-        
+
     for ID, repo in repos.items():
         mylinks = {}
         if not ID in repodatas:
@@ -229,11 +229,11 @@ def run(API, environ, indata, session):
         if ID not in repo_notoriety:
             repo_notoriety[ID] = set()
         repo_notoriety[ID].update(mylinks.keys()) # How many projects is this repo connected to?
-        
+
         if ID not in repo_authors:
             repo_authors[ID] = set()
         repo_authors[ID].update(repo) # How many projects is this repo connected to?
-        
+
         if ID != oID:
             repo_commits[ID] = repo_commits.get(ID, 0) + repo_commits[oID]
             if repo_commits[ID] > max_emails:
@@ -242,7 +242,7 @@ def run(API, environ, indata, session):
             max_links = len(repo_notoriety[ID])
         if len(repo_authors[ID]) > max_authors:
             max_authors = len(repo_authors[ID]) # Used for calculating max sphere size in charts
-        
+
     # Now, pull it all together!
     nodes = []
     links = []
@@ -265,7 +265,7 @@ def run(API, environ, indata, session):
         }
         nodes.append(doc)
         existing_repos.append(sourceID)
-            
+
     for k, s in repo_links.items():
         size = s
         fr, to = k.split('||')
@@ -278,7 +278,7 @@ def run(API, environ, indata, session):
                 'tooltip': "%u contributors in common" % size
             }
             links.append(doc)
-    
+
     JSON_OUT = {
         'maxLinks': max_links,
         'maxShared': max_shared,

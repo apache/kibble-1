@@ -47,7 +47,7 @@ validateSignup = (json, state) ->
         document.getElementById('signupmsg').innerHTML = "<span style='color: #060;'>Account created! Please check your inbox for verification instructions.</span>"
     else
         document.getElementById('signupmsg').innerHTML = "<h2 style='font-size: 2rem; color: #830;'>Error: " + json.message + "</h2>"
-        
+
 login = (form) ->
     if form.email.value.length > 5 and form.password.value.length > 0
         cog(document.getElementById('loginmsg'))
@@ -94,10 +94,9 @@ getResetToken = (json, state) ->
     btn = mk('input', { type: 'button', onclick: 'doResetPass()', value: 'Reset your password'})
     form.setAttribute("onsubmit", "return doResetPass();")
     app(form, btn)
-    
+
 resetpw = () ->
     email = get('email').value
     remail = email
     post('account',{ reset: email } , null, getResetToken)
     return false
-   

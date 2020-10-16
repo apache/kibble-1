@@ -6,7 +6,7 @@ git:
     optauth:
         - username
         - password
-        
+
 github:
     title: "GitHub repository (plus issues/PRs)"
     description: "This is GitHub repositories with issues and pull requests. For non-GitHub repos, please use the plain 'git' source type"
@@ -25,7 +25,7 @@ jira:
     authrequired: true
     optauth:
         - username
-        - password    
+        - password
 
 bugzilla:
     title: "BugZilla Project"
@@ -92,7 +92,7 @@ twitter:
         - token_secret
         - consumer_key
         - consumer_secret
-    
+
 discourse:
     title: Discourse
     description: A Discourse Forum System.

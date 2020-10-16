@@ -24,11 +24,11 @@ import re
 import time
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     # Fetch all sources for default org
     dOrg = session.user['defaultOrganisation'] or "apache"
     res = session.DB.ES.search(
@@ -56,7 +56,7 @@ def run(API, environ, indata, session):
             sources.append(xdoc)
         else:
             sources.append(doc)
-    
+
     JSON_OUT = {
         'views': sources,
         'okay': True,

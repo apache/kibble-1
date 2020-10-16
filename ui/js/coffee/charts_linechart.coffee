@@ -73,7 +73,7 @@ charts_linechart = (obj, data, options) ->
             keys = data.sortOrder
         else
             keys = Object.keys(xts)
-        
+
         for key in keys
             val = xts[key]
             xx = [key]

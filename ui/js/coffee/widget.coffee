@@ -29,10 +29,10 @@ toFullscreen = (id) ->
     FSA = get('FS_' + id)
     FSA.innerHTML = "Pop back"
     FSA.setAttribute("onclick", "toNormal('" + id + "');")
-    
+
     CW = get('CW_' + id)
     CW.setAttribute("onclick", "toNormal('" + id + "');")
-    
+
     w = findWidget(id)
     w.parent = obj.parentNode
     w.sibling = null
@@ -44,7 +44,7 @@ toFullscreen = (id) ->
             break
         else if node == obj
             dobrk = true
-        
+
     w.sibling = nxt
     ic = get('innercontents')
     app(ic, obj)
@@ -64,14 +64,14 @@ toFullscreen = (id) ->
 toNormal = (id) ->
     obj = get(id)
     w = findWidget(id)
-    
+
     FSA = get('FS_' + id)
     FSA.innerHTML = "Fullscreen"
     FSA.setAttribute("onclick", "toFullscreen('" + id + "');")
-    
+
     CW = get('CW_' + id)
     CW.setAttribute("onclick", "findWidget('"+id+"').kill();")
-    
+
     if w.sibling
         w.parent.insertBefore(obj, w.sibling)
     else
@@ -98,7 +98,7 @@ updateWidgets = (type, target, eargs) ->
         console.log("pushed state " + wloc)
         window.onpopstate = (event) ->
             loadPageWidgets()
-        
+
     for widget in widgetCache
         if type == widget.args.type
             widget.args.target = target and target or widget.args.target
@@ -146,32 +146,32 @@ class pubWidget
         if clear
             @div.innerHTML = ""
         @div.appendChild(el)
-        
+
 class Widget
     constructor: (@blocks, @args, pub) ->
         @id = Math.floor(Math.random()*1000000).toString(16)
-        
+
         # Parent object div
         @div = document.createElement('div')
         @div.setAttribute("id", @id)
         @div.setAttribute("class", "x_panel snoot_widget")
         @div.style.float = 'left'
         @json = {}
-    
-        if (@blocks <= 2) 
+
+        if (@blocks <= 2)
             @div.setAttribute("class", "snoot_widget col-md-2 col-sm-4 col-xs-12")
-        else if (@blocks <= 3) 
+        else if (@blocks <= 3)
             @div.setAttribute("class", "snoot_widget col-md-3 col-sm-6 col-xs-12")
-        else if (@blocks <= 4) 
+        else if (@blocks <= 4)
             @div.setAttribute("class", "snoot_widget col-md-4 col-sm-8 col-xs-12")
-        else if (@blocks <= 6) 
+        else if (@blocks <= 6)
             @div.setAttribute("class", "snoot_widget col-md-6 col-sm-12 col-xs-12")
-        else if (@blocks <= 9) 
+        else if (@blocks <= 9)
             @div.setAttribute("class", "snoot_widget col-md-9 col-sm-12 col-xs-12")
         else
             @div.setAttribute("class", "snoot_widget col-md-12 col-sm-12 col-xs-12")
-        
-    
+
+
         if not pub
             # Title
             t = document.createElement('div')
@@ -180,11 +180,11 @@ class Widget
             tt.style.fontSize = "17pt"
             tt.appendChild(document.createTextNode(@args.name))
             t.appendChild(tt)
-            
-            # Menu 
+
+            # Menu
             ul = document.createElement('ul')
             ul.setAttribute("class", "nav navbar-right panel_toolbox")
-            
+
             # Menu: collapse widget
             li = document.createElement('li')
             @collapse = document.createElement('a')
@@ -194,7 +194,7 @@ class Widget
             @collapse.appendChild(i)
             li.appendChild(@collapse)
             ul.appendChild(li)
-            
+
             @collapse.addEventListener "click", () ->
                 id = this.parentNode.parentNode.parentNode.parentNode.getAttribute("id")
                 panel = $('#'+id)
@@ -208,10 +208,10 @@ class Widget
                 else
                     content.slideToggle(200)
                     panel.css('height', 'auto')
-                    
+
                 icon.toggleClass('fa-chevron-up fa-chevron-down');
-            
-            
+
+
             # Menu: remove widget
             li = document.createElement('li')
             a = document.createElement('a')
@@ -223,22 +223,22 @@ class Widget
             a.setAttribute("id", "CW_" + @id)
             li.appendChild(a)
             ul.appendChild(li)
-            
+
             t.appendChild(ul)
-            
+
             @div.appendChild(t)
-            
+
             cldiv = document.createElement('div')
             cldiv.setAttribute("classs", "clearfix")
             @div.appendChild(cldiv)
-        
+
         @cdiv = document.createElement('div')
         @cdiv.style.width = "100%"
         @cdiv.setAttribute("id", "contents_" + @id)
         @cdiv.setAttribute("class", "x_content")
         @div.appendChild(@cdiv)
         widgetCache.push(this)
-        
+
     cog: (size = 100) ->
         idiv = document.createElement('div')
         idiv.setAttribute("class", "icon")
@@ -249,20 +249,20 @@ class Widget
         idiv.appendChild(document.createTextNode('Loading, hang on tight..!'))
         @cdiv.innerHTML = ""
         @cdiv.appendChild(idiv)
-        
+
     kill: () ->
         @div.parentNode.removeChild(@div)
-    
+
     inject: (object, clear) ->
         if clear
             @cdiv.innerHTML = ""
             @cdiv.style.textAlign = 'left'
         @cdiv.appendChild(object)
-    
+
     snap: (state) ->
         state.widget.cdiv.innerHTML = "<a style='color: #D44; font-size: 100pt;'><i class='fa fa-warning'></i></a><br/>Oh snap, something went wrong!"
         state.widget.cdiv.style.textAlign = 'center'
-    
+
     load: (callback) ->
         # Insert spinning cog
         this.cog()
@@ -298,11 +298,10 @@ class Row
         @cdiv.setAttribute("id", "contents_" + @id)
         @div.appendChild(@cdiv)
         document.getElementById('innercontents').appendChild(@div)
-        
+
     inject: (object, clear) ->
         @cdiv.innerHTML = "" if clear
         if object instanceof Widget
             @cdiv.appendChild(object.div)
         else
             @cdiv.appendChild(object)
-    

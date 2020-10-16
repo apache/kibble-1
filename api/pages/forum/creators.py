@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows the top N of forum topic creators
-# 
+#
 ########################################################################
 
 
@@ -72,27 +72,27 @@ import time
 import hashlib
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-    
+
     interval = indata.get('interval', 'month')
     xtitle = None
-    
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -125,7 +125,7 @@ def run(API, environ, indata, session):
     if indata.get('email'):
         query['query']['bool']['must'].append({'term': {'creator': indata.get('email')}})
         xtitle = "People opening issues solved by %s" % indata.get('email')
-    
+
     # Get top 25 committers this period
     query['aggs'] = {
             'committers': {
@@ -134,9 +134,9 @@ def run(API, environ, indata, session):
                     'size': 25
                 },
                 'aggs': {
-                
+
             }
-        }        
+        }
     }
     res = session.DB.ES.search(
             index=session.DB.dbname,
@@ -161,7 +161,7 @@ def run(API, environ, indata, session):
             people[email] = person
             people[email]['gravatar'] = hashlib.md5(person.get('email', 'unknown').encode('utf-8')).hexdigest()
             people[email]['count'] = count
-        
+
     topN = []
     for email, person in people.items():
         topN.append(person)

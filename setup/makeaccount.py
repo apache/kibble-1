@@ -74,4 +74,3 @@ doc = {
     }
 DB.ES.index(index=DB.dbname, doc_type='useraccount', id = username, body = doc)
 print("Account created!")
-

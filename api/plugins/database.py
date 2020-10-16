@@ -34,7 +34,7 @@ class KibbleESWrapper(object):
     """
     def __init__(self, ES):
         self.ES = ES
-    
+
     def get(self, index, doc_type, id):
         return self.ES.get(index = index+'_'+doc_type, doc_type = '_doc', id = id)
     def exists(self, index, doc_type, id):
@@ -72,7 +72,7 @@ class KibbleESWrapperSeven(object):
     """
     def __init__(self, ES):
         self.ES = ES
-    
+
     def get(self, index, doc_type, id):
         return self.ES.get(index = index+'_'+doc_type, id = id)
     def exists(self, index, doc_type, id):
@@ -100,7 +100,7 @@ class KibbleESWrapperSeven(object):
             index = index+'_'+doc_type,
             body = body
             )
-    
+
 
 class KibbleDatabase(object):
     def __init__(self, config):
@@ -117,7 +117,7 @@ class KibbleDatabase(object):
                 max_retries=5,
                 retry_on_timeout=True
             )
-        
+
         # IMPORTANT BIT: Figure out if this is ES < 6.x, 6.x or >= 7.x.
         # If so, we're using the new ES DB mappings, and need to adjust ALL
         # ES calls to match this.
@@ -126,4 +126,3 @@ class KibbleDatabase(object):
             self.ES = KibbleESWrapperSeven(self.ES)
         elif self.ESVersion >= 6:
             self.ES = KibbleESWrapper(self.ES)
-        

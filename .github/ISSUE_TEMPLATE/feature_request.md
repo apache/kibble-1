@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Idea or feature request  
+about: Idea or feature request
 title: ''
 labels: 'kind:feature'
 assignees: ''

@@ -58,7 +58,7 @@
 #   - cookieAuth: []
 #   summary: Shows retention metrics for a set of mailing lists over a given period
 #     of time
-# 
+#
 ########################################################################
 
 
@@ -75,36 +75,36 @@ import re
 import datetime
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     hl = indata.get('span', 12) # By default, we define a contributor as active if having committer in the past year
     tnow = datetime.date.today()
     nm = tnow.month - (tnow.month % 3)
     ny = tnow.year
     cy = ny
     ts = []
-    
+
     if nm < 1:
         nm += 12
         ny = ny - 1
-    
+
     peopleSeen = {}
     activePeople = {}
     allPeople = {}
-    
+
     ny = 1970
     FoundSomething = False
     while ny < cy or (ny == cy and (nm+3) <= tnow.month):
@@ -118,8 +118,8 @@ def run(API, environ, indata, session):
             break
         d = datetime.date(ny, nm, 1)
         tf = time.mktime(d.timetuple())
-        
-        
+
+
         ####################################################################
         ####################################################################
         dOrg = session.user['defaultOrganisation'] or "apache"
@@ -149,14 +149,14 @@ def run(API, environ, indata, session):
             query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
         elif viewList:
             query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-        
+
         # Get an initial count of commits
         res = session.DB.ES.count(
                 index=session.DB.dbname,
                 doc_type="email",
                 body = query
             )
-        
+
         globcount = res['count']
         if globcount == 0 and not FoundSomething:
             continue
@@ -167,7 +167,7 @@ def run(API, environ, indata, session):
                     'terms': {
                         'field': 'sender',
                         'size': 200000
-                    }                
+                    }
                 }
             }
         res = session.DB.ES.search(
@@ -176,12 +176,12 @@ def run(API, environ, indata, session):
                 size = 0,
                 body = query
             )
-        
-        
+
+
         retained = 0
         added = 0
         lost = 0
-        
+
         thisPeriod = []
         for bucket in res['aggregations']['by_author']['buckets']:
             who = bucket['key']
@@ -192,18 +192,18 @@ def run(API, environ, indata, session):
             activePeople[who] = tf
             if who not in allPeople:
                 allPeople[who] = tf
-        
+
         prune = []
         for k, v in activePeople.items():
             if v < (t - (hl*30.45*86400)):
                 prune.append(k)
                 lost += 1
-        
+
         for who in prune:
             del activePeople[who]
             del peopleSeen[who]
         retained = len(activePeople) - added
-        
+
         ts.append({
             'date': tf,
             'People who (re)joined': added,
@@ -211,14 +211,14 @@ def run(API, environ, indata, session):
             'People retained': retained,
             'Active people': added + retained
         })
-    
+
     groups = [
         ['More than 5 years', (5*365*86400)+1],
         ['2 - 5 years', (2*365*86400)+1],
         ['1 - 2 years', (365*86400)],
         ['Less than a year', 1]
     ]
-    
+
     counts = {}
     totExp = 0
     for person, age in activePeople.items():
@@ -228,9 +228,9 @@ def run(API, environ, indata, session):
                 counts[el[0]] = counts.get(el[0], 0) + 1
                 break
     avgyr = (totExp / (86400*365)) / max(len(activePeople),1)
-    
+
     ts = sorted(ts, key = lambda x: x['date'])
-    
+
     avgm = ""
     yr = int(avgyr)
     ym = round((avgyr-yr)*12)

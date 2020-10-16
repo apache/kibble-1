@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows top 25 repos by lines of code
-# 
+#
 ########################################################################
 
 
@@ -72,21 +72,21 @@ import time
 import re
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -113,14 +113,14 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+
     res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="source",
             size = 5000,
             body = query
         )
-    
+
     toprepos = []
     for doc in res['hits']['hits']:
         repo = doc['_source']
@@ -130,7 +130,7 @@ def run(API, environ, indata, session):
             if not count:
                 count = 0
             toprepos.append([url, count])
-        
+
     toprepos = sorted(toprepos, key = lambda x: int(x[1]), reverse = True)
     top = toprepos[0:24]
     if len(toprepos) > 25:
@@ -138,11 +138,11 @@ def run(API, environ, indata, session):
         for repo in toprepos[25:]:
             count += repo[1]
         top.append(["Other repos", count])
-    
+
     tophash = {}
     for v in top:
         tophash[v[0]] = v[1]
-        
+
     JSON_OUT = {
         'counts': tophash,
         'okay': True,

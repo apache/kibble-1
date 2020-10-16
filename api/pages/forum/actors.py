@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows timeseries of no. of people opening topics or replying to them.
-# 
+#
 ########################################################################
 
 
@@ -72,27 +72,27 @@ import time
 import hashlib
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-        
+
     interval = indata.get('interval', 'month')
-    
-    
+
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -124,7 +124,7 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
     if indata.get('email'):
         query['query']['bool']['should'] = [{'term': {'issueCreator': indata.get('email')}}]
-    
+
     # Get timeseries for this period
     query['aggs'] = {
             'per_interval': {
@@ -141,14 +141,14 @@ def run(API, environ, indata, session):
                 }
             }
         }
-    
+
     res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="forum_post",
             size = 0,
             body = query
         )
-    
+
     timeseries = {}
 
     for bucket in res['aggregations']['per_interval']['buckets']:
@@ -159,8 +159,8 @@ def run(API, environ, indata, session):
             'topic responders': ccount,
             'topic creators': 0
         }
-        
-    
+
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -192,7 +192,7 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
     if indata.get('email'):
         query['query']['bool']['should'] = [{'term': {'creator': indata.get('email')}}]
-    
+
     # Get timeseries for this period
     query['aggs'] = {
             'per_interval': {
@@ -209,7 +209,7 @@ def run(API, environ, indata, session):
                 }
             }
         }
-    
+
     res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="forum_topic",
@@ -228,11 +228,11 @@ def run(API, environ, indata, session):
                 'topic creators': 0,
                 'topic responders': ccount
             }
-    
+
     ts = []
     for x, el in timeseries.items():
         ts.append(el)
-        
+
     JSON_OUT = {
         'timeseries': ts,
         'okay': True,

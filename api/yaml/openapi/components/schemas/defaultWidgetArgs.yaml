@@ -79,4 +79,3 @@ properties:
     description: Enables relative comparison mode for API endpoints that have this feature.
     type: boolean
     example: false
-    

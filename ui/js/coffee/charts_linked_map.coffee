@@ -11,27 +11,27 @@ charts_linked = (obj, nodes, links, options) ->
   bb = obj.getBoundingClientRect()
   llwidth = bb.width
   llheight = Math.max(600, bb.height)
-  
-  tooltip = d3.select("body").append("div")	
-    .attr("class", "link_tooltip")				
+
+  tooltip = d3.select("body").append("div")
+    .attr("class", "link_tooltip")
     .style("opacity", 0);
-  
+
   avg = links.length / nodes.length
-  
+
   force = d3.layout.force()
       .gravity(0.015)
       .distance(llheight/8)
       .charge(-200/Math.log10(nodes.length))
       .linkStrength(0.2/avg)
       .size([llwidth, llheight])
-  
+
   edges = []
   links.forEach((e) ->
     sourceNode = nodes.filter((n) => n.id == e.source)[0]
     targetNode = nodes.filter((n) => n.id == e.target)[0]
     edges.push({source: sourceNode, target: targetNode, s: e.source, value: e.value, name: e.name, tooltip: e.tooltip});
   )
-  
+
   force
       .nodes(nodes)
       .links(edges)
@@ -39,7 +39,7 @@ charts_linked = (obj, nodes, links, options) ->
   lcolors = {}
   nodes.forEach((e) ->
     lcolors[e.id] = licolors[lla++]
-    
+
   )
   lla = 0
   link = g.selectAll(".link")
@@ -53,21 +53,21 @@ charts_linked = (obj, nodes, links, options) ->
         "stroke-width: #{d.value}; stroke: #{lcolors[d.s]};"
       ).on("mouseover", (d) ->
         if d.tooltip
-            tooltip.transition()		
-                .duration(100)		
-                .style("opacity", .9);		
+            tooltip.transition()
+                .duration(100)
+                .style("opacity", .9);
             tooltip.html("<b>#{d.name}:</b><br/>" + d.tooltip.replace("\n", "<br/>"))
-                .style("left", (d3.event.pageX + 20) + "px")		
-                .style("top", (d3.event.pageY - 28) + "px");	
+                .style("left", (d3.event.pageX + 20) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
             )
       .on("mouseout", (d) ->
             d3.select(this).style("stroke-opacity", "0.375")
-            tooltip.transition()		
-                .duration(200)		
-                .style("opacity", 0);	
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", 0);
       )
 
-   
+
   defs = svg.append("defs")
   nodes.forEach( (n) ->
     if n.gravatar
@@ -86,27 +86,27 @@ charts_linked = (obj, nodes, links, options) ->
       .attr("xlink:href", "https://secure.gravatar.com/avatar/#{n.gravatar}.png?d=identicon")
     else
       n.gravatar = false
-  )  
-  
+  )
+
   node = g.selectAll(".node")
       .data(nodes)
     .enter().append("g")
       .attr("class", "link_node")
       .attr("data-source", (d) => d.id)
       .call(force.drag);
-  
+
   lTargets = []
-  
+
   gatherTargets = (d, e) ->
     if e.source == d or e.target == d
       lTargets.push(e.source.id)
       lTargets.push(e.target.id)
       return true
     return false
-  
+
   uptop = svg.append("g")
   x = null
- 
+
   node.append("circle")
       .attr("class", "link_node")
       .attr("data-source", (d) => d.id)
@@ -127,7 +127,7 @@ charts_linked = (obj, nodes, links, options) ->
         d3.selectAll("path").style("stroke-opacity", "0.075")
         d3.selectAll("path").filter((e) => gatherTargets(d,e) ).style("stroke-opacity", "1").style("z-index", "20")
         d3.selectAll("path").filter((e) => e.source == d or e.target).each((o) =>
-          
+
           x = d3.select(this).insert("g", ":first-child").style("stroke", "red !important")
           x.append("use").attr("xlink:href", "#" + o.name)
         )
@@ -142,32 +142,32 @@ charts_linked = (obj, nodes, links, options) ->
         d3.selectAll("text").style("opacity", null)
         d3.selectAll("path").style("stroke-opacity", null)
         )
-  
-  
+
+
 
   node.append("a")
       .attr("href", (d) => if not d.gravatar then "#" else "contributors.html?page=biography&email=#{d.id}")
       .append("text")
       .attr("dx", 13)
       .attr("dy", ".35em")
-      .text((d) => d.name)      
+      .text((d) => d.name)
       .on("mouseover", (d) ->
         if d.tooltip
-            tooltip.transition()		
-                .duration(100)		
-                .style("opacity", .9);		
+            tooltip.transition()
+                .duration(100)
+                .style("opacity", .9);
             tooltip.html("<b>#{d.name}:</b><br/>" + d.tooltip.replace("\n", "<br/>"))
-                .style("left", (d3.event.pageX + 20) + "px")		
-                .style("top", (d3.event.pageY - 28) + "px");	
+                .style("left", (d3.event.pageX + 20) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
             )
       .on("mouseout", (d) ->
             #d3.selectAll(".link").filter( (e) => e.source == this.id ).style("stroke-opacity", "0.375")
-            tooltip.transition()		
-                .duration(200)		
-                .style("opacity", 0);	
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", 0);
       )
 
-  
+
   force.on("tick", () ->
     link.attr("d", (d) ->
         dx = d.target.x - d.source.x
@@ -192,7 +192,7 @@ charts_linked = (obj, nodes, links, options) ->
   svg
     .call( d3.behavior.zoom().center([llwidth / 2, llheight / 2]).scaleExtent([0.333, 4]).on("zoom", linked_zoom)  )
 
-  
+
   return [
     {
       svg: svg,
@@ -215,5 +215,3 @@ charts_linked = (obj, nodes, links, options) ->
         .start()
     },
     {linked: true}]
-
-

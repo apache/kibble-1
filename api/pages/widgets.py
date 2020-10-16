@@ -50,12 +50,12 @@ import yaml
 import json
 
 def run(API, environ, indata, session):
-    
+
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     widgets = yaml.load(open("yaml/widgets.yaml"))
-    
+
     page = indata['pageid']
     if not page or page == '0':
         page = widgets.get('defaultWidget', 'repos')
@@ -63,5 +63,3 @@ def run(API, environ, indata, session):
         yield json.dumps(widgets['widgets'][page])
     else:
         raise API.exception(404, "Widget design not found!")
-    
-    

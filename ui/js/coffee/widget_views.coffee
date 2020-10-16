@@ -65,9 +65,9 @@ filterView = (val) ->
             me.style.background = "#4B8"
             me.style.color = "#FFF"
             me.style.display = 'block'
-            
+
 manageviews = (json, state) ->
-    
+
     obj = mk('div')
     p = mk('p')
     app(p, txt("Views allow you to quickly set up a group of sources to view as a sub-organisation, much like tags, but faster."))
@@ -75,15 +75,15 @@ manageviews = (json, state) ->
     h3 = mk('h3')
     noviews = json.views.length || 0
     app(h3, txt("You currently have " + noviews + " view" + (if noviews == 1 then '' else 's') + " in your database "))
-    
+
     btn = mk('input')
     set(btn, 'type', 'button')
     set(btn, 'class', 'btn btn-success')
     set(btn, 'value', 'Create a new view')
     set(btn, 'onclick', 'get("newdiv").style.display = "block"; this.style.display = "none";')
-    app(h3, btn)    
+    app(h3, btn)
     app(obj, h3)
-    
+
     newdiv = mk('div')
     set(newdiv, 'id', 'newdiv')
     newdiv.style.display = "none"
@@ -94,7 +94,7 @@ manageviews = (json, state) ->
     app(newdiv, txt("Name your new view: "))
     app(newdiv, inp)
     app(newdiv, mk('br'))
-    
+
     if userAccount.userlevel == 'admin' or userAccount.defaultOrganisation in userAccount.ownerships
         inp = mk('input')
         set(inp, 'type', 'checkbox')
@@ -102,7 +102,7 @@ manageviews = (json, state) ->
         app(newdiv, txt("Make view public (global): "))
         app(newdiv, inp)
         app(newdiv, mk('br'))
-    
+
     inp = mk('input')
     set(inp, 'type', 'text')
     set(inp, 'id', 'viewfilter')
@@ -111,7 +111,7 @@ manageviews = (json, state) ->
     app(newdiv, inp)
     app(newdiv, mk('i', {}, "You can use the filter-select to quickly mark sources based on a regex. Type in 'foo' to select all sources matching 'foo' etc."))
     app(newdiv, mk('br'))
-    
+
     app(newdiv, txt("Select the sources you wish to add to this view below:"))
     app(newdiv, mk('br'))
     btn = mk('input')
@@ -150,7 +150,7 @@ manageviews = (json, state) ->
     set(btn, 'value', 'Save view')
     set(btn, 'onclick', 'saveview();')
     app(newdiv, btn)
-        
+
     app(obj, newdiv)
     for view in json.views
         popdiv = mk('div')
@@ -163,8 +163,8 @@ manageviews = (json, state) ->
         popdiv.style.background = "#323234"
         h4.style.display = "inline-block"
         app(popdiv, h4)
-        
-        
+
+
         btn = mk('input')
         set(btn, 'type', 'button')
         set(btn, 'class', 'btn btn-warning')
@@ -182,7 +182,7 @@ manageviews = (json, state) ->
         btn.style.marginLeft = "20px"
         btn.style.padding = "2px"
         app(popdiv, btn)
-        
+
         btn = mk('input')
         set(btn, 'type', 'button')
         set(btn, 'class', 'btn btn-success')
@@ -191,7 +191,7 @@ manageviews = (json, state) ->
         btn.style.marginLeft = "20px"
         btn.style.padding = "2px"
         app(popdiv, btn)
-        
+
         h4.style.color = "#FFA"
         h4.style.cursor = 'pointer'
         set(h4, 'onclick', "get('" + view.id + "').style.display = (get('" + view.id + "').style.display == 'block') ? 'none' : 'block'")
@@ -245,6 +245,4 @@ manageviews = (json, state) ->
         app(newdiv, btn)
         app(obj, popdiv)
         app(obj, newdiv)
-    state.widget.inject(obj, true)    
-        
-        
+    state.widget.inject(obj, true)

@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows top 25 forums by interactions
-# 
+#
 ########################################################################
 
 
@@ -72,24 +72,24 @@ import time
 import re
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-    
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -123,15 +123,15 @@ def run(API, environ, indata, session):
         query['query']['bool']['should'] = [
             {'term': {'creator': indata.get('email')}}
         ]
-    
-    
+
+
     # Get top 25 committers this period
     query['aggs'] = {
             'by_repo': {
                 'terms': {
                     'field': 'sourceID',
                     'size': 5000
-                }                
+                }
             }
         }
     res = session.DB.ES.search(
@@ -140,7 +140,7 @@ def run(API, environ, indata, session):
             size = 0,
             body = query
         )
-    
+
     toprepos = []
     for bucket in res['aggregations']['by_repo']['buckets']:
         ID = bucket['key']
@@ -149,7 +149,7 @@ def run(API, environ, indata, session):
             repo = re.sub(r".+/([^/]+)$", r"\1", it['sourceURL'])
             count = bucket['doc_count']
             toprepos.append([repo, count])
-        
+
     toprepos = sorted(toprepos, key = lambda x: x[1], reverse = True)
     top = toprepos[0:24]
     if len(toprepos) > 25:
@@ -157,11 +157,11 @@ def run(API, environ, indata, session):
         for repo in toprepos[25:]:
             count += repo[1]
         top.append(["Other forums", count])
-    
+
     tophash = {}
     for v in top:
         tophash[v[0]] = v[1]
-        
+
     JSON_OUT = {
         'counts': tophash,
         'okay': True,

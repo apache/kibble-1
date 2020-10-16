@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows timeseries of no. of open tickets by age
-# 
+#
 ########################################################################
 
 
@@ -72,23 +72,23 @@ import time
 import hashlib
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     interval = indata.get('interval', 'month')
-    
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -118,7 +118,7 @@ def run(API, environ, indata, session):
     if indata.get('email'):
         query['query']['bool']['should'] = [{'term': {'issueCreator': indata.get('email')}}, {'term': {'issueCloser': indata.get('email')}}]
         query['query']['bool']['minimum_should_match'] = 1
-    
+
     # Get timeseries for this period
     query['aggs'] = {
             'per_interval': {
@@ -128,7 +128,7 @@ def run(API, environ, indata, session):
                 }
             }
         }
-    
+
     res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="issue",
@@ -144,9 +144,9 @@ def run(API, environ, indata, session):
             'date': ts,
             'open': opened
         })
-        
-    
-        
+
+
+
     JSON_OUT = {
         'timeseries': timeseries,
         'okay': True,
