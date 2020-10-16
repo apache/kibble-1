@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows a breakdown of lines of code for one or more sources
-# 
+#
 ########################################################################
 
 
@@ -70,20 +70,20 @@ This is the SLoC renderer for Kibble
 import json
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
-    
+
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     # Fetch all sources for default org
     dOrg = session.user['defaultOrganisation'] or "apache"
     query = {
@@ -109,14 +109,14 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-        
+
     res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="source",
             size = 5000,
             body = query
         )
-    
+
     languages = {}
     years = 0
     for hit in res['hits']['hits']:
@@ -129,8 +129,8 @@ def run(API, environ, indata, session):
                 languages[k]['code'] += v.get('code', 0)
                 languages[k]['comment'] += v.get('comment', 0)
                 languages[k]['blank'] += v.get('blank', 0)
-                
-    
+
+
     JSON_OUT = {
         'languages': languages,
         'okay': True,

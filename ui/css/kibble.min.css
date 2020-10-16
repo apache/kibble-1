@@ -3100,10 +3100,10 @@ body.error .logo h1 {
     border: 1.25px solid #3338;
     line-height: 28px;
     z-index: 1001;
-    font: 12px sans-serif;		
-    background: lightgoldenrodyellow;	
-    border-radius: 6px;			
-    pointer-events: none;	
+    font: 12px sans-serif;
+    background: lightgoldenrodyellow;
+    border-radius: 6px;
+    pointer-events: none;
 }
 
 .show-calendar {

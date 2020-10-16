@@ -83,7 +83,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Create a new organisation
-# 
+#
 ########################################################################
 
 
@@ -102,7 +102,7 @@ def run(API, environ, indata, session):
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint!")
-    
+
     method = environ['REQUEST_METHOD']
     # Are we making a new org?
     if method == "PUT":
@@ -112,7 +112,7 @@ def run(API, environ, indata, session):
             orgid = indata.get('id', str(int(time.time())))
             if session.DB.ES.exists(index=session.DB.dbname, doc_type='organisation', id = orgid):
                 raise API.exception(403, "Organisation ID already in use!")
-            
+
             doc = {
                 'id': orgid,
                 'name': orgname,
@@ -125,7 +125,7 @@ def run(API, environ, indata, session):
             return
         else:
             raise API.exception(403, "Only administrators can create new organisations.")
-    
+
     ####################################################################
     orgs = []
     if session.user['userlevel'] == "admin":
@@ -168,8 +168,8 @@ def run(API, environ, indata, session):
             doc['_source']['sourceCount'] = numSources
             doc['_source']['docCount'] = numDocs
             orgs.append(doc['_source'])
-    
-    
+
+
     JSON_OUT = {
         'organisations': orgs,
         'okay': True,

@@ -70,9 +70,9 @@ deletesource = (hash) ->
         tr = get(hash)
         tr.parentNode.removeChild(tr)
         xdelete('sources', { id: hash }, null, null)
-       
+
 sourceTypes = {
-    
+
 }
 getSourceType = (main, t) ->
     if not sourceTypes[t]
@@ -92,7 +92,7 @@ getSourceType = (main, t) ->
             app(tr, td)
         app(thead, tr)
         app(tbl, thead)
-        
+
         tbody = new HTML('tbody')
         app(tbl, tbody)
         obj.inject(tbl)
@@ -105,7 +105,7 @@ getSourceType = (main, t) ->
     return sourceTypes[t]
 
 sourcelist = (json, state) ->
-    
+
     slist = mk('div')
     vlist = new HTML('div')
     if json.sources
@@ -137,13 +137,13 @@ sourcelist = (json, state) ->
             d = mk('tr')
             set(d, 'id', source.sourceID)
             set(d, 'scope', 'row')
-            
-            
+
+
             t = mk('td')
             t.style.color = "#369"
             app(t, txt(source.sourceURL))
             app(d, t)
-            
+
             # Progress
             lastUpdate = 0
             lastFailure = null
@@ -157,9 +157,9 @@ sourcelist = (json, state) ->
                 evolution: 'fa fa-signal'
                 mail: 'fa fa-envelope'
                 issues: 'fa fa-feed'
-                
+
             t = new HTML('td', { style: { minWidth: "260px !important"}})
-        
+
             borked = false
             steps = ['sync', 'census', 'count', 'evolution']
             if source.type in ['mail', 'ponymail', 'pipermail', 'hyperkitty']
@@ -202,7 +202,7 @@ sourcelist = (json, state) ->
                 set(t, 'data-steps-failure', 'false')
             t.style.minWidth = "260px"
             app(d, t)
-                    
+
             lu = "Unknown"
             if lastUpdate > 0
                 lu = ""
@@ -212,16 +212,16 @@ sourcelist = (json, state) ->
                 if h > 0
                     lu = h + " hour" + (if h == 1 then '' else 's') + ", "
                 lu += m + " minute" + (if m == 1 then '' else 's') + " ago."
-                
+
             t = mk('td')
             t.style.textAlign = 'right'
             t.style.color = "#963"
             t.style.width = "200px !important"
             app(t, txt(lu))
             app(d, t)
-            
-            
-            
+
+
+
             status = mk('td')
             status.style.width = "600px !important"
             if lastFailure
@@ -240,7 +240,7 @@ sourcelist = (json, state) ->
                     else
                         app(status, txt("No errors detected."))
                 app(d, status)
-            
+
             act = mk('td')
             dbtn = mk('button')
             set(dbtn, 'class', 'btn btn-danger')
@@ -248,10 +248,10 @@ sourcelist = (json, state) ->
             dbtn.style.padding = "2px"
             app(dbtn, txt("Delete"))
             app(act, dbtn)
-            
+
             app(d, act)
             tbody.inject(d)
-        
+
         for t, el of sourceTypes
             div = new HTML('div', {class: "sourceTypeIcon", onclick: "showType('#{t}');"})
             el.btn = div
@@ -262,12 +262,12 @@ sourcelist = (json, state) ->
     #app(slist, tbl)
     state.widget.inject(slist, true)
     state.widget.inject(vlist)
-    
+
     retval = mk('div')
     set(retval, 'id', 'retval')
     state.widget.inject(retval)
     showType(true) # Show first available type
-    
+
 showType = (t) ->
     for st, el of sourceTypes
         if st == t or t == true
@@ -304,7 +304,7 @@ sourceadd = (json, state) ->
         div.inject(lbl)
         obj.inject(new HTML('p', {}, el.description or ""))
         obj.inject(keyValueForm('textarea', 'source', 'Source URL/ID:', "For example: " + el.example + ". You can add multiple sources, one per line."))
-        
+
         if el.optauth
             obj.inject((if el.authrequired then "Required" else "Optional") + " authentication options:")
             for abit in el.optauth
@@ -314,12 +314,12 @@ sourceadd = (json, state) ->
     state.widget.inject(div, true)
     for k, v of aSourceTypes
         state.widget.inject(v)
-    
+
 sourceAdded = (json, state) ->
     window.setTimeout(() ->
             location.reload()
         , 1000)
-    
+
 addSources = (type, form) ->
     jsa = []
     lineNo = 0

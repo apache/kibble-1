@@ -8,7 +8,7 @@ Apache Kibble is a tool to collect, aggregate and visualize data about any softw
  for the scanners to connect to, and provides the overall management of sources as well as the
  visualizations and API end points.
 - **Kibble scanners** ([kibble-scanners](https://github.com/apache/kibble-scanners)) - a collection of
- scanning applications each designed to work with a specific type of resource (git repo, mailing list, 
+ scanning applications each designed to work with a specific type of resource (git repo, mailing list,
  JIRA, etc) and push compiled data objects to the Kibble Server.
 
 ## Documentation

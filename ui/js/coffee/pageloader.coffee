@@ -26,7 +26,7 @@ setupPage = (json, state) ->
         div.style.textAlign = 'center'
         div.innerHTML = "<a style='color: #D44; font-size: 100pt;'><i class='fa fa-warning'></i></a><br/><h3>An error occurred:</h3><p style='font-size: 12pt;'>" + json.error + "</p>"
         return
-    
+
     # View active?
     if userAccount.view and userAccount.view.length > 0
         vrow = new Row()
@@ -46,10 +46,10 @@ setupPage = (json, state) ->
         set(a, 'href', '?page=views')
         app(p, a)
         vrow.inject(p)
-    
-    document.title = json.title + " - Apache Kibble"    
+
+    document.title = json.title + " - Apache Kibble"
     # Go through each row
-    
+
     for r in json.rows
         row = new Row()
 
@@ -72,7 +72,7 @@ setupPage = (json, state) ->
                 for k, v of child.wargs
                     widget.wargs[k] = v
             if child.type not in ['views', 'sourcelist']
-                widget.args.eargs.quick = 'true'        
+                widget.args.eargs.quick = 'true'
             switch child.type
 
                 when 'datepicker' then datepicker(widget)
@@ -163,7 +163,7 @@ loadPageWidgets = (page, apiVersion) ->
             if m
                 if globArgs.view
                         $(this).attr('href', "#{m[1]}&view=#{globArgs.view}#{m[2]}")
-                
+
         )
     # Fetch account info
     fetch('session', null, renderAccountInfo)
@@ -180,14 +180,14 @@ renderAccountInfo = (json, state) ->
         userAccount = json
         img = document.getElementById('user_image')
         img.setAttribute("src", "https://secure.gravatar.com/avatar/" + json.gravatar + ".png")
-    
+
         name = document.getElementById('user_name')
         name.innerHTML = ""
         name.appendChild(document.createTextNode(json.displayName))
-    
+
         ulevel = get('user_level')
         ulevel.inject(if json.userlevel == 'admin' then 'Administrator' else if json.defaultOrganisation in json.ownerships then 'Organisation Owner' else 'User')
-        
+
         nm = get('messages_number')
         nm.innerHTML = json.messages
         if json.messages > 0
@@ -206,13 +206,13 @@ renderAccountInfo = (json, state) ->
                 msp = mk('span')
                 app(msp, txt(email.senderName))
                 app(ma, msp)
-                
+
                 msp = mk('span')
                 set(msp, 'class', 'message')
                 app(msp, txt(email.subject))
                 app(ma, msp)
                 app(mli, ma)
                 app(nl, mli)
-            
+
         # Fetch widget list
         fetch('widgets/' + pageID, { gargs: globArgs }, setupPage)

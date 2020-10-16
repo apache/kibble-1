@@ -13,7 +13,7 @@ bio = (json, state) ->
             firstemail = "Never"
             if json.bio.firstEmail
                 firstemail = new Date(json.bio.firstEmail*1000).toDateString()
-        
+
             bioOuter = new HTML('div', { class: 'media-event'} )
             bioOuter.inject(new HTML('a', { class: 'pull-left bio-image'},
                                          new HTML('img', { style: "width: 128px; height: 128px;", src: 'https://secure.gravatar.com/avatar/' + json.bio.gravatar + '.png?d=identicon&size=128'})
@@ -66,7 +66,7 @@ bio = (json, state) ->
             a = mk('a')
             set(a, 'href', 'javascript:void(affiliate("' + json.bio.id + '"));')
             app(a, txt("Set a tag"))
-            
+
             egroups = []
             if json.bio.alts and json.bio.alts.length
                 for tag in json.bio.alts
@@ -78,14 +78,14 @@ bio = (json, state) ->
             a2.style.marginLeft = "8px"
             set(a2, 'href', 'javascript:void(altemail("' + json.bio.id + '"));')
             app(a2, txt("Add alt email"))
-            
+
             sp = mk('span')
             set(sp, 'id', 'tags_' + json.bio.id)
             app(obj, namecard)
             app(obj, a)
             app(obj, a2)
             app(obj, sp)
-            
+
         else
             obj.innerHTML = "Person not found :/"
         state.widget.inject(obj, true)

@@ -165,6 +165,3 @@ texinfo_documents = [
      author, 'ApacheKibble', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Lists the available source types supported by Kibble
-# 
+#
 ########################################################################
 
 
@@ -71,9 +71,7 @@ import yaml
 import json
 
 def run(API, environ, indata, session):
-    
-    types = yaml.load(open("yaml/sourcetypes.yaml"))
-    
-    yield json.dumps(types)
 
-    
+    types = yaml.load(open("yaml/sourcetypes.yaml"))
+
+    yield json.dumps(types)

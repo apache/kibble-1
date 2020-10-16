@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows timeseries of Pony Factor over time
-# 
+#
 ########################################################################
 
 
@@ -74,31 +74,31 @@ import datetime
 import dateutil.relativedelta
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     hl = indata.get('span', 24)
     tnow = datetime.date.today()
     nm = tnow.month - (tnow.month % 3)
     ny = tnow.year
     ts = []
-    
+
     if nm < 1:
         nm += 12
         ny = ny - 1
-    
+
     while ny > 1970:
         d = datetime.date(ny, nm, 1)
         t = time.mktime(d.timetuple())
@@ -108,8 +108,8 @@ def run(API, environ, indata, session):
         if nm < 1:
             nm += 12
             ny = ny - 1
-        
-        
+
+
         ####################################################################
         ####################################################################
         dOrg = session.user['defaultOrganisation'] or "apache"
@@ -139,31 +139,31 @@ def run(API, environ, indata, session):
             query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
         elif viewList:
             query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-        
+
         # Get an initial count of commits
         res = session.DB.ES.count(
                 index=session.DB.dbname,
                 doc_type="code_commit",
                 body = query
             )
-        
+
         globcount = res['count']
         if globcount == 0:
             break
-        
+
         # Get top 25 committers this period
         query['aggs'] = {
                 'by_committer': {
                     'terms': {
                         'field': 'committer_email',
                         'size': 1000
-                    }                
+                    }
                 },
                 'by_author': {
                     'terms': {
                         'field': 'author_email',
                         'size': 1000
-                    }                
+                    }
                 }
             }
         res = session.DB.ES.search(
@@ -172,8 +172,8 @@ def run(API, environ, indata, session):
                 size = 0,
                 body = query
             )
-        
-        
+
+
         # PF for committers
         pf_committer = 0
         pf_committer_count = 0
@@ -183,7 +183,7 @@ def run(API, environ, indata, session):
             pf_committer_count += count
             if pf_committer_count > int(globcount/2):
                 break
-            
+
         # PF for authors
         pf_author = 0
         pf_author_count = 0
@@ -203,9 +203,9 @@ def run(API, environ, indata, session):
             'Pony Factor (authorship)': pf_author,
             'Meta-Pony Factor': len(cpf)
         })
-    
+
     ts = sorted(ts, key = lambda x: x['date'])
-    
+
     JSON_OUT = {
         'text': "This shows Pony Factors as calculated over a %u month timespan. Authorship measures the people writing the bulk of the codebase, committership mesaures the people committing (merging) the code, and meta-pony is an estimation of how many organisations/companies are involved." % hl,
         'timeseries': ts,

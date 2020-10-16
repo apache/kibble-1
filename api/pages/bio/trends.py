@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows a quick trend summary of the past 6 months for a contributor
-# 
+#
 ########################################################################
 
 
@@ -71,36 +71,36 @@ import json
 import time
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
     if dateFrom < 0:
         dateFrom = 0
     dateYonder = dateFrom - (dateTo - dateFrom)
-    
-    
+
+
     dOrg = session.user['defaultOrganisation'] or "apache"
-    
+
     ####################################################################
     # We start by doing all the queries for THIS period.               #
     # Then we reset the query, and change date to yonder-->from        #
     # and rerun the same queries.                                      #
     ####################################################################
-    
+
     rangeKey = 'created'
     rangeQuery = {'range':
                     {
@@ -139,8 +139,8 @@ def run(API, environ, indata, session):
             {'term': {codeKey: indata.get('email')}},
         ]
         query['query']['bool']['minimum_should_match'] = 1
-    
-    
+
+
     # ISSUES CREATED
     res = session.DB.ES.count(
             index=session.DB.dbname,
@@ -148,8 +148,8 @@ def run(API, environ, indata, session):
             body = query
         )
     no_issues_created = res['count']
-    
-    
+
+
     # ISSUES CLOSED
     rangeKey = "closed"
     query['query']['bool']['must'][0] = {'range':
@@ -160,15 +160,15 @@ def run(API, environ, indata, session):
                         }
                     }
                 }
-    
+
     res = session.DB.ES.count(
             index=session.DB.dbname,
             doc_type="issue",
             body = query
         )
     no_issues_closed = res['count']
-    
-    
+
+
     # EMAIL SENT
     rangeKey = "ts"
     query['query']['bool']['must'][0] = {'range':
@@ -179,14 +179,14 @@ def run(API, environ, indata, session):
                         }
                     }
                 }
-    
+
     res = session.DB.ES.count(
             index=session.DB.dbname,
             doc_type="email",
             body = query
         )
     no_email_sent = res['count']
-    
+
     # COMMITS MADE
     rangeKey = "ts"
     query['query']['bool']['must'][0] = {'range':
@@ -197,20 +197,20 @@ def run(API, environ, indata, session):
                         }
                     }
                 }
-    
+
     res = session.DB.ES.count(
             index=session.DB.dbname,
             doc_type="code_commit",
             body = query
         )
     no_commits = res['count']
-    
-    
-    
+
+
+
     ####################################################################
     # Change to PRIOR SPAN                                             #
     ####################################################################
-    
+
     # ISSUES OPENED
     rangeKey = "created"
     query['query']['bool']['must'][0] = {'range':
@@ -221,16 +221,16 @@ def run(API, environ, indata, session):
                         }
                     }
                 }
-    
+
     res = session.DB.ES.count(
             index=session.DB.dbname,
             doc_type="issue",
             body = query
         )
     no_issues_created_before = res['count']
-    
-    
-    
+
+
+
     # ISSUES CLOSED
     rangeKey = "closed"
     query['query']['bool']['must'][0] = {'range':
@@ -241,15 +241,15 @@ def run(API, environ, indata, session):
                         }
                     }
                 }
-    
+
     res = session.DB.ES.count(
             index=session.DB.dbname,
             doc_type="issue",
             body = query
         )
     no_issues_closed_before = res['count']
-    
-    
+
+
     # EMAIL SENT
     rangeKey = "ts"
     query['query']['bool']['must'][0] = {'range':
@@ -260,15 +260,15 @@ def run(API, environ, indata, session):
                         }
                     }
                 }
-    
-    
+
+
     res = session.DB.ES.count(
             index=session.DB.dbname,
             doc_type="email",
             body = query
         )
     no_email_sent_before = res['count']
-    
+
     # CODE COMMITS
     rangeKey = "ts"
     query['query']['bool']['must'][0] = {'range':
@@ -279,16 +279,16 @@ def run(API, environ, indata, session):
                         }
                     }
                 }
-    
-    
+
+
     res = session.DB.ES.count(
             index=session.DB.dbname,
             doc_type="code_commit",
             body = query
         )
     no_commits_before = res['count']
-    
-    
+
+
     trends = {
         "created": {
             'before': no_issues_created_before,
@@ -311,7 +311,7 @@ def run(API, environ, indata, session):
             'title': "Commits this period"
         }
     }
-    
+
     JSON_OUT = {
         'trends': trends,
         'okay': True,

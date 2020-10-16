@@ -56,7 +56,7 @@ class KibbleHTTPError(Exception):
     def __init__(self, code, message):
         self.code = code
         self.message = message
-        
+
 
 class KibbleAPIWrapper:
     """
@@ -67,7 +67,7 @@ class KibbleAPIWrapper:
         self.API = KibbleOpenAPI
         self.path = path
         self.exception = KibbleHTTPError
-     
+
     def __call__(self, environ, start_response, session):
         """Run the function, return response OR return stacktrace"""
         response = None
@@ -90,7 +90,7 @@ class KibbleAPIWrapper:
                         "reason": "Invalid JSON: %s" % err
                     })
                     return
-                
+
             # Validate URL against OpenAPI specs
             try:
                 self.API.validate(environ['REQUEST_METHOD'], self.path, formdata)
@@ -102,7 +102,7 @@ class KibbleAPIWrapper:
                     "reason": err.message
                 })
                 return
-            
+
             # Call page with env, SR and form data
             try:
                 response = self.func(self, environ, formdata, session)
@@ -124,7 +124,7 @@ class KibbleAPIWrapper:
                     "reason": err.message
                 }, indent = 4) + "\n"
                 return
-            
+
         except:
             err_type, err_value, tb = sys.exc_info()
             traceback_output = ['API traceback:']
@@ -140,8 +140,8 @@ class KibbleAPIWrapper:
                 "code": "500",
                 "reason": '\n'.join(traceback_output)
             })
-    
-        
+
+
 def fourohfour(environ, start_response):
     """A very simple 404 handler"""
     start_response("404 Not Found", [
@@ -181,7 +181,7 @@ def application(environ, start_response):
                 elif isinstance(bucket, bytes):
                     yield bucket
             return
-            
+
     for bucket in fourohfour(environ, start_response):
         yield bytes(bucket, encoding = 'utf-8')
 
