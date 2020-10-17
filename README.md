@@ -1,6 +1,8 @@
 <p align="center"><img src="/ui/images/kibble-logo.png" width="300"/></p>
 
 # Apache Kibble
+![CI](https://github.com/apache/kibble/workflows/CI/badge.svg)
+[![License](http://img.shields.io/:license-Apache%202-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 Apache Kibble is a tool to collect, aggregate and visualize data about any software project that uses commonly known tools. It consists of two components:
 
