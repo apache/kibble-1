@@ -1,12 +1,19 @@
 version: '3'
 
 services:
-  # Apache Kibble API server
-  kibble:
-    image: &img kibble
+  # Helper service to setup the Apache Kibble es node
+  setup:
+    image: &img apache/kibble
     build:
       context: .
       dockerfile: Dockerfile.dev
+    command: bash -c "sleep 25 && python setup/setup.py -e elasticsearch -a -k"
+    depends_on:
+      - elasticsearch
+
+  # Apache Kibble API server
+  kibble:
+    image: *img
     command: bash -c "cd api && gunicorn --reload -w 1 -b 0.0.0.0:8001 handler:application"
     expose:
       - 8001
@@ -29,13 +36,6 @@ services:
       - 8000:8000
     depends_on:
       - kibble
-
-  # Helper service to setup the Apache Kibble es node
-  setup:
-    image: *img
-    command: bash -c "sleep 25 && python setup/setup.py -e elasticsearch -a -k"
-    depends_on:
-      - elasticsearch
 
   # Elasticsearch node required as a database for Apache Kibble
   elasticsearch:
