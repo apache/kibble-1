@@ -1,7 +1,8 @@
-certifi
-pyyaml
-bcrypt
-elasticsearch
+bcrypt==3.2.0
+certifi==2020.6.20
+elasticsearch==7.9.1
 gunicorn==20.0.4
-pre-commit
-python-dateutil
+pre-commit==2.7.1
+python-dateutil==2.8.1
+PyYAML==5.3.1
+tenacity==6.2.0

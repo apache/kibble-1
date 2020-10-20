@@ -23,6 +23,7 @@ import argparse
 import logging
 from getpass import getpass
 
+import tenacity
 import yaml
 import bcrypt
 import json
@@ -312,20 +313,25 @@ def main():
         admin_pass = get_user_input("Enter a password for the administrator account:", secure=True)
 
     # Create Elasticsearch index
-    try:
-        create_es_index(
-            hostname=args.hostname,
-            port=int(args.port),
-            dbname=args.dbname,
-            shards=int(args.shards),
-            replicas=int(args.replicas),
-            admin_name=admin_name,
-            admin_pass=admin_pass,
-            skiponexist=args.skiponexist,
-        )
-    except Exception as e:
-        print("Index creation failed: %s" % e)
-        sys.exit(1)
+    # Retry in case ES is not yet up
+    for attempt in tenacity.Retrying(
+            retry=tenacity.retry_if_exception_type(exception_types=ConnectionError),
+            wait=tenacity.wait_fixed(10),
+            stop=tenacity.stop_after_attempt(5),
+            reraise=True
+    ):
+        with attempt:
+            print("Trying to create ES index...")
+            create_es_index(
+                hostname=args.hostname,
+                port=int(args.port),
+                dbname=args.dbname,
+                shards=int(args.shards),
+                replicas=int(args.replicas),
+                admin_name=admin_name,
+                admin_pass=admin_pass,
+                skiponexist=args.skiponexist,
+            )
     print()
 
     # Create Kibble configuration file

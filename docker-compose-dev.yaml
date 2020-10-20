@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: bash -c "sleep 25 && python setup/setup.py -e elasticsearch -a -k"
+    command: bash -c "python setup/setup.py -e elasticsearch -a -k"
     depends_on:
       - elasticsearch
 
