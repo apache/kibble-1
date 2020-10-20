@@ -8,6 +8,8 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     command: bash -c "python setup/setup.py -e elasticsearch -a -k"
+    volumes:
+      - ./setup/:/kibble/setup/
     depends_on:
       - elasticsearch
 
