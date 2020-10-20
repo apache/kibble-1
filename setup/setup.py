@@ -314,10 +314,11 @@ def main():
 
     # Create Elasticsearch index
     # Retry in case ES is not yet up
+    print(f"Elasticsearch: {args.hostname}:{args.port}")
     for attempt in tenacity.Retrying(
             retry=tenacity.retry_if_exception_type(exception_types=Exception),
             wait=tenacity.wait_fixed(10),
-            stop=tenacity.stop_after_attempt(5),
+            stop=tenacity.stop_after_attempt(10),
             reraise=True
     ):
         with attempt:
