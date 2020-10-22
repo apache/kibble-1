@@ -31,3 +31,40 @@ repos:
         exclude: ^ui/vendors/.*$
       - id: trailing-whitespace
         exclude: ^ui/vendors/.*$
+      - id: fix-encoding-pragma
+        args:
+          - --remove
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.9
+    hooks:
+      - id: insert-license
+        name: Add license for all other files
+        exclude: ^\.github/.*$
+        args:
+          - --comment-style
+          - "|#|"
+          - --license-filepath
+          - license-templates/LICENSE.txt
+          - --fuzzy-match-generates-todo
+        files: >
+          \.cfg$|^Dockerfile.*$|\.sh$|\.bash$|\.py$|\.yml$|\.yaml$
+      - id: insert-license
+        name: Add license for all rst files
+        exclude: ^\.github/.*$
+        args:
+          - --comment-style
+          - "||"
+          - --license-filepath
+          - license-templates/LICENSE.rst
+          - --fuzzy-match-generates-todo
+        files: \.rst$
+      - id: insert-license
+        name: Add license for all md and html files
+        files: \.md$|\.html$
+        exclude: ^\.github/.*$|
+        args:
+          - --comment-style
+          - "<!--|| -->"
+          - --license-filepath
+          - license-templates/LICENSE.txt
+          - --fuzzy-match-generates-todo
