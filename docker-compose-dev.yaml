@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  # Helper service to setup the Apache Kibble es node
+  setup:
+    image: &img apache/kibble
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bash -c "python setup/setup.py -e elasticsearch -a -k"
+    volumes:
+      - ./setup/:/kibble/setup/
+    depends_on:
+      - elasticsearch
+
+  # Apache Kibble API server
+  kibble:
+    image: *img
+    command: bash -c "cd api && gunicorn --reload -w 1 -b 0.0.0.0:8001 handler:application"
+    expose:
+      - 8001
+    ports:
+      - 8001:8001
+    volumes:
+      - ./api/:/kibble/api/
+      - ./setup/:/kibble/setup/
+      - ./ui/:/kibble/ui/
+    depends_on:
+      - elasticsearch
+
+  # Apache Kibble web ui server
+  ui:
+    image: nginx:latest
+    volumes:
+    - ./nginx-dev.conf:/etc/nginx/nginx.conf
+    - ./ui/:/kibble/ui/
+    ports:
+      - 8000:8000
+    depends_on:
+      - kibble
+
+  # Elasticsearch node required as a database for Apache Kibble
+  elasticsearch:
+    image: elasticsearch:7.9.2
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      node.name: es01
+      discovery.seed_hosts: es02
+      cluster.initial_master_nodes: es01
+      cluster.name: traefik-tutorial-cluster
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: -Xms256m -Xmx256m
+    volumes:
+      - "kibble-es-data:/usr/share/elasticsearch/data"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+volumes:
+  # named volumes can be managed easier using docker-compose
+  kibble-es-data:
