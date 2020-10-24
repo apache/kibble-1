@@ -21,6 +21,9 @@ import argparse
 import yaml
 import bcrypt
 
+from kibble.settings import YAML_DIRECTORY, KIBBLE_YAML
+
+
 class KibbleDatabase(object):
     def __init__(self, config):
         self.config = config
@@ -49,7 +52,8 @@ arg_parser.add_argument("-o", "--org", help="Invite to this organisation")
 args = arg_parser.parse_args()
 
 # Load Kibble master configuration
-config = yaml.load(open("../api/yaml/kibble.yaml"))
+with open(KIBBLE_YAML) as f:
+    config = yaml.load(f)
 
 DB = KibbleDatabase(config)
 

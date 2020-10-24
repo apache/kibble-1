@@ -128,10 +128,14 @@ This is the source list handler for Kibble
 """
 
 import json
+import os
 import re
 import time
 import hashlib
 import yaml
+
+from kibble.settings import YAML_DIRECTORY
+
 
 def canModifySource(session):
     """ Determine if the user can edit sources in this org """
@@ -224,7 +228,8 @@ def run(API, environ, indata, session):
         if canModifySource(session):
             new = 0
             old = 0
-            stypes = yaml.load(open("yaml/sourcetypes.yaml"))
+            with open(os.path.join(YAML_DIRECTORY, "sourcetypes.yaml")) as f:
+                stypes = yaml.load(f)
             for source in indata.get('sources', []):
                 sourceURL = source['sourceURL']
                 sourceType = source['type']

@@ -15,15 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM python:3.8
+import os
 
-USER root
-RUN apt-get update
-RUN apt-get install -y gcc unzip
-
-COPY . /kibble/
-
-WORKDIR /kibble
-
-RUN pip install --upgrade pip
-RUN pip install -e .
+YAML_DIRECTORY = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)),
+    "api",
+    "yaml",
+)
+KIBBLE_YAML = os.path.join(YAML_DIRECTORY, "kibble.yaml")
