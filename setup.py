@@ -28,7 +28,7 @@ mod = util.module_from_spec(spec)
 spec.loader.exec_module(mod)  # type: ignore
 version = mod.version  # type: ignore
 
-DEVEL_REQUIREMENTS = ["pre-commit==2.7.1"]
+DEVEL_REQUIREMENTS = ["pre-commit==2.7.1", "black==20.8b1"]
 
 INSTALL_REQUIREMENTS = [
     "bcrypt==3.2.0",
