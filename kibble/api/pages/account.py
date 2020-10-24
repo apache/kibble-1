@@ -106,44 +106,55 @@ import email.message
 
 def sendCode(session, addr, code):
     msg = email.message.EmailMessage()
-    msg['To'] = addr
-    msg['From'] = session.config['mail']['sender']
-    msg['Subject'] = "Please verify your account"
-    msg.set_content("""\
+    msg["To"] = addr
+    msg["From"] = session.config["mail"]["sender"]
+    msg["Subject"] = "Please verify your account"
+    msg.set_content(
+        """\
 Hi there!
 Please verify your account by visiting:
 %s/api/verify/%s/%s
 
 With regards,
 Apache Kibble.
-""" % (session.url, addr, code)
+"""
+        % (session.url, addr, code)
     )
-    s = smtplib.SMTP("%s:%s" % (session.config['mail']['mailhost'], session.config['mail']['mailport']))
+    s = smtplib.SMTP(
+        "%s:%s"
+        % (session.config["mail"]["mailhost"], session.config["mail"]["mailport"])
+    )
     s.send_message(msg)
     s.quit()
 
+
 def run(API, environ, indata, session):
 
-    method = environ['REQUEST_METHOD']
+    method = environ["REQUEST_METHOD"]
 
     # Add a new account??
     if method == "PUT":
-        u = indata['email']
-        p = indata['password']
-        d = indata['displayname']
+        u = indata["email"]
+        p = indata["password"]
+        d = indata["displayname"]
 
         # Are new accounts allowed? (admin can always make accounts, of course)
-        if not session.config['accounts'].get('allowSignup', False):
-            if not (session.user and session.user['level'] == 'admin'):
-                raise API.exception(403, "New account requests have been administratively disabled.")
+        if not session.config["accounts"].get("allowSignup", False):
+            if not (session.user and session.user["level"] == "admin"):
+                raise API.exception(
+                    403, "New account requests have been administratively disabled."
+                )
 
         # Check if we already have that username in use
-        if session.DB.ES.exists(index=session.DB.dbname, doc_type='useraccount', id = u):
+        if session.DB.ES.exists(index=session.DB.dbname, doc_type="useraccount", id=u):
             raise API.exception(403, "Username already in use")
 
         # We require a username, displayName password of at least 3 chars each
         if len(p) < 3 or len(u) < 3 or len(d) < 3:
-            raise API.exception(400, "Username, display-name and password must each be at elast 3 characters long.")
+            raise API.exception(
+                400,
+                "Username, display-name and password must each be at elast 3 characters long.",
+            )
 
         # We loosely check that the email is an email
         if not re.match(r"^\S+@\S+\.\S+$", u):
@@ -151,7 +162,7 @@ def run(API, environ, indata, session):
 
         # Okay, let's make an account...I guess
         salt = bcrypt.gensalt()
-        pwd = bcrypt.hashpw(p.encode('utf-8'), salt).decode('ascii')
+        pwd = bcrypt.hashpw(p.encode("utf-8"), salt).decode("ascii")
 
         # Verification code, if needed
         vsalt = bcrypt.gensalt()
@@ -161,32 +172,33 @@ def run(API, environ, indata, session):
         # This is so previously unverified accounts don'thave to verify
         # if we later turn verification on.
         verified = True
-        if session.config['accounts'].get('verify'):
+        if session.config["accounts"].get("verify"):
             verified = False
-            sendCode(session, u, vcode) # Send verification email
+            sendCode(session, u, vcode)  # Send verification email
             # If verification email fails, skip account creation.
 
         doc = {
-            'email': u,                         # Username (email)
-            'password': pwd,                    # Hashed password
-            'displayName': d,                   # Display Name
-            'organisations': [],                # Orgs user belongs to (default is none)
-            'ownerships': [],                   # Orgs user owns (default is none)
-            'defaultOrganisation': None,        # Default org for user
-            'verified': verified,               # Account verified via email?
-            'vcode': vcode,                     # Verification code
-            'userlevel': "user"                 # User level (user/admin)
+            "email": u,  # Username (email)
+            "password": pwd,  # Hashed password
+            "displayName": d,  # Display Name
+            "organisations": [],  # Orgs user belongs to (default is none)
+            "ownerships": [],  # Orgs user owns (default is none)
+            "defaultOrganisation": None,  # Default org for user
+            "verified": verified,  # Account verified via email?
+            "vcode": vcode,  # Verification code
+            "userlevel": "user",  # User level (user/admin)
         }
 
-
         # If we have auto-invite on, check if there are orgs to invite to
-        if 'autoInvite' in session.config['accounts']:
-            dom = u.split('@')[-1].lower()
-            for ai in session.config['accounts']['autoInvite']:
-                if ai['domain'] == dom:
-                    doc['organisations'].append(ai['organisation'])
+        if "autoInvite" in session.config["accounts"]:
+            dom = u.split("@")[-1].lower()
+            for ai in session.config["accounts"]["autoInvite"]:
+                if ai["domain"] == dom:
+                    doc["organisations"].append(ai["organisation"])
 
-        session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = u, body = doc)
+        session.DB.ES.index(
+            index=session.DB.dbname, doc_type="useraccount", id=u, body=doc
+        )
         yield json.dumps({"message": "Account created!", "verified": verified})
         return
 
@@ -194,24 +206,30 @@ def run(API, environ, indata, session):
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
 
-
     # Patch (edit) an account
     if method == "PATCH":
-        userid = session.user['email']
-        if indata.get('email') and session.user['userlevel'] == "admin":
-            userid = indata.get('email')
-        doc = session.DB.ES.get(index=session.DB.dbname, doc_type='useraccount', id = userid)
-        udoc = doc['_source']
-        if indata.get('defaultOrganisation'):
+        userid = session.user["email"]
+        if indata.get("email") and session.user["userlevel"] == "admin":
+            userid = indata.get("email")
+        doc = session.DB.ES.get(
+            index=session.DB.dbname, doc_type="useraccount", id=userid
+        )
+        udoc = doc["_source"]
+        if indata.get("defaultOrganisation"):
             # Make sure user is a member or admin here..
-            if session.user['userlevel'] == "admin" or indata.get('defaultOrganisation') in udoc['organisations']:
-                udoc['defaultOrganisation'] = indata.get('defaultOrganisation')
+            if (
+                session.user["userlevel"] == "admin"
+                or indata.get("defaultOrganisation") in udoc["organisations"]
+            ):
+                udoc["defaultOrganisation"] = indata.get("defaultOrganisation")
         # Changing pasword?
-        if indata.get('password'):
-            p = indata.get('password')
+        if indata.get("password"):
+            p = indata.get("password")
             salt = bcrypt.gensalt()
-            pwd = bcrypt.hashpw(p.encode('utf-8'), salt).decode('ascii')
+            pwd = bcrypt.hashpw(p.encode("utf-8"), salt).decode("ascii")
         # Update user doc
-        session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = userid, body = udoc)
+        session.DB.ES.index(
+            index=session.DB.dbname, doc_type="useraccount", id=userid, body=udoc
+        )
         yield json.dumps({"message": "Account updated!"})
         return

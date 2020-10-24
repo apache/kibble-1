@@ -1,5 +1,3 @@
-
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -31,7 +29,7 @@ from elasticsearch import Elasticsearch
 
 from kibble.settings import KIBBLE_YAML
 
-KIBBLE_VERSION = '0.1.0'  # ABI/API compat demarcation.
+KIBBLE_VERSION = "0.1.0"  # ABI/API compat demarcation.
 KIBBLE_DB_VERSION = 2  # Second database revision
 
 if sys.version_info <= (3, 3):
@@ -43,38 +41,54 @@ if sys.version_info <= (3, 3):
 def get_parser():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
-        "-e", "--hostname",
+        "-e",
+        "--hostname",
         help="Pre-defined hostname for ElasticSearch (docker setups). Default: localhost",
-        default="localhost"
+        default="localhost",
     )
     arg_parser.add_argument(
-        "-p", "--port",
-        help="Pre-defined port for ES (docker setups). Default: 9200", default=9200
+        "-p",
+        "--port",
+        help="Pre-defined port for ES (docker setups). Default: 9200",
+        default=9200,
     )
     arg_parser.add_argument(
-        "-d", "--dbname", help="Pre-defined Database prefix (docker setups). Default: kibble", default="kibble"
+        "-d",
+        "--dbname",
+        help="Pre-defined Database prefix (docker setups). Default: kibble",
+        default="kibble",
     )
     arg_parser.add_argument(
-        "-s", "--shards", help="Predefined number of ES shards (docker setups), Default: 5", default=5
+        "-s",
+        "--shards",
+        help="Predefined number of ES shards (docker setups), Default: 5",
+        default=5,
     )
     arg_parser.add_argument(
-        "-r", "--replicas", help="Predefined number of replicas for ES (docker setups). Default: 1", default=1
+        "-r",
+        "--replicas",
+        help="Predefined number of replicas for ES (docker setups). Default: 1",
+        default=1,
     )
     arg_parser.add_argument(
-        "-m", "--mailhost",
+        "-m",
+        "--mailhost",
         help="Pre-defined mail server host (docker setups). Default: localhost:25",
-        default="localhost:25"
+        default="localhost:25",
     )
     arg_parser.add_argument(
-        "-a", "--autoadmin",
-        action='store_true',
+        "-a",
+        "--autoadmin",
+        action="store_true",
         help="Generate generic admin account (docker setups). Default: False",
-        default=False
+        default=False,
     )
     arg_parser.add_argument(
-        "-k", "--skiponexist",
-        action='store_true',
-        help="Skip DB creation if DBs exist (docker setups). Defaul: True", default=True
+        "-k",
+        "--skiponexist",
+        action="store_true",
+        help="Skip DB creation if DBs exist (docker setups). Defaul: True",
+        default=True,
     )
     return arg_parser
 
@@ -94,24 +108,21 @@ def create_es_index(
     # elasticsearch logs lots of warnings on retries/connection failure
     logging.getLogger("elasticsearch").setLevel(logging.ERROR)
 
-    mappings_json = os.path.join(os.path.dirname(os.path.realpath(__file__)), "mappings.json")
+    mappings_json = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "mappings.json"
+    )
     with open(mappings_json, "r") as f:
         mappings = json.load(f)
 
-    es = Elasticsearch([
-        {
-            'host': hostname,
-            'port': port,
-            'use_ssl': False,
-            'url_prefix': ''
-        }],
+    es = Elasticsearch(
+        [{"host": hostname, "port": port, "use_ssl": False, "url_prefix": ""}],
         max_retries=5,
-        retry_on_timeout=True
+        retry_on_timeout=True,
     )
 
-    es_version =es.info()['version']['number']
-    es6 = int(es_version.split('.')[0]) >= 6
-    es7 = int(es_version.split('.')[0]) >= 7
+    es_version = es.info()["version"]["number"]
+    es6 = int(es_version.split(".")[0]) >= 6
+    es7 = int(es_version.split(".")[0]) >= 7
 
     if not es6:
         print(
@@ -122,7 +133,7 @@ def create_es_index(
 
     # If ES >= 7, _doc is invalid and mapping should be rooted
     if es7:
-        mappings['mappings'] = mappings['mappings']['_doc']
+        mappings["mappings"] = mappings["mappings"]["_doc"]
 
     # Check if index already exists
     if es.indices.exists(dbname + "_api"):
@@ -134,88 +145,81 @@ def create_es_index(
         sys.exit(-1)
 
     types = [
-        'api',
+        "api",
         # ci_*: CI service stats
-        'ci_build',
-        'ci_queue',
+        "ci_build",
+        "ci_queue",
         # code_* + evolution + file_history: git repo stats
-        'code_commit',
-        'code_commit_unique',
-        'code_modification',
-        'evolution',
-        'file_history',
+        "code_commit",
+        "code_commit_unique",
+        "code_modification",
+        "evolution",
+        "file_history",
         # forum_*: forum stats (SO, Discourse, Askbot etc)
-        'forum_post',
-        'forum_topic',
+        "forum_post",
+        "forum_topic",
         # GitHub stats
-        'ghstats',
+        "ghstats",
         # im_*: Instant messaging stats
-        'im_stats',
-        'im_ops',
-        'im_msg',
-        'issue',
-        'logstats',
+        "im_stats",
+        "im_ops",
+        "im_msg",
+        "issue",
+        "logstats",
         # email, mail*: Email statitics
-        'email',
-        'mailstats',
-        'mailtop',
+        "email",
+        "mailstats",
+        "mailtop",
         # organisation, view, source, publish: UI Org DB
-        'organisation',
-        'view',
-        'publish',
-        'source',
+        "organisation",
+        "view",
+        "publish",
+        "source",
         # stats: Miscellaneous stats
-        'stats',
+        "stats",
         # social_*: Twitter, Mastodon, Facebook etc
-        'social_follow',
-        'social_followers',
-        'social_follower',
-        'social_person',
+        "social_follow",
+        "social_followers",
+        "social_follower",
+        "social_person",
         # uisession, useraccount, message: UI user DB
-        'uisession',
-        'useraccount',
-        'message',
+        "uisession",
+        "useraccount",
+        "message",
         # person: contributor DB
-        'person',
+        "person",
     ]
 
     for t in types:
         iname = f"{dbname}_{t}"
         print(f"Creating index {iname}")
 
-        settings = {
-            "number_of_shards":   shards,
-            "number_of_replicas": replicas
-        }
+        settings = {"number_of_shards": shards, "number_of_replicas": replicas}
         es.indices.create(
-            index=iname,
-            body={
-                "mappings": mappings['mappings'],
-                "settings": settings
-            }
+            index=iname, body={"mappings": mappings["mappings"], "settings": settings}
         )
     print(f"Indices created!")
     print()
 
     salt = bcrypt.gensalt()
-    pwd = bcrypt.hashpw(admin_pass.encode('utf-8'), salt).decode('ascii')
+    pwd = bcrypt.hashpw(admin_pass.encode("utf-8"), salt).decode("ascii")
     print("Creating administrator account")
     doc = {
-            'email': admin_name,                # Username (email)
-            'password': pwd,                    # Hashed password
-            'displayName': "Administrator",     # Display Name
-            'organisations': [],                # Orgs user belongs to (default is none)
-            'ownerships': [],                   # Orgs user owns (default is none)
-            'defaultOrganisation': None,        # Default org for user
-            'verified': True,                   # Account verified via email?
-            'userlevel': "admin"                # User level (user/admin)
-        }
-    dbdoc = {
-        'apiversion': KIBBLE_VERSION,           # Log current API version
-        'dbversion': KIBBLE_DB_VERSION          # Log the database revision we accept (might change!)
+        "email": admin_name,  # Username (email)
+        "password": pwd,  # Hashed password
+        "displayName": "Administrator",  # Display Name
+        "organisations": [],  # Orgs user belongs to (default is none)
+        "ownerships": [],  # Orgs user owns (default is none)
+        "defaultOrganisation": None,  # Default org for user
+        "verified": True,  # Account verified via email?
+        "userlevel": "admin",  # User level (user/admin)
     }
-    es.index(index=dbname+'_useraccount', doc_type='_doc', id=admin_name, body=doc)
-    es.index(index=dbname+'_api', doc_type='_doc', id='current', body=dbdoc)
+    dbdoc = {
+        "apiversion": KIBBLE_VERSION,  # Log current API version
+        "dbversion": KIBBLE_DB_VERSION,  # Log the database revision we accept (might change!)
+    }
+    es.index(index=dbname + "_useraccount", doc_type="_doc", id=admin_name, body=doc)
+    es.index(index=dbname + "_api", doc_type="_doc", id="current", body=dbdoc)
     print("Account created!")
 
 
@@ -228,48 +232,39 @@ def get_kibble_yaml() -> str:
     return kibble_yaml
 
 
-def save_config(
-    mlserver: str,
-    hostname: str,
-    port: int,
-    dbname: str,
-):
+def save_config(mlserver: str, hostname: str, port: int, dbname: str):
     """Save kibble config to yaml file"""
     if ":" in mlserver:
         try:
             mailhost, mailport = mlserver.split(":")
         except ValueError:
-            raise ValueError("mailhost argument must be in form of `host:port` or `host`")
+            raise ValueError(
+                "mailhost argument must be in form of `host:port` or `host`"
+            )
     else:
         mailhost = mlserver
         mailport = 25
 
     config = {
-        'api': {
-            'version': KIBBLE_VERSION,
-            'database': KIBBLE_DB_VERSION
+        "api": {"version": KIBBLE_VERSION, "database": KIBBLE_DB_VERSION},
+        "elasticsearch": {
+            "host": hostname,
+            "port": port,
+            "ssl": False,
+            "dbname": dbname,
         },
-        'elasticsearch': {
-            'host': hostname,
-            'port': port,
-            'ssl': False,
-            'dbname': dbname
+        "mail": {
+            "mailhost": mailhost,
+            "mailport": int(mailport),
+            "sender": "Kibble <noreply@kibble.kibble>",
         },
-        'mail': {
-            'mailhost': mailhost,
-            'mailport': int(mailport),
-            'sender': 'Kibble <noreply@kibble.kibble>'
-        },
-        'accounts': {
-            'allowSignup': True,
-            'verify': True
-        }
+        "accounts": {"allowSignup": True, "verify": True},
     }
 
     kibble_yaml = get_kibble_yaml()
     print(f"Writing Kibble config to {kibble_yaml}")
     with open(kibble_yaml, "w") as f:
-        f.write(yaml.dump(config, default_flow_style = False))
+        f.write(yaml.dump(config, default_flow_style=False))
         f.close()
 
 
@@ -281,7 +276,9 @@ def get_user_input(msg: str, secure: bool = False):
 
 
 def print_configuration(args):
-    print("Configuring Apache Kibble elasticsearch instance with the following arguments:")
+    print(
+        "Configuring Apache Kibble elasticsearch instance with the following arguments:"
+    )
     print(f"- hostname: {args.hostname}")
     print(f"- port: {int(args.port)}")
     print(f"- dbname: {args.dbname}")
@@ -305,17 +302,21 @@ def main():
     admin_name = "admin@kibble"
     admin_pass = "kibbleAdmin"
     if not args.autoadmin:
-        admin_name = get_user_input("Enter an email address for the administrator account:")
-        admin_pass = get_user_input("Enter a password for the administrator account:", secure=True)
+        admin_name = get_user_input(
+            "Enter an email address for the administrator account:"
+        )
+        admin_pass = get_user_input(
+            "Enter a password for the administrator account:", secure=True
+        )
 
     # Create Elasticsearch index
     # Retry in case ES is not yet up
     print(f"Elasticsearch: {args.hostname}:{args.port}")
     for attempt in tenacity.Retrying(
-            retry=tenacity.retry_if_exception_type(exception_types=Exception),
-            wait=tenacity.wait_fixed(10),
-            stop=tenacity.stop_after_attempt(10),
-            reraise=True
+        retry=tenacity.retry_if_exception_type(exception_types=Exception),
+        wait=tenacity.wait_fixed(10),
+        stop=tenacity.stop_after_attempt(10),
+        reraise=True,
     ):
         with attempt:
             print("Trying to create ES index...")
@@ -342,5 +343,5 @@ def main():
     print("All done, Kibble should...work now :)")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

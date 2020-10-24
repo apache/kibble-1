@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,9 +61,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the TopN repos by commits list renderer for Kibble
 """
@@ -72,6 +68,7 @@ This is the TopN repos by commits list renderer for Kibble
 import json
 import time
 import re
+
 
 def run(API, environ, indata, session):
 
@@ -83,83 +80,69 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
-
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
+    dateTo = indata.get("to", int(time.time()))
+    dateFrom = indata.get(
+        "from", dateTo - (86400 * 30 * 6)
+    )  # Default to a 6 month span
 
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'tsday': {
-                                        'from': dateFrom,
-                                        'to': dateTo
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-    # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-    elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    if indata.get('email'):
-        query['query']['bool']['should'] = [{'term': {'committer_email': indata.get('email')}}, {'term': {'author_email': indata.get('email')}}]
-        query['query']['bool']['minimum_should_match'] = 1
-
-    # Path filter?
-    if indata.get('pathfilter'):
-        pf = indata.get('pathfilter')
-        if '!' in pf:
-            pf = pf.replace('!', '')
-            query['query']['bool']['must_not'] = query['query']['bool'].get('must_not', [])
-            query['query']['bool']['must_not'].append({'regexp': {'files_changed': pf}})
-        else:
-            query['query']['bool']['must'].append({'regexp': {'files_changed': pf}})
-
-
-    # Get top 25 committers this period
-    query['aggs'] = {
-            'by_repo': {
-                'terms': {
-                    'field': 'sourceURL',
-                    'size': 5000
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"tsday": {"from": dateFrom, "to": dateTo}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
         }
-    res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="code_commit",
-            size = 0,
-            body = query
+    }
+    # Source-specific or view-specific??
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
         )
+    elif viewList:
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
+    if indata.get("email"):
+        query["query"]["bool"]["should"] = [
+            {"term": {"committer_email": indata.get("email")}},
+            {"term": {"author_email": indata.get("email")}},
+        ]
+        query["query"]["bool"]["minimum_should_match"] = 1
+
+    # Path filter?
+    if indata.get("pathfilter"):
+        pf = indata.get("pathfilter")
+        if "!" in pf:
+            pf = pf.replace("!", "")
+            query["query"]["bool"]["must_not"] = query["query"]["bool"].get(
+                "must_not", []
+            )
+            query["query"]["bool"]["must_not"].append({"regexp": {"files_changed": pf}})
+        else:
+            query["query"]["bool"]["must"].append({"regexp": {"files_changed": pf}})
+
+    # Get top 25 committers this period
+    query["aggs"] = {"by_repo": {"terms": {"field": "sourceURL", "size": 5000}}}
+    res = session.DB.ES.search(
+        index=session.DB.dbname, doc_type="code_commit", size=0, body=query
+    )
 
     toprepos = []
-    for bucket in res['aggregations']['by_repo']['buckets']:
-        repo = re.sub(r".+/([^/]+?)(?:\.git)?$", r"\1", bucket['key'])
-        count = bucket['doc_count']
+    for bucket in res["aggregations"]["by_repo"]["buckets"]:
+        repo = re.sub(r".+/([^/]+?)(?:\.git)?$", r"\1", bucket["key"])
+        count = bucket["doc_count"]
 
         toprepos.append([repo, count])
 
-    toprepos = sorted(toprepos, key = lambda x: x[1], reverse = True)
+    toprepos = sorted(toprepos, key=lambda x: x[1], reverse=True)
     top = toprepos[0:24]
     if len(toprepos) > 25:
         count = 0
@@ -171,9 +154,5 @@ def run(API, environ, indata, session):
     for v in top:
         tophash[v[0]] = v[1]
 
-    JSON_OUT = {
-        'counts': tophash,
-        'okay': True,
-        'responseTime': time.time() - now,
-    }
+    JSON_OUT = {"counts": tophash, "okay": True, "responseTime": time.time() - now}
     yield json.dumps(JSON_OUT)

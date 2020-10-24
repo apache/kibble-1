@@ -24,6 +24,7 @@ Kibble API scripts library:
 
 import importlib
 import os
+
 # Define all the submodules we have
 
 rootpath = os.path.join(os.path.dirname(os.path.realpath(__file__)))
@@ -32,6 +33,7 @@ print("Reading pages from %s" % rootpath)
 # Import each submodule into a hash called 'handlers'
 handlers = {}
 
+
 def loadPage(path):
     for el in os.listdir(path):
         filepath = os.path.join(path, el)
@@ -39,8 +41,10 @@ def loadPage(path):
             if os.path.isdir(filepath):
                 loadPage(filepath)
             else:
-                p = filepath.replace(rootpath, "")[1:].replace('/', '.')[:-3]
-                xp = p.replace('.', '/')
+                p = filepath.replace(rootpath, "")[1:].replace("/", ".")[:-3]
+                xp = p.replace(".", "/")
                 print("Loading endpoint pages.%s as %s" % (p, xp))
                 handlers[xp] = importlib.import_module(f"kibble.api.pages.{p}")
+
+
 loadPage(rootpath)

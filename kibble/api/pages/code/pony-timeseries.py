@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,9 +61,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the pony factor renderer for Kibble
 """
@@ -74,6 +70,7 @@ import time
 import re
 import datetime
 import dateutil.relativedelta
+
 
 def run(API, environ, indata, session):
 
@@ -85,13 +82,12 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
-
-    hl = indata.get('span', 24)
+    hl = indata.get("span", 24)
     tnow = datetime.date.today()
     nm = tnow.month - (tnow.month % 3)
     ny = tnow.year
@@ -111,107 +107,84 @@ def run(API, environ, indata, session):
             nm += 12
             ny = ny - 1
 
-
         ####################################################################
         ####################################################################
-        dOrg = session.user['defaultOrganisation'] or "apache"
+        dOrg = session.user["defaultOrganisation"] or "apache"
         query = {
-                    'query': {
-                        'bool': {
-                            'must': [
-                                {'range':
-                                    {
-                                        'tsday': {
-                                            'from': tf,
-                                            'to': t
-                                        }
-                                    }
-                                },
-                                {
-                                    'term': {
-                                        'organisation': dOrg
-                                    }
-                                }
-                            ]
-                        }
-                    }
+            "query": {
+                "bool": {
+                    "must": [
+                        {"range": {"tsday": {"from": tf, "to": t}}},
+                        {"term": {"organisation": dOrg}},
+                    ]
                 }
+            }
+        }
         # Source-specific or view-specific??
-        if indata.get('source'):
-            query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+        if indata.get("source"):
+            query["query"]["bool"]["must"].append(
+                {"term": {"sourceID": indata.get("source")}}
+            )
         elif viewList:
-            query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+            query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
 
         # Get an initial count of commits
         res = session.DB.ES.count(
-                index=session.DB.dbname,
-                doc_type="code_commit",
-                body = query
-            )
+            index=session.DB.dbname, doc_type="code_commit", body=query
+        )
 
-        globcount = res['count']
+        globcount = res["count"]
         if globcount == 0:
             break
 
         # Get top 25 committers this period
-        query['aggs'] = {
-                'by_committer': {
-                    'terms': {
-                        'field': 'committer_email',
-                        'size': 1000
-                    }
-                },
-                'by_author': {
-                    'terms': {
-                        'field': 'author_email',
-                        'size': 1000
-                    }
-                }
-            }
+        query["aggs"] = {
+            "by_committer": {"terms": {"field": "committer_email", "size": 1000}},
+            "by_author": {"terms": {"field": "author_email", "size": 1000}},
+        }
         res = session.DB.ES.search(
-                index=session.DB.dbname,
-                doc_type="code_commit",
-                size = 0,
-                body = query
-            )
-
+            index=session.DB.dbname, doc_type="code_commit", size=0, body=query
+        )
 
         # PF for committers
         pf_committer = 0
         pf_committer_count = 0
-        for bucket in res['aggregations']['by_committer']['buckets']:
-            count = bucket['doc_count']
+        for bucket in res["aggregations"]["by_committer"]["buckets"]:
+            count = bucket["doc_count"]
             pf_committer += 1
             pf_committer_count += count
-            if pf_committer_count > int(globcount/2):
+            if pf_committer_count > int(globcount / 2):
                 break
 
         # PF for authors
         pf_author = 0
         pf_author_count = 0
         cpf = {}
-        for bucket in res['aggregations']['by_author']['buckets']:
-            count = bucket['doc_count']
+        for bucket in res["aggregations"]["by_author"]["buckets"]:
+            count = bucket["doc_count"]
             pf_author += 1
             pf_author_count += count
-            if '@' in bucket['key']:
-                mldom = bucket['key'].lower().split('@')[-1]
+            if "@" in bucket["key"]:
+                mldom = bucket["key"].lower().split("@")[-1]
                 cpf[mldom] = True
-            if pf_author_count > int(globcount/2):
+            if pf_author_count > int(globcount / 2):
                 break
-        ts.append({
-            'date': t,
-            'Pony Factor (committership)': pf_committer,
-            'Pony Factor (authorship)': pf_author,
-            'Meta-Pony Factor': len(cpf)
-        })
+        ts.append(
+            {
+                "date": t,
+                "Pony Factor (committership)": pf_committer,
+                "Pony Factor (authorship)": pf_author,
+                "Meta-Pony Factor": len(cpf),
+            }
+        )
 
-    ts = sorted(ts, key = lambda x: x['date'])
+    ts = sorted(ts, key=lambda x: x["date"])
 
     JSON_OUT = {
-        'text': "This shows Pony Factors as calculated over a %u month timespan. Authorship measures the people writing the bulk of the codebase, committership mesaures the people committing (merging) the code, and meta-pony is an estimation of how many organisations/companies are involved." % hl,
-        'timeseries': ts,
-        'okay': True,
-        'responseTime': time.time() - now,
+        "text": "This shows Pony Factors as calculated over a %u month timespan. Authorship measures the people writing the bulk of the codebase, committership mesaures the people committing (merging) the code, and meta-pony is an estimation of how many organisations/companies are involved."
+        % hl,
+        "timeseries": ts,
+        "okay": True,
+        "responseTime": time.time() - now,
     }
     yield json.dumps(JSON_OUT)

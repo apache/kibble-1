@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,15 +61,13 @@
 ########################################################################
 
 
-
-
-
 """
 This is the forum trends renderer for Kibble
 """
 
 import json
 import time
+
 
 def run(API, environ, indata, session):
 
@@ -82,20 +79,20 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
-
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
+    dateTo = indata.get("to", int(time.time()))
+    dateFrom = indata.get(
+        "from", dateTo - (86400 * 30 * 6)
+    )  # Default to a 6 month span
     if dateFrom < 0:
         dateFrom = 0
     dateYonder = dateFrom - (dateTo - dateFrom)
 
-
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
 
     ####################################################################
     # We start by doing all the queries for THIS period.               #
@@ -103,250 +100,157 @@ def run(API, environ, indata, session):
     # and rerun the same queries.                                      #
     ####################################################################
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'created': {
-                                        'from': dateFrom,
-                                        'to': dateTo
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"created": {"from": dateFrom, "to": dateTo}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
+        }
+    }
     # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
     elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
 
     # Get number of issues created, this period
     res = session.DB.ES.count(
-            index=session.DB.dbname,
-            doc_type="forum_topic",
-            body = query
-        )
-    no_issues_created = res['count']
-
+        index=session.DB.dbname, doc_type="forum_topic", body=query
+    )
+    no_issues_created = res["count"]
 
     # Get number of open/close, this period
-    query['aggs'] = {
-            'opener': {
-                'cardinality': {
-                    'field': 'creator'
-                }
-            }
-        }
+    query["aggs"] = {"opener": {"cardinality": {"field": "creator"}}}
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="forum_topic",
-            size = 0,
-            body = query
-        )
-    no_creators = res['aggregations']['opener']['value']
-
+        index=session.DB.dbname, doc_type="forum_topic", size=0, body=query
+    )
+    no_creators = res["aggregations"]["opener"]["value"]
 
     # REPLIERS
 
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'created': {
-                                        'from': dateFrom,
-                                        'to': dateTo
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"created": {"from": dateFrom, "to": dateTo}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
+        }
+    }
     # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
     elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
 
     # Get number of issues created, this period
     res = session.DB.ES.count(
-            index=session.DB.dbname,
-            doc_type="forum_post",
-            body = query
-        )
-    no_issues_closed = res['count']
-
+        index=session.DB.dbname, doc_type="forum_post", body=query
+    )
+    no_issues_closed = res["count"]
 
     # Get number of open/close, this period
-    query['aggs'] = {
-            'closer': {
-                'cardinality': {
-                    'field': 'creator'
-                }
-            }
-        }
+    query["aggs"] = {"closer": {"cardinality": {"field": "creator"}}}
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="forum_post",
-            size = 0,
-            body = query
-        )
-    no_closers = res['aggregations']['closer']['value']
-
+        index=session.DB.dbname, doc_type="forum_post", size=0, body=query
+    )
+    no_closers = res["aggregations"]["closer"]["value"]
 
     ####################################################################
     # Change to PRIOR SPAN                                             #
     ####################################################################
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'created': {
-                                        'from': dateYonder,
-                                        'to': dateFrom-1
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"created": {"from": dateYonder, "to": dateFrom - 1}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
+        }
+    }
 
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
     elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
 
     # Get number of issues, this period
     res = session.DB.ES.count(
-            index=session.DB.dbname,
-            doc_type="forum_topic",
-            body = query
-        )
-    no_issues_created_before = res['count']
+        index=session.DB.dbname, doc_type="forum_topic", body=query
+    )
+    no_issues_created_before = res["count"]
 
     # Get number of committers, this period
-    query['aggs'] = {
-            'opener': {
-                'cardinality': {
-                    'field': 'creator'
-                }
-            }
-        }
+    query["aggs"] = {"opener": {"cardinality": {"field": "creator"}}}
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="forum_topic",
-            size = 0,
-            body = query
-        )
-    no_creators_before = res['aggregations']['opener']['value']
-
-
+        index=session.DB.dbname, doc_type="forum_topic", size=0, body=query
+    )
+    no_creators_before = res["aggregations"]["opener"]["value"]
 
     # REPLIERS
 
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'created': {
-                                        'from': dateYonder,
-                                        'to': dateFrom-1
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"created": {"from": dateYonder, "to": dateFrom - 1}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+        }
+    }
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
     elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
 
     # Get number of issues created, this period
     res = session.DB.ES.count(
-            index=session.DB.dbname,
-            doc_type="forum_post",
-            body = query
-        )
-    no_issues_closed_before = res['count']
-
+        index=session.DB.dbname, doc_type="forum_post", body=query
+    )
+    no_issues_closed_before = res["count"]
 
     # Get number of open/close, this period
-    query['aggs'] = {
-            'closer': {
-                'cardinality': {
-                    'field': "creator"
-                }
-            }
-        }
+    query["aggs"] = {"closer": {"cardinality": {"field": "creator"}}}
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="forum_post",
-            size = 0,
-            body = query
-        )
-    no_closers_before = res['aggregations']['closer']['value']
+        index=session.DB.dbname, doc_type="forum_post", size=0, body=query
+    )
+    no_closers_before = res["aggregations"]["closer"]["value"]
 
     trends = {
         "created": {
-            'before': no_issues_created_before,
-            'after': no_issues_created,
-            'title': "Topics started this period"
+            "before": no_issues_created_before,
+            "after": no_issues_created,
+            "title": "Topics started this period",
         },
         "authors": {
-            'before': no_creators_before,
-            'after': no_creators,
-            'title': "People starting topics this period"
+            "before": no_creators_before,
+            "after": no_creators,
+            "title": "People starting topics this period",
         },
         "closed": {
-            'before': no_issues_closed_before,
-            'after': no_issues_closed,
-            'title': "Replies this period"
+            "before": no_issues_closed_before,
+            "after": no_issues_closed,
+            "title": "Replies this period",
         },
         "closers": {
-            'before': no_closers_before,
-            'after': no_closers,
-            'title': "People replying this period"
-        }
+            "before": no_closers_before,
+            "after": no_closers,
+            "title": "People replying this period",
+        },
     }
 
-    JSON_OUT = {
-        'trends': trends,
-        'okay': True,
-        'responseTime': time.time() - now
-    }
+    JSON_OUT = {"trends": trends, "okay": True, "responseTime": time.time() - now}
     yield json.dumps(JSON_OUT)

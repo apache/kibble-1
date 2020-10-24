@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -91,9 +90,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the user session handler for Kibble
 """
@@ -105,34 +101,47 @@ import bcrypt
 import hashlib
 import uuid
 
+
 def run(API, environ, indata, session):
 
-    method = environ['REQUEST_METHOD']
+    method = environ["REQUEST_METHOD"]
 
     # Logging in?
     if method == "PUT":
-        u = indata['email']
-        p = indata['password']
-        if session.DB.ES.exists(index=session.DB.dbname, doc_type='useraccount', id = u):
-            doc = session.DB.ES.get(index=session.DB.dbname, doc_type='useraccount', id = u)
-            hp = doc['_source']['password']
-            if bcrypt.hashpw(p.encode('utf-8'), hp.encode('utf-8')).decode('ascii') == hp:
+        u = indata["email"]
+        p = indata["password"]
+        if session.DB.ES.exists(index=session.DB.dbname, doc_type="useraccount", id=u):
+            doc = session.DB.ES.get(
+                index=session.DB.dbname, doc_type="useraccount", id=u
+            )
+            hp = doc["_source"]["password"]
+            if (
+                bcrypt.hashpw(p.encode("utf-8"), hp.encode("utf-8")).decode("ascii")
+                == hp
+            ):
                 # If verification is enabled, make sure account is verified
-                if session.config['accounts'].get('verify'):
-                    if doc['_source']['verified'] == False:
-                        raise API.exception(403, "Your account needs to be verified first. Check your inbox!")
+                if session.config["accounts"].get("verify"):
+                    if doc["_source"]["verified"] == False:
+                        raise API.exception(
+                            403,
+                            "Your account needs to be verified first. Check your inbox!",
+                        )
                 sessionDoc = {
-                    'cid': u,
-                    'id': session.cookie,
-                    'timestamp': int(time.time())
+                    "cid": u,
+                    "id": session.cookie,
+                    "timestamp": int(time.time()),
                 }
-                session.DB.ES.index(index=session.DB.dbname, doc_type='uisession', id = session.cookie, body = sessionDoc)
+                session.DB.ES.index(
+                    index=session.DB.dbname,
+                    doc_type="uisession",
+                    id=session.cookie,
+                    body=sessionDoc,
+                )
                 yield json.dumps({"message": "Logged in OK!"})
                 return
 
         # Fall back to a 403 if username and password did not match
         raise API.exception(403, "Wrong username or password supplied!")
-
 
     # We need to be logged in for the rest of this!
     if not session.user:
@@ -140,7 +149,9 @@ def run(API, environ, indata, session):
 
     # Delete a session (log out)
     if method == "DELETE":
-        session.DB.ES.delete(index=session.DB.dbname, doc_type='uisession', id = session.cookie)
+        session.DB.ES.delete(
+            index=session.DB.dbname, doc_type="uisession", id=session.cookie
+        )
         session.newCookie()
         yield json.dumps({"message": "Logged out, bye bye!"})
 
@@ -148,37 +159,38 @@ def run(API, environ, indata, session):
     if method == "GET":
 
         # Do we have an API key? If not, make one
-        if not session.user.get('token') or indata.get('newtoken'):
+        if not session.user.get("token") or indata.get("newtoken"):
             token = str(uuid.uuid4())
-            session.user['token'] = token
-            session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = session.user['email'], body = session.user)
+            session.user["token"] = token
+            session.DB.ES.index(
+                index=session.DB.dbname,
+                doc_type="useraccount",
+                id=session.user["email"],
+                body=session.user,
+            )
 
         # Run a quick search of all orgs we have.
         res = session.DB.ES.search(
-                index=session.DB.dbname,
-                doc_type="organisation",
-                size = 100,
-                body = {
-                    'query': {
-                        'match_all': {}
-                    }
-                }
-            )
+            index=session.DB.dbname,
+            doc_type="organisation",
+            size=100,
+            body={"query": {"match_all": {}}},
+        )
 
         orgs = []
-        for hit in res['hits']['hits']:
-            doc = hit['_source']
+        for hit in res["hits"]["hits"]:
+            doc = hit["_source"]
             orgs.append(doc)
 
         JSON_OUT = {
-            'email': session.user['email'],
-            'displayName': session.user['displayName'],
-            'defaultOrganisation': session.user['defaultOrganisation'],
-            'organisations': session.user['organisations'],
-            'ownerships': session.user['ownerships'],
-            'gravatar': hashlib.md5(session.user['email'].encode('utf-8')).hexdigest(),
-            'userlevel': session.user['userlevel'],
-            'token': session.user['token']
+            "email": session.user["email"],
+            "displayName": session.user["displayName"],
+            "defaultOrganisation": session.user["defaultOrganisation"],
+            "organisations": session.user["organisations"],
+            "ownerships": session.user["ownerships"],
+            "gravatar": hashlib.md5(session.user["email"].encode("utf-8")).hexdigest(),
+            "userlevel": session.user["userlevel"],
+            "token": session.user["token"],
         }
         yield json.dumps(JSON_OUT)
         return

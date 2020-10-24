@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,9 +61,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the issue actors stats page for Kibble
 """
@@ -72,6 +68,7 @@ This is the issue actors stats page for Kibble
 import json
 import time
 import hashlib
+
 
 def run(API, environ, indata, session):
 
@@ -83,78 +80,58 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
-
-    interval = indata.get('interval', 'month')
+    interval = indata.get("interval", "month")
 
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {
-                                'term': {
-                                    'status': 'open'
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [{"term": {"status": "open"}}, {"term": {"organisation": dOrg}}]
             }
+        }
+    }
     # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
     elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    if indata.get('email'):
-        query['query']['bool']['should'] = [{'term': {'issueCreator': indata.get('email')}}, {'term': {'issueCloser': indata.get('email')}}]
-        query['query']['bool']['minimum_should_match'] = 1
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
+    if indata.get("email"):
+        query["query"]["bool"]["should"] = [
+            {"term": {"issueCreator": indata.get("email")}},
+            {"term": {"issueCloser": indata.get("email")}},
+        ]
+        query["query"]["bool"]["minimum_should_match"] = 1
 
     # Get timeseries for this period
-    query['aggs'] = {
-            'per_interval': {
-                'date_histogram': {
-                    'field': 'createdDate',
-                    'interval': interval
-                }
-            }
+    query["aggs"] = {
+        "per_interval": {
+            "date_histogram": {"field": "createdDate", "interval": interval}
         }
+    }
 
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="issue",
-            size = 0,
-            body = query
-        )
+        index=session.DB.dbname, doc_type="issue", size=0, body=query
+    )
     timeseries = []
     opened = 0
-    for bucket in res['aggregations']['per_interval']['buckets']:
-        ts = int(bucket['key'] / 1000)
-        opened += bucket['doc_count']
-        timeseries.append( {
-            'date': ts,
-            'open': opened
-        })
-
-
+    for bucket in res["aggregations"]["per_interval"]["buckets"]:
+        ts = int(bucket["key"] / 1000)
+        opened += bucket["doc_count"]
+        timeseries.append({"date": ts, "open": opened})
 
     JSON_OUT = {
-        'timeseries': timeseries,
-        'okay': True,
-        'responseTime': time.time() - now,
-        'widgetType': {
-            'chartType': 'line'
-        }
+        "timeseries": timeseries,
+        "okay": True,
+        "responseTime": time.time() - now,
+        "widgetType": {"chartType": "line"},
     }
     yield json.dumps(JSON_OUT)

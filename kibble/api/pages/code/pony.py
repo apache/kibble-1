@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,9 +61,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the pony factor renderer for Kibble
 """
@@ -72,6 +68,7 @@ This is the pony factor renderer for Kibble
 import json
 import time
 import re
+
 
 def run(API, environ, indata, session):
 
@@ -83,209 +80,158 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
-
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*24)) # Default to a 24 month span
+    dateTo = indata.get("to", int(time.time()))
+    dateFrom = indata.get(
+        "from", dateTo - (86400 * 30 * 24)
+    )  # Default to a 24 month span
     if dateFrom < 0:
         dateFrom = 0
     dateYonder = dateFrom - (dateTo - dateFrom)
 
-
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'tsday': {
-                                        'from': dateFrom,
-                                        'to': dateTo
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"tsday": {"from": dateFrom, "to": dateTo}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
+        }
+    }
     # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
     elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
 
     # Get an initial count of commits
     res = session.DB.ES.count(
-            index=session.DB.dbname,
-            doc_type="code_commit",
-            body = query
-        )
+        index=session.DB.dbname, doc_type="code_commit", body=query
+    )
 
-    globcount = res['count']
+    globcount = res["count"]
 
     # Get top 25 committers this period
-    query['aggs'] = {
-            'by_committer': {
-                'terms': {
-                    'field': 'committer_email',
-                    'size': 5000
-                }
-            },
-            'by_author': {
-                'terms': {
-                    'field': 'author_email',
-                    'size': 5000
-                }
-            }
-        }
+    query["aggs"] = {
+        "by_committer": {"terms": {"field": "committer_email", "size": 5000}},
+        "by_author": {"terms": {"field": "author_email", "size": 5000}},
+    }
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="code_commit",
-            size = 0,
-            body = query
-        )
-
+        index=session.DB.dbname, doc_type="code_commit", size=0, body=query
+    )
 
     # PF for committers
     pf_committer = 0
     pf_committer_count = 0
-    for bucket in res['aggregations']['by_committer']['buckets']:
-        count = bucket['doc_count']
+    for bucket in res["aggregations"]["by_committer"]["buckets"]:
+        count = bucket["doc_count"]
         pf_committer += 1
         pf_committer_count += count
-        if pf_committer_count > int(globcount/2):
+        if pf_committer_count > int(globcount / 2):
             break
 
     # PF for authors
     pf_author = 0
     pf_author_count = 0
     cpf = {}
-    for bucket in res['aggregations']['by_author']['buckets']:
-        count = bucket['doc_count']
+    for bucket in res["aggregations"]["by_author"]["buckets"]:
+        count = bucket["doc_count"]
         pf_author += 1
         pf_author_count += count
-        mldom = bucket['key'].lower().split('@')[1]
+        mldom = bucket["key"].lower().split("@")[1]
         cpf[mldom] = True
-        if pf_author_count > int(globcount/2):
+        if pf_author_count > int(globcount / 2):
             break
 
-
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'tsday': {
-                                        'from': dateYonder,
-                                        'to': dateFrom-1
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"tsday": {"from": dateYonder, "to": dateFrom - 1}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
+        }
+    }
     # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
     elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
 
     # Get an initial count of commits
     res = session.DB.ES.count(
-            index=session.DB.dbname,
-            doc_type="code_commit",
-            body = query
-        )
+        index=session.DB.dbname, doc_type="code_commit", body=query
+    )
 
-    globcount = res['count']
+    globcount = res["count"]
 
     # Get top 25 committers this period
-    query['aggs'] = {
-            'by_committer': {
-                'terms': {
-                    'field': 'committer_email',
-                    'size': 5000
-                }
-            },
-            'by_author': {
-                'terms': {
-                    'field': 'author_email',
-                    'size': 5000
-                }
-            }
-        }
+    query["aggs"] = {
+        "by_committer": {"terms": {"field": "committer_email", "size": 5000}},
+        "by_author": {"terms": {"field": "author_email", "size": 5000}},
+    }
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="code_commit",
-            size = 0,
-            body = query
-        )
-
+        index=session.DB.dbname, doc_type="code_commit", size=0, body=query
+    )
 
     # PF for committers
     pf_committer_b = 0
     pf_committer_count = 0
-    for bucket in res['aggregations']['by_committer']['buckets']:
-        count = bucket['doc_count']
+    for bucket in res["aggregations"]["by_committer"]["buckets"]:
+        count = bucket["doc_count"]
         pf_committer_b += 1
         pf_committer_count += count
-        if pf_committer_count > int(globcount/2):
+        if pf_committer_count > int(globcount / 2):
             break
 
     # PF for authors
     pf_author_b = 0
     pf_author_count = 0
     cpf_b = {}
-    for bucket in res['aggregations']['by_author']['buckets']:
-        count = bucket['doc_count']
+    for bucket in res["aggregations"]["by_author"]["buckets"]:
+        count = bucket["doc_count"]
         pf_author_b += 1
         pf_author_count += count
-        mldom = bucket['key'].lower().split('@')[1]
+        mldom = bucket["key"].lower().split("@")[1]
         cpf_b[mldom] = True
-        if pf_author_count > int(globcount/2):
+        if pf_author_count > int(globcount / 2):
             break
 
     JSON_OUT = {
-        'factors': [
+        "factors": [
             {
-                'title': "Pony Factor (by committership)",
-                'count': pf_committer,
-                'previous': pf_committer_b
+                "title": "Pony Factor (by committership)",
+                "count": pf_committer,
+                "previous": pf_committer_b,
             },
             {
-                'title': "Pony Factor (by authorship)",
-                'count': pf_author,
-                'previous': pf_author_b
+                "title": "Pony Factor (by authorship)",
+                "count": pf_author,
+                "previous": pf_author_b,
             },
             {
-                'title': "Meta-Pony Factor (by authorship)",
-                'count': len(cpf),
-                'previous': len(cpf_b)
-            }
+                "title": "Meta-Pony Factor (by authorship)",
+                "count": len(cpf),
+                "previous": len(cpf_b),
+            },
         ],
-        'okay': True,
-        'responseTime': time.time() - now,
+        "okay": True,
+        "responseTime": time.time() - now,
     }
     yield json.dumps(JSON_OUT)

@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,9 +61,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the TopN committers list renderer for Kibble
 """
@@ -76,6 +72,7 @@ import re
 
 ROBITS = r"(git|jira|jenkins|gerrit)@"
 
+
 def run(API, environ, indata, session):
 
     # We need to be logged in for this!
@@ -86,96 +83,72 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
+    dateTo = indata.get("to", int(time.time()))
+    dateFrom = indata.get(
+        "from", dateTo - (86400 * 30 * 6)
+    )  # Default to a 6 month span
 
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-
-    interval = indata.get('interval', 'month')
-
+    interval = indata.get("interval", "month")
 
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'ts': {
-                                        'from': dateFrom,
-                                        'to': dateTo
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-    # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-    elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-
-    # Get top 25 committers this period
-    query['aggs'] = {
-            'authors': {
-                'terms': {
-                    'field': 'sender',
-                    'size': 30
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"ts": {"from": dateFrom, "to": dateTo}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
         }
-    res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="email",
-            size = 0,
-            body = query
+    }
+    # Source-specific or view-specific??
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
         )
+    elif viewList:
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
+
+    # Get top 25 committers this period
+    query["aggs"] = {"authors": {"terms": {"field": "sender", "size": 30}}}
+    res = session.DB.ES.search(
+        index=session.DB.dbname, doc_type="email", size=0, body=query
+    )
 
     people = {}
-    for bucket in res['aggregations']['authors']['buckets']:
-        email = bucket['key']
+    for bucket in res["aggregations"]["authors"]["buckets"]:
+        email = bucket["key"]
         # By default, we want to see humans, not bots on this list!
         if re.match(ROBITS, email):
             continue
-        count = bucket['doc_count']
-        sha = hashlib.sha1( ("%s%s" % (dOrg, email)).encode('utf-8') ).hexdigest()
-        if session.DB.ES.exists(index=session.DB.dbname,doc_type="person",id = sha):
-            pres = session.DB.ES.get(
-                index=session.DB.dbname,
-                doc_type="person",
-                id = sha
-                )
-            person = pres['_source']
-            person['name'] = person.get('name', 'unknown')
+        count = bucket["doc_count"]
+        sha = hashlib.sha1(("%s%s" % (dOrg, email)).encode("utf-8")).hexdigest()
+        if session.DB.ES.exists(index=session.DB.dbname, doc_type="person", id=sha):
+            pres = session.DB.ES.get(index=session.DB.dbname, doc_type="person", id=sha)
+            person = pres["_source"]
+            person["name"] = person.get("name", "unknown")
             people[email] = person
-            people[email]['gravatar'] = hashlib.md5(person.get('email', 'unknown').encode('utf-8')).hexdigest()
-            people[email]['count'] = count
+            people[email]["gravatar"] = hashlib.md5(
+                person.get("email", "unknown").encode("utf-8")
+            ).hexdigest()
+            people[email]["count"] = count
 
     topN = []
     for email, person in people.items():
         topN.append(person)
-    topN = sorted(topN, key = lambda x: x['count'], reverse = True)
+    topN = sorted(topN, key=lambda x: x["count"], reverse=True)
 
     JSON_OUT = {
-        'topN': {
-            'denoter': 'emails',
-            'items': topN
-        },
-        'sorted': people,
-        'okay': True,
-        'responseTime': time.time() - now
+        "topN": {"denoter": "emails", "items": topN},
+        "sorted": people,
+        "okay": True,
+        "responseTime": time.time() - now,
     }
     yield json.dumps(JSON_OUT)

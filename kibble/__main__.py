@@ -15,9 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 def main():
     print("Hello to kibble!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

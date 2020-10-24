@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,9 +61,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the TopN repos by SLoC list renderer for Kibble
 """
@@ -72,6 +68,7 @@ This is the TopN repos by SLoC list renderer for Kibble
 import json
 import time
 import re
+
 
 def run(API, environ, indata, session):
 
@@ -83,57 +80,47 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
-
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'terms':
-                                {
-                                    'type': ['git', 'svn', 'github']
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"terms": {"type": ["git", "svn", "github"]}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
+        }
+    }
     # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
     elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
 
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="source",
-            size = 5000,
-            body = query
-        )
+        index=session.DB.dbname, doc_type="source", size=5000, body=query
+    )
 
     toprepos = []
-    for doc in res['hits']['hits']:
-        repo = doc['_source']
-        url = re.sub(r".+/([^/]+?)(?:\.git)?$", r"\1", repo['sourceURL'])
-        if 'sloc' in repo:
-            count = repo['sloc'].get('loc', 0)
+    for doc in res["hits"]["hits"]:
+        repo = doc["_source"]
+        url = re.sub(r".+/([^/]+?)(?:\.git)?$", r"\1", repo["sourceURL"])
+        if "sloc" in repo:
+            count = repo["sloc"].get("loc", 0)
             if not count:
                 count = 0
             toprepos.append([url, count])
 
-    toprepos = sorted(toprepos, key = lambda x: int(x[1]), reverse = True)
+    toprepos = sorted(toprepos, key=lambda x: int(x[1]), reverse=True)
     top = toprepos[0:24]
     if len(toprepos) > 25:
         count = 0
@@ -145,9 +132,5 @@ def run(API, environ, indata, session):
     for v in top:
         tophash[v[0]] = v[1]
 
-    JSON_OUT = {
-        'counts': tophash,
-        'okay': True,
-        'responseTime': time.time() - now,
-    }
+    JSON_OUT = {"counts": tophash, "okay": True, "responseTime": time.time() - now}
     yield json.dumps(JSON_OUT)

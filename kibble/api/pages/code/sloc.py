@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,14 +61,12 @@
 ########################################################################
 
 
-
-
-
 """
 This is the SLoC renderer for Kibble
 """
 
 import json
+
 
 def run(API, environ, indata, session):
 
@@ -77,65 +74,49 @@ def run(API, environ, indata, session):
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
 
-
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
-
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
     # Fetch all sources for default org
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {
-                            'terms': {
-                                'type': ['git', 'svn', 'github']
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"terms": {"type": ["git", "svn", "github"]}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
+        }
+    }
     # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
     elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
 
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="source",
-            size = 5000,
-            body = query
-        )
+        index=session.DB.dbname, doc_type="source", size=5000, body=query
+    )
 
     languages = {}
     years = 0
-    for hit in res['hits']['hits']:
-        doc = hit['_source']
-        if 'sloc' in doc:
-            sloc = doc['sloc']
-            years += sloc['years']
-            for k, v in sloc['languages'].items():
-                languages[k] = languages.get(k, {'code': 0, 'comment': 0, 'blank': 0})
-                languages[k]['code'] += v.get('code', 0)
-                languages[k]['comment'] += v.get('comment', 0)
-                languages[k]['blank'] += v.get('blank', 0)
+    for hit in res["hits"]["hits"]:
+        doc = hit["_source"]
+        if "sloc" in doc:
+            sloc = doc["sloc"]
+            years += sloc["years"]
+            for k, v in sloc["languages"].items():
+                languages[k] = languages.get(k, {"code": 0, "comment": 0, "blank": 0})
+                languages[k]["code"] += v.get("code", 0)
+                languages[k]["comment"] += v.get("comment", 0)
+                languages[k]["blank"] += v.get("blank", 0)
 
-
-    JSON_OUT = {
-        'languages': languages,
-        'okay': True,
-        'years': years
-    }
+    JSON_OUT = {"languages": languages, "okay": True, "years": years}
     yield json.dumps(JSON_OUT)
