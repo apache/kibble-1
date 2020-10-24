@@ -11,3 +11,4 @@ class KibbleConfigParser(ConfigParser):
         host = self["elasticsearch"]['host']
         port = self["elasticsearch"]['port']
         self.uri = "{}://{}:{}".format(dbname, host, port)
+        
