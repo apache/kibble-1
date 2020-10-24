@@ -20,16 +20,11 @@ This is the session library for Apache Kibble.
 It handles setting/getting cookies and user prefs
 """
 
-
-# Main imports
-import cgi
 import re
-import sys
-import traceback
 import http.cookies
 import uuid
-import elasticsearch
 import time
+
 
 class KibbleSession(object):
 

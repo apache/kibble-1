@@ -16,7 +16,7 @@ services:
   # Apache Kibble API server
   kibble:
     image: *img
-    command: bash -c "cd api && gunicorn --reload -w 1 -b 0.0.0.0:8001 handler:application"
+    command: bash -c "gunicorn --reload -w 1 -b 0.0.0.0:8001 api.handler:application"
     expose:
       - 8001
     ports:

@@ -27,9 +27,11 @@ import functools
 import operator
 import re
 
+
 class OpenAPIException(Exception):
     def __init__(self, message):
         self.message = message
+
 
 # Python type names to JSON type names
 py2JSON = {

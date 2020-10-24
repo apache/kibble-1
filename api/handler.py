@@ -23,36 +23,39 @@ It compiles a list of valid URLs from the 'pages' library folder,
 and if a URL matches it runs the specific submodule's run() function. It
 also handles CGI parsing and exceptions in the applications.
 """
-
-
-# Main imports
-import cgi
+import os
 import re
 import sys
 import traceback
 import yaml
 import json
-import plugins.session
-import plugins.database
-import plugins.openapi
+
+from api.plugins import openapi
+from api.plugins.database import KibbleDatabase
+from api.plugins.session import KibbleSession
+
 
 # Compile valid API URLs from the pages library
 # Allow backwards compatibility by also accepting .lua URLs
 urls = []
 if __name__ != '__main__':
-    import pages
-    for page in pages.handlers:
-        urls.append((r"^(/api/%s)(/.+)?$" % page, pages.handlers[page].run))
+    from api.pages import handlers
+    for page, handler in handlers.items():
+        urls.append((r"^(/api/%s)(/.+)?$" % page, handler.run))
 
 
 # Load Kibble master configuration
-config = yaml.load(open("yaml/kibble.yaml"))
+config_yaml = os.path.join(os.path.dirname(os.path.realpath(__file__)), "yaml", "kibble.yaml")
+with open(config_yaml, "r") as f:
+    config = yaml.load(f)
 
 # Instantiate database connections
 DB = None
 
 # Load Open API specifications
-KibbleOpenAPI = plugins.openapi.OpenAPI("yaml/openapi.yaml")
+openapi_yaml = os.path.join(os.path.dirname(os.path.realpath(__file__)), "yaml", "openapi.yaml")
+KibbleOpenAPI = openapi.OpenAPI(openapi_yaml)
+
 
 class KibbleHTTPError(Exception):
     def __init__(self, code, message):
@@ -72,7 +75,6 @@ class KibbleAPIWrapper:
 
     def __call__(self, environ, start_response, session):
         """Run the function, return response OR return stacktrace"""
-        response = None
         try:
             # Read JSON client data if any
             try:
@@ -96,7 +98,7 @@ class KibbleAPIWrapper:
             # Validate URL against OpenAPI specs
             try:
                 self.API.validate(environ['REQUEST_METHOD'], self.path, formdata)
-            except plugins.openapi.OpenAPIException as err:
+            except openapi.OpenAPIException as err:
                 start_response('400 Invalid request', [
                             ('Content-Type', 'application/json')])
                 yield json.dumps({
@@ -161,13 +163,13 @@ def application(environ, start_response):
     Checks against the pages library, and if submod found, runs
     it and returns the output.
     """
-    DB = plugins.database.KibbleDatabase(config)
+    db = KibbleDatabase(config)
     path = environ.get('PATH_INFO', '')
     for regex, function in urls:
         m = re.match(regex, path)
         if m:
             callback = KibbleAPIWrapper(path, function)
-            session = plugins.session.KibbleSession(DB, environ, config)
+            session = KibbleSession(db, environ, config)
             a = 0
             for bucket in callback(environ, start_response, session):
                 if a == 0:
@@ -186,7 +188,6 @@ def application(environ, start_response):
 
     for bucket in fourohfour(environ, start_response):
         yield bytes(bucket, encoding = 'utf-8')
-
 
 
 if __name__ == '__main__':
