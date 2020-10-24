@@ -15,7 +15,7 @@ We also have:
 
 ## Development installation
 
-You should be able to install kApache kibble by simply doing:
+You should be able to install Apache Kibble by simply doing:
 ```
 pip install -e ."[devel]"
 ```
