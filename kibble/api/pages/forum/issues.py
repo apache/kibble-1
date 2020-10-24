@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,9 +61,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the forum timeseries renderer for Kibble
 """
@@ -78,9 +74,10 @@ import hashlib
 def makeTS(dist):
     ts = {}
     for k in dist:
-        ts[k + ' topics'] = 0
-        ts[k + ' replies'] = 0
+        ts[k + " topics"] = 0
+        ts[k + " replies"] = 0
     return ts
+
 
 def run(API, environ, indata, session):
 
@@ -92,27 +89,26 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
+    dateTo = indata.get("to", int(time.time()))
+    dateFrom = indata.get(
+        "from", dateTo - (86400 * 30 * 6)
+    )  # Default to a 6 month span
 
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-
-    interval = indata.get('interval', 'month')
+    interval = indata.get("interval", "month")
 
     # By default, we lump generic forums and question/answer (like SO, askbot) together as one
-    distinct = {
-        'forum': ['discourse', 'stackoverflow', 'askbot']
-    }
+    distinct = {"forum": ["discourse", "stackoverflow", "askbot"]}
 
     # If requested, we split them into two
-    if indata.get('distinguish', False):
+    if indata.get("distinguish", False):
         distinct = {
-            'forum':        ['discourse'],
-            'question bank': ['stackoverflow', 'askbot']
+            "forum": ["discourse"],
+            "question bank": ["stackoverflow", "askbot"],
         }
 
     timeseries = {}
@@ -123,138 +119,106 @@ def run(API, environ, indata, session):
         ####################################################################
         # ISSUES OPENED                                                    #
         ####################################################################
-        dOrg = session.user['defaultOrganisation'] or "apache"
+        dOrg = session.user["defaultOrganisation"] or "apache"
         query = {
-                    'query': {
-                        'bool': {
-                            'must': [
-                                {'range':
-                                    {
-                                        'created': {
-                                            'from': dateFrom,
-                                            'to': dateTo
-                                        }
-                                    }
-                                },
-                                {
-                                    'term': {
-                                        'organisation': dOrg
-                                    }
-                                },
-                                {
-                                    'terms': {
-                                        'type': iValues
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-        # Source-specific or view-specific??
-        if indata.get('source'):
-            query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-        elif viewList:
-            query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-        if indata.get('email'):
-            query['query']['bool']['must'].append({'term': {'creator': indata.get('email')}})
-
-        # Get number of opened ones, this period
-        query['aggs'] = {
-                'commits': {
-                    'date_histogram': {
-                        'field': 'createdDate',
-                        'interval': interval
-                    }
+            "query": {
+                "bool": {
+                    "must": [
+                        {"range": {"created": {"from": dateFrom, "to": dateTo}}},
+                        {"term": {"organisation": dOrg}},
+                        {"terms": {"type": iValues}},
+                    ]
                 }
             }
-        res = session.DB.ES.search(
-                index=session.DB.dbname,
-                doc_type="forum_topic",
-                size = 0,
-                body = query
+        }
+        # Source-specific or view-specific??
+        if indata.get("source"):
+            query["query"]["bool"]["must"].append(
+                {"term": {"sourceID": indata.get("source")}}
+            )
+        elif viewList:
+            query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
+        if indata.get("email"):
+            query["query"]["bool"]["must"].append(
+                {"term": {"creator": indata.get("email")}}
             )
 
-        for bucket in res['aggregations']['commits']['buckets']:
-            ts = int(bucket['key'] / 1000)
-            count = bucket['doc_count']
-            timeseries[ts] = timeseries.get(ts, makeTS(distinct))
-            timeseries[ts][iType + ' topics'] = timeseries[ts].get(iType + ' topics', 0) + count
+        # Get number of opened ones, this period
+        query["aggs"] = {
+            "commits": {
+                "date_histogram": {"field": "createdDate", "interval": interval}
+            }
+        }
+        res = session.DB.ES.search(
+            index=session.DB.dbname, doc_type="forum_topic", size=0, body=query
+        )
 
+        for bucket in res["aggregations"]["commits"]["buckets"]:
+            ts = int(bucket["key"] / 1000)
+            count = bucket["doc_count"]
+            timeseries[ts] = timeseries.get(ts, makeTS(distinct))
+            timeseries[ts][iType + " topics"] = (
+                timeseries[ts].get(iType + " topics", 0) + count
+            )
 
         ####################################################################
         # ISSUES CLOSED                                                    #
         ####################################################################
-        dOrg = session.user['defaultOrganisation'] or "apache"
+        dOrg = session.user["defaultOrganisation"] or "apache"
         query = {
-                    'query': {
-                        'bool': {
-                            'must': [
-                                {'range':
-                                    {
-                                        'created': {
-                                            'from': dateFrom,
-                                            'to': dateTo
-                                        }
-                                    }
-                                },
-                                {
-                                    'term': {
-                                        'organisation': dOrg
-                                    }
-                                },
-                                {
-                                    'terms': {
-                                        'type': iValues
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-        if viewList:
-            query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-        if indata.get('source'):
-            query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-        if indata.get('email'):
-            query['query']['bool']['must'].append({'term': {'creator': indata.get('email')}})
-
-        # Get number of closed ones, this period
-        query['aggs'] = {
-                'commits': {
-                    'date_histogram': {
-                        'field': 'createdDate',
-                        'interval': interval
-                    }
+            "query": {
+                "bool": {
+                    "must": [
+                        {"range": {"created": {"from": dateFrom, "to": dateTo}}},
+                        {"term": {"organisation": dOrg}},
+                        {"terms": {"type": iValues}},
+                    ]
                 }
             }
-        res = session.DB.ES.search(
-                index=session.DB.dbname,
-                doc_type="forum_post",
-                size = 0,
-                body = query
+        }
+        if viewList:
+            query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
+        if indata.get("source"):
+            query["query"]["bool"]["must"].append(
+                {"term": {"sourceID": indata.get("source")}}
+            )
+        if indata.get("email"):
+            query["query"]["bool"]["must"].append(
+                {"term": {"creator": indata.get("email")}}
             )
 
-        for bucket in res['aggregations']['commits']['buckets']:
-            ts = int(bucket['key'] / 1000)
-            count = bucket['doc_count']
+        # Get number of closed ones, this period
+        query["aggs"] = {
+            "commits": {
+                "date_histogram": {"field": "createdDate", "interval": interval}
+            }
+        }
+        res = session.DB.ES.search(
+            index=session.DB.dbname, doc_type="forum_post", size=0, body=query
+        )
+
+        for bucket in res["aggregations"]["commits"]["buckets"]:
+            ts = int(bucket["key"] / 1000)
+            count = bucket["doc_count"]
             timeseries[ts] = timeseries.get(ts, makeTS(distinct))
-            timeseries[ts][iType + ' replies'] = timeseries[ts].get(iType + ' replies', 0) + count
+            timeseries[ts][iType + " replies"] = (
+                timeseries[ts].get(iType + " replies", 0) + count
+            )
 
     ts = []
     for k, v in timeseries.items():
-        v['date'] = k
+        v["date"] = k
         ts.append(v)
 
-
     JSON_OUT = {
-        'widgetType': {
-            'chartType': 'line',  # Recommendation for the UI
-            'nofill': True
+        "widgetType": {
+            "chartType": "line",  # Recommendation for the UI
+            "nofill": True,
         },
-        'timeseries': ts,
-        'interval': interval,
-        'okay': True,
-        'distinguishable': True,
-        'responseTime': time.time() - now
+        "timeseries": ts,
+        "interval": interval,
+        "okay": True,
+        "distinguishable": True,
+        "responseTime": time.time() - now,
     }
     yield json.dumps(JSON_OUT)

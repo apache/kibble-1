@@ -42,7 +42,7 @@ def deconstruct():
     yml = yaml.load(open(bpath + "/../openapi.yaml"))
     noDefs = 0
     print("Dumping paths into pages...")
-    for endpoint, defs in yml['paths'].items():
+    for endpoint, defs in yml["paths"].items():
         noDefs += 1
         xendpoint = endpoint.replace("/api/", "")
         ypath = os.path.abspath("%s/../../pages/%s.py" % (bpath, xendpoint))
@@ -50,40 +50,53 @@ def deconstruct():
         if os.path.isfile(ypath):
             print("Editing %s" % ypath)
             contents = open(ypath, "r").read()
-            contents = re.sub(r"^([#\n](?!\s*\"\"\")[^\r\n]*\n?)+", "", contents, re.MULTILINE)
+            contents = re.sub(
+                r"^([#\n](?!\s*\"\"\")[^\r\n]*\n?)+", "", contents, re.MULTILINE
+            )
             odefs = yaml.dump(defs, default_flow_style=False)
             odefs = "\n".join(["# %s" % line for line in odefs.split("\n")])
             with open(ypath, "w") as f:
-                f.write("########################################################################\n")
+                f.write(
+                    "########################################################################\n"
+                )
                 f.write("# OPENAPI-URI: %s\n" % endpoint)
-                f.write("########################################################################\n")
+                f.write(
+                    "########################################################################\n"
+                )
                 f.write(odefs)
-                f.write("\n########################################################################\n")
+                f.write(
+                    "\n########################################################################\n"
+                )
                 f.write("\n\n")
                 f.write(contents)
                 f.close()
 
     print("Dumping security components...")
-    for basetype, bdefs in yml['components'].items():
+    for basetype, bdefs in yml["components"].items():
         for schema, defs in bdefs.items():
             noDefs += 1
             ypath = "%s/components/%s/%s.yaml" % (bpath, basetype, schema)
             ydir = os.path.dirname(ypath)
             if not os.path.isdir(ydir):
                 print("Making directory %s" % ydir)
-                os.makedirs(ydir, exist_ok = True)
+                os.makedirs(ydir, exist_ok=True)
             with open(ypath, "w") as f:
-                f.write("########################################################################\n")
-                f.write("# %-68s #\n" % defs.get('summary', schema))
-                f.write("########################################################################\n")
+                f.write(
+                    "########################################################################\n"
+                )
+                f.write("# %-68s #\n" % defs.get("summary", schema))
+                f.write(
+                    "########################################################################\n"
+                )
                 f.write(yaml.dump(defs, default_flow_style=False))
                 f.close()
     print("Dumped %u definitions." % noDefs)
 
+
 def construct():
     yml = {}
-    yml['paths'] = {}
-    yml['components'] = {}
+    yml["paths"] = {}
+    yml["components"] = {}
     apidir = os.path.abspath("%s/../../pages/" % bpath)
     print("Scanning %s" % apidir)
     for d in os.listdir(apidir):
@@ -102,7 +115,7 @@ def construct():
                         print("Weaving in API path %s" % apath)
                         cyml = "\n".join([line[2:] for line in cyml.split("\n")])
                         defs = yaml.load(cyml)
-                        yml['paths'][apath] = defs
+                        yml["paths"][apath] = defs
         else:
             fname = d
             if fname.endswith(".py"):
@@ -117,7 +130,7 @@ def construct():
                     print("Weaving in API path %s" % apath)
                     cyml = "\n".join([line[2:] for line in cyml.split("\n")])
                     defs = yaml.load(cyml)
-                    yml['paths'][apath] = defs
+                    yml["paths"][apath] = defs
     apidir = os.path.abspath("%s/components" % bpath)
     print("Scanning %s" % apidir)
     for d in os.listdir(apidir):
@@ -126,11 +139,11 @@ def construct():
             print("Scanning %s" % cdir)
             for fname in os.listdir(cdir):
                 if fname.endswith(".yaml"):
-                    yml['components'][d] = yml['components'].get(d, {})
+                    yml["components"][d] = yml["components"].get(d, {})
                     fpath = "%s/%s" % (cdir, fname)
                     print("Scanning %s" % fpath)
                     defs = yaml.load(open(fpath))
-                    yml['components'][d][fname.replace(".yaml", "")] = defs
+                    yml["components"][d][fname.replace(".yaml", "")] = defs
     ypath = os.path.join(YAML_DIRECTORY, "openapi.yaml")
     with open(ypath, "w") as f:
         f.write(baseyaml)
@@ -138,7 +151,8 @@ def construct():
         f.close()
     print("All done!")
 
-if len(sys.argv) > 1 and sys.argv[1] == 'deconstruct':
+
+if len(sys.argv) > 1 and sys.argv[1] == "deconstruct":
     deconstruct()
 else:
     construct()

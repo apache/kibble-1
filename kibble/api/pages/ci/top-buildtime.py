@@ -61,9 +61,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the TopN CI jobs by total build time renderer for Kibble
 """
@@ -71,6 +68,7 @@ This is the TopN CI jobs by total build time renderer for Kibble
 import json
 import time
 import re
+
 
 def run(API, environ, indata, session):
 
@@ -82,103 +80,83 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
+    dateTo = indata.get("to", int(time.time()))
+    dateFrom = indata.get(
+        "from", dateTo - (86400 * 30 * 6)
+    )  # Default to a 6 month span
 
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'date': {
-                                        'from': time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(dateFrom)),
-                                        'to': time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(dateTo))
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "range": {
+                            "date": {
+                                "from": time.strftime(
+                                    "%Y/%m/%d %H:%M:%S", time.gmtime(dateFrom)
+                                ),
+                                "to": time.strftime(
+                                    "%Y/%m/%d %H:%M:%S", time.gmtime(dateTo)
+                                ),
                             }
-                        ]
-                    }
-                }
-            }
-    # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-    elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-
-    query['aggs'] = {
-        'by_job': {
-                'terms': {
-                    'field': 'jobURL.keyword',
-                    'size': 5000,
-                },
-                'aggs': {
-                    'duration': {
-                        'sum': {
-                            'field': 'duration'
                         }
                     },
-                    'ci': {
-                        'terms': {
-                            'field': 'ci.keyword',
-                            'size': 1
-                        }
-                    },
-                    'name': {
-                        'terms': {
-                            'field': 'job.keyword',
-                            'size': 1
-                        }
-                    }
-                }
+                    {"term": {"organisation": dOrg}},
+                ]
             }
         }
+    }
+    # Source-specific or view-specific??
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
+    elif viewList:
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
+
+    query["aggs"] = {
+        "by_job": {
+            "terms": {"field": "jobURL.keyword", "size": 5000},
+            "aggs": {
+                "duration": {"sum": {"field": "duration"}},
+                "ci": {"terms": {"field": "ci.keyword", "size": 1}},
+                "name": {"terms": {"field": "job.keyword", "size": 1}},
+            },
+        }
+    }
 
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="ci_build",
-            size = 0,
-            body = query
-        )
+        index=session.DB.dbname, doc_type="ci_build", size=0, body=query
+    )
 
     jobs = []
-    for doc in res['aggregations']['by_job']['buckets']:
-        job = doc['key']
-        builds = doc['doc_count']
-        duration = doc['duration']['value']
-        ci = doc['ci']['buckets'][0]['key']
-        jobname = doc['name']['buckets'][0]['key']
+    for doc in res["aggregations"]["by_job"]["buckets"]:
+        job = doc["key"]
+        builds = doc["doc_count"]
+        duration = doc["duration"]["value"]
+        ci = doc["ci"]["buckets"][0]["key"]
+        jobname = doc["name"]["buckets"][0]["key"]
         jobs.append([builds, duration, jobname, ci])
 
-    topjobs = sorted(jobs, key = lambda x: int(x[1]), reverse = True)
+    topjobs = sorted(jobs, key=lambda x: int(x[1]), reverse=True)
     top = topjobs[0:24]
     if len(topjobs) > 25:
         count = 0
         for repo in topjobs[24:]:
             count += repo[1]
-        top.append([1, count, "Other jobs", '??'])
+        top.append([1, count, "Other jobs", "??"])
 
     tophash = {}
     for v in top:
-        tophash["%s (%s)" % (v[2], v[3])] = int((v[1]/360000))/10
+        tophash["%s (%s)" % (v[2], v[3])] = int((v[1] / 360000)) / 10
 
-    JSON_OUT = {
-        'counts': tophash,
-        'okay': True,
-        'responseTime': time.time() - now,
-    }
+    JSON_OUT = {"counts": tophash, "okay": True, "responseTime": time.time() - now}
     yield json.dumps(JSON_OUT)

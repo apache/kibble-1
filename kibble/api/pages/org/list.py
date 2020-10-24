@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -89,9 +88,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the Org list renderer for Kibble
 """
@@ -99,82 +95,79 @@ This is the Org list renderer for Kibble
 import json
 import time
 
+
 def run(API, environ, indata, session):
     now = time.time()
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint!")
 
-    method = environ['REQUEST_METHOD']
+    method = environ["REQUEST_METHOD"]
     # Are we making a new org?
     if method == "PUT":
-        if session.user['userlevel'] == "admin":
-            orgname = indata.get('name', 'Foo')
-            orgdesc = indata.get('desc', '')
-            orgid = indata.get('id', str(int(time.time())))
-            if session.DB.ES.exists(index=session.DB.dbname, doc_type='organisation', id = orgid):
+        if session.user["userlevel"] == "admin":
+            orgname = indata.get("name", "Foo")
+            orgdesc = indata.get("desc", "")
+            orgid = indata.get("id", str(int(time.time())))
+            if session.DB.ES.exists(
+                index=session.DB.dbname, doc_type="organisation", id=orgid
+            ):
                 raise API.exception(403, "Organisation ID already in use!")
 
-            doc = {
-                'id': orgid,
-                'name': orgname,
-                'description': orgdesc,
-                'admins': []
-            }
-            session.DB.ES.index(index=session.DB.dbname, doc_type='organisation', id = orgid, body = doc)
+            doc = {"id": orgid, "name": orgname, "description": orgdesc, "admins": []}
+            session.DB.ES.index(
+                index=session.DB.dbname, doc_type="organisation", id=orgid, body=doc
+            )
             time.sleep(1.5)
             yield json.dumps({"okay": True, "message": "Organisation created!"})
             return
         else:
-            raise API.exception(403, "Only administrators can create new organisations.")
+            raise API.exception(
+                403, "Only administrators can create new organisations."
+            )
 
     ####################################################################
     orgs = []
-    if session.user['userlevel'] == "admin":
+    if session.user["userlevel"] == "admin":
         res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="organisation",
-            body = {'query': { 'match_all': {}}}
+            body={"query": {"match_all": {}}},
         )
-        for doc in res['hits']['hits']:
-            orgID = doc['_source']['id']
+        for doc in res["hits"]["hits"]:
+            orgID = doc["_source"]["id"]
             numDocs = session.DB.ES.count(
                 index=session.DB.dbname,
-                body = {'query': { 'term': {'organisation': orgID}}}
-                )['count']
+                body={"query": {"term": {"organisation": orgID}}},
+            )["count"]
             numSources = session.DB.ES.count(
                 index=session.DB.dbname,
                 doc_type="source",
-                body = {'query': { 'term': {'organisation': orgID}}}
-                )['count']
-            doc['_source']['sourceCount'] = numSources
-            doc['_source']['docCount'] = numDocs
-            orgs.append(doc['_source'])
+                body={"query": {"term": {"organisation": orgID}}},
+            )["count"]
+            doc["_source"]["sourceCount"] = numSources
+            doc["_source"]["docCount"] = numDocs
+            orgs.append(doc["_source"])
     else:
         res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="organisation",
-            body = {'query': { 'terms': {'id': session.user['organisations']}}}
+            body={"query": {"terms": {"id": session.user["organisations"]}}},
         )
-        for doc in res['hits']['hits']:
-            orgID = doc['_source']['id']
+        for doc in res["hits"]["hits"]:
+            orgID = doc["_source"]["id"]
             numDocs = session.DB.ES.count(
                 index=session.DB.dbname,
-                body = {'query': { 'term': {'organisation': orgID}}}
-                )['count']
+                body={"query": {"term": {"organisation": orgID}}},
+            )["count"]
             numSources = session.DB.ES.count(
                 index=session.DB.dbname,
                 doc_type="source",
-                body = {'query': { 'term': {'organisation': orgID}}}
-                )['count']
-            doc['_source']['sourceCount'] = numSources
-            doc['_source']['docCount'] = numDocs
-            orgs.append(doc['_source'])
+                body={"query": {"term": {"organisation": orgID}}},
+            )["count"]
+            doc["_source"]["sourceCount"] = numSources
+            doc["_source"]["docCount"] = numDocs
+            orgs.append(doc["_source"])
 
-
-    JSON_OUT = {
-        'organisations': orgs,
-        'okay': True,
-        'responseTime': time.time() - now
-    }
+    JSON_OUT = {"organisations": orgs, "okay": True, "responseTime": time.time() - now}
     yield json.dumps(JSON_OUT)

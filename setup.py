@@ -21,14 +21,14 @@ from importlib import util
 from setuptools import find_packages, setup
 
 # Kept manually in sync with kibble.version
-spec = util.spec_from_file_location("kibble.version", os.path.join('kibble', 'version.py'))  # noqa
+spec = util.spec_from_file_location(
+    "kibble.version", os.path.join("kibble", "version.py")
+)  # noqa
 mod = util.module_from_spec(spec)
 spec.loader.exec_module(mod)  # type: ignore
 version = mod.version  # type: ignore
 
-DEVEL_REQUIREMENTS = [
-    "pre-commit==2.7.1",
-]
+DEVEL_REQUIREMENTS = ["pre-commit==2.7.1"]
 
 INSTALL_REQUIREMENTS = [
     "bcrypt==3.2.0",
@@ -40,15 +40,16 @@ INSTALL_REQUIREMENTS = [
     "tenacity==6.2.0",
 ]
 
-EXTRAS_REQUIREMENTS = {
-    "devel": DEVEL_REQUIREMENTS
-}
+EXTRAS_REQUIREMENTS = {"devel": DEVEL_REQUIREMENTS}
 
 
 def get_long_description():
     description = ""
     try:
-        with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'README.md'), encoding='utf-8') as f:
+        with open(
+            os.path.join(os.path.dirname(os.path.realpath(__file__)), "README.md"),
+            encoding="utf-8",
+        ) as f:
             description = f.read()
     except FileNotFoundError:
         pass
@@ -58,51 +59,39 @@ def get_long_description():
 def do_setup():
     """Perform the Kibble package setup."""
     setup(
-        name='apache-kibble',
+        name="apache-kibble",
         description="Apache Kibble is a tool to collect, aggregate and visualize data about any software project.",
         long_description=get_long_description(),
-        long_description_content_type='text/markdown',
-        license='Apache License 2.0',
+        long_description_content_type="text/markdown",
+        license="Apache License 2.0",
         version=version,
-        packages=find_packages(include=['kibble*']),
-        package_data={
-            'kibble': ['py.typed'],
-            'kibble.api.yaml': ['*.yaml'],
-        },
+        packages=find_packages(include=["kibble*"]),
+        package_data={"kibble": ["py.typed"], "kibble.api.yaml": ["*.yaml"]},
         include_package_data=True,
         zip_safe=False,
-        entry_points={
-            "console_scripts": [
-                "kibble = kibble.__main__:main",
-            ],
-        },
+        entry_points={"console_scripts": ["kibble = kibble.__main__:main"]},
         install_requires=INSTALL_REQUIREMENTS,
-        setup_requires=[
-            'docutils',
-            'gitpython',
-            'setuptools',
-            'wheel',
-        ],
+        setup_requires=["docutils", "gitpython", "setuptools", "wheel"],
         extras_require=EXTRAS_REQUIREMENTS,
         classifiers=[
-            'Development Status :: 5 - Production/Stable',
-            'Environment :: Console',
-            'Environment :: Web Environment',
-            'Intended Audience :: Developers',
-            'Intended Audience :: System Administrators',
-            'License :: OSI Approved :: Apache Software License',
-            'Programming Language :: Python :: 3.8',
+            "Development Status :: 5 - Production/Stable",
+            "Environment :: Console",
+            "Environment :: Web Environment",
+            "Intended Audience :: Developers",
+            "Intended Audience :: System Administrators",
+            "License :: OSI Approved :: Apache Software License",
+            "Programming Language :: Python :: 3.8",
         ],
-        author='Apache Software Foundation',
-        author_email='dev@kibble.apache.org',
-        url='http://kibble.apache.org/',
-        download_url=f'https://archive.apache.org/dist/kibble/{version}',
-        test_suite='setup.kibble_test_suite',
-        python_requires='~=3.8',
+        author="Apache Software Foundation",
+        author_email="dev@kibble.apache.org",
+        url="http://kibble.apache.org/",
+        download_url=f"https://archive.apache.org/dist/kibble/{version}",
+        test_suite="setup.kibble_test_suite",
+        python_requires="~=3.8",
         project_urls={
-            'Documentation': 'https://kibble.apache.org/docs/',
-            'Bug Tracker': 'https://github.com/apache/kibble/issues',
-            'Source Code': 'https://github.com/apache/kibble',
+            "Documentation": "https://kibble.apache.org/docs/",
+            "Bug Tracker": "https://github.com/apache/kibble/issues",
+            "Source Code": "https://github.com/apache/kibble",
         },
     )
 

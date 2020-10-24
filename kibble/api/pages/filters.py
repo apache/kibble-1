@@ -23,6 +23,7 @@ import json
 import re
 import time
 
+
 def run(API, environ, indata, session):
 
     # We need to be logged in for this!
@@ -30,36 +31,26 @@ def run(API, environ, indata, session):
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
 
     # Fetch all sources for default org
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="view",
-            size = 5000,
-            body = {
-                'query': {
-                    'term': {
-                        'owner': session.user['email']
-                    }
-                }
-            }
-        )
+        index=session.DB.dbname,
+        doc_type="view",
+        size=5000,
+        body={"query": {"term": {"owner": session.user["email"]}}},
+    )
 
     sources = []
-    for hit in res['hits']['hits']:
-        doc = hit['_source']
-        if indata.get('quick'):
+    for hit in res["hits"]["hits"]:
+        doc = hit["_source"]
+        if indata.get("quick"):
             xdoc = {
-                'sourceID': doc['sourceID'],
-                'type': doc['type'],
-                'sourceURL': doc['sourceURL']
-                }
+                "sourceID": doc["sourceID"],
+                "type": doc["type"],
+                "sourceURL": doc["sourceURL"],
+            }
             sources.append(xdoc)
         else:
             sources.append(doc)
 
-    JSON_OUT = {
-        'views': sources,
-        'okay': True,
-        'organisation': dOrg
-    }
+    JSON_OUT = {"views": sources, "okay": True, "organisation": dOrg}
     yield json.dumps(JSON_OUT)

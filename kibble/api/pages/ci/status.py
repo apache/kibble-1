@@ -61,7 +61,6 @@
 ########################################################################
 
 
-
 """
 This is the CI queue status (blocked/stuck) timeseries renderer for Kibble
 """
@@ -69,6 +68,7 @@ This is the CI queue status (blocked/stuck) timeseries renderer for Kibble
 import json
 import time
 import hashlib
+
 
 def run(API, environ, indata, session):
 
@@ -80,104 +80,73 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
+    dateTo = indata.get("to", int(time.time()))
+    dateFrom = indata.get(
+        "from", dateTo - (86400 * 30 * 6)
+    )  # Default to a 6 month span
 
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-
-    interval = indata.get('interval', 'month')
-
+    interval = indata.get("interval", "month")
 
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'time': {
-                                        'from': dateFrom,
-                                        'to': dateTo
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-    # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-    elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-
-    # Get queue stats
-    query['aggs'] = {
-            'timeseries': {
-                'date_histogram': {
-                    'field': 'date',
-                    'interval': interval
-                },
-                'aggs': {
-                    'size': {
-                        'avg': {
-                            'field': 'size'
-                        }
-                    },
-                    'blocked': {
-                        'avg': {
-                            'field': 'blocked'
-                        }
-                    },
-                    'stuck': {
-                        'avg': {
-                            'field': 'stuck'
-                        }
-                    },
-                    'wait': {
-                        'avg': {
-                            'field': 'avgwait'
-                        }
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"time": {"from": dateFrom, "to": dateTo}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
         }
-    res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="ci_queue",
-            size = 0,
-            body = query
+    }
+    # Source-specific or view-specific??
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
         )
+    elif viewList:
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
+
+    # Get queue stats
+    query["aggs"] = {
+        "timeseries": {
+            "date_histogram": {"field": "date", "interval": interval},
+            "aggs": {
+                "size": {"avg": {"field": "size"}},
+                "blocked": {"avg": {"field": "blocked"}},
+                "stuck": {"avg": {"field": "stuck"}},
+                "wait": {"avg": {"field": "avgwait"}},
+            },
+        }
+    }
+    res = session.DB.ES.search(
+        index=session.DB.dbname, doc_type="ci_queue", size=0, body=query
+    )
 
     timeseries = []
-    for bucket in res['aggregations']['timeseries']['buckets']:
-        if bucket['doc_count'] == 0:
+    for bucket in res["aggregations"]["timeseries"]["buckets"]:
+        if bucket["doc_count"] == 0:
             continue
-        ts = int(bucket['key'] / 1000)
-        timeseries.append({
-            'date': ts,
-            'builds blocked': bucket['blocked']['value'],
-            'builds stuck': bucket['stuck']['value']
-        })
+        ts = int(bucket["key"] / 1000)
+        timeseries.append(
+            {
+                "date": ts,
+                "builds blocked": bucket["blocked"]["value"],
+                "builds stuck": bucket["stuck"]["value"],
+            }
+        )
 
     JSON_OUT = {
-        'widgetType': {
-            'chartType': 'bar'  # Recommendation for the UI
-        },
-        'timeseries': timeseries,
-        'interval': interval,
-        'okay': True,
-        'responseTime': time.time() - now
+        "widgetType": {"chartType": "bar"},  # Recommendation for the UI
+        "timeseries": timeseries,
+        "interval": interval,
+        "okay": True,
+        "responseTime": time.time() - now,
     }
     yield json.dumps(JSON_OUT)

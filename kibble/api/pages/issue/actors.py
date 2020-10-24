@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,9 +61,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the issue actors stats page for Kibble
 """
@@ -72,6 +68,7 @@ This is the issue actors stats page for Kibble
 import json
 import time
 import hashlib
+
 
 def run(API, environ, indata, session):
 
@@ -83,165 +80,118 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
+    dateTo = indata.get("to", int(time.time()))
+    dateFrom = indata.get(
+        "from", dateTo - (86400 * 30 * 6)
+    )  # Default to a 6 month span
 
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-
-    interval = indata.get('interval', 'month')
-
+    interval = indata.get("interval", "month")
 
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'closed': {
-                                        'from': dateFrom,
-                                        'to': dateTo
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-    # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
-    elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    if indata.get('email'):
-        query['query']['bool']['should'] = [{'term': {'issueCreator': indata.get('email')}}, {'term': {'issueCloser': indata.get('email')}}]
-        query['query']['bool']['minimum_should_match'] = 1
-
-    # Get timeseries for this period
-    query['aggs'] = {
-            'per_interval': {
-                'date_histogram': {
-                    'field': 'closedDate',
-                    'interval': interval
-                },
-                'aggs': {
-                    'by_user': {
-                        'cardinality': {
-                            'field': 'issueCloser'
-                        }
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"closed": {"from": dateFrom, "to": dateTo}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
         }
+    }
+    # Source-specific or view-specific??
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
+    elif viewList:
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
+    if indata.get("email"):
+        query["query"]["bool"]["should"] = [
+            {"term": {"issueCreator": indata.get("email")}},
+            {"term": {"issueCloser": indata.get("email")}},
+        ]
+        query["query"]["bool"]["minimum_should_match"] = 1
+
+    # Get timeseries for this period
+    query["aggs"] = {
+        "per_interval": {
+            "date_histogram": {"field": "closedDate", "interval": interval},
+            "aggs": {"by_user": {"cardinality": {"field": "issueCloser"}}},
+        }
+    }
 
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="issue",
-            size = 0,
-            body = query
-        )
+        index=session.DB.dbname, doc_type="issue", size=0, body=query
+    )
 
     timeseries = {}
-    for bucket in res['aggregations']['per_interval']['buckets']:
-        ts = int(bucket['key'] / 1000)
-        ccount = bucket['by_user']['value']
-        timeseries[ts] = {
-            'date': ts,
-            'closers': ccount,
-            'openers': 0
-        }
-
+    for bucket in res["aggregations"]["per_interval"]["buckets"]:
+        ts = int(bucket["key"] / 1000)
+        ccount = bucket["by_user"]["value"]
+        timeseries[ts] = {"date": ts, "closers": ccount, "openers": 0}
 
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'created': {
-                                        'from': dateFrom,
-                                        'to': dateTo
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"created": {"from": dateFrom, "to": dateTo}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
+        }
+    }
     # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
     elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    if indata.get('email'):
-        query['query']['bool']['should'] = [{'term': {'issueCreator': indata.get('email')}}, {'term': {'issueCloser': indata.get('email')}}]
-        query['query']['bool']['minimum_should_match'] = 1
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
+    if indata.get("email"):
+        query["query"]["bool"]["should"] = [
+            {"term": {"issueCreator": indata.get("email")}},
+            {"term": {"issueCloser": indata.get("email")}},
+        ]
+        query["query"]["bool"]["minimum_should_match"] = 1
 
     # Get timeseries for this period
-    query['aggs'] = {
-            'per_interval': {
-                'date_histogram': {
-                    'field': 'createdDate',
-                    'interval': interval
-                },
-                'aggs': {
-                    'by_user': {
-                        'cardinality': {
-                            'field': 'issueCreator'
-                        }
-                    }
-                }
-            }
+    query["aggs"] = {
+        "per_interval": {
+            "date_histogram": {"field": "createdDate", "interval": interval},
+            "aggs": {"by_user": {"cardinality": {"field": "issueCreator"}}},
         }
+    }
 
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="issue",
-            size = 0,
-            body = query
-        )
+        index=session.DB.dbname, doc_type="issue", size=0, body=query
+    )
 
-    for bucket in res['aggregations']['per_interval']['buckets']:
-        ts = int(bucket['key'] / 1000)
-        ccount = bucket['by_user']['value']
+    for bucket in res["aggregations"]["per_interval"]["buckets"]:
+        ts = int(bucket["key"] / 1000)
+        ccount = bucket["by_user"]["value"]
         if ts in timeseries:
-            timeseries[ts]['openers'] = ccount
+            timeseries[ts]["openers"] = ccount
         else:
-            timeseries[ts] = {
-                'date': ts,
-                'closers': 0,
-                'openers': ccount
-            }
+            timeseries[ts] = {"date": ts, "closers": 0, "openers": ccount}
 
     ts = []
     for x, el in timeseries.items():
         ts.append(el)
 
     JSON_OUT = {
-        'timeseries': ts,
-        'okay': True,
-        'responseTime': time.time() - now,
-        'widgetType': {
-            'chartType': 'bar'
-        }
+        "timeseries": ts,
+        "okay": True,
+        "responseTime": time.time() - now,
+        "widgetType": {"chartType": "bar"},
     }
     yield json.dumps(JSON_OUT)

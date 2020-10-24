@@ -50,9 +50,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the user account verifier for Kibble.
 """
@@ -61,24 +58,33 @@ This is the user account verifier for Kibble.
 def run(API, environ, indata, session):
 
     # Get vocde, make sure it's 40 chars
-    vcode = indata.get('vcode')
+    vcode = indata.get("vcode")
     if len(vcode) != 40:
         raise API.exception(400, "Invalid verification code!")
 
     # Find the account with this vcode
-    email = indata.get('email')
+    email = indata.get("email")
     if len(email) < 7:
         raise API.exception(400, "Invalid email address presented.")
 
-    if session.DB.ES.exists(index=session.DB.dbname, doc_type='useraccount', id = email):
-        doc = session.DB.ES.get(index=session.DB.dbname, doc_type='useraccount', id = email)
+    if session.DB.ES.exists(index=session.DB.dbname, doc_type="useraccount", id=email):
+        doc = session.DB.ES.get(
+            index=session.DB.dbname, doc_type="useraccount", id=email
+        )
         # Do the codes match??
-        if doc['_source']['vcode'] == vcode:
-            doc['_source']['verified'] = True
+        if doc["_source"]["vcode"] == vcode:
+            doc["_source"]["verified"] = True
             # Save account as verified
-            session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = email, body = doc['_source'])
-            yield("Your account has been verified, you can now log in!")
+            session.DB.ES.index(
+                index=session.DB.dbname,
+                doc_type="useraccount",
+                id=email,
+                body=doc["_source"],
+            )
+            yield ("Your account has been verified, you can now log in!")
         else:
             raise API.exception(404, "Invalid verification code presented!")
     else:
-        raise API.exception(404, "Invalid verification code presented!") # Don't give away if such a user exists, pssst
+        raise API.exception(
+            404, "Invalid verification code presented!"
+        )  # Don't give away if such a user exists, pssst

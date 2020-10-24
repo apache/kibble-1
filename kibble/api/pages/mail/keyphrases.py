@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,9 +61,6 @@
 ########################################################################
 
 
-
-
-
 """
 This is the common key phrases renderer for Kibble
 """
@@ -72,6 +68,7 @@ This is the common key phrases renderer for Kibble
 import json
 import time
 import hashlib
+
 
 def run(API, environ, indata, session):
 
@@ -83,76 +80,52 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
+    dateTo = indata.get("to", int(time.time()))
+    dateFrom = indata.get(
+        "from", dateTo - (86400 * 30 * 6)
+    )  # Default to a 6 month span
 
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-
-    interval = indata.get('interval', 'month')
-
+    interval = indata.get("interval", "month")
 
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'ts': {
-                                        'from': dateFrom,
-                                        'to': dateTo
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                },
-                'aggs': {
-                    'kpe': {
-                        'terms': {
-                            'field': 'kpe.keyword',
-                            'size': 50
-                        }
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"ts": {"from": dateFrom, "to": dateTo}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
+        },
+        "aggs": {"kpe": {"terms": {"field": "kpe.keyword", "size": 50}}},
+    }
     # Source-specific or view-specific??
-    if indata.get('source'):
-        query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
+    if indata.get("source"):
+        query["query"]["bool"]["must"].append(
+            {"term": {"sourceID": indata.get("source")}}
+        )
     elif viewList:
-        query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
 
     res = session.DB.ES.search(
-            index=session.DB.dbname,
-            doc_type="email",
-            size = 0,
-            body = query
-        )
+        index=session.DB.dbname, doc_type="email", size=0, body=query
+    )
 
     topN = []
-    for bucket in res['aggregations']['kpe']['buckets']:
-        topN.append( {
-            'phrase': bucket['key'],
-            'count': bucket['doc_count']
-        })
+    for bucket in res["aggregations"]["kpe"]["buckets"]:
+        topN.append({"phrase": bucket["key"], "count": bucket["doc_count"]})
 
     JSON_OUT = {
-        'widgetType': {
-            'chartType': 'bar'
-        },
-        'phrases': topN,
-        'okay': True,
-        'responseTime': time.time() - now
+        "widgetType": {"chartType": "bar"},
+        "phrases": topN,
+        "okay": True,
+        "responseTime": time.time() - now,
     }
     yield json.dumps(JSON_OUT)

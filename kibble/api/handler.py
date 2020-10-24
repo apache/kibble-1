@@ -1,5 +1,3 @@
-
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -40,8 +38,9 @@ from kibble.api.plugins.session import KibbleSession
 from kibble.settings import KIBBLE_YAML, YAML_DIRECTORY
 
 urls = []
-if __name__ != '__main__':
+if __name__ != "__main__":
     from kibble.api.pages import handlers
+
     for page, handler in handlers.items():
         urls.append((r"^(/api/%s)(/.+)?$" % page, handler.run))
 
@@ -68,6 +67,7 @@ class KibbleAPIWrapper:
     """
     Middleware wrapper for exceptions in the application
     """
+
     def __init__(self, path, func):
         self.func = func
         self.API = KibbleOpenAPI
@@ -79,33 +79,29 @@ class KibbleAPIWrapper:
         try:
             # Read JSON client data if any
             try:
-                request_size = int(environ.get('CONTENT_LENGTH', 0))
+                request_size = int(environ.get("CONTENT_LENGTH", 0))
             except (ValueError):
                 request_size = 0
-            requestBody = environ['wsgi.input'].read(request_size)
+            requestBody = environ["wsgi.input"].read(request_size)
             formdata = {}
             if requestBody and len(requestBody) > 0:
                 try:
-                    formdata = json.loads(requestBody.decode('utf-8'))
+                    formdata = json.loads(requestBody.decode("utf-8"))
                 except json.JSONDecodeError as err:
-                    start_response('400 Invalid request', [
-                               ('Content-Type', 'application/json')])
-                    yield json.dumps({
-                        "code": 400,
-                        "reason": "Invalid JSON: %s" % err
-                    })
+                    start_response(
+                        "400 Invalid request", [("Content-Type", "application/json")]
+                    )
+                    yield json.dumps({"code": 400, "reason": "Invalid JSON: %s" % err})
                     return
 
             # Validate URL against OpenAPI specs
             try:
-                self.API.validate(environ['REQUEST_METHOD'], self.path, formdata)
+                self.API.validate(environ["REQUEST_METHOD"], self.path, formdata)
             except openapi.OpenAPIException as err:
-                start_response('400 Invalid request', [
-                            ('Content-Type', 'application/json')])
-                yield json.dumps({
-                    "code": 400,
-                    "reason": err.message
-                })
+                start_response(
+                    "400 Invalid request", [("Content-Type", "application/json")]
+                )
+                yield json.dumps({"code": 400, "reason": err.message})
                 return
 
             # Call page with env, SR and form data
@@ -116,45 +112,41 @@ class KibbleAPIWrapper:
                         yield bucket
             except KibbleHTTPError as err:
                 errHeaders = {
-                    403: '403 Authentication failed',
-                    404: '404 Resource not found',
-                    500: '500 Internal Server Error',
-                    501: '501 Gateway error'
+                    403: "403 Authentication failed",
+                    404: "404 Resource not found",
+                    500: "500 Internal Server Error",
+                    501: "501 Gateway error",
                 }
-                errHeader = errHeaders[err.code] if err.code in errHeaders else "400 Bad request"
-                start_response(errHeader, [
-                            ('Content-Type', 'application/json')])
-                yield json.dumps({
-                    "code": err.code,
-                    "reason": err.message
-                }, indent = 4) + "\n"
+                errHeader = (
+                    errHeaders[err.code]
+                    if err.code in errHeaders
+                    else "400 Bad request"
+                )
+                start_response(errHeader, [("Content-Type", "application/json")])
+                yield json.dumps(
+                    {"code": err.code, "reason": err.message}, indent=4
+                ) + "\n"
                 return
 
         except:
             err_type, err_value, tb = sys.exc_info()
-            traceback_output = ['API traceback:']
+            traceback_output = ["API traceback:"]
             traceback_output += traceback.format_tb(tb)
-            traceback_output.append('%s: %s' % (err_type.__name__, err_value))
+            traceback_output.append("%s: %s" % (err_type.__name__, err_value))
             # We don't know if response has been given yet, try giving one, fail gracefully.
             try:
-                start_response('500 Internal Server Error', [
-                               ('Content-Type', 'application/json')])
+                start_response(
+                    "500 Internal Server Error", [("Content-Type", "application/json")]
+                )
             except:
                 pass
-            yield json.dumps({
-                "code": "500",
-                "reason": '\n'.join(traceback_output)
-            })
+            yield json.dumps({"code": "500", "reason": "\n".join(traceback_output)})
 
 
 def fourohfour(environ, start_response):
     """A very simple 404 handler"""
-    start_response("404 Not Found", [
-                ('Content-Type', 'application/json')])
-    yield json.dumps({
-        "code": 404,
-        "reason": "API endpoint not found"
-    }, indent = 4) + "\n"
+    start_response("404 Not Found", [("Content-Type", "application/json")])
+    yield json.dumps({"code": 404, "reason": "API endpoint not found"}, indent=4) + "\n"
     return
 
 
@@ -165,7 +157,7 @@ def application(environ, start_response):
     it and returns the output.
     """
     db = KibbleDatabase(config)
-    path = environ.get('PATH_INFO', '')
+    path = environ.get("PATH_INFO", "")
     for regex, function in urls:
         m = re.match(regex, path)
         if m:
@@ -182,14 +174,14 @@ def application(environ, start_response):
                 a += 1
                 # WSGI prefers byte strings, so convert if regular py3 string
                 if isinstance(bucket, str):
-                    yield bytes(bucket, encoding = 'utf-8')
+                    yield bytes(bucket, encoding="utf-8")
                 elif isinstance(bucket, bytes):
                     yield bucket
             return
 
     for bucket in fourohfour(environ, start_response):
-        yield bytes(bucket, encoding = 'utf-8')
+        yield bytes(bucket, encoding="utf-8")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     KibbleOpenAPI.toHTML()

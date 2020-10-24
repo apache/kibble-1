@@ -61,7 +61,6 @@
 ########################################################################
 
 
-
 """
 This is the CI queue timeseries renderer for Kibble
 """
@@ -69,6 +68,7 @@ This is the CI queue timeseries renderer for Kibble
 import json
 import time
 import hashlib
+
 
 def run(API, environ, indata, session):
 
@@ -80,132 +80,98 @@ def run(API, environ, indata, session):
 
     # First, fetch the view if we have such a thing enabled
     viewList = []
-    if indata.get('view'):
-        viewList = session.getView(indata.get('view'))
-    if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+    if indata.get("view"):
+        viewList = session.getView(indata.get("view"))
+    if indata.get("subfilter"):
+        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
 
     # We only want build sources, so we can sum up later.
-    viewList = session.subType(['jenkins', 'travis', 'buildbot'], viewList)
+    viewList = session.subType(["jenkins", "travis", "buildbot"], viewList)
 
-    dateTo = indata.get('to', int(time.time()))
-    dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
+    dateTo = indata.get("to", int(time.time()))
+    dateFrom = indata.get(
+        "from", dateTo - (86400 * 30 * 6)
+    )  # Default to a 6 month span
 
-    interval = indata.get('interval', 'month')
-
+    interval = indata.get("interval", "month")
 
     ####################################################################
     ####################################################################
-    dOrg = session.user['defaultOrganisation'] or "apache"
+    dOrg = session.user["defaultOrganisation"] or "apache"
     query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {'range':
-                                {
-                                    'time': {
-                                        'from': dateFrom,
-                                        'to': dateTo
-                                    }
-                                }
-                            },
-                            {
-                                'term': {
-                                    'organisation': dOrg
-                                }
-                            }
-                        ]
-                    }
-                }
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"time": {"from": dateFrom, "to": dateTo}}},
+                    {"term": {"organisation": dOrg}},
+                ]
             }
+        }
+    }
     # Source-specific or view-specific??
-    if indata.get('source'):
-        viewList = [indata.get('source')]
+    if indata.get("source"):
+        viewList = [indata.get("source")]
 
-    query['query']['bool']['must'].append({'term': {'sourceID': 'x'}})
+    query["query"]["bool"]["must"].append({"term": {"sourceID": "x"}})
 
     timeseries = []
     for source in viewList:
-        query['query']['bool']['must'][2] = {'term': {'sourceID': source}}
+        query["query"]["bool"]["must"][2] = {"term": {"sourceID": source}}
 
         # Get queue stats
-        query['aggs'] = {
-                'timeseries': {
-                    'date_histogram': {
-                        'field': 'date',
-                        'interval': interval
-                    },
-                    'aggs': {
-                        'size': {
-                            'avg': {
-                                'field': 'size'
-                            }
-                        },
-                        'blocked': {
-                            'avg': {
-                                'field': 'blocked'
-                            }
-                        },
-                        'building': {
-                            'avg': {
-                                'field': 'building'
-                            }
-                        },
-                        'stuck': {
-                            'avg': {
-                                'field': 'stuck'
-                            }
-                        },
-                        'wait': {
-                            'avg': {
-                                'field': 'avgwait'
-                            }
-                        }
-                    }
-                }
+        query["aggs"] = {
+            "timeseries": {
+                "date_histogram": {"field": "date", "interval": interval},
+                "aggs": {
+                    "size": {"avg": {"field": "size"}},
+                    "blocked": {"avg": {"field": "blocked"}},
+                    "building": {"avg": {"field": "building"}},
+                    "stuck": {"avg": {"field": "stuck"}},
+                    "wait": {"avg": {"field": "avgwait"}},
+                },
             }
+        }
         res = session.DB.ES.search(
-                index=session.DB.dbname,
-                doc_type="ci_queue",
-                size = 0,
-                body = query
-            )
+            index=session.DB.dbname, doc_type="ci_queue", size=0, body=query
+        )
 
-        for bucket in res['aggregations']['timeseries']['buckets']:
-            ts = int(bucket['key'] / 1000)
-            bucket['wait']['value'] = bucket['wait'].get('value', 0) or 0
-            if bucket['doc_count'] == 0:
+        for bucket in res["aggregations"]["timeseries"]["buckets"]:
+            ts = int(bucket["key"] / 1000)
+            bucket["wait"]["value"] = bucket["wait"].get("value", 0) or 0
+            if bucket["doc_count"] == 0:
                 continue
 
             found = False
             for t in timeseries:
-                if t['date'] == ts:
+                if t["date"] == ts:
                     found = True
-                    t['queue size'] += bucket['size']['value']
-                    t['builds running'] += bucket['building']['value']
-                    t['average wait (hours)'] += bucket['wait']['value']
-                    t['builders'] += 1
+                    t["queue size"] += bucket["size"]["value"]
+                    t["builds running"] += bucket["building"]["value"]
+                    t["average wait (hours)"] += bucket["wait"]["value"]
+                    t["builders"] += 1
             if not found:
-                timeseries.append({
-                    'date': ts,
-                    'queue size': bucket['size']['value'],
-                    'builds running': bucket['building']['value'],
-                    'average wait (hours)': bucket['wait']['value'],
-                    'builders': 1,
-                })
+                timeseries.append(
+                    {
+                        "date": ts,
+                        "queue size": bucket["size"]["value"],
+                        "builds running": bucket["building"]["value"],
+                        "average wait (hours)": bucket["wait"]["value"],
+                        "builders": 1,
+                    }
+                )
 
     for t in timeseries:
-        t['average wait (hours)'] = int(t['average wait (hours)']/360)/10.0
-        del t['builders']
+        t["average wait (hours)"] = int(t["average wait (hours)"] / 360) / 10.0
+        del t["builders"]
 
     JSON_OUT = {
-        'widgetType': {
-            'chartType': 'line',  # Recommendation for the UI
-            'nofill': True
+        "widgetType": {
+            "chartType": "line",  # Recommendation for the UI
+            "nofill": True,
         },
-        'timeseries': timeseries,
-        'interval': interval,
-        'okay': True,
-        'responseTime': time.time() - now
+        "timeseries": timeseries,
+        "interval": interval,
+        "okay": True,
+        "responseTime": time.time() - now,
     }
     yield json.dumps(JSON_OUT)

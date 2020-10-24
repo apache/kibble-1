@@ -62,10 +62,10 @@ def run(API, environ, indata, session):
     with open(os.path.join(YAML_DIRECTORY, "widgets.yaml")) as f:
         widgets = yaml.load(f)
 
-    page = indata['pageid']
-    if not page or page == '0':
-        page = widgets.get('defaultWidget', 'repos')
-    if page in widgets['widgets']:
-        yield json.dumps(widgets['widgets'][page])
+    page = indata["pageid"]
+    if not page or page == "0":
+        page = widgets.get("defaultWidget", "repos")
+    if page in widgets["widgets"]:
+        yield json.dumps(widgets["widgets"][page])
     else:
         raise API.exception(404, "Widget design not found!")
