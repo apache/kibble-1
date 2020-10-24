@@ -19,6 +19,7 @@ The easiest option to spin up a development environment is to use our developmen
 The development image has mounted all Kibble sources so all your local code changes will be automatically
 reflected  in the running app.
 
+
 First you need to configure the Elasticsearch node:
 ```
 docker-compose -f docker-compose-dev.yaml up setup
