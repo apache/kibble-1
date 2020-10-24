@@ -1,0 +1,11 @@
+area:api:
+- any: ['api/']
+
+area:ui:
+- any: ['ui/']
+
+area:docs:
+- any: ['docs/', '*.md']
+
+area:dev:
+- any: ['.github/', '.pre-commit.config.yaml', 'asf.yaml', 'Dockerfile*', 'docker*']
