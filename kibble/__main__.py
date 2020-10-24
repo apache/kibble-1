@@ -16,7 +16,7 @@
 # under the License.
 
 def main():
-    print("Help hello to kibble!")
+    print("Hello to kibble!")
 
 
 if __name__ == '__main__':
