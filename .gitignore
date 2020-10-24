@@ -1,5 +1,6 @@
 # Apache Kibble files
 api/yaml/kibble.yaml
+kibble/api/yaml/kibble.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

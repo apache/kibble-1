@@ -68,12 +68,16 @@
 """
 This is the source types handler for Kibble
 """
+import os
 
 import yaml
 import json
 
-def run(API, environ, indata, session):
+from kibble.settings import YAML_DIRECTORY
 
-    types = yaml.load(open("yaml/sourcetypes.yaml"))
+
+def run(API, environ, indata, session):
+    with open(os.path.join(YAML_DIRECTORY, "sourcetypes.yaml")) as f:
+        types = yaml.load(f)
 
     yield json.dumps(types)

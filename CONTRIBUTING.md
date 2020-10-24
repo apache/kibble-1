@@ -15,6 +15,11 @@ We also have:
 
 ## Development installation
 
+You should be able to install Apache Kibble by simply doing:
+```
+pip install -e ."[devel]"
+```
+
 The easiest option to spin up a development environment is to use our development docker-compose.
 The development image has mounted all Kibble sources so all your local code changes will be automatically
 reflected  in the running app.

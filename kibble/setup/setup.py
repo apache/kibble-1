@@ -29,6 +29,8 @@ import bcrypt
 import json
 from elasticsearch import Elasticsearch
 
+from kibble.settings import KIBBLE_YAML
+
 KIBBLE_VERSION = '0.1.0'  # ABI/API compat demarcation.
 KIBBLE_DB_VERSION = 2  # Second database revision
 
@@ -219,13 +221,7 @@ def create_es_index(
 
 def get_kibble_yaml() -> str:
     """Resolve path to kibble config yaml"""
-    kibble_yaml = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        os.pardir,
-        "api",
-        "yaml",
-        "kibble.yaml"
-    )
+    kibble_yaml = KIBBLE_YAML
     if os.path.exists(kibble_yaml):
         print(f"{kibble_yaml} already exists! Writing to {kibble_yaml}.tmp instead")
         kibble_yaml = kibble_yaml + ".tmp"

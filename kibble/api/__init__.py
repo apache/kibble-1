@@ -14,16 +14,3 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-FROM python:3.8
-
-USER root
-RUN apt-get update
-RUN apt-get install -y gcc unzip
-
-COPY . /kibble/
-
-WORKDIR /kibble
-
-RUN pip install --upgrade pip
-RUN pip install -e .

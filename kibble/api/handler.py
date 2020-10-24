@@ -30,30 +30,31 @@ import traceback
 import yaml
 import json
 
-from api.plugins import openapi
-from api.plugins.database import KibbleDatabase
-from api.plugins.session import KibbleSession
+from kibble.api.plugins import openapi
+from kibble.api.plugins.database import KibbleDatabase
+from kibble.api.plugins.session import KibbleSession
 
 
 # Compile valid API URLs from the pages library
 # Allow backwards compatibility by also accepting .lua URLs
+from kibble.settings import KIBBLE_YAML, YAML_DIRECTORY
+
 urls = []
 if __name__ != '__main__':
-    from api.pages import handlers
+    from kibble.api.pages import handlers
     for page, handler in handlers.items():
         urls.append((r"^(/api/%s)(/.+)?$" % page, handler.run))
 
 
 # Load Kibble master configuration
-config_yaml = os.path.join(os.path.dirname(os.path.realpath(__file__)), "yaml", "kibble.yaml")
-with open(config_yaml, "r") as f:
+with open(KIBBLE_YAML, "r") as f:
     config = yaml.load(f)
 
 # Instantiate database connections
 DB = None
 
 # Load Open API specifications
-openapi_yaml = os.path.join(os.path.dirname(os.path.realpath(__file__)), "yaml", "openapi.yaml")
+openapi_yaml = os.path.join(YAML_DIRECTORY, "openapi.yaml")
 KibbleOpenAPI = openapi.OpenAPI(openapi_yaml)
 
 

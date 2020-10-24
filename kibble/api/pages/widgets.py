@@ -46,16 +46,21 @@
 """
 This is the widget design handler for Kibble
 """
+import os
 
 import yaml
 import json
+
+from kibble.settings import YAML_DIRECTORY
+
 
 def run(API, environ, indata, session):
 
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
 
-    widgets = yaml.load(open("yaml/widgets.yaml"))
+    with open(os.path.join(YAML_DIRECTORY, "widgets.yaml")) as f:
+        widgets = yaml.load(f)
 
     page = indata['pageid']
     if not page or page == '0':

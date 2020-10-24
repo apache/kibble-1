@@ -7,24 +7,22 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: bash -c "python setup/setup.py -e elasticsearch -a -k"
+    command: bash -c "python kibble/setup/setup.py -e elasticsearch -a -k"
     volumes:
-      - ./setup/:/kibble/setup/
+      - .:/kibble/
     depends_on:
       - elasticsearch
 
   # Apache Kibble API server
   kibble:
     image: *img
-    command: bash -c "gunicorn --reload -w 1 -b 0.0.0.0:8001 api.handler:application"
+    command: bash -c "gunicorn --reload -w 1 -b 0.0.0.0:8001 kibble.api.handler:application"
     expose:
       - 8001
     ports:
       - 8001:8001
     volumes:
-      - ./api/:/kibble/api/
-      - ./setup/:/kibble/setup/
-      - ./ui/:/kibble/ui/
+      - .:/kibble/
     depends_on:
       - elasticsearch
 

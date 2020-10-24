@@ -42,5 +42,5 @@ def loadPage(path):
                 p = filepath.replace(rootpath, "")[1:].replace('/', '.')[:-3]
                 xp = p.replace('.', '/')
                 print("Loading endpoint pages.%s as %s" % (p, xp))
-                handlers[xp] = importlib.import_module("api.pages.%s" % p)
+                handlers[xp] = importlib.import_module(f"kibble.api.pages.{p}")
 loadPage(rootpath)
