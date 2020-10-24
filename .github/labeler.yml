@@ -1,11 +1,17 @@
 area:api:
-- any: ['api/']
+  - 'kibble/api/*'
 
 area:ui:
-- any: ['ui/']
+  - 'ui/*'
 
 area:docs:
-- any: ['docs/', '*.md']
+  - 'docs/*'
+  - '*.md'
 
 area:dev:
-- any: ['.github/', '.pre-commit.config.yaml', 'asf.yaml', 'Dockerfile*', 'docker*']
+  - '.github/'
+  - '.pre-commit.config.yaml'
+  - 'asf.yaml'
+  - 'Dockerfile*'
+  - 'docker*'
+  - 'setup.*'
