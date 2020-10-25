@@ -9,7 +9,7 @@ area:docs:
   - '*.md'
 
 area:dev:
-  - '.github/'
+  - '.github/*'
   - '.pre-commit.config.yaml'
   - 'asf.yaml'
   - 'Dockerfile*'

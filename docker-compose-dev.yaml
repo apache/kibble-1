@@ -41,8 +41,8 @@ services:
   elasticsearch:
     image: elasticsearch:7.9.2
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - 9200:9200
+      - 9300:9300
     environment:
       node.name: es01
       discovery.seed_hosts: es02
@@ -56,6 +56,14 @@ services:
       memlock:
         soft: -1
         hard: -1
+
+  # Kibana to view and manage Elasticsearch
+  kibana:
+    image: kibana:7.9.3
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
 
 volumes:
   # named volumes can be managed easier using docker-compose
