@@ -19,12 +19,17 @@ from configparser import ConfigParser
 
 class KibbleConfigParser(ConfigParser):
 
-    def __init__(self, ini_file="kibble.ini"):
+    def __init__(self):
         super().__init__()
-        self.read(ini_file)
 
-        # merge elasticsearch url
-        dbname = self["elasticsearch"]['dbname']
-        host = self["elasticsearch"]['host']
-        port = self["elasticsearch"]['port']
-        self.uri = "{}://{}:{}".format(dbname, host, port)
+    def get_int(self, section, key):
+        try:
+            return int(self.get(section, key))
+        except Exception:
+            raise TypeError("Unable to convert value to int")
+
+    def get_bool(self, section, key):
+        try:
+            return bool(self.get(section, key))
+        except Exception:
+            raise TypeError("Unable to convert value to bool")
