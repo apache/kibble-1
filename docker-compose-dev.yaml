@@ -47,15 +47,10 @@ services:
       node.name: es01
       discovery.seed_hosts: es02
       cluster.initial_master_nodes: es01
-      cluster.name: traefik-tutorial-cluster
-      bootstrap.memory_lock: "true"
+      cluster.name: kibble
       ES_JAVA_OPTS: -Xms256m -Xmx256m
     volumes:
       - "kibble-es-data:/usr/share/elasticsearch/data"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
 
 volumes:
   # named volumes can be managed easier using docker-compose
