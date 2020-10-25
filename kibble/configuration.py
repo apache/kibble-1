@@ -22,13 +22,13 @@ class KibbleConfigParser(ConfigParser):
     def __init__(self):
         super().__init__()
 
-    def get_int(self, section, key):
+    def get_int(self, section: str, key: str) -> int:
         try:
             return int(self.get(section, key))
         except Exception:
             raise TypeError("Unable to convert value to int")
 
-    def get_bool(self, section, key):
+    def get_bool(self, section: str, key: str) -> bool:
         try:
             return bool(self.get(section, key))
         except Exception:
