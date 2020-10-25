@@ -1,0 +1,39 @@
+# If enabled, kibble scanners will use direct ES connection.
+elasticsearch:
+    enabled:    true
+    hostname:   localhost
+    port:       9200
+    ssl:        false
+    uri:        ""
+    database:   kibble
+
+# If enabled, kibble scanners will use the HTTP JSON API
+broker:
+    enabled:    false
+    url:        https://localhost/api/
+    auth:
+        username:   kibble
+        password:   kibble4life
+
+# Scanner client options
+scanner:
+    # scratchdir: Location for storing file objects like git repos etc
+    # This should be permanent to speed up scans of large repositories
+    # on consecutive scans, but may be ephemeral like /tmp
+    scratchdir:     /tmp
+    # If you are load balancing the scans, you should specify
+    # how many nodes are working, and which one you are,
+    # using the format: $nodeNo/$totalNodes. If there are 4 nodes,
+    # each node will gat 1/4th of all jobs to work on.
+    #balance:        1/4
+
+# Watson/BlueMix configuration for sentiment analysis, if applicable
+#watson:
+#    username:       uuid-here
+#    password:       pass-here
+#    api:            https://gateway-location.watsonplatform.net/tone-analyzer/api
+
+# Azure Text Analysis API configuration, if applicable
+#azure:
+#    apikey: key-here
+#    location: west-us

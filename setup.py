@@ -35,8 +35,11 @@ INSTALL_REQUIREMENTS = [
     "certifi==2020.6.20",
     "elasticsearch==7.9.1",
     "gunicorn==20.0.4",
+    "psutil==5.7.3",
     "python-dateutil==2.8.1",
+    "python-twitter==3.5",
     "PyYAML==5.3.1",
+    "requests==2.24.0",
     "tenacity==6.2.0",
 ]
 
