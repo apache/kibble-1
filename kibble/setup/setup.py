@@ -22,15 +22,15 @@ import logging
 from getpass import getpass
 
 import tenacity
-import yaml
 import bcrypt
 import json
 from elasticsearch import Elasticsearch
 
-from kibble.settings import KIBBLE_YAML
+from kibble.configuration import conf
 
-KIBBLE_VERSION = "0.1.0"  # ABI/API compat demarcation.
-KIBBLE_DB_VERSION = 2  # Second database revision
+
+KIBBLE_VERSION = conf.get("api", "version")
+KIBBLE_DB_VERSION = conf.get("api", "database")  # database revision
 
 if sys.version_info <= (3, 3):
     print("This script requires Python 3.4 or higher")
@@ -42,60 +42,53 @@ def get_parser():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
         "-e",
-        "--hostname",
-        help="Pre-defined hostname for ElasticSearch (docker setups). Default: localhost",
-        default="localhost",
-    )
-    arg_parser.add_argument(
-        "-p",
-        "--port",
-        help="Pre-defined port for ES (docker setups). Default: 9200",
-        default=9200,
+        "--conn-uri",
+        help="Pre-defined connection uri for ElasticSearch.",
+        default=conf.get("elasticsearch", "conn_uri"),
     )
     arg_parser.add_argument(
         "-d",
         "--dbname",
-        help="Pre-defined Database prefix (docker setups). Default: kibble",
-        default="kibble",
+        help="Pre-defined Database prefix. Default: kibble",
+        default=conf.get("elasticsearch", "dbname"),
     )
     arg_parser.add_argument(
         "-s",
         "--shards",
-        help="Predefined number of ES shards (docker setups), Default: 5",
-        default=5,
+        help="Predefined number of ES shards, Default: 5",
+        default=conf.get("elasticsearch", "shards"),
     )
     arg_parser.add_argument(
         "-r",
         "--replicas",
-        help="Predefined number of replicas for ES (docker setups). Default: 1",
-        default=1,
+        help="Predefined number of replicas for ES. Default: 1",
+        default=conf.get("elasticsearch", "replicas"),
     )
     arg_parser.add_argument(
         "-m",
         "--mailhost",
-        help="Pre-defined mail server host (docker setups). Default: localhost:25",
-        default="localhost:25",
+        help="Pre-defined mail server host. Default: localhost:25",
+        default=conf.get("mail", "mailhost"),
     )
     arg_parser.add_argument(
         "-a",
         "--autoadmin",
         action="store_true",
-        help="Generate generic admin account (docker setups). Default: False",
+        help="Generate generic admin account. Default: False",
         default=False,
     )
     arg_parser.add_argument(
         "-k",
         "--skiponexist",
         action="store_true",
-        help="Skip DB creation if DBs exist (docker setups). Defaul: True",
+        help="Skip DB creation if DBs exist. Defaul: True",
         default=True,
     )
     return arg_parser
 
 
 def create_es_index(
-    hostname: str,
-    port: int,
+    conn_uri: str,
     dbname: str,
     shards: int,
     replicas: int,
@@ -114,11 +107,7 @@ def create_es_index(
     with open(mappings_json, "r") as f:
         mappings = json.load(f)
 
-    es = Elasticsearch(
-        [{"host": hostname, "port": port, "use_ssl": False, "url_prefix": ""}],
-        max_retries=5,
-        retry_on_timeout=True,
-    )
+    es = Elasticsearch([conn_uri], max_retries=5, retry_on_timeout=True)
 
     es_version = es.info()["version"]["number"]
     es6 = int(es_version.split(".")[0]) >= 6
@@ -223,51 +212,6 @@ def create_es_index(
     print("Account created!")
 
 
-def get_kibble_yaml() -> str:
-    """Resolve path to kibble config yaml"""
-    kibble_yaml = KIBBLE_YAML
-    if os.path.exists(kibble_yaml):
-        print(f"{kibble_yaml} already exists! Writing to {kibble_yaml}.tmp instead")
-        kibble_yaml = kibble_yaml + ".tmp"
-    return kibble_yaml
-
-
-def save_config(mlserver: str, hostname: str, port: int, dbname: str):
-    """Save kibble config to yaml file"""
-    if ":" in mlserver:
-        try:
-            mailhost, mailport = mlserver.split(":")
-        except ValueError:
-            raise ValueError(
-                "mailhost argument must be in form of `host:port` or `host`"
-            )
-    else:
-        mailhost = mlserver
-        mailport = 25
-
-    config = {
-        "api": {"version": KIBBLE_VERSION, "database": KIBBLE_DB_VERSION},
-        "elasticsearch": {
-            "host": hostname,
-            "port": port,
-            "ssl": False,
-            "dbname": dbname,
-        },
-        "mail": {
-            "mailhost": mailhost,
-            "mailport": int(mailport),
-            "sender": "Kibble <noreply@kibble.kibble>",
-        },
-        "accounts": {"allowSignup": True, "verify": True},
-    }
-
-    kibble_yaml = get_kibble_yaml()
-    print(f"Writing Kibble config to {kibble_yaml}")
-    with open(kibble_yaml, "w") as f:
-        f.write(yaml.dump(config, default_flow_style=False))
-        f.close()
-
-
 def get_user_input(msg: str, secure: bool = False):
     value = None
     while not value:
@@ -279,8 +223,7 @@ def print_configuration(args):
     print(
         "Configuring Apache Kibble elasticsearch instance with the following arguments:"
     )
-    print(f"- hostname: {args.hostname}")
-    print(f"- port: {int(args.port)}")
+    print(f"- conn_uri: {args.conn_uri}")
     print(f"- dbname: {args.dbname}")
     print(f"- shards: {int(args.shards)}")
     print(f"- replicas: {int(args.replicas)}")
@@ -311,7 +254,7 @@ def main():
 
     # Create Elasticsearch index
     # Retry in case ES is not yet up
-    print(f"Elasticsearch: {args.hostname}:{args.port}")
+    print(f"Elasticsearch: {args.conn_uri}")
     for attempt in tenacity.Retrying(
         retry=tenacity.retry_if_exception_type(exception_types=Exception),
         wait=tenacity.wait_fixed(10),
@@ -321,8 +264,7 @@ def main():
         with attempt:
             print("Trying to create ES index...")
             create_es_index(
-                hostname=args.hostname,
-                port=int(args.port),
+                conn_uri=args.conn_uri,
                 dbname=args.dbname,
                 shards=int(args.shards),
                 replicas=int(args.replicas),
@@ -330,15 +272,6 @@ def main():
                 admin_pass=admin_pass,
                 skiponexist=args.skiponexist,
             )
-    print()
-
-    # Create Kibble configuration file
-    save_config(
-        mlserver=args.mailhost,
-        hostname=args.hostname,
-        port=int(args.port),
-        dbname=args.dbname,
-    )
     print()
     print("All done, Kibble should...work now :)")
 

@@ -14,20 +14,3 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import os
-from configparser import ConfigParser
-
-DEFAULT_KIBBLE_CONFIG_LOCATION = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), os.pardir, "kibble.ini"
-)
-
-
-class KibbleConfigParser(ConfigParser):
-    """Custom Kibble config parser"""
-
-    def __init__(self):
-        super().__init__()
-
-
-conf = KibbleConfigParser()
-conf.read(DEFAULT_KIBBLE_CONFIG_LOCATION)
