@@ -17,8 +17,8 @@
 
 from configparser import ConfigParser
 
-class KibbleConfigParser(ConfigParser):
 
+class KibbleConfigParser(ConfigParser):
     def __init__(self):
         super().__init__()
 
