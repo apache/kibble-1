@@ -47,7 +47,7 @@ if __name__ != "__main__":
 
 # Load Kibble master configuration
 with open(KIBBLE_YAML, "r") as f:
-    config = yaml.load(f)
+    config = yaml.safe_load(f)
 
 # Instantiate database connections
 DB = None

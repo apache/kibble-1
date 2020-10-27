@@ -58,7 +58,7 @@ class OpenAPI:
         if APIFile.endswith(".json") or APIFile.endswith(".js"):
             self.API = json.load(open(APIFile))
         else:
-            self.API = yaml.load(open(APIFile))
+            self.API = yaml.safe_load(open(APIFile))
 
     def validateType(self, field, value, ftype):
         """ Validate a single field value against an expected type """
