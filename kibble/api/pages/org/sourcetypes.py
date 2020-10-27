@@ -74,6 +74,6 @@ from kibble.settings import YAML_DIRECTORY
 
 def run(API, environ, indata, session):
     with open(os.path.join(YAML_DIRECTORY, "sourcetypes.yaml")) as f:
-        types = yaml.load(f)
+        types = yaml.safe_load(f)
 
     yield json.dumps(types)

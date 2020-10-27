@@ -39,7 +39,7 @@ bpath = os.path.dirname(os.path.abspath(__file__))
 
 
 def deconstruct():
-    yml = yaml.load(open(bpath + "/../openapi.yaml"))
+    yml = yaml.safe_load(open(bpath + "/../openapi.yaml"))
     noDefs = 0
     print("Dumping paths into pages...")
     for endpoint, defs in yml["paths"].items():
@@ -114,7 +114,7 @@ def construct():
                         cyml = m.group(2)
                         print("Weaving in API path %s" % apath)
                         cyml = "\n".join([line[2:] for line in cyml.split("\n")])
-                        defs = yaml.load(cyml)
+                        defs = yaml.safe_load(cyml)
                         yml["paths"][apath] = defs
         else:
             fname = d
@@ -129,7 +129,7 @@ def construct():
                     cyml = m.group(2)
                     print("Weaving in API path %s" % apath)
                     cyml = "\n".join([line[2:] for line in cyml.split("\n")])
-                    defs = yaml.load(cyml)
+                    defs = yaml.safe_load(cyml)
                     yml["paths"][apath] = defs
     apidir = os.path.abspath("%s/components" % bpath)
     print("Scanning %s" % apidir)
@@ -142,7 +142,7 @@ def construct():
                     yml["components"][d] = yml["components"].get(d, {})
                     fpath = "%s/%s" % (cdir, fname)
                     print("Scanning %s" % fpath)
-                    defs = yaml.load(open(fpath))
+                    defs = yaml.safe_load(open(fpath))
                     yml["components"][d][fname.replace(".yaml", "")] = defs
     ypath = os.path.join(YAML_DIRECTORY, "openapi.yaml")
     with open(ypath, "w") as f:

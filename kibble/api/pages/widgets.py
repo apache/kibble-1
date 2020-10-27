@@ -60,7 +60,7 @@ def run(API, environ, indata, session):
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
 
     with open(os.path.join(YAML_DIRECTORY, "widgets.yaml")) as f:
-        widgets = yaml.load(f)
+        widgets = yaml.safe_load(f)
 
     page = indata["pageid"]
     if not page or page == "0":

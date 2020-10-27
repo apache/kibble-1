@@ -227,7 +227,7 @@ def run(API, environ, indata, session):
             new = 0
             old = 0
             with open(os.path.join(YAML_DIRECTORY, "sourcetypes.yaml")) as f:
-                stypes = yaml.load(f)
+                stypes = yaml.safe_load(f)
             for source in indata.get("sources", []):
                 sourceURL = source["sourceURL"]
                 sourceType = source["type"]
