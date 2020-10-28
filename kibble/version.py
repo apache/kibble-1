@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 
-version = "1.0.0dev"
+kibble_version = "1.0.0dev"

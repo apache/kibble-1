@@ -14,11 +14,24 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import click
+from version import kibble_version
 
 
-def main():
-    print("Hello to kibble!")
+@click.group()
+def cli():
+    """A simple command line tool for kibble"""
+
+
+@cli.command("version", short_help="displays the current kibble version")
+def version():
+    click.echo(kibble_version)
+
+
+@cli.command("setup", short_help="starts the setup process for kibble")
+def setup():
+    click.echo("This will run the setup process!")
 
 
 if __name__ == "__main__":
-    main()
+    cli()
