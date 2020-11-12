@@ -25,7 +25,7 @@ import re
 
 def defaultBranch(source, datapath, KibbleBit=None):
     """ Tries to figure out what the main branch of a repo is """
-    wanted_branches = ["master", "trunk"]
+    wanted_branches = ["master", "main", "trunk"]
     branch = ""
     # If we have an override of branches we like, use 'em
     if KibbleBit and KibbleBit.config.get("git"):
