@@ -85,6 +85,4 @@ repos:
     rev: v2.6.0
     hooks:
       - id: pylint
-    args:
-      - --max-line-length=11080
     files: \.py$
