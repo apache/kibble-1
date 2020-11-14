@@ -28,8 +28,9 @@ watson:
 Currently only pony mail is supported. more to come.
 """
 
-import requests
 import json
+
+import requests
 
 
 def watsonTone(KibbleBit, bodies):

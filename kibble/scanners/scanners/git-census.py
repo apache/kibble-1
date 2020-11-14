@@ -15,14 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import datetime
+import email.utils
+import hashlib
 import os
 import re
 import subprocess
-import time
 import tempfile
-import hashlib
-import email.utils
-import datetime, time
+import time
 
 title = "Census Scanner for Git"
 version = "0.1.0"

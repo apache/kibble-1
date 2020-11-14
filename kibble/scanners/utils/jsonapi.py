@@ -18,9 +18,10 @@
 """
 This is a Kibble JSON API plugin.
 """
-import requests
-import time
 import base64
+import time
+
+import requests
 
 CONNECT_TIMEOUT = 2  # Max timeout for the connect part of a request.
 

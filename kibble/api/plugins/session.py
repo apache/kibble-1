@@ -20,10 +20,10 @@ This is the session library for Apache Kibble.
 It handles setting/getting cookies and user prefs
 """
 
-import re
 import http.cookies
-import uuid
+import re
 import time
+import uuid
 
 
 class KibbleSession(object):

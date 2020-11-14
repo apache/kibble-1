@@ -33,9 +33,10 @@ azure:
 Currently only pony mail is supported. more to come.
 """
 
-import re
-import requests
 import json
+import re
+
+import requests
 
 
 def trimBody(body):

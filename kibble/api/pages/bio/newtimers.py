@@ -65,9 +65,9 @@
 This is the newtimers list renderer for Kibble
 """
 
+import hashlib
 import json
 import time
-import hashlib
 
 
 def find_earlier(session, query, when, who, which, where, doctype, dOrg):

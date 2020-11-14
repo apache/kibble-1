@@ -18,9 +18,8 @@
 import click
 
 from kibble.cli import setup_command
-from kibble.version import version as kibble_version
-
 from kibble.configuration import conf
+from kibble.version import version as kibble_version
 
 
 @click.group()

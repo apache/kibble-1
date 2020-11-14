@@ -18,8 +18,9 @@
 """
 This is a Kibble scanner plugin for Twitter sources.
 """
-import time
 import hashlib
+import time
+
 import twitter
 
 title = "Scanner plugin for Twitter"

@@ -65,10 +65,10 @@
 This is the TopN committers list renderer for Kibble
 """
 
-import json
-import time
 import hashlib
+import json
 import re
+import time
 
 ROBITS = r"(git|jira|jenkins|gerrit)@"
 

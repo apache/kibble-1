@@ -65,9 +65,10 @@
 This is the forum timeseries renderer for Kibble
 """
 
+import hashlib
 import json
 import time
-import hashlib
+
 
 # This creates an empty timeseries object with
 # all categories initialized as 0 opened, 0 closed.

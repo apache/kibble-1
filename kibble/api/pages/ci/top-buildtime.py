@@ -66,8 +66,8 @@ This is the TopN CI jobs by total build time renderer for Kibble
 """
 
 import json
-import time
 import re
+import time
 
 
 def run(API, environ, indata, session):

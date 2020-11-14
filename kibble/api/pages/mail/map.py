@@ -65,12 +65,12 @@
 This is the committer relationship list renderer for Kibble
 """
 
-import json
-import time
-import hashlib
 import copy
-import re
+import hashlib
+import json
 import math
+import re
+import time
 
 badBots = r"(JIRA|Hudson|jira|jenkins|GitHub|git@|dev@|bugzilla|gerrit)"
 

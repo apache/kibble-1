@@ -65,9 +65,9 @@
 This is the Email trends renderer for Kibble
 """
 
+import datetime
 import json
 import time
-import datetime
 
 
 def run(API, environ, indata, session):

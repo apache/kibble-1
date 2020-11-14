@@ -18,8 +18,8 @@
 """
 This is a Kibble scanner plugin for Apache Pony Mail sources.
 """
-import time
 import re
+import time
 
 from kibble.scanners.utils import jsonapi, tone
 

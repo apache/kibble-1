@@ -15,11 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import re
 import hashlib
-from dateutil import parser
+import re
 import time
+
 import requests
+from dateutil import parser
 
 from kibble.scanners.utils import github
 
