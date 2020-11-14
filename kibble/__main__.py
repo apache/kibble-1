@@ -15,24 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
-import os
-import argparse
-import logging
 import click
 from getpass import getpass
 
-import tenacity
-import bcrypt
-import json
-from elasticsearch import Elasticsearch
-
 from kibble.cli import setup_command
 from kibble.version import version as kv
-from kibble.configuration import conf
 
-KIBBLE_VERSION = conf.get("api", "version")
-KIBBLE_DB_VERSION = conf.get("api", "database")
+from kibble.configuration import conf
 
 
 def get_user_input(msg: str, secure: bool = False):
@@ -98,7 +87,7 @@ def setup(
     autoadmin: bool,
     skiponexist: bool,
 ):
-    setup_command.run(
+    setup_command.do_setup(
         uri=uri,
         dbname=dbname,
         shards=shards,

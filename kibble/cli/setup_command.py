@@ -25,6 +25,11 @@ import bcrypt
 import json
 from elasticsearch import Elasticsearch
 
+from kibble.configuration import conf
+
+KIBBLE_VERSION = conf.get("api", "version")
+KIBBLE_DB_VERSION = conf.get("api", "database")
+
 
 def create_es_index(
     conn_uri: str,
@@ -127,7 +132,7 @@ def create_es_index(
         es.indices.create(
             index=iname, body={"mappings": mappings["mappings"], "settings": settings}
         )
-    print(f"Indices created!")
+    print(f"Indices created!\n")
     print()
 
     salt = bcrypt.gensalt()
@@ -152,7 +157,7 @@ def create_es_index(
     print("Account created!")
 
 
-def run(
+def do_setup(
     uri: str,
     dbname: str,
     shards: str,
