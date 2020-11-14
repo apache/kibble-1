@@ -139,7 +139,7 @@ disable=invalid-name,
         xreadlines-attribute,
         deprecated-sys-function,
         exception-escape,
-        comprehension-escape
+        comprehension-escape,
         # TODO remove in future maybe
         duplicate-code,
         missing-function-docstring,
