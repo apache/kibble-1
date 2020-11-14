@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: bash -c "python kibble/setup/setup.py --autoadmin --skiponexist"
+    command: bash -c "kibble setup --autoadmin --skiponexist"
     volumes:
       - .:/kibble/
     depends_on:

@@ -33,6 +33,7 @@ DEVEL_REQUIREMENTS = ["black==20.8b1", "pre-commit==2.7.1", "pytest==6.1.1"]
 INSTALL_REQUIREMENTS = [
     "bcrypt==3.2.0",
     "certifi==2020.6.20",
+    "click==7.1.2",
     "elasticsearch==7.9.1",
     "gunicorn==20.0.4",
     "psutil==5.7.3",

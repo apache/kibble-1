@@ -15,12 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
 import os
-import argparse
+import sys
 import logging
 from getpass import getpass
 
+import click
 import tenacity
 import bcrypt
 import json
@@ -28,63 +28,15 @@ from elasticsearch import Elasticsearch
 
 from kibble.configuration import conf
 
-
 KIBBLE_VERSION = conf.get("api", "version")
-KIBBLE_DB_VERSION = conf.get("api", "database")  # database revision
-
-if sys.version_info <= (3, 3):
-    print("This script requires Python 3.4 or higher")
-    sys.exit(-1)
+KIBBLE_DB_VERSION = conf.get("api", "database")
 
 
-# Arguments for non-interactive setups like docker
-def get_parser():
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument(
-        "-e",
-        "--conn-uri",
-        help="Pre-defined connection uri for ElasticSearch.",
-        default=conf.get("elasticsearch", "conn_uri"),
-    )
-    arg_parser.add_argument(
-        "-d",
-        "--dbname",
-        help="Pre-defined Database prefix. Default: kibble",
-        default=conf.get("elasticsearch", "dbname"),
-    )
-    arg_parser.add_argument(
-        "-s",
-        "--shards",
-        help="Predefined number of ES shards, Default: 5",
-        default=conf.get("elasticsearch", "shards"),
-    )
-    arg_parser.add_argument(
-        "-r",
-        "--replicas",
-        help="Predefined number of replicas for ES. Default: 1",
-        default=conf.get("elasticsearch", "replicas"),
-    )
-    arg_parser.add_argument(
-        "-m",
-        "--mailhost",
-        help="Pre-defined mail server host. Default: localhost:25",
-        default=conf.get("mail", "mailhost"),
-    )
-    arg_parser.add_argument(
-        "-a",
-        "--autoadmin",
-        action="store_true",
-        help="Generate generic admin account. Default: False",
-        default=False,
-    )
-    arg_parser.add_argument(
-        "-k",
-        "--skiponexist",
-        action="store_true",
-        help="Skip DB creation if DBs exist. Defaul: True",
-        default=True,
-    )
-    return arg_parser
+def get_user_input(msg: str, secure: bool = False):
+    value = None
+    while not value:
+        value = getpass(msg) if secure else input(msg)
+    return value
 
 
 def create_es_index(
@@ -102,12 +54,13 @@ def create_es_index(
     logging.getLogger("elasticsearch").setLevel(logging.ERROR)
 
     mappings_json = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "mappings.json"
+        os.path.dirname(os.path.realpath(__file__)), "../setup/mappings.json"
     )
     with open(mappings_json, "r") as f:
         mappings = json.load(f)
 
     es = Elasticsearch([conn_uri], max_retries=5, retry_on_timeout=True)
+    print(es.info())
 
     es_version = es.info()["version"]["number"]
     es6 = int(es_version.split(".")[0]) >= 6
@@ -187,7 +140,7 @@ def create_es_index(
         es.indices.create(
             index=iname, body={"mappings": mappings["mappings"], "settings": settings}
         )
-    print(f"Indices created!")
+    print(f"Indices created!\n")
     print()
 
     salt = bcrypt.gensalt()
@@ -212,49 +165,30 @@ def create_es_index(
     print("Account created!")
 
 
-def get_user_input(msg: str, secure: bool = False):
-    value = None
-    while not value:
-        value = getpass(msg) if secure else input(msg)
-    return value
-
-
-def print_configuration(args):
-    print(
-        "Configuring Apache Kibble elasticsearch instance with the following arguments:"
-    )
-    print(f"- conn_uri: {args.conn_uri}")
-    print(f"- dbname: {args.dbname}")
-    print(f"- shards: {int(args.shards)}")
-    print(f"- replicas: {int(args.replicas)}")
-    print()
-
-
-def main():
-    """
-    The main Kibble setup logic. Using users input we create:
-    - Elasticsearch indexes used by Apache Kibble app
-    - Configuration yaml file
-    """
-    parser = get_parser()
-    args = parser.parse_args()
-
-    print("Welcome to the Apache Kibble setup script!")
-    print_configuration(args)
+def do_setup(
+    uri: str,
+    dbname: str,
+    shards: str,
+    replicas: str,
+    mailhost: str,
+    autoadmin: bool,
+    skiponexist: bool,
+):
+    click.echo("Welcome to the Apache Kibble setup script!")
 
     admin_name = "admin@kibble"
     admin_pass = "kibbleAdmin"
-    if not args.autoadmin:
+    if not autoadmin:
         admin_name = get_user_input(
-            "Enter an email address for the administrator account:"
+            "Enter an email address for the administrator account: "
         )
         admin_pass = get_user_input(
-            "Enter a password for the administrator account:", secure=True
+            "Enter a password for the administrator account: ", secure=True
         )
 
     # Create Elasticsearch index
     # Retry in case ES is not yet up
-    print(f"Elasticsearch: {args.conn_uri}")
+    click.echo(f"Elasticsearch: {uri}")
     for attempt in tenacity.Retrying(
         retry=tenacity.retry_if_exception_type(exception_types=Exception),
         wait=tenacity.wait_fixed(10),
@@ -262,19 +196,15 @@ def main():
         reraise=True,
     ):
         with attempt:
-            print("Trying to create ES index...")
+            click.echo("Trying to create ES index...")
             create_es_index(
-                conn_uri=args.conn_uri,
-                dbname=args.dbname,
-                shards=int(args.shards),
-                replicas=int(args.replicas),
+                conn_uri=uri,
+                dbname=dbname,
+                shards=int(shards),
+                replicas=int(replicas),
                 admin_name=admin_name,
                 admin_pass=admin_pass,
-                skiponexist=args.skiponexist,
+                skiponexist=skiponexist,
             )
-    print()
-    print("All done, Kibble should...work now :)")
-
-
-if __name__ == "__main__":
-    main()
+    click.echo()
+    click.echo("All done, Kibble should...work now :)")
