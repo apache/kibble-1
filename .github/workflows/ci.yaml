@@ -33,9 +33,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: build docker
+      - name: Build docker image
         run: docker-compose -f docker-compose-dev.yaml build setup
-      - name: build docker
+      - name: Run kibble command
         run: docker run apache/kibble kibble --help
-      - name: check-dependencies
+      - name: Check dependencies
         run: docker run apache/kibble pip check
