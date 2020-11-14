@@ -40,7 +40,7 @@ INSTALL_REQUIREMENTS = [
     "python-dateutil==2.8.1",
     "python-twitter==3.5",
     "PyYAML==5.3.1",
-    "requests==2.24.0",
+    "requests==2.25.0",
     "tenacity==6.2.0",
 ]
 

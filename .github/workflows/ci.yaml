@@ -26,5 +26,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v2
       - uses: pre-commit/action@v1.0.1
+  build-docker:
+    name: Build kibble dev image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build docker
+        run: docker-compose -f docker-compose-dev.yaml build setup
+      - name: build docker
+        run: docker run apache/kibble kibble --help
+      - name: check-dependencies
+        run: docker run apache/kibble pip check
