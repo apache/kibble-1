@@ -22,7 +22,7 @@ on:
 
 jobs:
   statics:
-    name: Static Checks
+    name: Static checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
