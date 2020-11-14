@@ -16,19 +16,11 @@
 # under the License.
 
 import click
-from getpass import getpass
 
 from kibble.cli import setup_command
 from kibble.version import version as kv
 
 from kibble.configuration import conf
-
-
-def get_user_input(msg: str, secure: bool = False):
-    value = None
-    while not value:
-        value = getpass(msg) if secure else input(msg)
-    return value
 
 
 @click.group()
@@ -46,7 +38,7 @@ def version():
     "-u",
     "--uri",
     default=conf.get("elasticsearch", "conn_uri"),
-    help="Pre-defined connection uri for ElasticSearch.",
+    help="Connection uri for ElasticSearch.",
 )
 @click.option(
     "-d",

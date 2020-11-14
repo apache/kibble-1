@@ -18,6 +18,7 @@
 import os
 import sys
 import logging
+from getpass import getpass
 
 import click
 import tenacity
@@ -29,6 +30,13 @@ from kibble.configuration import conf
 
 KIBBLE_VERSION = conf.get("api", "version")
 KIBBLE_DB_VERSION = conf.get("api", "database")
+
+
+def get_user_input(msg: str, secure: bool = False):
+    value = None
+    while not value:
+        value = getpass(msg) if secure else input(msg)
+    return value
 
 
 def create_es_index(
