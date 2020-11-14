@@ -27,6 +27,7 @@ import tenacity
 from elasticsearch import Elasticsearch
 
 from kibble.configuration import conf
+from kibble.settings import MAPPING_DIRECTORY
 
 KIBBLE_VERSION = conf.get("api", "version")
 KIBBLE_DB_VERSION = conf.get("api", "database")
@@ -53,21 +54,19 @@ def create_es_index(
     # elasticsearch logs lots of warnings on retries/connection failure
     logging.getLogger("elasticsearch").setLevel(logging.ERROR)
 
-    mappings_json = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "../setup/mappings.json"
-    )
+    mappings_json = os.path.join(MAPPING_DIRECTORY, "mappings.json")
     with open(mappings_json, "r") as f:
         mappings = json.load(f)
 
     es = Elasticsearch([conn_uri], max_retries=5, retry_on_timeout=True)
-    print(es.info())
+    click.echo(es.info())
 
     es_version = es.info()["version"]["number"]
     es6 = int(es_version.split(".")[0]) >= 6
     es7 = int(es_version.split(".")[0]) >= 7
 
     if not es6:
-        print(
+        click.echo(
             f"New Kibble installations require ElasticSearch 6.x or newer! "
             f"You appear to be running {es_version}!"
         )
@@ -81,9 +80,9 @@ def create_es_index(
     if es.indices.exists(dbname + "_api"):
         # Skip this is DB exists and -k added
         if skiponexist:
-            print("DB prefix exists, but --skiponexist used, skipping this step.")
+            click.echo("DB prefix exists, but --skiponexist used, skipping this step.")
             return
-        print("Error: ElasticSearch DB prefix '%s' already exists!" % dbname)
+        click.echo("Error: ElasticSearch DB prefix '%s' already exists!" % dbname)
         sys.exit(-1)
 
     types = [
@@ -134,18 +133,18 @@ def create_es_index(
 
     for t in types:
         iname = f"{dbname}_{t}"
-        print(f"Creating index {iname}")
+        click.echo(f"Creating index {iname}")
 
         settings = {"number_of_shards": shards, "number_of_replicas": replicas}
         es.indices.create(
             index=iname, body={"mappings": mappings["mappings"], "settings": settings}
         )
-    print(f"Indices created!\n")
-    print()
+    click.echo(f"Indices created!\n")
+    click.echo()
 
     salt = bcrypt.gensalt()
     pwd = bcrypt.hashpw(admin_pass.encode("utf-8"), salt).decode("ascii")
-    print("Creating administrator account")
+    click.echo("Creating administrator account")
     doc = {
         "email": admin_name,  # Username (email)
         "password": pwd,  # Hashed password
@@ -162,7 +161,7 @@ def create_es_index(
     }
     es.index(index=dbname + "_useraccount", doc_type="_doc", id=admin_name, body=doc)
     es.index(index=dbname + "_api", doc_type="_doc", id="current", body=dbdoc)
-    print("Account created!")
+    click.echo("Account created!")
 
 
 def do_setup(
@@ -170,7 +169,6 @@ def do_setup(
     dbname: str,
     shards: str,
     replicas: str,
-    mailhost: str,
     autoadmin: bool,
     skiponexist: bool,
 ):

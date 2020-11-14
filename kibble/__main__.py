@@ -18,6 +18,9 @@
 import click
 
 from kibble.cli import setup_command
+from kibble.cli.make_account_command import make_account_cmd
+from kibble.version import version as kibble_version
+
 from kibble.configuration import conf
 from kibble.version import version as kibble_version
 
@@ -57,9 +60,6 @@ def version():
     default=conf.get("elasticsearch", "replicas"),
     help="number of replicas for ES",
 )
-@click.option(
-    "-m", "--mailhost", default=conf.get("mail", "mailhost"), help="mail server host"
-)
 @click.option("-a", "--autoadmin", default=False, help="generate generic admin account")
 @click.option("-k", "--skiponexist", default=True, help="skip DB creation if DBs exist")
 def setup(
@@ -67,7 +67,6 @@ def setup(
     dbname: str,
     shards: str,
     replicas: str,
-    mailhost: str,
     autoadmin: bool,
     skiponexist: bool,
 ):
@@ -76,9 +75,30 @@ def setup(
         dbname=dbname,
         shards=shards,
         replicas=replicas,
-        mailhost=mailhost,
         autoadmin=autoadmin,
         skiponexist=skiponexist,
+    )
+
+
+@cli.command("make_account", short_help="creates new kibble user account")
+@click.option(
+    "-u", "--username", help="username (email) of account to create", required=True
+)
+@click.option("-p", "--password", help="password to set for account", required=True)
+@click.option("-A", "--admin", default=False, help="make account global admin")
+@click.option(
+    "-a", "--orgadmin", default=False, help="make account owner of orgs invited to"
+)
+@click.option("-o", "--org", default=None, help="invite to this organisation")
+def make_account(
+    username: str,
+    password: str,
+    admin: bool = False,
+    orgadmin: bool = False,
+    org: str = None,
+):
+    make_account_cmd(
+        username=username, password=password, admin=admin, adminorg=orgadmin, org=org
     )
 
 
