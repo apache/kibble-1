@@ -18,7 +18,7 @@
 import click
 
 from kibble.cli import setup_command
-from kibble.version import version as kv
+from kibble.version import version as kibble_version
 
 from kibble.configuration import conf
 
@@ -30,7 +30,7 @@ def cli():
 
 @cli.command("version", short_help="displays the current kibble version")
 def version():
-    click.echo(kv)
+    click.echo(kibble_version)
 
 
 @cli.command("setup", short_help="starts the setup process for kibble")
@@ -38,38 +38,31 @@ def version():
     "-u",
     "--uri",
     default=conf.get("elasticsearch", "conn_uri"),
-    help="Connection uri for ElasticSearch.",
+    help="connection uri for ElasticSearch",
 )
 @click.option(
     "-d",
     "--dbname",
     default=conf.get("elasticsearch", "dbname"),
-    help="Pre-defined Database prefix.",
+    help="elasticsearch database prefix",
 )
 @click.option(
     "-s",
     "--shards",
     default=conf.get("elasticsearch", "shards"),
-    help="Predefined number of ES shards.",
+    help="number of ES shards",
 )
 @click.option(
     "-r",
     "--replicas",
     default=conf.get("elasticsearch", "replicas"),
-    help="Predefined number of replicas for ES.",
+    help="number of replicas for ES",
 )
 @click.option(
-    "-m",
-    "--mailhost",
-    default=conf.get("mail", "mailhost"),
-    help="Pre-defined mail server host.",
+    "-m", "--mailhost", default=conf.get("mail", "mailhost"), help="mail server host"
 )
-@click.option(
-    "-a", "--autoadmin", default=False, help="Generate generic admin account."
-)
-@click.option(
-    "-k", "--skiponexist", default=True, help="Skip DB creation if DBs exist."
-)
+@click.option("-a", "--autoadmin", default=False, help="generate generic admin account")
+@click.option("-k", "--skiponexist", default=True, help="skip DB creation if DBs exist")
 def setup(
     uri: str,
     dbname: str,
