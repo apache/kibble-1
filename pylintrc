@@ -140,6 +140,13 @@ disable=invalid-name,
         deprecated-sys-function,
         exception-escape,
         comprehension-escape
+        # TODO remove in future maybe
+        duplicate-code,
+        missing-function-docstring,
+        too-many-locals,
+        too-many-statements,
+        too-many-branches,
+        broad-except
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
