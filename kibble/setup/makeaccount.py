@@ -15,13 +15,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys, os, os.path
-import elasticsearch
 import argparse
-import yaml
-import bcrypt
+import os
+import os.path
+import sys
 
-from kibble.settings import YAML_DIRECTORY, KIBBLE_YAML
+import bcrypt
+import elasticsearch
+import yaml
+
+from kibble.settings import KIBBLE_YAML, YAML_DIRECTORY
 
 
 class KibbleDatabase(object):

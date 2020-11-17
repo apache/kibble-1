@@ -15,8 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import time
 import re
+import time
 
 from kibble.scanners.utils import jsonapi, kpe
 

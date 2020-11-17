@@ -21,11 +21,12 @@ Validates input using the OpenAPI specification version 3 from
 https://github.com/OAI/OpenAPI-Specification (a simplified version, ahem)
 """
 
-import yaml
-import json
 import functools
+import json
 import operator
 import re
+
+import yaml
 
 
 class OpenAPIException(Exception):

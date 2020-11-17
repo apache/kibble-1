@@ -17,13 +17,14 @@
 
 """ This is the BugZilla scanner plugin for Kible """
 
-import re
-import json
-import time
 import hashlib
-from threading import Thread, Lock
-from kibble.scanners.utils import jsonapi
+import json
+import re
+import time
 import urllib
+from threading import Lock, Thread
+
+from kibble.scanners.utils import jsonapi
 
 title = "Scanner for BugZilla"
 version = "0.1.0"

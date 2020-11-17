@@ -66,8 +66,8 @@ This is the TopN repos by SLoC list renderer for Kibble
 """
 
 import json
-import time
 import re
+import time
 
 
 def run(API, environ, indata, session):

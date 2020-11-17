@@ -95,13 +95,14 @@ This is the user account handler for Kibble.
 adds, removes and edits accounts.
 """
 
+import email.message
+import hashlib
 import json
 import re
-import time
-import bcrypt
-import hashlib
 import smtplib
-import email.message
+import time
+
+import bcrypt
 
 
 def sendCode(session, addr, code):

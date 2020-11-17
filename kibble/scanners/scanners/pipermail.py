@@ -15,15 +15,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import mailbox
-import email.errors
-import email.utils
-import email.header
-import time
-import re
-import os
-import hashlib
 import datetime
+import email.errors
+import email.header
+import email.utils
+import hashlib
+import mailbox
+import os
+import re
+import time
 
 from kibble.scanners.utils import urlmisc
 

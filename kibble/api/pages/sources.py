@@ -123,11 +123,12 @@
 This is the source list handler for Kibble
 """
 
+import hashlib
 import json
 import os
 import re
 import time
-import hashlib
+
 import yaml
 
 from kibble.settings import YAML_DIRECTORY

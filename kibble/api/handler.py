@@ -21,21 +21,21 @@ It compiles a list of valid URLs from the 'pages' library folder,
 and if a URL matches it runs the specific submodule's run() function. It
 also handles CGI parsing and exceptions in the applications.
 """
+import json
 import os
 import re
 import sys
 import traceback
+
 import yaml
-import json
 
 from kibble.api.plugins import openapi
 from kibble.api.plugins.database import KibbleDatabase
 from kibble.api.plugins.session import KibbleSession
-
+from kibble.settings import KIBBLE_YAML, YAML_DIRECTORY
 
 # Compile valid API URLs from the pages library
 # Allow backwards compatibility by also accepting .lua URLs
-from kibble.settings import KIBBLE_YAML, YAML_DIRECTORY
 
 urls = []
 if __name__ != "__main__":

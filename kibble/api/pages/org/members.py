@@ -115,9 +115,9 @@
 This is the Org list renderer for Kibble
 """
 
+import hashlib
 import json
 import time
-import hashlib
 
 
 def canInvite(session):

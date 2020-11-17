@@ -64,10 +64,10 @@
 """
 This is the source types handler for Kibble
 """
+import json
 import os
 
 import yaml
-import json
 
 from kibble.settings import YAML_DIRECTORY
 

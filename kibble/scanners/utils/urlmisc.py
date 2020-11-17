@@ -19,11 +19,11 @@
 This is a Kibble miscellaneous URL functions plugin.
 """
 import base64
-import urllib.request
 import gzip
-import tempfile
 import io
 import subprocess
+import tempfile
+import urllib.request
 
 
 def unzip(url, creds=None, cookie=None):

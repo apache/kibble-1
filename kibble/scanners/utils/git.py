@@ -18,9 +18,9 @@
 """ This is the Kibble git utility plugin """
 
 import os
-import sys
-import subprocess
 import re
+import subprocess
+import sys
 
 
 def defaultBranch(source, datapath, KibbleBit=None):

@@ -15,15 +15,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
+import logging
 import os
 import sys
-import logging
 from getpass import getpass
 
+import bcrypt
 import click
 import tenacity
-import bcrypt
-import json
 from elasticsearch import Elasticsearch
 
 from kibble.configuration import conf

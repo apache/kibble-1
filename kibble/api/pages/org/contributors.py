@@ -48,9 +48,9 @@
 This is the contributor list renderer for Kibble
 """
 
+import hashlib
 import json
 import time
-import hashlib
 
 cached_people = {}  # Store people we know, so we don't have to fetch them again.
 

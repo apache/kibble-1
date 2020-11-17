@@ -74,3 +74,10 @@ repos:
     - id: black
       name: Black
       types: [python]
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.6.4
+    hooks:
+      - id: isort
+        name: Run isort to sort imports
+        args: ['--multi-line', '3', '--trailing-comma']
+        files: \.py$

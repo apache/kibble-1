@@ -65,10 +65,11 @@
 This is the pony factor renderer for Kibble
 """
 
-import json
-import time
-import re
 import datetime
+import json
+import re
+import time
+
 import dateutil.relativedelta
 
 

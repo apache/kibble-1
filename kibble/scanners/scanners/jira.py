@@ -15,10 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import time
-import re
 import hashlib
+import re
 import threading
+import time
+
 import requests.exceptions
 
 from kibble.scanners.utils import jsonapi

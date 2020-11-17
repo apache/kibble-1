@@ -15,9 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import sys
+
 import elasticsearch
 import elasticsearch.helpers
-import sys
 
 KIBBLE_DB_VERSION = 2  # Current DB struct version
 ACCEPTED_DB_VERSIONS = [1, 2]  # Versions we know how to work with.

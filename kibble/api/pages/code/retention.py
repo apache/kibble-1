@@ -65,10 +65,10 @@
 This is the code contributor retention factor renderer for Kibble
 """
 
-import json
-import time
-import re
 import datetime
+import json
+import re
+import time
 
 
 def run(API, environ, indata, session):

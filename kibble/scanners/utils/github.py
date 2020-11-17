@@ -17,8 +17,9 @@
 
 """ GitHub utility library """
 import re
-import requests
 import time
+
+import requests
 
 repo_pattern = re.compile(".*[:/]([^/]+)/([^/]+).git")
 issues_api = "https://api.github.com/repos/%s/%s/issues"

@@ -65,9 +65,9 @@
 This is the TopN issue openers list renderer for Kibble
 """
 
+import hashlib
 import json
 import time
-import hashlib
 
 
 def run(API, environ, indata, session):

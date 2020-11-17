@@ -15,10 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import yaml
 import os
-import sys
 import re
+import sys
+
+import yaml
 
 from kibble.settings import YAML_DIRECTORY
 

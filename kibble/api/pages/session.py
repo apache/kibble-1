@@ -94,12 +94,13 @@
 This is the user session handler for Kibble
 """
 
+import hashlib
 import json
 import re
 import time
-import bcrypt
-import hashlib
 import uuid
+
+import bcrypt
 
 
 def run(API, environ, indata, session):

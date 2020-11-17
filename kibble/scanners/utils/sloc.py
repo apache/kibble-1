@@ -17,9 +17,9 @@
 
 """ This is the SLoC counter utility for Kibble """
 
-import subprocess
-import re
 import multiprocessing
+import re
+import subprocess
 
 
 def count(path):

@@ -15,14 +15,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import argparse
+import multiprocessing
 import os
 import threading
-import multiprocessing
+import time
 from pprint import pprint
 
 import yaml
-import time
-import argparse
+
 from kibble.scanners import scanners
 from kibble.scanners.brokers import kibbleES
 

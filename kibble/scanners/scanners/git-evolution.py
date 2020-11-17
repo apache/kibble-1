@@ -16,12 +16,12 @@
 # under the License.
 
 """ Git Evolution scanner """
-import os
-import subprocess
-import time
 import calendar
 import datetime
 import hashlib
+import os
+import subprocess
+import time
 
 from kibble.scanners.utils import sloc
 

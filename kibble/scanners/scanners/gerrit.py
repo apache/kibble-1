@@ -15,12 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import re
-import requests
 import hashlib
-from dateutil import parser
-import time
 import json
+import re
+import time
+
+import requests
+from dateutil import parser
 
 title = "Scanner for Gerrit Code Review"
 version = "0.1.1"

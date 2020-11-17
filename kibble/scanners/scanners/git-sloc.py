@@ -19,7 +19,7 @@ import os
 import subprocess
 import time
 
-from kibble.scanners.utils import sloc, git
+from kibble.scanners.utils import git, sloc
 
 """ Source Lines of Code counter for Git """
 
