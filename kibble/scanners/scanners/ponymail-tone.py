@@ -102,7 +102,7 @@ def scan(KibbleBit, source):
                     if rv and "body" in rv:
                         hits.append([hit["_id"], rv["body"], eml])
                 except Exception as err:
-                    KibbleBit.pprint("Server error, skipping this email")
+                    KibbleBit.pprint(f"Server error: {err}, skipping this email")
 
     bodies = []
     for hit in hits:
