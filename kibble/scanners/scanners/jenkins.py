@@ -50,9 +50,7 @@ def scanJob(KibbleBit, source, job, creds):
             "ascii", errors="replace"
         )
     ).hexdigest()
-    found = True
     doc = None
-    parseIt = False
     found = KibbleBit.exists("cijob", dhash)
 
     # Get $jenkins/job/$job-name/json...
@@ -156,6 +154,7 @@ class jenkinsThread(threading.Thread):
             try:
                 job = self.jobs.pop(0)
             except Exception as err:
+                print(f"An error occurred: {err}")
                 self.block.release()
                 return
             if not job:
@@ -199,7 +198,6 @@ def scan(KibbleBit, source):
         }
         KibbleBit.updateSource(source)
 
-        badOnes = 0
         pendingJobs = []
         KibbleBit.pprint("Parsing Jenkins activity at %s" % source["sourceURL"])
         source["steps"]["issues"] = {
