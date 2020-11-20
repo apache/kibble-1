@@ -130,7 +130,6 @@ def scanTicket(KibbleBit, key, u, source, creds, openTickets):
         )
     ).hexdigest()
     found = True
-    doc = None
     parseIt = False
 
     # the 'domain' var we try to figure out here is used
@@ -179,7 +178,7 @@ def scanTicket(KibbleBit, key, u, source, creds, openTickets):
                 KibbleBit.pprint("%s does not exist (404'ed)" % key)
                 return False
         except requests.exceptions.ConnectionError as err:
-            KibbleBit.pprint("Connection error, skipping this ticket for now!")
+            KibbleBit.pprint(f"Connection error: {err}, skipping this ticket for now!")
             return False
         st, closer = wasclosed(tjson)
         if st and not closer:
@@ -323,6 +322,7 @@ class jiraThread(threading.Thread):
             try:
                 rl = self.pendingTickets.pop(0)
             except Exception as err:
+                print(f"An error occured: {err}")
                 self.block.release()
                 return
             if not rl:
@@ -384,9 +384,6 @@ def scan(KibbleBit, source):
         }
         KibbleBit.updateSource(source)
 
-        badOnes = 0
-        jsa = []
-        jsp = []
         pendingTickets = []
         KibbleBit.pprint("Parsing JIRA activity at %s" % source["sourceURL"])
         source["steps"]["issues"] = {
