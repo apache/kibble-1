@@ -85,4 +85,5 @@ repos:
     rev: v2.6.0
     hooks:
       - id: pylint
-    files: \.py$
+        name: pylint
+        files: \.py$
