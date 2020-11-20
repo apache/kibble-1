@@ -196,7 +196,6 @@ def scan(KibbleBit, source, firstAttempt=True):
 
             doc = make_issue(source, issue, people)
             dhash = doc["id"]
-            stored_change = None
             if KibbleBit.exists("issue", dhash):
                 es_doc = KibbleBit.get("issue", dhash)
                 if not status_changed(es_doc, doc):
