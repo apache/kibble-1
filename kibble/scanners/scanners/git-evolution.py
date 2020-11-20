@@ -118,7 +118,6 @@ def find_branch(date, gpath):
         return "master"
     except:
         os.chdir(gpath)
-        branch = ""
         try:
             return (
                 subprocess.check_output(
@@ -138,7 +137,6 @@ def find_branch(date, gpath):
 def scan(KibbleBit, source):
 
     rid = source["sourceID"]
-    url = source["sourceURL"]
     rootpath = "%s/%s/git" % (
         KibbleBit.config["scanner"]["scratchdir"],
         source["organisation"],
