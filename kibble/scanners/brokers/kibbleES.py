@@ -352,7 +352,6 @@ class Broker:
 
     def organisations(self):
         """ Return a list of all organisations """
-        orgs = []
 
         # Run the search, fetch all orgs, 9999 max. TODO: Scroll???
         res = self.DB.search(

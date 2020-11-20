@@ -41,16 +41,12 @@ def accepts(source):
 
 def scanJob(KibbleBit, source, bid, token, TLD):
     """ Scans a single job for activity """
-    NOW = int(datetime.datetime.utcnow().timestamp())
+    # NOW = int(datetime.datetime.utcnow().timestamp())
     dhash = hashlib.sha224(
         ("%s-%s-%s" % (source["organisation"], source["sourceURL"], bid)).encode(
             "ascii", errors="replace"
         )
     ).hexdigest()
-    found = True
-    doc = None
-    parseIt = False
-    found = KibbleBit.exists("cijob", dhash)
 
     # Get the job data
     pages = 0
@@ -192,7 +188,7 @@ class travisThread(threading.Thread):
             self.block.acquire()
             try:
                 job = self.jobs.pop(0)
-            except Exception as err:
+            except Exception:
                 self.block.release()
                 return
             if not job:
@@ -217,7 +213,7 @@ class travisThread(threading.Thread):
                 badOnes = 0
 
 
-def scan(KibbleBit, source):
+def sclan(KibbleBit, source):
     # Simple URL check
     travis = re.match(r"https?://travis-ci\.(org|com)", source["sourceURL"])
     if travis:
@@ -231,7 +227,6 @@ def scan(KibbleBit, source):
         }
         KibbleBit.updateSource(source)
 
-        badOnes = 0
         pendingJobs = []
         KibbleBit.pprint("Parsing Travis activity at %s" % source["sourceURL"])
         source["steps"]["travis"] = {
@@ -254,9 +249,6 @@ def scan(KibbleBit, source):
         else:
             KibbleBit.pprint("Travis CI requires a token to work!")
             return False
-
-        # Get the job list, paginated
-        sURL = source["sourceURL"]
 
         # Used for pagination
         jobs = 100

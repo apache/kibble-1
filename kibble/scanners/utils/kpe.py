@@ -77,7 +77,6 @@ def azureKPE(KibbleBit, bodies):
         KPEs = []
         for body in bodies:
             # Crop out quotes
-            lines = body.split("\n")
             body = trimBody(body)
             doc = {"language": "en", "id": str(a), "text": body}
             js["documents"].append(doc)
