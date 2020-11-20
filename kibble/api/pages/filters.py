@@ -20,8 +20,6 @@ This is the source list handler for Kibble
 """
 
 import json
-import re
-import time
 
 
 def run(API, environ, indata, session):

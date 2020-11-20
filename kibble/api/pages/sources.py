@@ -126,8 +126,6 @@ This is the source list handler for Kibble
 import hashlib
 import json
 import os
-import re
-import time
 
 import yaml
 
@@ -150,7 +148,6 @@ def canModifySource(session):
 
 
 def run(API, environ, indata, session):
-
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")

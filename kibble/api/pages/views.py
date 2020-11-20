@@ -139,7 +139,6 @@ This is the views (filters) list handler for Kibble
 
 import hashlib
 import json
-import re
 import time
 
 

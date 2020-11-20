@@ -15,8 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import datetime
-import email.utils
 import hashlib
 import os
 import re

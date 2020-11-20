@@ -100,7 +100,6 @@ import hashlib
 import json
 import re
 import smtplib
-import time
 
 import bcrypt
 
