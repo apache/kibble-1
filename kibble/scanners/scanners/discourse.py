@@ -41,10 +41,7 @@ def accepts(source):
 
 def scanJob(KibbleBit, source, cat, creds):
     """ Scans a single discourse category for activity """
-    NOW = int(datetime.datetime.utcnow().timestamp())
-
     # Get $discourseURL/c/$catID
-
     catURL = os.path.join(source["sourceURL"], "c/%s" % cat["id"])
     KibbleBit.pprint("Scanning Discourse category '%s' at %s" % (cat["slug"], catURL))
 
@@ -249,7 +246,7 @@ class discourseThread(threading.Thread):
             self.block.acquire()
             try:
                 job = self.jobs.pop(0)
-            except Exception as err:
+            except Exception:
                 self.block.release()
                 return
             if not job:
@@ -289,7 +286,6 @@ def scan(KibbleBit, source):
         }
         KibbleBit.updateSource(source)
 
-        badOnes = 0
         pendingJobs = []
         KibbleBit.pprint("Parsing Discourse activity at %s" % source["sourceURL"])
         source["steps"]["forum"] = {
