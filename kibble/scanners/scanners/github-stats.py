@@ -42,11 +42,9 @@ def getTime(string):
 def scan(KibbleBit, source):
 
     # Get some vars, construct a data path for the repo
-    path = source["sourceID"]
     url = source["sourceURL"]
 
     auth = None
-    people = {}
     if "creds" in source:
         KibbleBit.pprint("Using auth for repo %s" % source["sourceURL"])
         creds = source["creds"]
