@@ -15,10 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import click
-import elasticsearch
-import bcrypt
 from urllib.parse import urlparse
+
+import bcrypt
+import elasticsearch
 
 from kibble.configuration import conf
 
@@ -76,4 +76,4 @@ def make_account_cmd(
     }
     db = ESDatabase()
     db.create_index(doc_type="useraccount", id_=username, body=doc)
-    click.echo("Account created!")
+    print("Account created!")

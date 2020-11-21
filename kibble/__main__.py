@@ -19,8 +19,6 @@ import click
 
 from kibble.cli import setup_command
 from kibble.cli.make_account_command import make_account_cmd
-from kibble.version import version as kibble_version
-
 from kibble.configuration import conf
 from kibble.version import version as kibble_version
 
@@ -32,7 +30,7 @@ def cli():
 
 @cli.command("version", short_help="displays the current kibble version")
 def version():
-    click.echo(kibble_version)
+    print(kibble_version)
 
 
 @cli.command("setup", short_help="starts the setup process for kibble")

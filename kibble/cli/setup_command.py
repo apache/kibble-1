@@ -22,7 +22,6 @@ import sys
 from getpass import getpass
 
 import bcrypt
-import click
 import tenacity
 from elasticsearch import Elasticsearch
 
@@ -59,14 +58,14 @@ def create_es_index(
         mappings = json.load(f)
 
     es = Elasticsearch([conn_uri], max_retries=5, retry_on_timeout=True)
-    click.echo(es.info())
+    print(es.info())
 
     es_version = es.info()["version"]["number"]
     es6 = int(es_version.split(".")[0]) >= 6
     es7 = int(es_version.split(".")[0]) >= 7
 
     if not es6:
-        click.echo(
+        print(
             f"New Kibble installations require ElasticSearch 6.x or newer! "
             f"You appear to be running {es_version}!"
         )
@@ -80,9 +79,9 @@ def create_es_index(
     if es.indices.exists(dbname + "_api"):
         # Skip this is DB exists and -k added
         if skiponexist:
-            click.echo("DB prefix exists, but --skiponexist used, skipping this step.")
+            print("DB prefix exists, but --skiponexist used, skipping this step.")
             return
-        click.echo("Error: ElasticSearch DB prefix '%s' already exists!" % dbname)
+        print("Error: ElasticSearch DB prefix '%s' already exists!" % dbname)
         sys.exit(-1)
 
     types = [
@@ -133,18 +132,18 @@ def create_es_index(
 
     for t in types:
         iname = f"{dbname}_{t}"
-        click.echo(f"Creating index {iname}")
+        print(f"Creating index {iname}")
 
         settings = {"number_of_shards": shards, "number_of_replicas": replicas}
         es.indices.create(
             index=iname, body={"mappings": mappings["mappings"], "settings": settings}
         )
-    click.echo(f"Indices created!\n")
-    click.echo()
+    print(f"Indices created!\n")
+    print()
 
     salt = bcrypt.gensalt()
     pwd = bcrypt.hashpw(admin_pass.encode("utf-8"), salt).decode("ascii")
-    click.echo("Creating administrator account")
+    print("Creating administrator account")
     doc = {
         "email": admin_name,  # Username (email)
         "password": pwd,  # Hashed password
@@ -161,7 +160,7 @@ def create_es_index(
     }
     es.index(index=dbname + "_useraccount", doc_type="_doc", id=admin_name, body=doc)
     es.index(index=dbname + "_api", doc_type="_doc", id="current", body=dbdoc)
-    click.echo("Account created!")
+    print("Account created!")
 
 
 def do_setup(
@@ -172,7 +171,7 @@ def do_setup(
     autoadmin: bool,
     skiponexist: bool,
 ):
-    click.echo("Welcome to the Apache Kibble setup script!")
+    print("Welcome to the Apache Kibble setup script!")
 
     admin_name = "admin@kibble"
     admin_pass = "kibbleAdmin"
@@ -186,7 +185,7 @@ def do_setup(
 
     # Create Elasticsearch index
     # Retry in case ES is not yet up
-    click.echo(f"Elasticsearch: {uri}")
+    print(f"Elasticsearch: {uri}")
     for attempt in tenacity.Retrying(
         retry=tenacity.retry_if_exception_type(exception_types=Exception),
         wait=tenacity.wait_fixed(10),
@@ -194,7 +193,7 @@ def do_setup(
         reraise=True,
     ):
         with attempt:
-            click.echo("Trying to create ES index...")
+            print("Trying to create ES index...")
             create_es_index(
                 conn_uri=uri,
                 dbname=dbname,
@@ -204,5 +203,5 @@ def do_setup(
                 admin_pass=admin_pass,
                 skiponexist=skiponexist,
             )
-    click.echo()
-    click.echo("All done, Kibble should...work now :)")
+    print()
+    print("All done, Kibble should...work now :)")
