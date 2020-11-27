@@ -37,7 +37,7 @@ The Kibble Server (kibble)
 The Kibble Scanner Applications (kibble-scanners)
    This is a collection of scanning applications each designed to work
    with a specific type of resource (a git repo, a mailing list, a JIRA
-   instance etc) and push copmpiled data objects to the Kibble Server.
+   instance etc) and push compiled data objects to the Kibble Server.
    Some resources only have one scanner plugin, while others may have
    multiple plugins capable of dealing with specific aspects of a
    resource.
