@@ -49,8 +49,7 @@ def scan(KibbleBit, source):
     if pipermail:
         KibbleBit.pprint("Scanning Pipermail source %s" % url)
         skipped = 0
-        jsa = []
-        jsp = []
+
         source["steps"]["mail"] = {
             "time": time.time(),
             "status": "Downloading Pipermail statistics",

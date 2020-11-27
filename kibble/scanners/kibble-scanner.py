@@ -102,7 +102,6 @@ class scanThread(threading.Thread):
         global BIG_LOCK, PENDING_OBJECTS
         time.sleep(0.5)  # Primarily to align printouts.
         # While there are objects to snag
-        a = 0
         while PENDING_OBJECTS:
             BIG_LOCK.acquire(blocking=True)
             try:
@@ -161,7 +160,7 @@ def main():
                 for source in org.sources(view=args.view):
                     tooNew = False
                     if "steps" in source:
-                        for key, step in source["steps"].items():
+                        for _, step in source["steps"].items():
                             if "time" in step and step["time"] >= minAge:
                                 tooNew = True
                                 break

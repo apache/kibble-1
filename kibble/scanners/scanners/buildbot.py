@@ -40,15 +40,12 @@ def accepts(source):
 
 def scanJob(KibbleBit, source, job, creds):
     """ Scans a single job for activity """
-    NOW = int(datetime.datetime.utcnow().timestamp())
     dhash = hashlib.sha224(
         ("%s-%s-%s" % (source["organisation"], source["sourceID"], job)).encode(
             "ascii", errors="replace"
         )
     ).hexdigest()
-    found = True
     doc = None
-    parseIt = False
     found = KibbleBit.exists("cijob", dhash)
 
     jobURL = "%s/json/builders/%s/builds/_all" % (source["sourceURL"], job)
@@ -140,7 +137,7 @@ class buildbotThread(threading.Thread):
             self.block.acquire()
             try:
                 job = self.jobs.pop(0)
-            except Exception as err:
+            except Exception:
                 self.block.release()
                 return
             if not job:
@@ -178,8 +175,6 @@ def scan(KibbleBit, source):
         }
         KibbleBit.updateSource(source)
 
-        badOnes = 0
-        pendingJobs = []
         KibbleBit.pprint("Parsing Buildbot activity at %s" % source["sourceURL"])
         source["steps"]["ci"] = {
             "time": time.time(),
@@ -216,8 +211,6 @@ def scan(KibbleBit, source):
         # Scan queue items
         blocked = 0
         stuck = 0
-        totalqueuetime = 0
-        labelQueuedBuilds = {}
         queueSize = 0
         actualQueueSize = 0
         building = 0

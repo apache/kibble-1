@@ -69,7 +69,6 @@ def repliedTo(emails, struct):
 
 def getSender(email):
     sender = email["from"]
-    name = sender
     m = re.match(r"(.+)\s*<(.+)>", email["from"], flags=re.UNICODE)
     if m:
         name = m.group(1).replace('"', "").strip()
@@ -164,7 +163,7 @@ def scan(KibbleBit, source):
             try:
                 js = jsonapi.get(statsurl, cookie=cookie)
             except Exception as err:
-                KibbleBit.pprint("Server error, skipping this month")
+                KibbleBit.pprint(f"Server error: {err}, skipping this month")
                 month -= 1
                 if month <= 0:
                     month += 12

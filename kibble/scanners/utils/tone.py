@@ -167,7 +167,6 @@ def picoTone(KibbleBit, bodies):
                 mood = {}
 
                 # Sentiment is the overall score, and we use that for the neutrality of a text
-                val = (1 + doc["sentiment"]) / 2
 
                 mood["negative"] = doc[
                     "negativity"

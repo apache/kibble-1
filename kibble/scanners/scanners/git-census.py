@@ -92,7 +92,6 @@ def scan(KibbleBit, source):
             inp = f.read()
             f.close()
         os.unlink(tmp.name)
-        edone = 0
         KibbleBit.pprint("Parsing log for %s (%s)..." % (rid, url))
         for m in re.finditer(
             u":([a-f0-9]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([\d+]+)\r?\n([^:]+?):",

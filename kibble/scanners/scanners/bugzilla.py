@@ -310,7 +310,7 @@ class bzThread(Thread):
             self.block.acquire()
             try:
                 rl = self.pendingTickets.pop(0)
-            except Exception as err:  # list empty, likely
+            except Exception:  # list empty, likely
                 self.block.release()
                 return
             if not rl:
@@ -338,7 +338,6 @@ class bzThread(Thread):
 
 
 def scan(KibbleBit, source):
-    path = source["sourceID"]
     url = source["sourceURL"]
 
     source["steps"]["issues"] = {
@@ -358,7 +357,6 @@ def scan(KibbleBit, source):
             and len(source["creds"]["username"]) > 0
         ):
             creds = "%s:%s" % (source["creds"]["username"], source["creds"]["password"])
-        badOnes = 0
         pendingTickets = []
         openTickets = []
 
@@ -367,7 +365,6 @@ def scan(KibbleBit, source):
         dom = re.sub(r"/+$", "", dom)
         u = "%s/jsonrpc.cgi" % dom
         instance = bz.group(3)
-        lastTicket = 0
 
         params = {
             "product": [instance],
@@ -445,9 +442,9 @@ def scan(KibbleBit, source):
             % (len(openTickets), len(pendingTickets) - len(openTickets))
         )
 
-        badOnes = 0
         block = Lock()
         threads = []
+        # TODO: Fix this loop
         for i in range(0, 4):
             t = bzThread(KibbleBit, source, block, pendingTickets, openTickets, u, dom)
             threads.append(t)
