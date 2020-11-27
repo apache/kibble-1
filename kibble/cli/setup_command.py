@@ -22,11 +22,11 @@ import sys
 from getpass import getpass
 
 import bcrypt
-import click
 import tenacity
 from elasticsearch import Elasticsearch
 
 from kibble.configuration import conf
+from kibble.settings import MAPPING_DIRECTORY
 
 KIBBLE_VERSION = conf.get("api", "version")
 KIBBLE_DB_VERSION = conf.get("api", "database")
@@ -53,9 +53,7 @@ def create_es_index(
     # elasticsearch logs lots of warnings on retries/connection failure
     logging.getLogger("elasticsearch").setLevel(logging.ERROR)
 
-    mappings_json = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "../setup/mappings.json"
-    )
+    mappings_json = os.path.join(MAPPING_DIRECTORY, "mappings.json")
     with open(mappings_json, "r") as f:
         mappings = json.load(f)
 
@@ -170,11 +168,10 @@ def do_setup(
     dbname: str,
     shards: str,
     replicas: str,
-    mailhost: str,
     autoadmin: bool,
     skiponexist: bool,
 ):
-    click.echo("Welcome to the Apache Kibble setup script!")
+    print("Welcome to the Apache Kibble setup script!")
 
     admin_name = "admin@kibble"
     admin_pass = "kibbleAdmin"
@@ -188,7 +185,7 @@ def do_setup(
 
     # Create Elasticsearch index
     # Retry in case ES is not yet up
-    click.echo(f"Elasticsearch: {uri}")
+    print(f"Elasticsearch: {uri}")
     for attempt in tenacity.Retrying(
         retry=tenacity.retry_if_exception_type(exception_types=Exception),
         wait=tenacity.wait_fixed(10),
@@ -196,7 +193,7 @@ def do_setup(
         reraise=True,
     ):
         with attempt:
-            click.echo("Trying to create ES index...")
+            print("Trying to create ES index...")
             create_es_index(
                 conn_uri=uri,
                 dbname=dbname,
@@ -206,5 +203,5 @@ def do_setup(
                 admin_pass=admin_pass,
                 skiponexist=skiponexist,
             )
-    click.echo()
-    click.echo("All done, Kibble should...work now :)")
+    print()
+    print("All done, Kibble should...work now :)")

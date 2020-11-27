@@ -21,3 +21,6 @@ YAML_DIRECTORY = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), "api", "yaml"
 )
 KIBBLE_YAML = os.path.join(YAML_DIRECTORY, "kibble.yaml")
+MAPPING_DIRECTORY = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), "mappings"
+)
