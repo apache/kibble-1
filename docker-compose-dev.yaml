@@ -59,6 +59,10 @@ services:
       cluster.initial_master_nodes: es01
       cluster.name: kibble
       ES_JAVA_OPTS: -Xms256m -Xmx256m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
       - "kibble-es-data:/usr/share/elasticsearch/data"
     networks:
