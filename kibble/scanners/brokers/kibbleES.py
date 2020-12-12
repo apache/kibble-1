@@ -335,18 +335,21 @@ class Broker:
         apidoc = es.get(index=es_config["database"], doc_type="api", id="current")[
             "_source"
         ]
+        apidoc_db_version = int(apidoc["dbversion"])
         # We currently accept and know how to use DB versions 1 and 2.
-        if apidoc["dbversion"] not in ACCEPTED_DB_VERSIONS:
-            if apidoc["dbversion"] > KIBBLE_DB_VERSION:
+        if apidoc_db_version not in ACCEPTED_DB_VERSIONS:
+            if apidoc_db_version > KIBBLE_DB_VERSION:
                 sys.stderr.write(
-                    "The database '%s' uses a newer structure format (version %u) than the scanners (version %u). Please upgrade your scanners.\n"
-                    % (es_config["database"], apidoc["dbversion"], KIBBLE_DB_VERSION)
+                    "The database '%s' uses a newer structure format (version %u) than the scanners "
+                    "(version %u). Please upgrade your scanners.\n"
+                    % (es_config["database"], apidoc_db_version, KIBBLE_DB_VERSION)
                 )
                 sys.exit(-1)
-            if apidoc["dbversion"] < KIBBLE_DB_VERSION:
+            if apidoc_db_version < KIBBLE_DB_VERSION:
                 sys.stderr.write(
-                    "The database '%s' uses an older structure format (version %u) than the scanners (version %u). Please upgrade your main Kibble server.\n"
-                    % (es_config["database"], apidoc["dbversion"], KIBBLE_DB_VERSION)
+                    "The database '%s' uses an older structure format (version %u) than the scanners "
+                    "(version %u). Please upgrade your main Kibble server.\n"
+                    % (es_config["database"], apidoc_db_version, KIBBLE_DB_VERSION)
                 )
                 sys.exit(-1)
 
