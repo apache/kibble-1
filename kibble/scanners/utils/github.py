@@ -29,8 +29,7 @@ rate_limit_api = "https://api.github.com/rate_limit"
 
 
 def get_limited(url, params=None, auth=None):
-    """ Get a GitHub API response, keeping in mind that we may
-        be rate-limited by the abuse system """
+    """Get a GitHub API response, keeping in mind that we may be rate-limited by the abuse system"""
     number_of_retries = 0
     resp = requests.get(url, params=params, auth=auth)
     while resp.status_code == 403 and number_of_retries < 20:

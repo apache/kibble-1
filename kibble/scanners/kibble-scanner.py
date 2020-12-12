@@ -85,8 +85,8 @@ def isMine(ID, config):
 
 
 class scanThread(threading.Thread):
-    """ A thread object that grabs an item from the queue and processes
-        it, using whatever plugins will come out to play. """
+    """A thread object that grabs an item from the queue and processes
+    it, using whatever plugins will come out to play."""
 
     def __init__(self, broker, org, i, t=None, e=None):
         super(scanThread, self).__init__()
