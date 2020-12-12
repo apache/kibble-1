@@ -1,5 +1,9 @@
 version: '3'
 
+networks:
+  kibble:
+    driver: bridge
+
 services:
   # Helper service to setup the Apache Kibble es node
   setup:
@@ -12,6 +16,8 @@ services:
       - .:/kibble/
     depends_on:
       - elasticsearch
+    networks:
+      - kibble
 
   # Apache Kibble API server
   kibble:
@@ -25,6 +31,8 @@ services:
       - .:/kibble/
     depends_on:
       - elasticsearch
+    networks:
+      - kibble
 
   # Apache Kibble web ui server
   ui:
@@ -35,6 +43,8 @@ services:
     ports:
       - 8000:8000
     depends_on:
+      - kibble
+    networks:
       - kibble
 
   # Elasticsearch node required as a database for Apache Kibble
@@ -51,6 +61,8 @@ services:
       ES_JAVA_OPTS: -Xms256m -Xmx256m
     volumes:
       - "kibble-es-data:/usr/share/elasticsearch/data"
+    networks:
+      - kibble
 
   # Kibana to view and manage Elasticsearch
   kibana:
@@ -59,6 +71,11 @@ services:
       - 5601:5601
     depends_on:
       - elasticsearch
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    networks:
+      - kibble
 
 volumes:
   # named volumes can be managed easier using docker-compose
