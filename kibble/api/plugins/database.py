@@ -22,6 +22,8 @@ It stores the elasticsearch handler and config options.
 
 import elasticsearch
 
+from kibble.configuration import KibbleConfigParser
+
 
 class KibbleESWrapper(object):
     """
@@ -119,24 +121,13 @@ class KibbleESWrapperSeven(object):
 
 
 class KibbleDatabase(object):
-    def __init__(self, config):
+    def __init__(self, config: KibbleConfigParser):
         self.config = config
-        self.dbname = config["elasticsearch"]["dbname"]
+        self.dbname = config.get("elasticsearch", "dbname")
         self.ES = elasticsearch.Elasticsearch(
-            [
-                {
-                    "host": config["elasticsearch"]["host"],
-                    "port": int(config["elasticsearch"]["port"]),
-                    "use_ssl": config["elasticsearch"]["ssl"],
-                    "verify_certs": False,
-                    "url_prefix": config["elasticsearch"]["uri"]
-                    if "uri" in config["elasticsearch"]
-                    else "",
-                    "http_auth": config["elasticsearch"]["auth"]
-                    if "auth" in config["elasticsearch"]
-                    else None,
-                }
-            ],
+            [config.get("elasticsearch", "conn_uri")],
+            use_ssl=config.getboolean("elasticsearch", "ssl"),
+            verify_certs=False,
             max_retries=5,
             retry_on_timeout=True,
         )

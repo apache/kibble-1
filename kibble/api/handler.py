@@ -27,12 +27,11 @@ import re
 import sys
 import traceback
 
-import yaml
-
 from kibble.api.plugins import openapi
 from kibble.api.plugins.database import KibbleDatabase
 from kibble.api.plugins.session import KibbleSession
-from kibble.settings import KIBBLE_YAML, YAML_DIRECTORY
+from kibble.configuration import conf
+from kibble.settings import YAML_DIRECTORY
 
 # Compile valid API URLs from the pages library
 # Allow backwards compatibility by also accepting .lua URLs
@@ -44,10 +43,6 @@ if __name__ != "__main__":
     for page, handler in handlers.items():
         urls.append((r"^(/api/%s)(/.+)?$" % page, handler.run))
 
-
-# Load Kibble master configuration
-with open(KIBBLE_YAML, "r") as f:
-    config = yaml.safe_load(f)
 
 # Instantiate database connections
 DB = None
@@ -156,13 +151,13 @@ def application(environ, start_response):
     Checks against the pages library, and if submod found, runs
     it and returns the output.
     """
-    db = KibbleDatabase(config)
+    db = KibbleDatabase(conf)
     path = environ.get("PATH_INFO", "")
     for regex, function in urls:
         m = re.match(regex, path)
         if m:
             callback = KibbleAPIWrapper(path, function)
-            session = KibbleSession(db, environ, config)
+            session = KibbleSession(db, environ, conf)
             a = 0
             for bucket in callback(environ, start_response, session):
                 if a == 0:
