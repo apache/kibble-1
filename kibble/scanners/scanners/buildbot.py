@@ -100,7 +100,7 @@ def scanJob(KibbleBit, source, job, creds):
                 "date": time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(FIN)),
                 "buildID": buildno,
                 "completed": completed,
-                "duration": DUR * 1000,  # Buildbot does seconds, not milis
+                "duration": DUR * 1000,  # Buildbot does seconds, not milliseconds
                 "job": job,
                 "jobURL": "%s/builders/%s" % (source["sourceURL"], job),
                 "status": status,
@@ -221,7 +221,7 @@ def scan(KibbleBit, source):
             if data["state"] == "building":
                 building += 1
             if data.get("pendingBuilds", 0) > 0:
-                # All queued items, even offlined builders
+                # All queued items, even offline builders
                 actualQueueSize += data.get("pendingBuilds", 0)
                 # Only queues with an online builder (actually waiting stuff)
                 if data["state"] == "building":

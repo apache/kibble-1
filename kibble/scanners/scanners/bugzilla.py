@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-""" This is the BugZilla scanner plugin for Kible """
+""" This is the BugZilla scanner plugin for Kibble """
 
 import hashlib
 import json

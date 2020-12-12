@@ -44,7 +44,7 @@ def unzip(url, creds=None, cookie=None):
             "Cookie": cookie,
         }
     request = urllib.request.Request(url, headers=headers)
-    # Try fechthing via python, fall back to wget (redhat == broken!)
+    # Try fetching via python, fall back to wget (redhat == broken!)
     decompressedFile = None
     try:
         result = urllib.request.urlopen(request)
