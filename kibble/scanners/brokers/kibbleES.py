@@ -134,7 +134,7 @@ class KibbleBit:
             print("Pushing stragglers")
             self.bulk()
 
-    def print(self, string, err=False):
+    def pprint(self, string, err=False):
         line = "[thread#%i:%s]: %s" % (self.tid, self.pluginname, string)
         if err:
             sys.stderr.write(line + "\n")
