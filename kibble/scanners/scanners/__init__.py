@@ -58,4 +58,4 @@ for p in __all__:
 def enumerate():
     """ Returns the scanners as a dictionary, sorted by run-order """
     for p in __all__:
-        yield (p, scanners[p])
+        yield p, scanners[p]

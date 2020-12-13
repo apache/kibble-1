@@ -29,8 +29,7 @@ rate_limit_api = "https://api.github.com/rate_limit"
 
 
 def get_limited(url, params=None, auth=None):
-    """ Get a GitHub API response, keeping in mind that we may
-        be rate-limited by the abuse system """
+    """Get a GitHub API response, keeping in mind that we may be rate-limited by the abuse system"""
     number_of_retries = 0
     resp = requests.get(url, params=params, auth=auth)
     while resp.status_code == 403 and number_of_retries < 20:
@@ -53,7 +52,9 @@ def get_tokens_left(auth=None):
     return tokens_left
 
 
-def issues(source, params={}, auth=None):
+def issues(source, params=None, auth=None):
+    if params is None:
+        params = {}
     local_params = {"per_page": 100, "page": 1}
     local_params.update(params)
 
@@ -80,7 +81,9 @@ def user(user_url, auth=None):
     return get_limited(user_url, auth=auth)
 
 
-def get_all(source, f, params={}, auth=None):
+def get_all(source, f, params=None, auth=None):
+    if params is None:
+        params = {}
     acc = []
     page = params.get("page", 1)
 
@@ -92,7 +95,7 @@ def get_all(source, f, params={}, auth=None):
 
         acc.extend(items)
 
-        page = page + 1
+        page += 1
         params.update({"page": page})
 
     return acc

@@ -88,7 +88,7 @@ def do_setup():
         ],
         author="Apache Software Foundation",
         author_email="dev@kibble.apache.org",
-        url="http://kibble.apache.org/",
+        url="https://kibble.apache.org/",
         download_url=f"https://archive.apache.org/dist/kibble/{version}",
         test_suite="setup.kibble_test_suite",
         python_requires="~=3.8",

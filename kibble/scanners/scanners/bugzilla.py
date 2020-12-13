@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-""" This is the BugZilla scanner plugin for Kible """
+""" This is the BugZilla scanner plugin for Kibble """
 
 import hashlib
 import json
@@ -90,13 +90,13 @@ def wasclosed(js):
                     if item["field"] == "status" and (
                         item["toString"] == "Closed" or item["toString"] == "Resolved"
                     ):
-                        return (True, citem["author"])
+                        return True, citem["author"]
     else:
         if "items" in js:
             for item in js["items"]:
                 if item["field"] == "status" and item["toString"] == "Closed":
-                    return (True, None)
-    return (False, None)
+                    return True, None
+    return False, None
 
 
 def resolved(js):

@@ -89,7 +89,7 @@ def scan(KibbleBit, source):
             gzurl = "%s/%04u-%s.txt.gz" % (url, year, monthNames[month])
             pd = datetime.date(year, month, 1).timetuple()
             dhash = hashlib.sha224(
-                (("%s %s") % (source["organisation"], gzurl)).encode(
+                ("%s %s" % (source["organisation"], gzurl)).encode(
                     "ascii", errors="replace"
                 )
             ).hexdigest()
@@ -218,7 +218,7 @@ def scan(KibbleBit, source):
                             md = time.strftime("%Y/%m/%d %H:%M:%S", pd)
                             mlhash = hashlib.sha224(
                                 (
-                                    ("%s%s%s%s")
+                                    "%s%s%s%s"
                                     % (
                                         key,
                                         source["sourceURL"],

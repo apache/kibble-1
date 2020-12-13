@@ -55,7 +55,7 @@ def scanJob(KibbleBit, source, bid, token, TLD):
     oURL = "https://api.travis-ci.%s/repo/%s/builds" % (TLD, bid)
 
     # For as long as pagination makes sense...
-    while last_page == False:
+    while not last_page:
         bURL = "https://api.travis-ci.%s/repo/%s/builds?limit=100&offset=%u" % (
             TLD,
             bid,
@@ -327,9 +327,7 @@ def sclan(KibbleBit, source):
                     KibbleBit.pprint("Job %u is building" % jobID)
                 elif jobjs["state"] in ["created", "queued", "pending"]:
                     queued += 1
-                    blocked += (
-                        1
-                    )  # Queued in Travis generally means a job can't find an executor, and thus is blocked.
+                    blocked += 1  # Queued in Travis generally means a job can't find an executor, and thus is blocked.
                     KibbleBit.pprint("Job %u is pending" % jobID)
         KibbleBit.pprint("%u building, %u queued..." % (building, queued))
 

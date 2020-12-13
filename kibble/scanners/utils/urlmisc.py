@@ -27,8 +27,7 @@ import urllib.request
 
 
 def unzip(url, creds=None, cookie=None):
-    """ Attempts to download an unzip an archive. Returns the
-    temporary file path of the unzipped contents """
+    """Attempts to download an unzip an archive. Returns the temporary file path of the unzipped contents"""
     headers = {}
     if creds:
         auth = str(base64.encodestring(bytes(creds)).replace("\n", ""))
@@ -44,7 +43,7 @@ def unzip(url, creds=None, cookie=None):
             "Cookie": cookie,
         }
     request = urllib.request.Request(url, headers=headers)
-    # Try fechthing via python, fall back to wget (redhat == broken!)
+    # Try fetching via python, fall back to wget (redhat == broken!)
     decompressedFile = None
     try:
         result = urllib.request.urlopen(request)
@@ -59,7 +58,6 @@ def unzip(url, creds=None, cookie=None):
             subprocess.check_call(("/usr/bin/wget", "-O", tmpfile.name, url))
 
             try:
-                te
                 compressedFile = open("/tmp/kibbletmp.gz", "rb")
                 if compressedFile.read(2) == "\x1f\x8b":
                     compressedFile.seek(0)

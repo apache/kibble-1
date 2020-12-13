@@ -47,9 +47,9 @@ def getFollowers(KibbleBit, source, t):
     no_followers = tuser.followers_count
     d = time.strftime("%Y/%m/%d 0:00:00", time.gmtime())  # Today at midnight
     dhash = hashlib.sha224(
-        (
-            ("twitter:%s:%s:%s") % (source["organisation"], source["sourceURL"], d)
-        ).encode("ascii", errors="replace")
+        ("twitter:%s:%s:%s" % (source["organisation"], source["sourceURL"], d)).encode(
+            "ascii", errors="replace"
+        )
     ).hexdigest()
     jst = {
         "organisation": source["organisation"],
@@ -74,9 +74,9 @@ def getFollowers(KibbleBit, source, t):
 
         # Store twitter follower profile if not already logged
         dhash = hashlib.sha224(
-            (
-                ("twitter:%s:%s:%s") % (source["organisation"], handle, follower.id)
-            ).encode("ascii", errors="replace")
+            ("twitter:%s:%s:%s" % (source["organisation"], handle, follower.id)).encode(
+                "ascii", errors="replace"
+            )
         ).hexdigest()
         if not KibbleBit.exists("twitter_follow", dhash):
             jst = {
@@ -113,7 +113,7 @@ def scan(KibbleBit, source):
             consumer_key=source["creds"].get("consumer_key", None),
             consumer_secret=source["creds"].get("consumer_secret", None),
         )
-        KibbleBit.pprint("Verrifying twitter credentials...")
+        KibbleBit.pprint("Verifying twitter credentials...")
         try:
             t.VerifyCredentials()
         except:

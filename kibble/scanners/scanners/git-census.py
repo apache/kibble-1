@@ -32,7 +32,7 @@ def accepts(source):
     """ Do we accept this source?? """
     if source["type"] == "git":
         return True
-    # There are cases where we have a github repo, but don't wanna annalyze the code, just issues
+    # There are cases where we have a github repo, but don't wanna analyze the code, just issues
     if source["type"] == "github" and source.get("issuesonly", False) == False:
         return True
     return False
@@ -173,12 +173,12 @@ def scan(KibbleBit, source):
                     alcseries[gname][ts] = {}
                 if not ce in lcseries[gname][ts]:
                     lcseries[gname][ts][ce] = [0, 0]
-                lcseries[gname][ts][ce][0] = lcseries[gname][ts][ce][0] + insert
+                lcseries[gname][ts][ce][0] += insert
                 lcseries[gname][ts][ce][1] = lcseries[gname][ts][ce][0] + delete
 
                 if not ae in alcseries[gname][ts]:
                     alcseries[gname][ts][ae] = [0, 0]
-                alcseries[gname][ts][ae][0] = alcseries[gname][ts][ae][0] + insert
+                alcseries[gname][ts][ae][0] += insert
                 alcseries[gname][ts][ae][1] = alcseries[gname][ts][ae][0] + delete
 
                 if not ts in ctseries[gname]:
