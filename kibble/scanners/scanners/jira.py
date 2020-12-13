@@ -91,15 +91,15 @@ def wasclosed(js):
                         item["toString"].lower().find("closed") != -1
                         or item["toString"].lower().find("resolved") != -1
                     ):
-                        return (True, citem.get("author", {}))
+                        return True, citem.get("author", {})
     else:
         if "items" in js:
             for item in js["items"]:
                 if item["field"] == "status" and (
                     item["toString"].find("Closed") != -1
                 ):
-                    return (True, None)
-    return (False, None)
+                    return True, None
+    return False, None
 
 
 def resolved(js):

@@ -148,7 +148,7 @@ def scan(KibbleBit, source):
             "%04u-%02u" % (year, month),
         )
         dhash = hashlib.sha224(
-            (("%s %s") % (source["organisation"], statsurl)).encode(
+            ("%s %s" % (source["organisation"], statsurl)).encode(
                 "ascii", errors="replace"
             )
         ).hexdigest()
@@ -206,7 +206,7 @@ def scan(KibbleBit, source):
                 md = time.strftime("%Y/%m/%d %H:%M:%S", pd)
                 mlhash = hashlib.sha224(
                     (
-                        ("%s%s%s%s")
+                        "%s%s%s%s"
                         % (top[0], source["sourceURL"], source["organisation"], md)
                     ).encode("ascii", errors="replace")
                 ).hexdigest()  # one unique id per month per mail thread

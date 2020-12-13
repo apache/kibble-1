@@ -70,7 +70,9 @@ def get_commit_id(commit_message):
     return None
 
 
-def get_all(base_url, f, params={}):
+def get_all(base_url, f, params=None):
+    if params is None:
+        params = {}
     acc = []
 
     while True:

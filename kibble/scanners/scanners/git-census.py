@@ -173,12 +173,12 @@ def scan(KibbleBit, source):
                     alcseries[gname][ts] = {}
                 if not ce in lcseries[gname][ts]:
                     lcseries[gname][ts][ce] = [0, 0]
-                lcseries[gname][ts][ce][0] = lcseries[gname][ts][ce][0] + insert
+                lcseries[gname][ts][ce][0] += insert
                 lcseries[gname][ts][ce][1] = lcseries[gname][ts][ce][0] + delete
 
                 if not ae in alcseries[gname][ts]:
                     alcseries[gname][ts][ae] = [0, 0]
-                alcseries[gname][ts][ae][0] = alcseries[gname][ts][ae][0] + insert
+                alcseries[gname][ts][ae][0] += insert
                 alcseries[gname][ts][ae][1] = alcseries[gname][ts][ae][0] + delete
 
                 if not ts in ctseries[gname]:

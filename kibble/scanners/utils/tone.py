@@ -164,19 +164,13 @@ def picoTone(KibbleBit, bodies):
 
         if "results" in jsout and len(jsout["results"]) > 0:
             for doc in jsout["results"]:
-                mood = {}
+                mood = {
+                    "negative": doc["negativity"],
+                    "positive": doc["positivity"],
+                    "neutral": doc["neutrality"],
+                }
 
                 # Sentiment is the overall score, and we use that for the neutrality of a text
-
-                mood["negative"] = doc[
-                    "negativity"
-                ]  # Use the direct Bayesian score from picoAPI
-                mood["positive"] = doc[
-                    "positivity"
-                ]  # Use the direct Bayesian score from picoAPI
-                mood["neutral"] = doc[
-                    "neutrality"
-                ]  # Calc neutrality to favor a middle sentiment score, ignore high/low
 
                 # Additional (optional) emotion weighting
                 if "emotions" in doc:

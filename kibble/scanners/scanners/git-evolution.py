@@ -149,7 +149,7 @@ def scan(KibbleBit, source):
     inp = get_first_ref(gpath)
     if inp:
         ts = int(inp.split()[0])
-        ts = ts - (ts % 86400)
+        ts -= ts % 86400
         date = time.strftime("%Y-%b-%d 0:00", time.gmtime(ts))
 
         # print("Starting from %s" % date)
