@@ -36,21 +36,21 @@ Options:
 
 ## Currently available scanner plugins:
 
- - Apache Pony Mail (`plugins/scanners/ponymail.py`)
- - Atlassian JIRA (`plugins/scanners/jira.py`)
- - BugZilla Issue Tracker (`plugins/scanners/bugzilla.py`)
- - BuildBot (`plugins/scanners/buildbot.py`)
- - Discourse (`plugins/scanners/discourse.py`)
- - Gerrit Code Review (`plugins/scanners/gerrit.py`)
- - Git Repository Fetcher (`plugins/scanners/git-sync.py`)
- - Git Census Counter (`plugins/scanners/git-census.py`)
- - Git Code Evolution Counter (`plugins/scanners/git-evolution.py`)
- - Git SLoC Counter (`plugins/scanners/git-sloc.py`)
- - GitHub Issues/PRs (`plugins/scanners/github.py`)
- - GitHub Traffic Statistics (`plugins/scanners/github-stats.py`)
- - GNU Mailman Pipermail (`plugins/scanners/pipermail.py`)
- - Jenkins (`plugins/scanners/jenkins.py`)
- - Travis CI (`plugins/scanners/travis.py`)
+ - Apache Pony Mail (`scanners/ponymail.py`)
+ - Atlassian JIRA (`scanners/jira.py`)
+ - BugZilla Issue Tracker (`scanners/bugzilla.py`)
+ - BuildBot (`scanners/buildbot.py`)
+ - Discourse (`scanners/discourse.py`)
+ - Gerrit Code Review (`scanners/gerrit.py`)
+ - Git Repository Fetcher (`scanners/git-sync.py`)
+ - Git Census Counter (`scanners/git-census.py`)
+ - Git Code Evolution Counter (`scanners/git-evolution.py`)
+ - Git SLoC Counter (`scanners/git-sloc.py`)
+ - GitHub Issues/PRs (`scanners/github.py`)
+ - GitHub Traffic Statistics (`scanners/github-stats.py`)
+ - GNU Mailman Pipermail (`scanners/pipermail.py`)
+ - Jenkins (`scanners/jenkins.py`)
+ - Travis CI (`scanners/travis.py`)
 
 ## Requirements:
 
