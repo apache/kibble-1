@@ -17,6 +17,8 @@
 
 import os
 
+from kibble.configuration import conf
+
 YAML_DIRECTORY = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), "api", "yaml"
 )
@@ -24,3 +26,7 @@ KIBBLE_YAML = os.path.join(YAML_DIRECTORY, "kibble.yaml")
 MAPPING_DIRECTORY = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), "mappings"
 )
+
+WATSON_ENABLED = bool(conf.get("watson", "username", fallback=None))
+AZURE_ENABLED = bool(conf.get("azure", "apikey", fallback=None))
+PICOAPI_ENABLED = bool(conf.get("picoapi", "key", fallback=None))

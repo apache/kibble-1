@@ -21,7 +21,9 @@ This is a Kibble scanner plugin for Apache Pony Mail sources.
 import re
 import time
 
+from kibble.configuration import conf
 from kibble.scanners.utils import jsonapi, tone
+from kibble.settings import AZURE_ENABLED, PICOAPI_ENABLED, WATSON_ENABLED
 
 title = "Tone/Mood Scanner plugin for Apache Pony Mail"
 version = "0.1.0"
@@ -61,11 +63,7 @@ def scan(kibble_bit, source):
         kibble_bit.update_source(source)
         return
 
-    if (
-        not "watson" in kibble_bit.config
-        and not "azure" in kibble_bit.config
-        and not "picoapi" in kibble_bit.config
-    ):
+    if not WATSON_ENABLED and not AZURE_ENABLED and not PICOAPI_ENABLED:
         kibble_bit.pprint(
             "No Watson/Azure/picoAPI creds configured, skipping tone analyzer"
         )
@@ -110,12 +108,12 @@ def scan(kibble_bit, source):
         bodies.append(body)
     if bodies:
         moods = None
-        if "watson" in kibble_bit.config:
-            moods = tone.watsonTone(kibble_bit, bodies)
-        elif "azure" in kibble_bit.config:
-            moods = tone.azureTone(kibble_bit, bodies)
-        elif "picoapi" in kibble_bit.config:
-            moods = tone.picoTone(kibble_bit, bodies)
+        if WATSON_ENABLED:
+            moods = tone.watson_tone(kibble_bit, bodies)
+        elif AZURE_ENABLED:
+            moods = tone.azure_tone(kibble_bit, bodies)
+        elif PICOAPI_ENABLED:
+            moods = tone.pico_tone(kibble_bit, bodies)
         if not moods:
             kibble_bit.pprint("Hit rate limit, not trying further emails for now.")
 

@@ -119,14 +119,13 @@ class KibbleBit:
     """ KibbleBit class with direct ElasticSearch access """
 
     def __init__(self, broker, organisation, tid):
-        self.config = broker.config
         self.organisation = organisation
         self.broker = broker
         self.json_queue = []
         self.queueMax = 1000  # Entries to keep before bulk pushing
         self.pluginname = ""
         self.tid = tid
-        self.dbname = self.broker.config["elasticsearch"]["database"]
+        self.dbname = conf.get("elasticsearch", "database")
 
     def __del__(self):
         """ On unload/delete, push the last chunks of data to ES """
@@ -144,7 +143,7 @@ class KibbleBit:
     def update_source(self, source):
         """ Updates a source document, usually with a status update """
         self.broker.DB.index(
-            index=self.broker.config["elasticsearch"]["database"],
+            index=self.dbname,
             doc_type="source",
             id=source["sourceID"],
             body=source,
@@ -153,7 +152,7 @@ class KibbleBit:
     def get(self, doctype, docid):
         """ Fetches a document from the DB """
         doc = self.broker.DB.get(
-            index=self.broker.config["elasticsearch"]["database"],
+            index=self.dbname,
             doc_type=doctype,
             id=docid,
         )
@@ -164,14 +163,14 @@ class KibbleBit:
     def exists(self, doctype, docid):
         """ Checks whether a document already exists or not """
         return self.broker.DB.exists(
-            index=self.broker.config["elasticsearch"]["database"],
+            index=self.dbname,
             doc_type=doctype,
             id=docid,
         )
 
     def index(self, doctype, docid, document):
         """ Adds a new document to the index """
-        dbname = self.broker.config["elasticsearch"]["database"]
+        dbname = self.dbname
         self.broker.DB.index(index=dbname, doc_type=doctype, id=docid, body=document)
 
     def append(self, t, doc):
@@ -195,7 +194,7 @@ class KibbleBit:
             js = entry
             doc = js
             js["@version"] = 1
-            dbname = self.broker.config["elasticsearch"]["database"]
+            dbname = self.dbname
             if self.broker.noTypes:
                 dbname += "_%s" % js["doctype"]
                 js_arr.append(
@@ -233,6 +232,7 @@ class KibbleOrganisation:
 
         self.broker = broker
         self.id = org
+        self.dbname = conf.get("elasticsearch", "database")
 
     def sources(self, sourceType=None, view=None):
         """ Get all sources or sources of a specific type for an org """
@@ -241,7 +241,7 @@ class KibbleOrganisation:
         mustArray = [{"term": {"organisation": self.id}}]
         if view:
             res = self.broker.DB.get(
-                index=self.broker.config["elasticsearch"]["database"],
+                index=self.dbname,
                 doc_type="view",
                 id=view,
             )
@@ -252,7 +252,7 @@ class KibbleOrganisation:
             mustArray.append({"term": {"type": sourceType}})
         # Run the search, fetch all results, 9999 max. TODO: Scroll???
         res = self.broker.DB.search(
-            index=self.broker.config["elasticsearch"]["database"],
+            index=self.dbname,
             doc_type="source",
             size=9999,
             body={"query": {"bool": {"must": mustArray}}, "sort": {"sourceURL": "asc"}},

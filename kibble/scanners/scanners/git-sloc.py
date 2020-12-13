@@ -19,6 +19,7 @@ import os
 import subprocess
 import time
 
+from kibble.configuration import conf
 from kibble.scanners.utils import git, sloc
 
 """ Source Lines of Code counter for Git """
@@ -42,7 +43,7 @@ def scan(kibble_bit, source):
     rid = source["sourceID"]
     url = source["sourceURL"]
     rootpath = "%s/%s/git" % (
-        kibble_bit.config["scanner"]["scratchdir"],
+        conf.get("scanner", "scratchdir"),
         source["organisation"],
     )
     gpath = os.path.join(rootpath, rid)
@@ -58,7 +59,7 @@ def scan(kibble_bit, source):
         kibble_bit.update_source(source)
 
         try:
-            branch = git.defaultBranch(source, gpath)
+            branch = git.default_branch(source, gpath)
             subprocess.call("cd %s && git checkout %s" % (gpath, branch), shell=True)
         except:  # pylint: disable=bare-except
             kibble_bit.pprint("SLoC counter failed to find main branch for %s!!" % url)

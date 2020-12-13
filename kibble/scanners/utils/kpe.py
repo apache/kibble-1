@@ -19,16 +19,16 @@
 This is an experimental key phrase extraction plugin for using
 Azure/picoAPI for analyzing the key elements of an email on a list. This
 requires an account with a text analysis service provider, and a
-corresponding API section in config.yaml, as such:
+corresponding API section in kibble.ini, as such:
 
 # picoAPI example:
-picoapi:
-    key: abcdef1234567890
+[picoapi]
+key = abcdef1234567890
 
 # Azure example:
-azure:
-    apikey: abcdef1234567890
-    location: westeurope
+[azure]
+apikey = abcdef1234567890
+location = westeurope
 
 Currently only pony mail is supported. more to come.
 """
@@ -38,8 +38,10 @@ import re
 
 import requests
 
+from kibble.configuration import conf
 
-def trimBody(body):
+
+def trim_body(body):
     """ Quick function for trimming away the fat from emails """
     # Cut away "On $date, jane doe wrote: " kind of texts
     body = re.sub(
@@ -62,108 +64,104 @@ def trimBody(body):
     return body
 
 
-def azureKPE(KibbleBit, bodies):
+def azure_kpe(kibble_bit, bodies):
     """ KPE using Azure Text Analysis API """
-    if "azure" in KibbleBit.config:
-        headers = {
-            "Content-Type": "application/json",
-            "Ocp-Apim-Subscription-Key": KibbleBit.config["azure"]["apikey"],
-        }
+    headers = {
+        "Content-Type": "application/json",
+        "Ocp-Apim-Subscription-Key": conf.get("azure", "apikey"),
+    }
 
-        js = {"documents": []}
+    js = {"documents": []}
 
-        # For each body...
-        a = 0
-        KPEs = []
-        for body in bodies:
-            # Crop out quotes
-            body = trimBody(body)
-            doc = {"language": "en", "id": str(a), "text": body}
-            js["documents"].append(doc)
-            KPEs.append({})  # placeholder for each doc, to be replaced
-            a += 1
-        try:
-            rv = requests.post(
-                "https://%s.api.cognitive.microsoft.com/text/analytics/v2.0/keyPhrases"
-                % KibbleBit.config["azure"]["location"],
-                headers=headers,
-                data=json.dumps(js),
-            )
-            jsout = rv.json()
-        except:
-            jsout = {}  # borked sentiment analysis?
+    # For each body...
+    a = 0
+    KPEs = []
+    for body in bodies:
+        # Crop out quotes
+        body = trim_body(body)
+        doc = {"language": "en", "id": str(a), "text": body}
+        js["documents"].append(doc)
+        KPEs.append({})  # placeholder for each doc, to be replaced
+        a += 1
+    try:
+        rv = requests.post(
+            "https://%s.api.cognitive.microsoft.com/text/analytics/v2.0/keyPhrases"
+            % conf.get("azure", "location"),
+            headers=headers,
+            data=json.dumps(js),
+        )
+        jsout = rv.json()
+    except:
+        jsout = {}  # borked sentiment analysis?
 
-        if "documents" in jsout and len(jsout["documents"]) > 0:
-            for doc in jsout["documents"]:
-                KPEs[int(doc["id"])] = doc["keyPhrases"][
-                    :5
-                ]  # Replace KPEs[X] with the actual phrases, 5 first ones.
+    if "documents" in jsout and len(jsout["documents"]) > 0:
+        for doc in jsout["documents"]:
+            KPEs[int(doc["id"])] = doc["keyPhrases"][
+                :5
+            ]  # Replace KPEs[X] with the actual phrases, 5 first ones.
 
-        else:
-            KibbleBit.pprint("Failed to analyze email body.")
-            print(jsout)
-            # Depending on price tier, Azure will return a 429 if you go too fast.
-            # If we see a statusCode return, let's just stop for now.
-            # Later scans can pick up the slack.
-            if "statusCode" in jsout:
-                KibbleBit.pprint("Possible rate limiting in place, stopping for now.")
-                return False
-        return KPEs
+    else:
+        kibble_bit.pprint("Failed to analyze email body.")
+        print(jsout)
+        # Depending on price tier, Azure will return a 429 if you go too fast.
+        # If we see a statusCode return, let's just stop for now.
+        # Later scans can pick up the slack.
+        if "statusCode" in jsout:
+            kibble_bit.pprint("Possible rate limiting in place, stopping for now.")
+            return False
+    return KPEs
 
 
-def picoKPE(KibbleBit, bodies):
+def pico_kpe(kibble_bit, bodies):
     """ KPE using picoAPI Text Analysis """
-    if "picoapi" in KibbleBit.config:
-        headers = {
-            "Content-Type": "application/json",
-            "PicoAPI-Key": KibbleBit.config["picoapi"]["key"],
-        }
+    headers = {
+        "Content-Type": "application/json",
+        "PicoAPI-Key": conf.get("picoapi", "key"),
+    }
 
-        js = {"texts": []}
+    js = {"texts": []}
 
-        # For each body...
-        a = 0
-        KPEs = []
-        for body in bodies:
-            body = trimBody(body)
+    # For each body...
+    a = 0
+    KPEs = []
+    for body in bodies:
+        body = trim_body(body)
 
-            doc = {"id": str(a), "body": body}
-            js["texts"].append(doc)
-            KPEs.append({})  # placeholder for each doc, to be replaced
-            a += 1
-        try:
-            rv = requests.post(
-                "https://v1.picoapi.com/api/text/keyphrase",
-                headers=headers,
-                data=json.dumps(js),
-            )
-            jsout = rv.json()
-        except:
-            jsout = {}  # borked sentiment analysis?
+        doc = {"id": str(a), "body": body}
+        js["texts"].append(doc)
+        KPEs.append({})  # placeholder for each doc, to be replaced
+        a += 1
+    try:
+        rv = requests.post(
+            "https://v1.picoapi.com/api/text/keyphrase",
+            headers=headers,
+            data=json.dumps(js),
+        )
+        jsout = rv.json()
+    except:
+        jsout = {}  # borked sentiment analysis?
 
-        if "results" in jsout and len(jsout["results"]) > 0:
-            for doc in jsout["results"]:
-                phrases = []
-                # This is a bit different than Azure, in that it has a weighting score
-                # So we need to just extract key phrases above a certain level.
-                # Grab up o 5 key phrases per text
-                MINIMUM_WEIGHT = 0.02
-                for element in doc["keyphrases"]:
-                    if element["score"] > MINIMUM_WEIGHT:
-                        phrases.append(element["phrase"])
-                    if len(phrases) == 5:
-                        break
-                KPEs[
-                    int(doc["id"])
-                ] = phrases  # Replace KPEs[X] with the actual phrases
+    if "results" in jsout and len(jsout["results"]) > 0:
+        for doc in jsout["results"]:
+            phrases = []
+            # This is a bit different than Azure, in that it has a weighting score
+            # So we need to just extract key phrases above a certain level.
+            # Grab up o 5 key phrases per text
+            MINIMUM_WEIGHT = 0.02
+            for element in doc["keyphrases"]:
+                if element["score"] > MINIMUM_WEIGHT:
+                    phrases.append(element["phrase"])
+                if len(phrases) == 5:
+                    break
+            KPEs[int(doc["id"])] = phrases  # Replace KPEs[X] with the actual phrases
 
-        else:
-            KibbleBit.pprint("Failed to analyze email body.")
-            print(jsout)
-            # 403 returned on invalid key, 429 on rate exceeded.
-            # If we see a code return, let's just stop for now.
-            # Later scans can pick up the slack.
-            if "code" in jsout:
-                KibbleBit.pprint("Possible rate limiting in place, stopping for now.")
-                return False
-        return KPEs
+    else:
+        kibble_bit.pprint("Failed to analyze email body.")
+        print(jsout)
+        # 403 returned on invalid key, 429 on rate exceeded.
+        # If we see a code return, let's just stop for now.
+        # Later scans can pick up the slack.
+        if "code" in jsout:
+            kibble_bit.pprint("Possible rate limiting in place, stopping for now.")
+            return False
+    return KPEs

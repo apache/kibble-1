@@ -19,6 +19,7 @@ import re
 import time
 
 from kibble.scanners.utils import jsonapi, kpe
+from kibble.settings import AZURE_ENABLED, PICOAPI_ENABLED, WATSON_ENABLED
 
 """
 This is a Kibble scanner plugin for Apache Pony Mail sources.
@@ -64,7 +65,7 @@ def scan(kibble_bit, source):
         kibble_bit.update_source(source)
         return
 
-    if not "azure" in kibble_bit.config and not "picoapi" in kibble_bit.config:
+    if not AZURE_ENABLED and not PICOAPI_ENABLED:
         kibble_bit.pprint(
             "No Azure/picoAPI creds configured, skipping key phrase extraction"
         )
@@ -110,12 +111,12 @@ def scan(kibble_bit, source):
         bodies.append(body)
     if bodies:
         KPEs = None
-        if "watson" in kibble_bit.config:
+        if WATSON_ENABLED:
             pass  # Haven't written this yet
-        elif "azure" in kibble_bit.config:
-            KPEs = kpe.azureKPE(kibble_bit, bodies)
-        elif "picoapi" in kibble_bit.config:
-            KPEs = kpe.picoKPE(kibble_bit, bodies)
+        elif AZURE_ENABLED:
+            KPEs = kpe.azure_kpe(kibble_bit, bodies)
+        elif PICOAPI_ENABLED:
+            KPEs = kpe.pico_kpe(kibble_bit, bodies)
         if not KPEs:
             kibble_bit.pprint("Hit rate limit, not trying further emails for now.")
 

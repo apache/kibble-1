@@ -3,7 +3,7 @@ The Kibble Scanners collect information for the Kibble Suite.
 
 ## Setup instructions:
 
- - Edit conf/config.yaml to match your Kibble service
+ - Edit kibble.ini to match your Kibble service
 
 ## How to run:
 

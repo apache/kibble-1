@@ -17,21 +17,20 @@
 
 """ This is the Kibble git utility plugin """
 
-import os
 import re
 import subprocess
-import sys
+
+from kibble.configuration import conf
 
 
-def defaultBranch(source, datapath, KibbleBit=None):
+def default_branch(source, datapath):
     """ Tries to figure out what the main branch of a repo is """
-    wanted_branches = ["master", "main", "trunk"]
-    branch = ""
     # If we have an override of branches we like, use 'em
-    if KibbleBit and KibbleBit.config.get("git"):
-        wanted_branches = KibbleBit.config["git"].get(
-            "wanted_branches", wanted_branches
-        )
+    wanted_branches = conf.get("git", "wanted_branches", fallback=None)
+    if wanted_branches:
+        wanted_branches = wanted_branches.split(",")
+    else:
+        wanted_branches = ["master", "main", "trunk"]
 
     # For each wanted branch, in order, look for it in our clone,
     # and return the name if found.

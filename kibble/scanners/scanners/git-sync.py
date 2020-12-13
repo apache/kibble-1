@@ -19,6 +19,7 @@ import os
 import subprocess
 import time
 
+from kibble.configuration import conf
 from kibble.scanners.utils import git
 
 title = "Sync plugin for Git repositories"
@@ -41,7 +42,7 @@ def scan(kibble_bit, source):
     path = source["sourceID"]
     url = source["sourceURL"]
     rootpath = "%s/%s/git" % (
-        kibble_bit.config["scanner"]["scratchdir"],
+        conf.get("scanner", "scratchdir"),
         source["organisation"],
     )
 
@@ -79,7 +80,7 @@ def scan(kibble_bit, source):
             kibble_bit.pprint("Repo %s exists, fetching changes..." % datapath)
 
             # Do we have a default branch here?
-            branch = git.defaultBranch(source, datapath, kibble_bit)
+            branch = git.default_branch(source, datapath)
             if len(branch) == 0:
                 source["default_branch"] = branch
                 source["steps"]["sync"] = {
