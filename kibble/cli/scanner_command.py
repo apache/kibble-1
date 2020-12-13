@@ -98,7 +98,7 @@ def scan_cmd(
 ):
     global PENDING_OBJECTS
 
-    print(f"Kibble Scanner starting")
+    print("Kibble Scanner starting")
     print("Using direct ElasticSearch broker model")
     broker = kibbleES.Broker()
 
@@ -106,7 +106,7 @@ def scan_cmd(
     source_no = 0
     for org_item in broker.organisations():
         if not org or org == org_item.id:
-            print("Processing organisation %s" % org_item.id)
+            print(f"Processing organisation {org_item.id}")
             org_no += 1
 
             # Compile source list
