@@ -23,6 +23,7 @@ import os
 import subprocess
 import time
 
+from kibble.configuration import conf
 from kibble.scanners.utils import sloc
 
 title = "Git Evolution Scanner"
@@ -138,7 +139,7 @@ def scan(kibble_bit, source):
 
     rid = source["sourceID"]
     rootpath = "%s/%s/git" % (
-        kibble_bit.config["scanner"]["scratchdir"],
+        conf.get("scanner", "scratchdir"),
         source["organisation"],
     )
     gpath = os.path.join(rootpath, rid)
@@ -158,7 +159,7 @@ def scan(kibble_bit, source):
         rid = source["sourceID"]
         url = source["sourceURL"]
         rootpath = "%s/%s/git" % (
-            kibble_bit.config["scanner"]["scratchdir"],
+            conf.get("scanner", "scratchdir"),
             source["organisation"],
         )
         gpath = os.path.join(rootpath, rid)

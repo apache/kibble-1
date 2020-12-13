@@ -24,6 +24,8 @@ import subprocess
 import tempfile
 import time
 
+from kibble.configuration import conf
+
 title = "Census Scanner for Git"
 version = "0.1.0"
 
@@ -50,7 +52,7 @@ def scan(kibble_bit, source):
     rid = source["sourceID"]
     url = source["sourceURL"]
     rootpath = "%s/%s/git" % (
-        kibble_bit.config["scanner"]["scratchdir"],
+        conf.get("scanner", "scratchdir"),
         source["organisation"],
     )
     gpath = os.path.join(rootpath, rid)
