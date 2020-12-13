@@ -73,8 +73,8 @@ class KibbleESWrapper:
 
 class KibbleESWrapperSeven:
     """
-       Class for rewriting old-style queries to the new ones,
-       where doc_type is an integral part of the DB name and NOT USED (>= 7.x)
+    Class for rewriting old-style queries to the new ones,
+    where doc_type is an integral part of the DB name and NOT USED (>= 7.x)
     """
 
     def __init__(self, ES):

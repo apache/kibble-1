@@ -28,8 +28,8 @@ title = "Key Phrase Extraction plugin for Apache Pony Mail"
 version = "0.1.0"
 ROBITS = r"(git|gerrit|jenkins|hudson|builds|bugzilla)@"
 MAX_COUNT = (
-    100
-)  # Max number of unparsed emails to handle (so we don't max out API credits!)
+    100  # Max number of unparsed emails to handle (so we don't max out API credits!)
+)
 
 
 def accepts(source):

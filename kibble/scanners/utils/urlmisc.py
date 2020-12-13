@@ -27,8 +27,7 @@ import urllib.request
 
 
 def unzip(url, creds=None, cookie=None):
-    """ Attempts to download an unzip an archive. Returns the
-    temporary file path of the unzipped contents """
+    """Attempts to download an unzip an archive. Returns the temporary file path of the unzipped contents"""
     headers = {}
     if creds:
         auth = str(base64.encodestring(bytes(creds)).replace("\n", ""))
