@@ -29,7 +29,7 @@ def accepts(source):
     """ Do we accept this source? """
     if source["type"] == "git":
         return True
-    # There are cases where we have a github repo, but don't wanna annalyze the code, just issues
+    # There are cases where we have a github repo, but don't wanna analyze the code, just issues
     if source["type"] == "github" and source.get("issuesonly", False) == False:
         return True
     return False

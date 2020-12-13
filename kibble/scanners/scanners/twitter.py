@@ -113,7 +113,7 @@ def scan(KibbleBit, source):
             consumer_key=source["creds"].get("consumer_key", None),
             consumer_secret=source["creds"].get("consumer_secret", None),
         )
-        KibbleBit.pprint("Verrifying twitter credentials...")
+        KibbleBit.pprint("Verifying twitter credentials...")
         try:
             t.VerifyCredentials()
         except:

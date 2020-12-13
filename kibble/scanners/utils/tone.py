@@ -181,7 +181,7 @@ def picoTone(KibbleBit, bodies):
                 # Additional (optional) emotion weighting
                 if "emotions" in doc:
                     for k, v in doc["emotions"].items():
-                        mood[k] = v / 100  # Value is betwen 0 and 100.
+                        mood[k] = v / 100  # Value is between 0 and 100.
 
                 moods[int(doc["id"])] = mood  # Replace moods[X] with the actual mood
 
