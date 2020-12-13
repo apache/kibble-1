@@ -15,11 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM python:3.8
+FROM python:3.8-slim
 
 USER root
 RUN apt-get update
-RUN apt-get install -y gcc unzip
+RUN apt-get install -y gcc git unzip
 
 COPY . /kibble/
 
