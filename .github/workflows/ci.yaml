@@ -28,6 +28,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
       - uses: pre-commit/action@v1.0.1
+        with:
+          extra_args: --show-diff-on-failure
   build-docker:
     name: Build kibble dev image
     runs-on: ubuntu-latest
@@ -48,4 +50,4 @@ jobs:
         with:
           python-version: '3.8'
       - run: pip install '.[devel]'
-      - run: pytest tests
+      - run: pytest tests --color=yes
