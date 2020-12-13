@@ -39,11 +39,11 @@ def accepts(source):
     return False
 
 
-def scanJob(KibbleBit, source, cat, creds):
+def scan_job(kibble_bit, source, cat, creds):
     """ Scans a single discourse category for activity """
     # Get $discourseURL/c/$catID
     catURL = os.path.join(source["sourceURL"], "c/%s" % cat["id"])
-    KibbleBit.pprint("Scanning Discourse category '%s' at %s" % (cat["slug"], catURL))
+    kibble_bit.pprint("Scanning Discourse category '%s' at %s" % (cat["slug"], catURL))
 
     page = 0
     allUsers = {}
@@ -91,8 +91,8 @@ def scanJob(KibbleBit, source, cat, creds):
                 # Store it (or, queue storage) unless it exists.
                 # We don't wanna override better data, so we check if
                 # it's there first.
-                if not KibbleBit.exists("person", dhash):
-                    KibbleBit.append("person", userDoc)
+                if not kibble_bit.exists("person", dhash):
+                    kibble_bit.append("person", userDoc)
 
             # Now, for each topic, we'll store a topic document
             for topic in catjson["topic_list"]["topics"]:
@@ -118,8 +118,8 @@ def scanJob(KibbleBit, source, cat, creds):
 
                 # Determine whether we should scan this topic or continue to the next one.
                 # We'll do this by seeing if the topic already exists and has no changes or not.
-                if KibbleBit.exists("forum_topic", dhash):
-                    fdoc = KibbleBit.get("forum_topic", dhash)
+                if kibble_bit.exists("forum_topic", dhash):
+                    fdoc = kibble_bit.get("forum_topic", dhash)
                     # If update in the old doc was >= current update timestamp, skip the topic
                     if fdoc["updated"] >= UpdatedDate:
                         continue
@@ -146,8 +146,8 @@ def scanJob(KibbleBit, source, cat, creds):
                     + "/t/%s/%s" % (topic["slug"], topic["id"]),
                 }
 
-                KibbleBit.append("forum_topic", topicdoc)
-                KibbleBit.pprint("%s is new or changed, scanning" % topicdoc["url"])
+                kibble_bit.append("forum_topic", topicdoc)
+                kibble_bit.pprint("%s is new or changed, scanning" % topicdoc["url"])
 
                 # Now grab all the individual replies/posts
                 # Remember to not have it count as a visit!
@@ -157,7 +157,7 @@ def scanJob(KibbleBit, source, cat, creds):
                 posts = pjson["post_stream"]["posts"]
 
                 # For each post/reply, construct a forum_entry document
-                KibbleBit.pprint("%s has %u posts" % (pURL, len(posts)))
+                kibble_bit.pprint("%s has %u posts" % (pURL, len(posts)))
                 for post in posts:
                     phash = hashlib.sha224(
                         (
@@ -199,7 +199,7 @@ def scanJob(KibbleBit, source, cat, creds):
                         allUsers[user["id"]] = userDoc
 
                         # Store it (or, queue storage)
-                        KibbleBit.append("person", userDoc)
+                        kibble_bit.append("person", userDoc)
 
                     # Get post date
                     CreatedDate = datetime.datetime.strptime(
@@ -222,18 +222,18 @@ def scanJob(KibbleBit, source, cat, creds):
                         "text": post["cooked"],
                         "url": topicdoc["url"],
                     }
-                    KibbleBit.append("forum_post", pdoc)
+                    kibble_bit.append("forum_post", pdoc)
         else:
-            KibbleBit.pprint("Fetching discourse data failed!")
+            kibble_bit.pprint("Fetching discourse data failed!")
             return False
     return True
 
 
-class discourseThread(threading.Thread):
+class DiscourseThread(threading.Thread):
     """ Generic thread class for scheduling multiple scans at once """
 
     def __init__(self, block, KibbleBit, source, creds, jobs):
-        super(discourseThread, self).__init__()
+        super(DiscourseThread, self).__init__()
         self.block = block
         self.KibbleBit = KibbleBit
         self.creds = creds
@@ -241,8 +241,8 @@ class discourseThread(threading.Thread):
         self.jobs = jobs
 
     def run(self):
-        badOnes = 0
-        while len(self.jobs) > 0 and badOnes <= 50:
+        bad_ones = 0
+        while len(self.jobs) > 0 and bad_ones <= 50:
             self.block.acquire()
             try:
                 job = self.jobs.pop(0)
@@ -253,12 +253,12 @@ class discourseThread(threading.Thread):
                 self.block.release()
                 return
             self.block.release()
-            if not scanJob(self.KibbleBit, self.source, job, self.creds):
+            if not scan_job(self.KibbleBit, self.source, job, self.creds):
                 self.KibbleBit.pprint(
                     "[%s] This borked, trying another one" % job["name"]
                 )
-                badOnes += 1
-                if badOnes > 10:
+                bad_ones += 1
+                if bad_ones > 10:
                     self.KibbleBit.pprint("Too many errors, bailing!")
                     self.source["steps"]["forum"] = {
                         "time": time.time(),
@@ -267,13 +267,13 @@ class discourseThread(threading.Thread):
                         "running": False,
                         "good": False,
                     }
-                    self.KibbleBit.updateSource(self.source)
+                    self.KibbleBit.update_source(self.source)
                     return
             else:
-                badOnes = 0
+                bad_ones = 0
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
     # Simple URL check
     discourse = re.match(r"(https?://.+)", source["sourceURL"])
     if discourse:
@@ -284,17 +284,17 @@ def scan(KibbleBit, source):
             "running": True,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
 
         pendingJobs = []
-        KibbleBit.pprint("Parsing Discourse activity at %s" % source["sourceURL"])
+        kibble_bit.pprint("Parsing Discourse activity at %s" % source["sourceURL"])
         source["steps"]["forum"] = {
             "time": time.time(),
             "status": "Downloading changeset",
             "running": True,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
 
         # Discourse may neeed credentials (if basic auth)
         creds = None
@@ -308,20 +308,20 @@ def scan(KibbleBit, source):
 
         # Get the list of categories
         sURL = source["sourceURL"]
-        KibbleBit.pprint("Getting categories...")
+        kibble_bit.pprint("Getting categories...")
         catjs = jsonapi.get("%s/categories_and_latest" % sURL, auth=creds)
 
         # Directly assign the category list as pending jobs queue, ezpz.
         pendingJobs = catjs["category_list"]["categories"]
 
-        KibbleBit.pprint("Found %u categories" % len(pendingJobs))
+        kibble_bit.pprint("Found %u categories" % len(pendingJobs))
 
         # Now fire off 4 threads to parse the categories
         threads = []
         block = threading.Lock()
-        KibbleBit.pprint("Scanning jobs using 4 sub-threads")
+        kibble_bit.pprint("Scanning jobs using 4 sub-threads")
         for i in range(0, 4):
-            t = discourseThread(block, KibbleBit, source, creds, pendingJobs)
+            t = DiscourseThread(block, kibble_bit, source, creds, pendingJobs)
             threads.append(t)
             t.start()
 
@@ -329,7 +329,7 @@ def scan(KibbleBit, source):
             t.join()
 
         # We're all done, yaay
-        KibbleBit.pprint("Done scanning %s" % source["sourceURL"])
+        kibble_bit.pprint("Done scanning %s" % source["sourceURL"])
 
         source["steps"]["forum"] = {
             "time": time.time(),
@@ -338,4 +338,4 @@ def scan(KibbleBit, source):
             "running": False,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)

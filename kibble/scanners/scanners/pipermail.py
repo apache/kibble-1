@@ -43,11 +43,11 @@ def accepts(source):
     return False
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
     url = source["sourceURL"]
     pipermail = re.match(r"(https?://.+/(archives|pipermail)/.+?)/?$", url)
     if pipermail:
-        KibbleBit.pprint("Scanning Pipermail source %s" % url)
+        kibble_bit.pprint("Scanning Pipermail source %s" % url)
         skipped = 0
 
         source["steps"]["mail"] = {
@@ -56,10 +56,10 @@ def scan(KibbleBit, source):
             "running": True,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
 
         dt = time.gmtime(time.time())
-        firstYear = 1970
+        first_year = 1970
         year = dt[0]
         month = dt[1]
         if month <= 0:
@@ -70,7 +70,7 @@ def scan(KibbleBit, source):
         knowns = {}
 
         # While we have older archives, continue to parse
-        monthNames = [
+        month_names = [
             "December",
             "January",
             "February",
@@ -85,16 +85,15 @@ def scan(KibbleBit, source):
             "November",
             "December",
         ]
-        while firstYear <= year:
-            gzurl = "%s/%04u-%s.txt.gz" % (url, year, monthNames[month])
+        while first_year <= year:
+            gzurl = "%s/%04u-%s.txt.gz" % (url, year, month_names[month])
             pd = datetime.date(year, month, 1).timetuple()
             dhash = hashlib.sha224(
                 ("%s %s" % (source["organisation"], gzurl)).encode(
                     "ascii", errors="replace"
                 )
             ).hexdigest()
-            found = False
-            found = KibbleBit.exists("mailstats", dhash)
+            found = kibble_bit.exists("mailstats", dhash)
             if (
                 months <= 1 or not found
             ):  # Always parse this month's stats and the previous month :)
@@ -153,7 +152,7 @@ def scan(KibbleBit, source):
                                 if m:
                                     name = m.group(1).replace('"', "").strip()
                                     sender = m.group(2)
-                            if not sender in posters:
+                            if sender not in posters:
                                 posters[sender] = {"name": name, "email": sender}
                             senders[message.get("message-id", "??")] = sender
                             mdate = email.utils.parsedate_tz(message["date"])
@@ -161,15 +160,15 @@ def scan(KibbleBit, source):
                                 "%Y/%m/%d %H:%M:%S",
                                 time.gmtime(email.utils.mktime_tz(mdate)),
                             )
-                            if not sender in knowns:
+                            if sender not in knowns:
                                 sid = hashlib.sha1(
                                     ("%s%s" % (source["organisation"], sender)).encode(
                                         "ascii", errors="replace"
                                     )
                                 ).hexdigest()
-                                knowns[sender] = KibbleBit.exists("person", sid)
-                            if not sender in knowns:
-                                KibbleBit.append(
+                                knowns[sender] = kibble_bit.exists("person", sid)
+                            if sender not in knowns:
+                                kibble_bit.append(
                                     "person",
                                     {
                                         "name": name,
@@ -196,20 +195,17 @@ def scan(KibbleBit, source):
                                 "ts": email.utils.mktime_tz(mdate),
                                 "id": message["message-id"],
                             }
-                            KibbleBit.append("email", jse)
+                            kibble_bit.append("email", jse)
 
-                        for sender in posters:
-                            no_posters += 1
+                        no_posters = len(posters)
+                        topics = len(rawtopics)
                         i = 0
-                        topics = 0
-                        for key in rawtopics:
-                            topics += 1
                         for key in reversed(sorted(rawtopics, key=lambda x: x)):
                             val = rawtopics[key]
                             i += 1
                             if i > 10:
                                 break
-                            KibbleBit.pprint(
+                            kibble_bit.pprint(
                                 "Found top 10: %s (%s emails)" % (key, val)
                             )
                             shash = hashlib.sha224(
@@ -238,7 +234,7 @@ def scan(KibbleBit, source):
                                 "ts": time.mktime(pd),
                                 "id": mlhash,
                             }
-                            KibbleBit.index("mailtop", mlhash, jst)
+                            kibble_bit.index("mailtop", mlhash, jst)
 
                         jso = {
                             "organisation": source["organisation"],
@@ -249,24 +245,24 @@ def scan(KibbleBit, source):
                             "emails": emails,
                             "topics": topics,
                         }
-                        KibbleBit.index("mailstats", dhash, jso)
+                        kibble_bit.index("mailstats", dhash, jso)
 
                         os.unlink(mailFile)
                     except Exception as err:
-                        KibbleBit.pprint(
+                        kibble_bit.pprint(
                             "Couldn't parse %s, skipping: %s" % (gzurl, err)
                         )
                         skipped += 1
                         if skipped > 12:
-                            KibbleBit.pprint(
+                            kibble_bit.pprint(
                                 "12 skips in a row, breaking off (no more data?)"
                             )
                             break
                 else:
-                    KibbleBit.pprint("Couldn't find %s, skipping." % gzurl)
+                    kibble_bit.pprint("Couldn't find %s, skipping." % gzurl)
                     skipped += 1
                     if skipped > 12:
-                        KibbleBit.pprint(
+                        kibble_bit.pprint(
                             "12 skips in a row, breaking off (no more data?)"
                         )
                         break
@@ -282,13 +278,13 @@ def scan(KibbleBit, source):
             "running": False,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
     else:
-        KibbleBit.pprint("Invalid Pipermail URL detected: %s" % url, True)
+        kibble_bit.pprint("Invalid Pipermail URL detected: %s" % url, True)
         source["steps"]["mail"] = {
             "time": time.time(),
             "status": "Invalid or malformed URL detected!",
             "running": False,
             "good": False,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)

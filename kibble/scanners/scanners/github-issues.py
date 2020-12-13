@@ -124,29 +124,29 @@ def status_changed(stored_issue, issue):
     return stored_issue["status"] != issue["status"]
 
 
-def update_issue(KibbleBit, issue):
-    KibbleBit.append("issue", issue)
+def update_issue(kibble_bit, issue):
+    kibble_bit.append("issue", issue)
 
 
-def update_person(KibbleBit, person):
+def update_person(kibble_bit, person):
     person["upsert"] = True
-    KibbleBit.append("person", person)
+    kibble_bit.append("person", person)
 
 
-def scan(KibbleBit, source, firstAttempt=True):
+def scan(kibble_bit, source, first_attempt=True):
     auth = None
     people = {}
     if "creds" in source:
-        KibbleBit.pprint("Using auth for repo %s" % source["sourceURL"])
+        kibble_bit.pprint("Using auth for repo %s" % source["sourceURL"])
         creds = source["creds"]
         if creds and "username" in creds:
             auth = (creds["username"], creds["password"])
     TL = github.get_tokens_left(auth=auth)
-    KibbleBit.pprint("Scanning for GitHub issues (%u tokens left on GitHub)" % TL)
+    kibble_bit.pprint("Scanning for GitHub issues (%u tokens left on GitHub)" % TL)
     # Have we scanned before? If so, only do a 3 month scan here.
-    doneBefore = False
+    done_before = False
     if source.get("steps") and source["steps"].get("issues"):
-        doneBefore = True
+        done_before = True
     source["steps"]["issues"] = {
         "time": time.time(),
         "status": "Issue scan started at "
@@ -154,13 +154,13 @@ def scan(KibbleBit, source, firstAttempt=True):
         "running": True,
         "good": True,
     }
-    KibbleBit.updateSource(source)
+    kibble_bit.update_source(source)
     try:
-        if doneBefore:
+        if done_before:
             since = time.strftime(
                 "%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - (3 * 30 * 86400))
             )
-            KibbleBit.pprint("Fetching changes since %s" % since)
+            kibble_bit.pprint("Fetching changes since %s" % since)
             issues = github.get_all(
                 source,
                 github.issues,
@@ -174,7 +174,7 @@ def scan(KibbleBit, source, firstAttempt=True):
                 params={"filter": "all", "state": "all"},
                 auth=auth,
             )
-        KibbleBit.pprint(
+        kibble_bit.pprint(
             "Fetched %s issues for %s" % (str(len(issues)), source["sourceURL"])
         )
 
@@ -185,24 +185,24 @@ def scan(KibbleBit, source, firstAttempt=True):
                     source, issue, github.user(issue["user"]["url"], auth=auth)
                 )
                 people[issue["user"]["login"]] = person
-                update_person(KibbleBit, person)
+                update_person(kibble_bit, person)
 
             if "closed_by" in issue and not issue["closed_by"]["login"] in people:
                 closer = make_person(
                     source, issue, github.user(issue["closed_by"]["url"], auth=auth)
                 )
                 people[issue["closed_by"]["login"]] = closer
-                update_person(KibbleBit, closer)
+                update_person(kibble_bit, closer)
 
             doc = make_issue(source, issue, people)
             dhash = doc["id"]
-            if KibbleBit.exists("issue", dhash):
-                es_doc = KibbleBit.get("issue", dhash)
+            if kibble_bit.exists("issue", dhash):
+                es_doc = kibble_bit.get("issue", dhash)
                 if not status_changed(es_doc, doc):
                     # KibbleBit.pprint("change %s seen already and status unchanged. Skipping." % issue['id'])
                     continue
 
-            update_issue(KibbleBit, doc)
+            update_issue(kibble_bit, doc)
 
         source["steps"]["issues"] = {
             "time": time.time(),
@@ -211,28 +211,30 @@ def scan(KibbleBit, source, firstAttempt=True):
             "running": False,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
 
     except requests.HTTPError as e:
         # If we errored out because of rate limiting, retry later, otherwise bail
-        if firstAttempt:
+        if first_attempt:
             sleeps = 0
             if github.get_tokens_left(auth=auth) < 10:
-                KibbleBit.pprint("Hit rate limits, trying to sleep it off!")
+                kibble_bit.pprint("Hit rate limits, trying to sleep it off!")
                 while github.get_tokens_left(auth=auth) < 10:
                     sleeps += 1
                     if sleeps > 24:
-                        KibbleBit.pprint(
+                        kibble_bit.pprint(
                             "Slept for too long without finding a reset rate limit, giving up!"
                         )
                         break
                     time.sleep(300)  # Sleep 5 min, then check again..
                 # If we have tokens, try one more time...
                 if github.get_tokens_left(auth=auth) > 10:
-                    scan(KibbleBit, source, False)  # If this one fails, bail completely
+                    scan(
+                        kibble_bit, source, False
+                    )  # If this one fails, bail completely
                     return
 
-        KibbleBit.pprint("HTTP Error, rate limit exceeded?")
+        kibble_bit.pprint("HTTP Error, rate limit exceeded?")
         source["steps"]["issues"] = {
             "time": time.time(),
             "status": "Issue scan failed at "
@@ -242,4 +244,4 @@ def scan(KibbleBit, source, firstAttempt=True):
             "running": False,
             "good": False,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)

@@ -37,7 +37,7 @@ def accepts(source):
     return False
 
 
-def getFollowers(KibbleBit, source, t):
+def get_followers(kibble_bit, source, t):
     """ Get followers of a handle, store them for mapping and trend purposes"""
     # Get our twitter handle
     handle = source["sourceURL"]
@@ -59,18 +59,18 @@ def getFollowers(KibbleBit, source, t):
         "followers": no_followers,
         "date": d,
     }
-    KibbleBit.pprint("%s has %u followers currently." % (handle, no_followers))
-    KibbleBit.index("twitter_followers", dhash, jst)
+    kibble_bit.pprint("%s has %u followers currently." % (handle, no_followers))
+    kibble_bit.index("twitter_followers", dhash, jst)
 
     # Collect list of current followers
     followers = t.GetFollowers(screen_name=handle)
 
     # For each follower, if they're not mapped yet, add them
     # This has a limitation of 100 new added per run, but meh...
-    KibbleBit.pprint("Looking up followers of %s" % handle)
+    kibble_bit.pprint("Looking up followers of %s" % handle)
     for follower in followers:
         # id, name, screen_name are useful here
-        KibbleBit.pprint("Found %s as follower" % follower.screen_name)
+        kibble_bit.pprint("Found %s as follower" % follower.screen_name)
 
         # Store twitter follower profile if not already logged
         dhash = hashlib.sha224(
@@ -78,7 +78,7 @@ def getFollowers(KibbleBit, source, t):
                 "ascii", errors="replace"
             )
         ).hexdigest()
-        if not KibbleBit.exists("twitter_follow", dhash):
+        if not kibble_bit.exists("twitter_follow", dhash):
             jst = {
                 "organisation": source["organisation"],
                 "sourceURL": source["sourceURL"],
@@ -91,20 +91,20 @@ def getFollowers(KibbleBit, source, t):
                     "%Y/%m/%d %H:%M:%S", time.gmtime()
                 ),  # First time we spotted them following.
             }
-            KibbleBit.pprint(
+            kibble_bit.pprint(
                 "%s is new, recording date and details." % follower.screen_name
             )
-            KibbleBit.index("twitter_follow", dhash, jst)
+            kibble_bit.index("twitter_follow", dhash, jst)
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
     source["steps"]["twitter"] = {
         "time": time.time(),
         "status": "Scanning Twitter activity and status",
         "running": True,
         "good": True,
     }
-    KibbleBit.updateSource(source)
+    kibble_bit.update_source(source)
     t = None
     if "creds" in source and source["creds"]:
         t = twitter.Api(
@@ -113,22 +113,22 @@ def scan(KibbleBit, source):
             consumer_key=source["creds"].get("consumer_key", None),
             consumer_secret=source["creds"].get("consumer_secret", None),
         )
-        KibbleBit.pprint("Verifying twitter credentials...")
+        kibble_bit.pprint("Verifying twitter credentials...")
         try:
             t.VerifyCredentials()
-        except:
+        except:  # pylint: disable=bare-except
             source["steps"]["twitter"] = {
                 "time": time.time(),
                 "status": "Could not verify twitter credentials",
                 "running": False,
                 "good": False,
             }
-            KibbleBit.updateSource(source)
-            KibbleBit.pprint("Could not verify twitter creds, aborting!")
+            kibble_bit.update_source(source)
+            kibble_bit.pprint("Could not verify twitter creds, aborting!")
             return
     # Start by getting and saving followers
     try:
-        getFollowers(KibbleBit, source, t)
+        get_followers(kibble_bit, source, t)
     except Exception as err:
         source["steps"]["twitter"] = {
             "time": time.time(),
@@ -136,8 +136,8 @@ def scan(KibbleBit, source):
             "running": False,
             "good": False,
         }
-        KibbleBit.updateSource(source)
-        KibbleBit.pprint("Twitter scan failed: %s" % err)
+        kibble_bit.update_source(source)
+        kibble_bit.pprint("Twitter scan failed: %s" % err)
 
     # All done, report that!
     source["steps"]["twitter"] = {
@@ -147,4 +147,4 @@ def scan(KibbleBit, source):
         "running": False,
         "good": True,
     }
-    KibbleBit.updateSource(source)
+    kibble_bit.update_source(source)

@@ -160,15 +160,15 @@ def make_person(repo, raw_person):
     }
 
 
-def update_issue(KibbleBit, issue):
+def update_issue(kibble_bit, issue):
     id = issue["id"]
-    KibbleBit.pprint("Updating issue: " + id)
-    KibbleBit.index("issue", id, issue)
+    kibble_bit.pprint("Updating issue: " + id)
+    kibble_bit.index("issue", id, issue)
 
 
-def update_person(KibbleBit, person):
-    KibbleBit.pprint("Updating person: " + person["name"] + " - " + person["email"])
-    KibbleBit.index("person", person["id"], {"doc": person, "doc_as_upsert": True})
+def update_person(kibble_bit, person):
+    kibble_bit.pprint("Updating person: " + person["name"] + " - " + person["email"])
+    kibble_bit.index("person", person["id"], {"doc": person, "doc_as_upsert": True})
 
 
 def status_changed(stored_change, change):
@@ -177,14 +177,14 @@ def status_changed(stored_change, change):
     return stored_change["status"] != change["status"]
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
     source["steps"]["issues"] = {
         "time": time.time(),
         "status": "Analyzing Gerrit tickets...",
         "running": True,
         "good": True,
     }
-    KibbleBit.updateSource(source)
+    kibble_bit.update_source(source)
 
     url = source["sourceURL"]
     # Try matching foo.bar/r/project/subfoo
@@ -217,8 +217,8 @@ def scan(KibbleBit, source):
             dhash = make_hash(source, change)
 
             stored_change = None
-            if KibbleBit.exists("issue", dhash):
-                stored_change = KibbleBit.get("issue", dhash)
+            if kibble_bit.exists("issue", dhash):
+                stored_change = kibble_bit.get("issue", dhash)
 
             if not status_changed(stored_change, change):
                 # print("change %s seen already and status unchanged. Skipping." %
@@ -228,7 +228,7 @@ def scan(KibbleBit, source):
             details = change_details(base_url, change)
 
             issue_doc = make_issue(source, base_url, details)
-            update_issue(KibbleBit, issue_doc)
+            update_issue(kibble_bit, issue_doc)
 
             labels = details["labels"]
             change_people = []
@@ -247,7 +247,7 @@ def scan(KibbleBit, source):
             for person in change_people:
                 if "email" in person and person["email"] not in people:
                     people[person["email"]] = person
-                    update_person(KibbleBit, make_person(source, person))
+                    update_person(kibble_bit, make_person(source, person))
 
         except requests.HTTPError as e:
             print(e)
@@ -258,4 +258,4 @@ def scan(KibbleBit, source):
         "running": False,
         "good": True,
     }
-    KibbleBit.updateSource(source)
+    kibble_bit.update_source(source)

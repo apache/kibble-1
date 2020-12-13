@@ -37,12 +37,12 @@ def accepts(source):
     return False
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
 
     rid = source["sourceID"]
     url = source["sourceURL"]
     rootpath = "%s/%s/git" % (
-        KibbleBit.config["scanner"]["scratchdir"],
+        kibble_bit.config["scanner"]["scratchdir"],
         source["organisation"],
     )
     gpath = os.path.join(rootpath, rid)
@@ -55,16 +55,16 @@ def scan(KibbleBit, source):
             "running": True,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
 
         try:
             branch = git.defaultBranch(source, gpath)
             subprocess.call("cd %s && git checkout %s" % (gpath, branch), shell=True)
-        except:
-            KibbleBit.pprint("SLoC counter failed to find main branch for %s!!" % url)
+        except:  # pylint: disable=bare-except
+            kibble_bit.pprint("SLoC counter failed to find main branch for %s!!" % url)
             return False
 
-        KibbleBit.pprint("Running SLoC count for %s" % url)
+        kibble_bit.pprint("Running SLoC count for %s" % url)
         languages, codecount, comment, blank, years, cost = sloc.count(gpath)
 
         sloc_ = {
@@ -84,4 +84,4 @@ def scan(KibbleBit, source):
             "running": False,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)

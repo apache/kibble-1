@@ -38,7 +38,7 @@ def accepts(source):
     return False
 
 
-def scanJob(KibbleBit, source, job, creds):
+def scan_job(KibbleBit, source, job, creds):
     """ Scans a single job for activity """
     dhash = hashlib.sha224(
         ("%s-%s-%s" % (source["organisation"], source["sourceID"], job)).encode(
@@ -64,7 +64,7 @@ def scanJob(KibbleBit, source, job, creds):
             builddoc = None
             try:
                 builddoc = KibbleBit.get("ci_build", buildhash)
-            except:
+            except:  # pylint: disable=bare-except
                 pass
 
             # If this build already completed, no need to parse it again
@@ -120,11 +120,11 @@ def scanJob(KibbleBit, source, job, creds):
     return False
 
 
-class buildbotThread(threading.Thread):
+class BuildbotThread(threading.Thread):
     """ Generic thread class for scheduling multiple scans at once """
 
     def __init__(self, block, KibbleBit, source, creds, jobs):
-        super(buildbotThread, self).__init__()
+        super(BuildbotThread, self).__init__()
         self.block = block
         self.KibbleBit = KibbleBit
         self.creds = creds
@@ -132,8 +132,8 @@ class buildbotThread(threading.Thread):
         self.jobs = jobs
 
     def run(self):
-        badOnes = 0
-        while len(self.jobs) > 0 and badOnes <= 50:
+        bad_ones = 0
+        while len(self.jobs) > 0 and bad_ones <= 50:
             self.block.acquire()
             try:
                 job = self.jobs.pop(0)
@@ -144,10 +144,10 @@ class buildbotThread(threading.Thread):
                 self.block.release()
                 return
             self.block.release()
-            if not scanJob(self.KibbleBit, self.source, job, self.creds):
+            if not scan_job(self.KibbleBit, self.source, job, self.creds):
                 self.KibbleBit.pprint("[%s] This borked, trying another one" % job)
-                badOnes += 1
-                if badOnes > 100:
+                bad_ones += 1
+                if bad_ones > 100:
                     self.KibbleBit.pprint("Too many errors, bailing!")
                     self.source["steps"]["ci"] = {
                         "time": time.time(),
@@ -156,13 +156,13 @@ class buildbotThread(threading.Thread):
                         "running": False,
                         "good": False,
                     }
-                    self.KibbleBit.updateSource(self.source)
+                    self.KibbleBit.update_source(self.source)
                     return
             else:
-                badOnes = 0
+                bad_ones = 0
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
     # Simple URL check
     buildbot = re.match(r"(https?://.+)", source["sourceURL"])
     if buildbot:
@@ -173,16 +173,16 @@ def scan(KibbleBit, source):
             "running": True,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
 
-        KibbleBit.pprint("Parsing Buildbot activity at %s" % source["sourceURL"])
+        kibble_bit.pprint("Parsing Buildbot activity at %s" % source["sourceURL"])
         source["steps"]["ci"] = {
             "time": time.time(),
             "status": "Downloading changeset",
             "running": True,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
 
         # Buildbot may neeed credentials
         creds = None
@@ -195,9 +195,9 @@ def scan(KibbleBit, source):
             creds = "%s:%s" % (source["creds"]["username"], source["creds"]["password"])
 
         # Get the job list
-        sURL = source["sourceURL"]
-        KibbleBit.pprint("Getting job list...")
-        builders = jsonapi.get("%s/json/builders" % sURL, auth=creds)
+        s_url = source["sourceURL"]
+        kibble_bit.pprint("Getting job list...")
+        builders = jsonapi.get("%s/json/builders" % s_url, auth=creds)
 
         # Save queue snapshot
         NOW = int(datetime.datetime.utcnow().timestamp())
@@ -211,8 +211,8 @@ def scan(KibbleBit, source):
         # Scan queue items
         blocked = 0
         stuck = 0
-        queueSize = 0
-        actualQueueSize = 0
+        queue_size = 0
+        actual_queue_size = 0
         building = 0
         jobs = []
 
@@ -222,10 +222,10 @@ def scan(KibbleBit, source):
                 building += 1
             if data.get("pendingBuilds", 0) > 0:
                 # All queued items, even offline builders
-                actualQueueSize += data.get("pendingBuilds", 0)
+                actual_queue_size += data.get("pendingBuilds", 0)
                 # Only queues with an online builder (actually waiting stuff)
                 if data["state"] == "building":
-                    queueSize += data.get("pendingBuilds", 0)
+                    queue_size += data.get("pendingBuilds", 0)
                     blocked += data.get("pendingBuilds", 0)  # Blocked by running builds
                 # Stuck builds (iow no builder available)
                 if data["state"] == "offline":
@@ -236,7 +236,7 @@ def scan(KibbleBit, source):
             "id": queuehash,
             "date": time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(NOW)),
             "time": NOW,
-            "size": queueSize,
+            "size": queue_size,
             "blocked": blocked,
             "stuck": stuck,
             "building": building,
@@ -246,15 +246,15 @@ def scan(KibbleBit, source):
             "organisation": source["organisation"],
             "upsert": True,
         }
-        KibbleBit.append("ci_queue", queuedoc)
+        kibble_bit.append("ci_queue", queuedoc)
 
-        KibbleBit.pprint("Found %u builders in Buildbot" % len(jobs))
+        kibble_bit.pprint("Found %u builders in Buildbot" % len(jobs))
 
         threads = []
         block = threading.Lock()
-        KibbleBit.pprint("Scanning jobs using 4 sub-threads")
+        kibble_bit.pprint("Scanning jobs using 4 sub-threads")
         for i in range(0, 4):
-            t = buildbotThread(block, KibbleBit, source, creds, jobs)
+            t = BuildbotThread(block, kibble_bit, source, creds, jobs)
             threads.append(t)
             t.start()
 
@@ -262,7 +262,7 @@ def scan(KibbleBit, source):
             t.join()
 
         # We're all done, yaay
-        KibbleBit.pprint("Done scanning %s" % source["sourceURL"])
+        kibble_bit.pprint("Done scanning %s" % source["sourceURL"])
 
         source["steps"]["ci"] = {
             "time": time.time(),
@@ -271,4 +271,4 @@ def scan(KibbleBit, source):
             "running": False,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)

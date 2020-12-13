@@ -141,7 +141,7 @@ class KibbleBit:
         else:
             print(line)
 
-    def updateSource(self, source):
+    def update_source(self, source):
         """ Updates a source document, usually with a status update """
         self.broker.DB.index(
             index=self.broker.config["elasticsearch"]["database"],
