@@ -16,9 +16,12 @@
 # under the License.
 
 import sys
+from urllib.parse import urlparse
 
 import elasticsearch
 import elasticsearch.helpers
+
+from kibble.configuration import conf
 
 KIBBLE_DB_VERSION = 2  # Current DB struct version
 ACCEPTED_DB_VERSIONS = [1, 2]  # Versions we know how to work with.
@@ -112,15 +115,6 @@ class KibbleESWrapperSeven:
             return self.ES.indices.exists(index=index)
 
 
-# This is redundant, refactor later?
-def pprint(string, err=False):
-    line = "[core]: %s" % string
-    if err:
-        sys.stderr.write(line + "\n")
-    else:
-        print(line)
-
-
 class KibbleBit:
     """ KibbleBit class with direct ElasticSearch access """
 
@@ -140,7 +134,7 @@ class KibbleBit:
             print("Pushing stragglers")
             self.bulk()
 
-    def pprint(self, string, err=False):
+    def print(self, string, err=False):
         line = "[thread#%i:%s]: %s" % (self.tid, self.pluginname, string)
         if err:
             sys.stderr.write(line + "\n")
@@ -189,7 +183,7 @@ class KibbleBit:
         self.json_queue.append(doc)
         # If we've crossed the bulk limit, do a push
         if len(self.json_queue) > self.queueMax:
-            pprint("Bulk push forced")
+            print("Bulk push forced")
             self.bulk()
 
     def bulk(self):
@@ -228,7 +222,7 @@ class KibbleBit:
         try:
             elasticsearch.helpers.bulk(self.broker.oDB, js_arr)
         except Exception as err:
-            pprint("Warning: Could not bulk insert: %s" % err)
+            print("Warning: Could not bulk insert: %s" % err)
 
 
 class KibbleOrganisation:
@@ -270,27 +264,27 @@ class KibbleOrganisation:
         return s
 
 
-""" Master Kibble Broker Class for direct ElasticSearch access """
-
-
 class Broker:
-    def __init__(self, config):
-        es_config = config["elasticsearch"]
-        auth = None
-        if "user" in es_config:
-            auth = (es_config["user"], es_config["password"])
-        pprint(
-            "Connecting to ElasticSearch database at %s:%i..."
-            % (es_config["hostname"], es_config.get("port", 9200))
-        )
+    """Master Kibble Broker Class for direct ElasticSearch access."""
+
+    def __init__(self):
+        conn_uri = conf.get("elasticsearch", "conn_uri")
+        parsed = urlparse(conf.get("elasticsearch", "conn_uri"))
+        self.dbname = conf.get("elasticsearch", "dbname")
+
+        user = conf.get("elasticsearch", "user", fallback=None)
+        password = conf.get("elasticsearch", "password", fallback=None)
+        auth = (user, password) if user else None
+
+        print(f"Connecting to ElasticSearch database at {conn_uri}")
         es = elasticsearch.Elasticsearch(
             [
                 {
-                    "host": es_config["hostname"],
-                    "port": int(es_config.get("port", 9200)),
-                    "use_ssl": es_config.get("ssl", False),
+                    "host": parsed.hostname,
+                    "port": parsed.port,
+                    "use_ssl": conf.getboolean("elasticsearch", "ssl"),
                     "verify_certs": False,
-                    "url_prefix": es_config.get("uri", ""),
+                    "url_prefix": conf.get("elasticsearch", "uri"),
                     "http_auth": auth,
                 }
             ],
@@ -298,10 +292,9 @@ class Broker:
             retry_on_timeout=True,
         )
         es_info = es.info()
-        pprint("Connected!")
+        print("Connected!")
         self.DB = es
         self.oDB = es  # Original ES class, always. the .DB may change
-        self.config = config
         self.bitClass = KibbleBit
         # This bit is required since ES 6.x and above don't like document types
         self.noTypes = (
@@ -311,54 +304,47 @@ class Broker:
             True if int(es_info["version"]["number"].split(".")[0]) >= 7 else False
         )
         if self.noTypes:
-            pprint("This is a type-less DB, expanding database names instead.")
+            print("This is a type-less DB, expanding database names instead.")
             if self.seven:
-                pprint("We're using ES >= 7.x, NO DOC_TYPE!")
+                print("We're using ES >= 7.x, NO DOC_TYPE!")
                 es = KibbleESWrapperSeven(es)
             else:
                 es = KibbleESWrapper(es)
             self.DB = es
-            if not es.indices.exists(index=es_config["database"] + "_api"):
-                sys.stderr.write(
-                    "Could not find database group %s_* in ElasticSearch!\n"
-                    % es_config["database"]
+            if not es.indices.exists(index=self.dbname + "_api"):
+                raise SystemExit(
+                    f"Could not find database group {self.dbname}_* in ElasticSearch!"
                 )
-                sys.exit(-1)
         else:
-            pprint("This DB supports types, utilizing..")
-            if not es.indices.exists(index=es_config["database"]):
-                sys.stderr.write(
-                    "Could not find database %s in ElasticSearch!\n"
-                    % es_config["database"]
+            print("This DB supports types, utilizing..")
+            if not es.indices.exists(index=self.dbname):
+                raise SystemExit(
+                    f"Could not find database {self.dbname} in ElasticSearch!"
                 )
-                sys.exit(-1)
-        apidoc = es.get(index=es_config["database"], doc_type="api", id="current")[
-            "_source"
-        ]
+        apidoc = es.get(index=self.dbname, doc_type="api", id="current")["_source"]
         apidoc_db_version = int(apidoc["dbversion"])
+
         # We currently accept and know how to use DB versions 1 and 2.
         if apidoc_db_version not in ACCEPTED_DB_VERSIONS:
             if apidoc_db_version > KIBBLE_DB_VERSION:
-                sys.stderr.write(
+                raise SystemExit(
                     "The database '%s' uses a newer structure format (version %u) than the scanners "
                     "(version %u). Please upgrade your scanners.\n"
-                    % (es_config["database"], apidoc_db_version, KIBBLE_DB_VERSION)
+                    % (self.dbname, apidoc_db_version, KIBBLE_DB_VERSION)
                 )
-                sys.exit(-1)
             if apidoc_db_version < KIBBLE_DB_VERSION:
-                sys.stderr.write(
+                raise SystemExit(
                     "The database '%s' uses an older structure format (version %u) than the scanners "
                     "(version %u). Please upgrade your main Kibble server.\n"
-                    % (es_config["database"], apidoc_db_version, KIBBLE_DB_VERSION)
+                    % (self.dbname, apidoc_db_version, KIBBLE_DB_VERSION)
                 )
-                sys.exit(-1)
 
     def organisations(self):
         """ Return a list of all organisations """
 
         # Run the search, fetch all orgs, 9999 max. TODO: Scroll???
         res = self.DB.search(
-            index=self.config["elasticsearch"]["database"],
+            index=self.dbname,
             doc_type="organisation",
             size=9999,
             body={"query": {"match_all": {}}},

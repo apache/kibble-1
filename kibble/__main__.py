@@ -14,11 +14,13 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from typing import List
 
 import click
 
 from kibble.cli import setup_command
 from kibble.cli.make_account_command import make_account_cmd
+from kibble.cli.scanner_command import scan_cmd
 from kibble.configuration import conf
 from kibble.version import version as kibble_version
 
@@ -97,6 +99,56 @@ def make_account(
 ):
     make_account_cmd(
         username=username, password=password, admin=admin, adminorg=orgadmin, org=org
+    )
+
+
+@cli.command("scan", short_help="starts scanning process")
+@click.option(
+    "-t",
+    "--type",
+    "scanners",
+    help="Specific type of scanner to run (default is run all scanners). Can be used multiple times.",
+    multiple=True,
+)
+@click.option(
+    "-e",
+    "--exclude",
+    help="Specific type of scanner(s) to exclude. Can be used multiple times.",
+    multiple=True,
+)
+@click.option(
+    "-o",
+    "--org",
+    help="The organisation to gather stats for. If left out, all organisations will be scanned.",
+)
+@click.option(
+    "-a",
+    "--age",
+    help="Minimum age in hours before performing a new scan on an already processed source. "
+    "--age 12 will not process any source that was processed less than 12 hours ago, but "
+    "will process new sources.",
+)
+@click.option("-s", "--source", help="Specific source (wildcard) to run scans on.")
+@click.option(
+    "-v",
+    "--view",
+    help="Specific source view to scan (default is scan all sources).",
+)
+def run_scan(
+    scanners: List[str] = None,
+    exclude: List[str] = None,
+    org: str = None,
+    age: int = None,
+    source: str = None,
+    view: str = None,
+):
+    scan_cmd(
+        scanners=scanners,
+        exclude=exclude,
+        org=org,
+        age=age,
+        source=source,
+        view=view,
     )
 
 
