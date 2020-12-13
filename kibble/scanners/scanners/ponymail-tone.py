@@ -44,11 +44,11 @@ def accepts(source):
     return False
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
     # Validate URL first
     url = re.match(r"(https?://.+)/list\.html\?(.+)@(.+)", source["sourceURL"])
     if not url:
-        KibbleBit.pprint(
+        kibble_bit.pprint(
             "Malformed or invalid Pony Mail URL passed to scanner: %s"
             % source["sourceURL"]
         )
@@ -58,15 +58,15 @@ def scan(KibbleBit, source):
             "running": False,
             "good": False,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
         return
 
     if (
-        not "watson" in KibbleBit.config
-        and not "azure" in KibbleBit.config
-        and not "picoapi" in KibbleBit.config
+        not "watson" in kibble_bit.config
+        and not "azure" in kibble_bit.config
+        and not "picoapi" in kibble_bit.config
     ):
-        KibbleBit.pprint(
+        kibble_bit.pprint(
             "No Watson/Azure/picoAPI creds configured, skipping tone analyzer"
         )
         return
@@ -75,15 +75,15 @@ def scan(KibbleBit, source):
     if "creds" in source and source["creds"]:
         cookie = source["creds"].get("cookie", None)
 
-    rootURL = re.sub(r"list.html.+", "", source["sourceURL"])
+    root_url = re.sub(r"list.html.+", "", source["sourceURL"])
     query = {
         "query": {"bool": {"must": [{"term": {"sourceID": source["sourceID"]}}]}},
         "sort": [{"ts": "desc"}],
     }
 
     # Get an initial count of commits
-    res = KibbleBit.broker.DB.search(
-        index=KibbleBit.dbname, doc_type="email", body=query, size=MAX_COUNT * 4
+    res = kibble_bit.broker.DB.search(
+        index=kibble_bit.dbname, doc_type="email", body=query, size=MAX_COUNT * 4
     )
     ec = 0
     hits = []
@@ -94,30 +94,30 @@ def scan(KibbleBit, source):
             if ec > MAX_COUNT:
                 break
             if "mood" not in eml:
-                emlurl = "%s/api/email.lua?id=%s" % (rootURL, eml["id"])
-                KibbleBit.pprint("Fetching %s" % emlurl)
-                rv = None
+                emlurl = "%s/api/email.lua?id=%s" % (root_url, eml["id"])
+                kibble_bit.pprint("Fetching %s" % emlurl)
                 try:
                     rv = jsonapi.get(emlurl, cookie=cookie)
                     if rv and "body" in rv:
                         hits.append([hit["_id"], rv["body"], eml])
                 except Exception as err:
-                    KibbleBit.pprint(f"Server error: {err}, skipping this email")
+                    kibble_bit.pprint(f"Server error: {err}, skipping this email")
 
     bodies = []
     for hit in hits:
         body = hit[1]
-        bid = hit[0]
+        # bid = hit[0]
         bodies.append(body)
     if bodies:
-        if "watson" in KibbleBit.config:
-            moods = tone.watsonTone(KibbleBit, bodies)
-        elif "azure" in KibbleBit.config:
-            moods = tone.azureTone(KibbleBit, bodies)
-        elif "picoapi" in KibbleBit.config:
-            moods = tone.picoTone(KibbleBit, bodies)
+        moods = None
+        if "watson" in kibble_bit.config:
+            moods = tone.watsonTone(kibble_bit, bodies)
+        elif "azure" in kibble_bit.config:
+            moods = tone.azureTone(kibble_bit, bodies)
+        elif "picoapi" in kibble_bit.config:
+            moods = tone.picoTone(kibble_bit, bodies)
         if not moods:
-            KibbleBit.pprint("Hit rate limit, not trying further emails for now.")
+            kibble_bit.pprint("Hit rate limit, not trying further emails for now.")
 
         a = 0
         for hit in hits:
@@ -131,7 +131,7 @@ def scan(KibbleBit, source):
                 if s > hm[0]:
                     hm = [s, m]
             print("Likeliest overall mood for %s: %s" % (bid, hm[1]))
-            KibbleBit.index("email", bid, eml)
+            kibble_bit.index("email", bid, eml)
     else:
-        KibbleBit.pprint("No emails to analyze")
-    KibbleBit.pprint("Done with tone analysis")
+        kibble_bit.pprint("No emails to analyze")
+    kibble_bit.pprint("Done with tone analysis")

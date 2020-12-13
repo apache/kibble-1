@@ -46,12 +46,12 @@ def get_first_ref(gpath):
             % gpath,
             shell=True,
         )
-    except:
+    except:  # pylint: disable=bare-except
         print("Could not get first ref, exiting!")
         return None
 
 
-def acquire(KibbleBit, source):
+def acquire(kibble_bit, source):
     source["steps"]["evolution"] = {
         "time": time.time(),
         "status": "Evolution scan started at "
@@ -59,10 +59,10 @@ def acquire(KibbleBit, source):
         "running": True,
         "good": True,
     }
-    KibbleBit.updateSource(source)
+    kibble_bit.update_source(source)
 
 
-def release(KibbleBit, source, status, exception=None, good=False):
+def release(kibble_bit, source, status, exception=None, good=False):
     source["steps"]["evolution"] = {
         "time": time.time(),
         "status": status,
@@ -72,7 +72,7 @@ def release(KibbleBit, source, status, exception=None, good=False):
 
     if exception:
         source["steps"]["evolution"].update({"exception": exception})
-    KibbleBit.updateSource(source)
+    kibble_bit.update_source(source)
 
 
 def check_branch(gpath, date, branch):
@@ -82,7 +82,7 @@ def check_branch(gpath, date, branch):
             shell=True,
         )
         return True
-    except:
+    except:  # pylint: disable=bare-except
         return False
 
 
@@ -116,7 +116,7 @@ def find_branch(date, gpath):
             stderr=subprocess.DEVNULL,
         )
         return "master"
-    except:
+    except:  # pylint: disable=bare-except
         os.chdir(gpath)
         try:
             return (
@@ -129,22 +129,22 @@ def find_branch(date, gpath):
                 .strip()
                 .strip("* ")
             )
-        except:
+        except:  # pylint: disable=bare-except
             # print("meh! no branch")
             return None
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
 
     rid = source["sourceID"]
     rootpath = "%s/%s/git" % (
-        KibbleBit.config["scanner"]["scratchdir"],
+        kibble_bit.config["scanner"]["scratchdir"],
         source["organisation"],
     )
     gpath = os.path.join(rootpath, rid)
 
     gname = source["sourceID"]
-    KibbleBit.pprint("Doing evolution scan of %s" % gname)
+    kibble_bit.pprint("Doing evolution scan of %s" % gname)
 
     inp = get_first_ref(gpath)
     if inp:
@@ -158,13 +158,13 @@ def scan(KibbleBit, source):
         rid = source["sourceID"]
         url = source["sourceURL"]
         rootpath = "%s/%s/git" % (
-            KibbleBit.config["scanner"]["scratchdir"],
+            kibble_bit.config["scanner"]["scratchdir"],
             source["organisation"],
         )
         gpath = os.path.join(rootpath, rid)
 
         if source["steps"]["sync"]["good"] and os.path.exists(gpath):
-            acquire(KibbleBit, source)
+            acquire(kibble_bit, source)
             branch = find_branch(date, gpath)
 
             if not branch:
@@ -178,7 +178,7 @@ def scan(KibbleBit, source):
             branch_exists = check_branch(gpath, date, branch)
 
             if not branch_exists:
-                KibbleBit.pprint("Not trunk either (bad repo?), skipping")
+                kibble_bit.pprint("Not trunk either (bad repo?), skipping")
                 release(
                     source,
                     "Could not do evolutionary scan of code",
@@ -207,10 +207,10 @@ def scan(KibbleBit, source):
                     dhash = hashlib.sha224(
                         (source["sourceID"] + date).encode("ascii", "replace")
                     ).hexdigest()
-                    found = KibbleBit.exists("evolution", dhash)
+                    found = kibble_bit.exists("evolution", dhash)
                     if not found:
                         checkout(gpath, date, branch)
-                        KibbleBit.pprint(
+                        kibble_bit.pprint(
                             "Running cloc on %s (%s) at %s"
                             % (gname, source["sourceURL"], date)
                         )
@@ -229,7 +229,7 @@ def scan(KibbleBit, source):
                             "cost": cost,
                             "languages": languages,
                         }
-                        KibbleBit.index("evolution", dhash, js)
+                        kibble_bit.index("evolution", dhash, js)
                     quarter -= 3
                     if quarter <= 0:
                         quarter += 12
@@ -238,9 +238,9 @@ def scan(KibbleBit, source):
                     # decrease month by 3
                     now = time.mktime(datetime.date(year, quarter, 1).timetuple())
             except Exception as e:
-                KibbleBit.pprint(e)
+                kibble_bit.pprint(e)
                 release(
-                    KibbleBit,
+                    kibble_bit,
                     source,
                     "Evolution scan failed at "
                     + time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime()),
@@ -249,7 +249,7 @@ def scan(KibbleBit, source):
                 return
 
             release(
-                KibbleBit,
+                kibble_bit,
                 source,
                 "Evolution scan completed at "
                 + time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime()),

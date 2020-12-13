@@ -43,7 +43,7 @@ def accepts(source):
     return False
 
 
-def getTime(string):
+def get_time(string):
     return time.mktime(
         time.strptime(re.sub(r"[zZ]", "", str(string)), "%Y-%m-%dT%H:%M:%S")
     )
@@ -81,7 +81,7 @@ def moved(js):
     return False
 
 
-def wasclosed(js):
+def was_closed(js):
     if "changelog" in js:
         cjs = js["changelog"]["histories"]
         for citem in cjs:
@@ -118,7 +118,7 @@ def pchange(js):
     return False
 
 
-def scanTicket(bug, KibbleBit, source, openTickets, u, dom):
+def scan_ticket(bug, kibble_bit, source, open_tickets, u, dom):
     try:
         key = bug["id"]
         dhash = hashlib.sha224(
@@ -126,24 +126,24 @@ def scanTicket(bug, KibbleBit, source, openTickets, u, dom):
                 "ascii", errors="replace"
             )
         ).hexdigest()
-        found = KibbleBit.exists("issue", dhash)
+        found = kibble_bit.exists("issue", dhash)
         parseIt = False
         if not found:
             parseIt = True
         else:
-            ticket = KibbleBit.get("issue", dhash)
-            if ticket["status"] == "closed" and key in openTickets:
-                KibbleBit.pprint("Ticket was reopened, reparsing")
+            ticket = kibble_bit.get("issue", dhash)
+            if ticket["status"] == "closed" and key in open_tickets:
+                kibble_bit.pprint("Ticket was reopened, reparsing")
                 parseIt = True
-            elif ticket["status"] == "open" and not key in openTickets:
-                KibbleBit.pprint("Ticket was recently closed, parsing it")
+            elif ticket["status"] == "open" and not key in open_tickets:
+                kibble_bit.pprint("Ticket was recently closed, parsing it")
                 parseIt = True
             else:
                 pass
                 # print("Ticket hasn't changed, ignoring...")
 
         if parseIt:
-            KibbleBit.pprint("Parsing data from BugZilla for #%s" % key)
+            kibble_bit.pprint("Parsing data from BugZilla for #%s" % key)
 
             params = {"ids": [int(key)], "limit": 0}
             if (
@@ -163,12 +163,12 @@ def scanTicket(bug, KibbleBit, source, openTickets, u, dom):
             js = js["result"]["bugs"][0]
             creator = {"name": bug["creator"], "email": js["creator"]}
             closer = {}
-            cd = getTime(js["creation_time"])
+            cd = get_time(js["creation_time"])
             rd = None
             status = "open"
             if js["status"] in ["CLOSED", "RESOLVED"]:
                 status = "closed"
-                KibbleBit.pprint("%s was closed, finding out who did that" % key)
+                kibble_bit.pprint("%s was closed, finding out who did that" % key)
                 ticketsURL = "%s?method=Bug.history&params=[%s]" % (
                     u,
                     urllib.parse.quote(json.dumps(params)),
@@ -182,10 +182,10 @@ def scanTicket(bug, KibbleBit, source, openTickets, u, dom):
                             and "added" in change
                             and change["added"] in ["CLOSED", "RESOLVED"]
                         ):
-                            rd = getTime(item["when"])
+                            rd = get_time(item["when"])
                             closer = {"name": item["who"], "email": item["who"]}
                             break
-            KibbleBit.pprint("Counting comments for %s..." % key)
+            kibble_bit.pprint("Counting comments for %s..." % key)
             ticketsURL = "%s?method=Bug.comments&params=[%s]" % (
                 u,
                 urllib.parse.quote(json.dumps(params)),
@@ -202,7 +202,7 @@ def scanTicket(bug, KibbleBit, source, openTickets, u, dom):
                         "ascii", errors="replace"
                     )
                 ).hexdigest()
-                found = KibbleBit.exists("person", pid)
+                found = kibble_bit.exists("person", pid)
                 if not found:
                     params["names"] = [closer["email"]]
                     ticketsURL = "%s?method=User.get&params=[%s]" % (
@@ -213,7 +213,7 @@ def scanTicket(bug, KibbleBit, source, openTickets, u, dom):
                     try:
                         ujs = jsonapi.get(ticketsURL)
                         displayName = ujs["result"]["users"][0]["real_name"]
-                    except:
+                    except:  # pylint: disable=bare-except
                         displayName = closer["email"]
                     if displayName and len(displayName) > 0:
                         # Add to people db
@@ -225,7 +225,7 @@ def scanTicket(bug, KibbleBit, source, openTickets, u, dom):
                             "id": pid,
                         }
                         # print("Updating person DB for closer: %s (%s)" % (displayName, closerEmail))
-                        KibbleBit.index("person", pid, jsp)
+                        kibble_bit.index("person", pid, jsp)
 
             if creator:
                 pid = hashlib.sha1(
@@ -233,7 +233,7 @@ def scanTicket(bug, KibbleBit, source, openTickets, u, dom):
                         "ascii", errors="replace"
                     )
                 ).hexdigest()
-                found = KibbleBit.exists("person", pid)
+                found = kibble_bit.exists("person", pid)
                 if not found:
                     if not creator["name"]:
                         params["names"] = [creator["email"]]
@@ -244,7 +244,7 @@ def scanTicket(bug, KibbleBit, source, openTickets, u, dom):
                         try:
                             ujs = jsonapi.get(ticketsURL)
                             creator["name"] = ujs["result"]["users"][0]["real_name"]
-                        except:
+                        except:  # pylint: disable=bare-except
                             creator["name"] = creator["email"]
                     if creator["name"] and len(creator["name"]) > 0:
                         # Add to people db
@@ -255,7 +255,7 @@ def scanTicket(bug, KibbleBit, source, openTickets, u, dom):
                             "organisation": source["organisation"],
                             "id": pid,
                         }
-                        KibbleBit.index("person", pid, jsp)
+                        kibble_bit.index("person", pid, jsp)
 
             jso = {
                 "id": dhash,
@@ -280,17 +280,17 @@ def scanTicket(bug, KibbleBit, source, openTickets, u, dom):
                 "comments": comments,
                 "title": title,
             }
-            KibbleBit.append("issue", jso)
+            kibble_bit.append("issue", jso)
             time.sleep(0.5)  # BugZilla is notoriously slow. Maybe remove this later
         return True
     except Exception as err:
-        KibbleBit.pprint(err)
+        kibble_bit.pprint(err)
         return False
 
 
-class bzThread(Thread):
+class BzThread(Thread):
     def __init__(self, KibbleBit, source, block, pt, ot, u, dom):
-        super(bzThread, self).__init__()
+        super(BzThread, self).__init__()
         self.KibbleBit = KibbleBit
         self.source = source
         self.block = block
@@ -300,9 +300,9 @@ class bzThread(Thread):
         self.dom = dom
 
     def run(self):
-        badOnes = 0
+        bad_ones = 0
 
-        while len(self.pendingTickets) > 0 and badOnes <= 50:
+        while len(self.pendingTickets) > 0 and bad_ones <= 50:
             if len(self.pendingTickets) % 10 == 0:
                 self.KibbleBit.pprint(
                     "%u elements left to count" % len(self.pendingTickets)
@@ -317,12 +317,12 @@ class bzThread(Thread):
                 self.block.release()
                 return
             self.block.release()
-            if not scanTicket(
+            if not scan_ticket(
                 rl, self.KibbleBit, self.source, self.openTickets, self.u, self.dom
             ):
                 self.KibbleBit.pprint("Ticket %s seems broken, skipping" % rl["id"])
-                badOnes += 1
-                if badOnes > 50:
+                bad_ones += 1
+                if bad_ones > 50:
                     self.KibbleBit.pprint("Too many errors, bailing!")
                     self.source["steps"]["issues"] = {
                         "time": time.time(),
@@ -331,13 +331,13 @@ class bzThread(Thread):
                         "running": False,
                         "good": False,
                     }
-                    self.KibbleBit.updateSource(self.source)
+                    self.KibbleBit.update_source(self.source)
                     return
             else:
-                badOnes = 0
+                bad_ones = 0
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
     url = source["sourceURL"]
 
     source["steps"]["issues"] = {
@@ -346,7 +346,7 @@ def scan(KibbleBit, source):
         "running": True,
         "good": True,
     }
-    KibbleBit.updateSource(source)
+    kibble_bit.update_source(source)
 
     bz = re.match(r"(https?://\S+?)(/jsonrpc\.cgi)?[\s:?]+(.+)", url)
     if bz:
@@ -357,8 +357,8 @@ def scan(KibbleBit, source):
             and len(source["creds"]["username"]) > 0
         ):
             creds = "%s:%s" % (source["creds"]["username"], source["creds"]["password"])
-        pendingTickets = []
-        openTickets = []
+        pending_tickets = []
+        open_tickets = []
 
         # Get base URL, list and domain to parse
         dom = bz.group(1)
@@ -404,20 +404,20 @@ def scan(KibbleBit, source):
                 "offset": 1,
             }
 
-        ticketsURL = "%s?method=Bug.search&params=[%s]" % (
+        tickets_url = "%s?method=Bug.search&params=[%s]" % (
             u,
             urllib.parse.quote(json.dumps(params)),
         )
 
         while True:
             try:
-                js = jsonapi.get(ticketsURL, auth=creds)
-            except:
-                KibbleBit.pprint("Couldn't fetch more tickets, bailing")
+                js = jsonapi.get(tickets_url, auth=creds)
+            except:  # pylint: disable=bare-except
+                kibble_bit.pprint("Couldn't fetch more tickets, bailing")
                 break
 
             if len(js["result"]["bugs"]) > 0:
-                KibbleBit.pprint(
+                kibble_bit.pprint(
                     "%s: Found %u tickets..."
                     % (
                         source["sourceURL"],
@@ -425,28 +425,30 @@ def scan(KibbleBit, source):
                     )
                 )
                 for bug in js["result"]["bugs"]:
-                    pendingTickets.append(bug)
+                    pending_tickets.append(bug)
                     if not bug["status"] in ["RESOLVED", "CLOSED"]:
-                        openTickets.append(bug["id"])
+                        open_tickets.append(bug["id"])
                 params["offset"] += 10000
-                ticketsURL = "%s?method=Bug.search&params=[%s]" % (
+                tickets_url = "%s?method=Bug.search&params=[%s]" % (
                     u,
                     urllib.parse.quote(json.dumps(params)),
                 )
             else:
-                KibbleBit.pprint("No more tickets left to scan")
+                kibble_bit.pprint("No more tickets left to scan")
                 break
 
-        KibbleBit.pprint(
+        kibble_bit.pprint(
             "Found %u open tickets, %u closed."
-            % (len(openTickets), len(pendingTickets) - len(openTickets))
+            % (len(open_tickets), len(pending_tickets) - len(open_tickets))
         )
 
         block = Lock()
         threads = []
         # TODO: Fix this loop
         for i in range(0, 4):
-            t = bzThread(KibbleBit, source, block, pendingTickets, openTickets, u, dom)
+            t = BzThread(
+                kibble_bit, source, block, pending_tickets, open_tickets, u, dom
+            )
             threads.append(t)
             t.start()
 
@@ -460,4 +462,4 @@ def scan(KibbleBit, source):
             "running": False,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)

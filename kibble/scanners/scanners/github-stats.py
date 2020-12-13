@@ -32,26 +32,26 @@ def accepts(source):
     return False
 
 
-def getTime(string):
+def get_time(string):
     """ Convert GitHub timestamp to epoch """
     return time.mktime(
         time.strptime(re.sub(r"Z", "", str(string)), "%Y-%m-%dT%H:%M:%S")
     )
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
 
     # Get some vars, construct a data path for the repo
     url = source["sourceURL"]
 
     auth = None
     if "creds" in source:
-        KibbleBit.pprint("Using auth for repo %s" % source["sourceURL"])
+        kibble_bit.pprint("Using auth for repo %s" % source["sourceURL"])
         creds = source["creds"]
         if creds and "username" in creds:
             auth = (creds["username"], creds["password"])
     else:
-        KibbleBit.pprint(
+        kibble_bit.pprint(
             "GitHub stats requires auth, none provided. Ignoring this repo."
         )
         return
@@ -62,13 +62,13 @@ def scan(KibbleBit, source):
             "running": True,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
 
         # Get views
         views = github.views(url, auth)
         if "views" in views:
             for el in views["views"]:
-                ts = getTime(el["timestamp"])
+                ts = get_time(el["timestamp"])
                 shash = hashlib.sha224(
                     (
                         "%s-%s-%s-clones"
@@ -85,13 +85,13 @@ def scan(KibbleBit, source):
                     "ghtype": "views",
                     "id": shash,
                 }
-                KibbleBit.append("ghstats", bit)
+                kibble_bit.append("ghstats", bit)
 
         # Get clones
         clones = github.clones(url, auth)
         if "clones" in clones:
             for el in clones["clones"]:
-                ts = getTime(el["timestamp"])
+                ts = get_time(el["timestamp"])
                 shash = hashlib.sha224(
                     (
                         "%s-%s-%s-clones"
@@ -108,14 +108,14 @@ def scan(KibbleBit, source):
                     "ghtype": "clones",
                     "id": shash,
                 }
-                KibbleBit.append("ghstats", bit)
+                kibble_bit.append("ghstats", bit)
 
         # Get referrers
         refs = github.referrers(url, auth)
         if refs:
             for el in refs:
                 el["timestamp"] = time.strftime("%Y-%m-%dT%H:%M:%S", time.time())
-                ts = getTime(el["timestamp"])
+                ts = get_time(el["timestamp"])
                 shash = hashlib.sha224(
                     (
                         "%s-%s-%s-refs" % (source["organisation"], url, el["timestamp"])
@@ -131,7 +131,7 @@ def scan(KibbleBit, source):
                     "ghtype": "referrers",
                     "id": shash,
                 }
-                KibbleBit.append("ghstats", bit)
-    except:
+                kibble_bit.append("ghstats", bit)
+    except:  # pylint: disable=bare-except
         pass
         # All done!

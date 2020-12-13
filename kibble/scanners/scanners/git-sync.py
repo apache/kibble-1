@@ -30,18 +30,18 @@ def accepts(source):
     if source["type"] == "git":
         return True
     # There are cases where we have a github repo, but don't wanna analyze the code, just issues
-    if source["type"] == "github" and source.get("issuesonly", False) == False:
+    if source["type"] == "github" and source.get("issuesonly", False) is False:
         return True
     return False
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
 
     # Get some vars, construct a data path for the repo
     path = source["sourceID"]
     url = source["sourceURL"]
     rootpath = "%s/%s/git" % (
-        KibbleBit.config["scanner"]["scratchdir"],
+        kibble_bit.config["scanner"]["scratchdir"],
         source["organisation"],
     )
 
@@ -50,20 +50,20 @@ def scan(KibbleBit, source):
         try:
             os.makedirs(rootpath, exist_ok=True)
             print("Created root path %s" % rootpath)
-        except Exception as err:
+        except:  # pylint: disable=bare-except
             source["steps"]["sync"] = {
                 "time": time.time(),
                 "status": "Could not create root scratch dir - permision denied?",
                 "running": False,
                 "good": False,
             }
-            KibbleBit.updateSource(source)
+            kibble_bit.update_source(source)
             return
 
     # This is were the repo should be cloned
     datapath = os.path.join(rootpath, path)
 
-    KibbleBit.pprint("Checking out %s as %s" % (url, path))
+    kibble_bit.pprint("Checking out %s as %s" % (url, path))
 
     try:
         source["steps"]["sync"] = {
@@ -72,14 +72,14 @@ def scan(KibbleBit, source):
             "running": True,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
 
         # If we already checked this out earlier, just sync it.
         if os.path.exists(datapath):
-            KibbleBit.pprint("Repo %s exists, fetching changes..." % datapath)
+            kibble_bit.pprint("Repo %s exists, fetching changes..." % datapath)
 
             # Do we have a default branch here?
-            branch = git.defaultBranch(source, datapath, KibbleBit)
+            branch = git.defaultBranch(source, datapath, kibble_bit)
             if len(branch) == 0:
                 source["default_branch"] = branch
                 source["steps"]["sync"] = {
@@ -89,14 +89,14 @@ def scan(KibbleBit, source):
                     "running": False,
                     "good": False,
                 }
-                KibbleBit.updateSource(source)
-                KibbleBit.pprint(
+                kibble_bit.update_source(source)
+                kibble_bit.pprint(
                     "No default branch found for %s (%s)"
                     % (source["sourceID"], source["sourceURL"])
                 )
                 return
 
-            KibbleBit.pprint("Using branch %s" % branch)
+            kibble_bit.pprint("Using branch %s" % branch)
             # Try twice checking out the main branch and fetching changes.
             # Sometimes we need to clean up after older scanners, which is
             # why we try twice. If first attempt fails, clean up and try again.
@@ -137,11 +137,11 @@ def scan(KibbleBit, source):
                                 shell=True,
                                 stderr=subprocess.STDOUT,
                             )
-                        except:
+                        except:  # pylint: disable=bare-except
                             pass
         # This is a new repo, clone it!
         else:
-            KibbleBit.pprint("%s is new, cloning...!" % datapath)
+            kibble_bit.pprint("%s is new, cloning...!" % datapath)
             subprocess.check_output(
                 "GIT_TERMINAL_PROMPT=0 cd %s && git clone %s %s"
                 % (rootpath, url, path),
@@ -150,8 +150,8 @@ def scan(KibbleBit, source):
             )
 
     except subprocess.CalledProcessError as err:
-        KibbleBit.pprint("Repository sync failed (no master?)")
-        KibbleBit.pprint(str(err.output))
+        kibble_bit.pprint("Repository sync failed (no master?)")
+        kibble_bit.pprint(str(err.output))
         source["steps"]["sync"] = {
             "time": time.time(),
             "status": "Sync failed at "
@@ -160,7 +160,7 @@ def scan(KibbleBit, source):
             "good": False,
             "exception": str(err.output),
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
         return
 
     # All good, yay!
@@ -171,4 +171,4 @@ def scan(KibbleBit, source):
         "running": False,
         "good": True,
     }
-    KibbleBit.updateSource(source)
+    kibble_bit.update_source(source)

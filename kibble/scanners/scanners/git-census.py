@@ -38,7 +38,7 @@ def accepts(source):
     return False
 
 
-def scan(KibbleBit, source):
+def scan(kibble_bit, source):
     """ Conduct a census scan """
     people = {}
     idseries = {}
@@ -50,7 +50,7 @@ def scan(KibbleBit, source):
     rid = source["sourceID"]
     url = source["sourceURL"]
     rootpath = "%s/%s/git" % (
-        KibbleBit.config["scanner"]["scratchdir"],
+        kibble_bit.config["scanner"]["scratchdir"],
         source["organisation"],
     )
     gpath = os.path.join(rootpath, rid)
@@ -63,9 +63,8 @@ def scan(KibbleBit, source):
             "running": True,
             "good": True,
         }
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
         gname = rid
-        inp = ""
         modificationDates = {}
         # Did we do a census before?
         if "census" in source and source["census"] > 0:
@@ -92,7 +91,7 @@ def scan(KibbleBit, source):
             inp = f.read()
             f.close()
         os.unlink(tmp.name)
-        KibbleBit.pprint("Parsing log for %s (%s)..." % (rid, url))
+        kibble_bit.pprint("Parsing log for %s (%s)..." % (rid, url))
         for m in re.finditer(
             u":([a-f0-9]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([\d+]+)\r?\n([^:]+?):",
             inp,
@@ -145,7 +144,7 @@ def scan(KibbleBit, source):
                     if delete > 100000000:
                         delete = 0
                     if delete > 1000000 or insert > 1000000:
-                        KibbleBit.pprint(
+                        kibble_bit.pprint(
                             "gigantic diff for %s (%s), ignoring"
                             % (gpath, source["sourceURL"])
                         )
@@ -250,7 +249,7 @@ def scan(KibbleBit, source):
                     "vcs": "git",
                     "files_changed": filelist,
                 }
-                KibbleBit.append(
+                kibble_bit.append(
                     "person",
                     {
                         "upsert": True,
@@ -265,7 +264,7 @@ def scan(KibbleBit, source):
                         ).hexdigest(),
                     },
                 )
-                KibbleBit.append(
+                kibble_bit.append(
                     "person",
                     {
                         "upsert": True,
@@ -280,11 +279,11 @@ def scan(KibbleBit, source):
                         ).hexdigest(),
                     },
                 )
-                KibbleBit.append("code_commit", js)
-                KibbleBit.append("code_commit_unique", jsx)
+                kibble_bit.append("code_commit", js)
+                kibble_bit.append("code_commit_unique", jsx)
 
         if True:  # Do file changes?? Might wanna make this optional
-            KibbleBit.pprint("Scanning file changes for %s" % source["sourceURL"])
+            kibble_bit.pprint("Scanning file changes for %s" % source["sourceURL"])
             for filename in modificationDates:
                 fid = hashlib.sha1(
                     ("%s/%s" % (source["sourceID"], filename)).encode(
@@ -310,11 +309,11 @@ def scan(KibbleBit, source):
                         time.gmtime(modificationDates[filename]["created"]),
                     ),
                 }
-                found = KibbleBit.exists("file_history", fid)
+                found = kibble_bit.exists("file_history", fid)
                 if found:
                     del jsfe["created"]
                     del jsfe["createdDate"]
-                KibbleBit.append("file_history", jsfe)
+                kibble_bit.append("file_history", jsfe)
 
         source["steps"]["census"] = {
             "time": time.time(),
@@ -324,4 +323,4 @@ def scan(KibbleBit, source):
             "good": True,
         }
         source["census"] = time.time()
-        KibbleBit.updateSource(source)
+        kibble_bit.update_source(source)
