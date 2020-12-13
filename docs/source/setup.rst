@@ -100,7 +100,7 @@ Source Code Location
 *Apache Kibble does not currently have any releases.*
 *You are however welcome to try out the development version.*
 
-For the time being, we recommend that you use the ``master`` branch for
+For the time being, we recommend that you use the ``main`` branch for
 testing Kibble. This applies to both scanners and the server.
 
 The Kibble Server can be found via our source repository at
