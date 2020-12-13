@@ -65,7 +65,7 @@
 This is the TopN committers list renderer for Kibble
 """
 
-import hashlib
+
 import json
 import time
 
@@ -119,7 +119,7 @@ def run(API, environ, indata, session):
     )
     sid = res["_scroll_id"]
     scroll_size = res["hits"]["total"]
-    if type(scroll_size) is dict:
+    if isinstance(scroll_size, dict):
         scroll_size = scroll_size["value"]  # ES >= 7.x
 
     timeseries = []

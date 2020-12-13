@@ -30,7 +30,7 @@ def unzip(url, creds=None, cookie=None):
     """Attempts to download an unzip an archive. Returns the temporary file path of the unzipped contents"""
     headers = {}
     if creds:
-        auth = str(base64.encodestring(bytes(creds)).replace("\n", ""))
+        auth = str(base64.encodebytes(bytes(creds)).replace("\n", ""))
         headers = {
             "Content-type": "application/json",
             "Accept": "*/*",
@@ -65,7 +65,7 @@ def unzip(url, creds=None, cookie=None):
                 else:
                     compressedFile.close()
                     return tmpfile.name
-            except:
+            except:  # pylint: disable=bare-except
                 # Probably not a gzipped file!
                 decompressedFile = open(tmpfile.name, "rb")
     if decompressedFile:

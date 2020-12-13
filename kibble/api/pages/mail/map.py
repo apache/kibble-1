@@ -156,9 +156,9 @@ def run(API, environ, indata, session):
 
     # For each repo, count commits and gather data on authors
     for doc in res["aggregations"]["per_ml"]["buckets"]:
-        sourceID = doc["key"]
+        source_id = doc["key"]
         emails = doc["doc_count"]
-        if re.search(badBots, sourceID):  # No bots
+        if re.search(badBots, source_id):  # No bots
             continue
         if emails > (span / 86400) * 4:  # More than 4/day and we consider you a bot!
             continue
@@ -181,7 +181,7 @@ def run(API, environ, indata, session):
                 "term": {
                     "replyto.keyword"
                     if not indata.get("author")
-                    else "sender": sourceID
+                    else "sender": source_id
                 }
             }
         )
@@ -194,8 +194,8 @@ def run(API, environ, indata, session):
             authors.append(pk)
         if emails > max_emails:
             max_emails = emails
-        repos[sourceID] = authors
-        repo_commits[sourceID] = emails
+        repos[source_id] = authors
+        repo_commits[source_id] = emails
 
     # Now, figure out which repos share the same contributors
     repo_links = {}
@@ -217,7 +217,7 @@ def run(API, environ, indata, session):
 
     for ID, repo in repos.items():
         mylinks = {}
-        if not ID in repodatas:
+        if ID not in repodatas:
             continue
         repodata = repodatas[ID]
         oID = ID
@@ -277,28 +277,28 @@ def run(API, environ, indata, session):
     nodes = []
     links = []
     existing_repos = []
-    for sourceID, ns in repo_notoriety.items():
+    for source_id, ns in repo_notoriety.items():
         lsize = 0
-        for k in repo_links.keys():
+        for k in repo_links:
             fr, to = k.split("||")
-            if fr == sourceID or to == sourceID:
+            if source_id in (fr, to):
                 lsize += 1
-        asize = len(repo_authors[sourceID])
+        asize = len(repo_authors[source_id])
         doc = {
-            "id": sourceID,
-            "gravatar": hashlib.md5(sourceID.lower().encode("utf-8")).hexdigest(),
-            "name": repodatas[sourceID]["_source"].get("name", sourceID),
-            "replies": repo_commits[sourceID],
+            "id": source_id,
+            "gravatar": hashlib.md5(source_id.lower().encode("utf-8")).hexdigest(),
+            "name": repodatas[source_id]["_source"].get("name", source_id),
+            "replies": repo_commits[source_id],
             "authors": asize,
             "links": lsize,
             "size": max(
-                5, (1 - abs(math.log10(repo_commits[sourceID] / max_emails))) * 45
+                5, (1 - abs(math.log10(repo_commits[source_id] / max_emails))) * 45
             ),
             "tooltip": "%u connections, %u fellows, %u replies to"
-            % (lsize, asize, repo_commits[sourceID]),
+            % (lsize, asize, repo_commits[source_id]),
         }
         nodes.append(doc)
-        existing_repos.append(sourceID)
+        existing_repos.append(source_id)
 
     for k, s in repo_links.items():
         size = s

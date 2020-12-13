@@ -65,7 +65,6 @@
 This is the issue actors stats page for Kibble
 """
 
-import hashlib
 import json
 import time
 

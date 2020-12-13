@@ -22,7 +22,7 @@ DEFAULT_KIBBLE_CONFIG_LOCATION = os.path.join(
 )
 
 
-class KibbleConfigParser(ConfigParser):
+class KibbleConfigParser(ConfigParser):  # pylint: disable=too-many-ancestors
     """Custom Kibble config parser"""
 
     def __init__(self):

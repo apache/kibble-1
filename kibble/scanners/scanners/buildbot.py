@@ -15,6 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""
+This is the Kibble Buildbot scanner plugin.
+"""
+
 import datetime
 import hashlib
 import re
@@ -22,10 +26,6 @@ import threading
 import time
 
 from kibble.scanners.utils import jsonapi
-
-"""
-This is the Kibble Buildbot scanner plugin.
-"""
 
 title = "Scanner for Buildbot"
 version = "0.1.0"
@@ -64,7 +64,7 @@ def scan_job(KibbleBit, source, job, creds):
             builddoc = None
             try:
                 builddoc = KibbleBit.get("ci_build", buildhash)
-            except:  # pylint: disable=bare-except
+            except:  # pylint: disable=bare-except  # pylint: disable=bare-except
                 pass
 
             # If this build already completed, no need to parse it again
@@ -75,7 +75,7 @@ def scan_job(KibbleBit, source, job, creds):
                 "[%s-%s] This is new or pending, analyzing..." % (job, buildno)
             )
 
-            completed = True if "currentStep" in data else False
+            completed = "currentStep" in data
 
             # Get build status (success, failed, canceled etc)
             status = "building"
@@ -124,7 +124,7 @@ class BuildbotThread(threading.Thread):
     """ Generic thread class for scheduling multiple scans at once """
 
     def __init__(self, block, KibbleBit, source, creds, jobs):
-        super(BuildbotThread, self).__init__()
+        super().__init__()
         self.block = block
         self.KibbleBit = KibbleBit
         self.creds = creds

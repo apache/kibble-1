@@ -117,7 +117,7 @@ def make_issue(repo, base_url, change):
     if is_closed(change):
         closed_date = change["updated"]
 
-    if not "email" in change["owner"]:
+    if "email" not in change["owner"]:
         change["owner"]["email"] = "%u@invalid.gerrit" % change["owner"]["_account_id"]
     owner_email = change["owner"]["email"]
 

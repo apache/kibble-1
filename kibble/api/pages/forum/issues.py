@@ -65,7 +65,6 @@
 This is the forum timeseries renderer for Kibble
 """
 
-import hashlib
 import json
 import time
 

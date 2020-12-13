@@ -138,7 +138,7 @@ def create_es_index(
         es.indices.create(
             index=iname, body={"mappings": mappings["mappings"], "settings": settings}
         )
-    print(f"Indices created!\n")
+    print("Indices created!")
     print()
 
     salt = bcrypt.gensalt()

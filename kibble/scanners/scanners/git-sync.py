@@ -51,7 +51,7 @@ def scan(kibble_bit, source):
         try:
             os.makedirs(rootpath, exist_ok=True)
             print("Created root path %s" % rootpath)
-        except:  # pylint: disable=bare-except
+        except:  # pylint: disable=bare-except  # pylint: disable=bare-except
             source["steps"]["sync"] = {
                 "time": time.time(),
                 "status": "Could not create root scratch dir - permision denied?",
@@ -118,28 +118,27 @@ def scan(kibble_bit, source):
                     ):
                         # This isn't a merge conflict, pass it to outer func
                         raise err
-                    else:
-                        # Switch to first commit
-                        fcommit = subprocess.check_output(
-                            "cd %s && git rev-list --max-parents=0 --abbrev-commit HEAD"
-                            % datapath,
-                            shell=True,
-                            stderr=subprocess.STDOUT,
-                        )
-                        fcommit = fcommit.decode("ascii").strip()
+                    # Switch to first commit
+                    fcommit = subprocess.check_output(
+                        "cd %s && git rev-list --max-parents=0 --abbrev-commit HEAD"
+                        % datapath,
+                        shell=True,
+                        stderr=subprocess.STDOUT,
+                    )
+                    fcommit = fcommit.decode("ascii").strip()
+                    subprocess.check_call(
+                        "cd %s && git reset --hard %s" % (datapath, fcommit),
+                        shell=True,
+                        stderr=subprocess.STDOUT,
+                    )
+                    try:
                         subprocess.check_call(
-                            "cd %s && git reset --hard %s" % (datapath, fcommit),
+                            "cd %s && git clean -xfd" % datapath,
                             shell=True,
                             stderr=subprocess.STDOUT,
                         )
-                        try:
-                            subprocess.check_call(
-                                "cd %s && git clean -xfd" % datpath,
-                                shell=True,
-                                stderr=subprocess.STDOUT,
-                            )
-                        except:  # pylint: disable=bare-except
-                            pass
+                    except:  # pylint: disable=bare-except  # pylint: disable=bare-except
+                        pass
         # This is a new repo, clone it!
         else:
             kibble_bit.pprint("%s is new, cloning...!" % datapath)

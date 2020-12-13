@@ -180,7 +180,7 @@ def scan(kibble_bit, source, first_attempt=True):
 
         for issue in issues:
 
-            if not issue["user"]["login"] in people:
+            if issue["user"]["login"] not in people:
                 person = make_person(
                     source, issue, github.user(issue["user"]["url"], auth=auth)
                 )

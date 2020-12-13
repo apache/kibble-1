@@ -35,7 +35,7 @@ def accepts(source):
     if source["type"] == "git":
         return True
     # There are cases where we have a github repo, but don't wanna analyze the code, just issues
-    if source["type"] == "github" and source.get("issuesonly", False) == False:
+    if source["type"] == "github" and not source.get("issuesonly", False):
         return True
     return False
 
@@ -47,7 +47,7 @@ def get_first_ref(gpath):
             % gpath,
             shell=True,
         )
-    except:  # pylint: disable=bare-except
+    except:  # pylint: disable=bare-except  # pylint: disable=bare-except
         print("Could not get first ref, exiting!")
         return None
 
@@ -83,7 +83,7 @@ def check_branch(gpath, date, branch):
             shell=True,
         )
         return True
-    except:  # pylint: disable=bare-except
+    except:  # pylint: disable=bare-except  # pylint: disable=bare-except
         return False
 
 
@@ -117,7 +117,7 @@ def find_branch(date, gpath):
             stderr=subprocess.DEVNULL,
         )
         return "master"
-    except:  # pylint: disable=bare-except
+    except:  # pylint: disable=bare-except  # pylint: disable=bare-except
         os.chdir(gpath)
         try:
             return (
@@ -130,7 +130,7 @@ def find_branch(date, gpath):
                 .strip()
                 .strip("* ")
             )
-        except:  # pylint: disable=bare-except
+        except:  # pylint: disable=bare-except  # pylint: disable=bare-except
             # print("meh! no branch")
             return None
 

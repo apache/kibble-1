@@ -26,23 +26,24 @@ import time
 import uuid
 
 
-class KibbleSession(object):
+class KibbleSession:
     def getView(self, viewID):
         if self.DB.ES.exists(index=self.DB.dbname, doc_type="view", id=viewID):
             view = self.DB.ES.get(index=self.DB.dbname, doc_type="view", id=viewID)
             return view["_source"]["sourceList"]
         return []
 
-    def subFilter(self, subfilter, view=[]):
+    def subFilter(self, subfilter, view=None):
+        view = view or []
         if len(subfilter) == 0:
             return view
-        dOrg = self.user["defaultOrganisation"] or "apache"
+        d_org = self.user["defaultOrganisation"] or "apache"
         res = self.DB.ES.search(
             index=self.DB.dbname,
             doc_type="source",
             size=10000,
             _source_include=["sourceURL", "sourceID"],
-            body={"query": {"bool": {"must": [{"term": {"organisation": dOrg}}]}}},
+            body={"query": {"bool": {"must": [{"term": {"organisation": d_org}}]}}},
         )
         sources = []
         for doc in res["hits"]["hits"]:
@@ -51,13 +52,14 @@ class KibbleSession(object):
             if m and ((not view) or (sid in view)):
                 sources.append(sid)
         if not sources:
-            sources = ["x"]  # blank return to not show eeeeverything
+            sources = ["x"]  # blank return to not show everything
         return sources
 
-    def subType(self, stype, view=[]):
+    def subType(self, stype, view=None):
+        view = view or []
         if len(stype) == 0:
             return view
-        if type(stype) is str:
+        if isinstance(stype, str):
             stype = [stype]
         dOrg = self.user["defaultOrganisation"] or "apache"
         res = self.DB.ES.search(
@@ -100,7 +102,7 @@ class KibbleSession(object):
                 )
                 self.cookie = None
                 self.user = None
-            except:
+            except:  # pylint: disable=bare-except
                 pass
 
     def newCookie(self):

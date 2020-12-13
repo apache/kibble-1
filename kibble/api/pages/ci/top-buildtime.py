@@ -66,7 +66,6 @@ This is the TopN CI jobs by total build time renderer for Kibble
 """
 
 import json
-import re
 import time
 
 

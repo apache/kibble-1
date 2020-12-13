@@ -47,13 +47,13 @@ def default_branch(source, datapath):
                 .strip("* ")
             )
             return branch
-        except:
+        except:  # pylint: disable=bare-except
             pass
     # If we couldn't find it locally, looking at all (local+remote)
     try:
         inp = (
             subprocess.check_output(
-                "cd %s && git branch -a | awk -F ' +' '! /\(no branch\)/ {print $2}'"
+                r"cd %s && git branch -a | awk -F ' +' '! /\(no branch\)/ {print $2}'"
                 % datapath,
                 shell=True,
                 stderr=subprocess.DEVNULL,
@@ -68,7 +68,7 @@ def default_branch(source, datapath):
                     for B in wanted_branches:
                         if branch == B:
                             return branch
-    except:
+    except:  # pylint: disable=bare-except
         pass
 
     # If still not found, resort to whatever branch comes first in the remote listing...

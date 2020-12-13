@@ -253,24 +253,5 @@ def run(API, environ, indata, session):
         },
     }
 
-    JSON_OUT = {"trends": trends, "okay": True, "responseTime": time.time() - now}
-    yield json.dumps(JSON_OUT)
-
-
-"""
-commits = {
-                before = pcommits,
-                after = commits,
-                title = "Commits"
-            },
-            [role.."s"] = {
-                before = pcommitters,
-                after = committers,
-                title = role:gsub("^(%S)", string.upper).."s",
-            },
-            lines = {
-                before = pdeletions + pinsertions,
-                after = deletions + insertions,
-                title = "Lines changed"
-            }
-            """
+    json_out = {"trends": trends, "okay": True, "responseTime": time.time() - now}
+    yield json.dumps(json_out)

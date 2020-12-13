@@ -134,7 +134,7 @@ def scan(kibble_bit, source):
                             raw_subject = re.sub(
                                 r"[\r\n\t]+", "", raw_subject, count=10
                             )
-                            if not raw_subject in rawtopics:
+                            if raw_subject not in rawtopics:
                                 rawtopics[raw_subject] = 0
                             rawtopics[raw_subject] += 1
                             m = re.match(

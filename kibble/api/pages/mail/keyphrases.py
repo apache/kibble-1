@@ -65,7 +65,7 @@
 This is the common key phrases renderer for Kibble
 """
 
-import hashlib
+
 import json
 import time
 

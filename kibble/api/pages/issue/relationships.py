@@ -66,7 +66,6 @@ This is the issue tracker relationship list renderer for Kibble
 """
 
 import copy
-import hashlib
 import json
 import math
 import re
@@ -136,7 +135,6 @@ def run(API, environ, indata, session):
 
     repos = {}
     repo_commits = {}
-    authorlinks = {}
     max_commits = 0
     max_links = 0
     max_shared = 0
@@ -144,7 +142,7 @@ def run(API, environ, indata, session):
 
     # For each repo, count commits and gather data on authors
     for doc in res["aggregations"]["per_repo"]["buckets"]:
-        sourceID = doc["key"]
+        source_id = doc["key"]
         commits = doc["doc_count"]
 
         # Gather the unique authors/committers
@@ -153,7 +151,7 @@ def run(API, environ, indata, session):
             "per_creator": {"terms": {"field": "issueCreator", "size": 10000}},
         }
         xquery = copy.deepcopy(query)
-        xquery["query"]["bool"]["must"].append({"term": {"sourceID": sourceID}})
+        xquery["query"]["bool"]["must"].append({"term": {"sourceID": source_id}})
         xres = session.DB.ES.search(
             index=session.DB.dbname, doc_type="issue", size=0, body=xquery
         )
@@ -164,19 +162,18 @@ def run(API, environ, indata, session):
             authors.append(person["key"])
         if commits > max_commits:
             max_commits = commits
-        repos[sourceID] = authors
-        repo_commits[sourceID] = commits
+        repos[source_id] = authors
+        repo_commits[source_id] = commits
 
     # Now, figure out which repos share the same contributors
     repo_links = {}
     repo_notoriety = {}
     repodatas = {}
     repo_authors = {}
-    minLinks = indata.get("links", 1)
+    min_links = indata.get("links", 1)
 
     # Grab data of all sources
     for ID, repo in repos.items():
-        mylinks = {}
         if not session.DB.ES.exists(index=session.DB.dbname, doc_type="source", id=ID):
             continue
         repodatas[ID] = session.DB.ES.get(
@@ -185,7 +182,7 @@ def run(API, environ, indata, session):
 
     for ID, repo in repos.items():
         mylinks = {}
-        if not ID in repodatas:
+        if ID not in repodatas:
             continue
         repodata = repodatas[ID]
         oID = ID
@@ -213,7 +210,7 @@ def run(API, environ, indata, session):
                             xlinks.append(author)
                     lname = "%s@%s" % (ID, xID)  # Link name
                     rname = "%s@%s" % (xID, ID)  # Reverse link name
-                    if len(xlinks) >= minLinks and not rname in repo_links:
+                    if len(xlinks) >= min_links and not rname in repo_links:
                         mylinks[xID] = len(xlinks)
                         repo_links[lname] = repo_links.get(lname, 0) + len(
                             xlinks
@@ -247,25 +244,25 @@ def run(API, environ, indata, session):
     nodes = []
     links = []
     existing_repos = []
-    for sourceID in repo_notoriety.keys():
+    for source_id in repo_notoriety:
         lsize = 0
-        for k in repo_links.keys():
+        for k in repo_links:
             fr, to = k.split("@")
-            if fr == sourceID or to == sourceID:
+            if source_id in (fr, to):
                 lsize += 1
-        asize = len(repo_authors[sourceID])
+        asize = len(repo_authors[source_id])
         doc = {
-            "id": sourceID,
-            "name": sourceID,
-            "issues": repo_commits[sourceID],
+            "id": source_id,
+            "name": source_id,
+            "issues": repo_commits[source_id],
             "authors": asize,
             "links": lsize,
             "size": max(5, (1 - abs(math.log10(asize / max_authors))) * 45),
             "tooltip": "%u connections, %u contributors, %u issues"
-            % (lsize, asize, repo_commits[sourceID]),
+            % (lsize, asize, repo_commits[source_id]),
         }
         nodes.append(doc)
-        existing_repos.append(sourceID)
+        existing_repos.append(source_id)
 
     for k, s in repo_links.items():
         size = s

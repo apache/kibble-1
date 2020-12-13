@@ -26,13 +26,13 @@
 #          description: Email address of account
 #          required: true
 #          schema:
-#            type: string
+#            type: string  # pylint: disable=syntax-error
 #        - name: vcode
 #          in: path
 #          description: Verification code
 #          required: true
 #          schema:
-#            type: string
+#            type: string  # pylint: disable=syntax-error
 #      responses:
 #        '200':
 #          description: 200 Response

@@ -116,7 +116,7 @@ def scan(kibble_bit, source):
         kibble_bit.pprint("Verifying twitter credentials...")
         try:
             t.VerifyCredentials()
-        except:  # pylint: disable=bare-except
+        except:  # pylint: disable=bare-except  # pylint: disable=bare-except
             source["steps"]["twitter"] = {
                 "time": time.time(),
                 "status": "Could not verify twitter credentials",

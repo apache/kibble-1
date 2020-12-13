@@ -15,6 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""
+This is the Kibble Jenkins scanner plugin.
+"""
+
 import datetime
 import hashlib
 import re
@@ -23,10 +27,6 @@ import time
 import urllib.parse
 
 from kibble.scanners.utils import jsonapi
-
-"""
-This is the Kibble Jenkins scanner plugin.
-"""
 
 title = "Scanner for Jenkins CI"
 version = "0.1.0"
@@ -71,7 +71,7 @@ def scan_job(kibble_bit, source, job, creds):
             builddoc = None
             try:
                 builddoc = kibble_bit.get("ci_build", buildhash)
-            except:  # pylint: disable=bare-except
+            except:  # pylint: disable=bare-except  # pylint: disable=bare-except
                 pass
 
             # If this build already completed, no need to parse it again
@@ -82,7 +82,7 @@ def scan_job(kibble_bit, source, job, creds):
                 "[%s-%s] This is new or pending, analyzing..." % (jname, build["id"])
             )
 
-            completed = True if build["result"] else False
+            completed = bool(build["result"])
 
             # Estimate time spent in queue
             queuetime = 0
@@ -138,7 +138,7 @@ class Jenkinsthread(threading.Thread):
     """ Generic thread class for scheduling multiple scans at once """
 
     def __init__(self, block, KibbleBit, source, creds, jobs):
-        super(Jenkinsthread, self).__init__()
+        super().__init__()
         self.block = block
         self.KibbleBit = KibbleBit
         self.creds = creds
@@ -332,7 +332,7 @@ def get_all_jobs(kibble_bit, source, joblist, creds):
                 building += cbuilding
                 for cjob in cjobs:
                     real_jobs.append(cjob)
-            except:  # pylint: disable=bare-except
+            except:  # pylint: disable=bare-except  # pylint: disable=bare-except
                 kibble_bit.pprint("Couldn't get child jobs, bailing")
                 print("%s/api/json?tree=jobs[name,color]&depth=1" % cs_url)
         # Or standard job?

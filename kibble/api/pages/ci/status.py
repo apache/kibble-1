@@ -65,7 +65,6 @@
 This is the CI queue status (blocked/stuck) timeseries renderer for Kibble
 """
 
-import hashlib
 import json
 import time
 

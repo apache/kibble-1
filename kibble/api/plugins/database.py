@@ -25,7 +25,7 @@ import elasticsearch
 from kibble.configuration import KibbleConfigParser
 
 
-class KibbleESWrapper(object):
+class KibbleESWrapper:
     """
     Class for rewriting old-style queries to the new ones,
     where doc_type is an integral part of the DB name
@@ -75,7 +75,7 @@ class KibbleESWrapper(object):
         return self.ES.count(index=index + "_" + doc_type, doc_type="_doc", body=body)
 
 
-class KibbleESWrapperSeven(object):
+class KibbleESWrapperSeven:
     """
     Class for rewriting old-style queries to the >= 7.x ones,
     where doc_type is an integral part of the DB name and NO DOC_TYPE!
@@ -120,7 +120,7 @@ class KibbleESWrapperSeven(object):
         return self.ES.count(index=index + "_" + doc_type, body=body)
 
 
-class KibbleDatabase(object):
+class KibbleDatabase:
     def __init__(self, config: KibbleConfigParser):
         self.config = config
         self.dbname = config.get("elasticsearch", "dbname")

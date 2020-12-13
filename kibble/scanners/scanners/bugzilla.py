@@ -213,7 +213,7 @@ def scan_ticket(bug, kibble_bit, source, open_tickets, u, dom):
                     try:
                         ujs = jsonapi.get(ticketsURL)
                         displayName = ujs["result"]["users"][0]["real_name"]
-                    except:  # pylint: disable=bare-except
+                    except:  # pylint: disable=bare-except  # pylint: disable=bare-except
                         displayName = closer["email"]
                     if displayName and len(displayName) > 0:
                         # Add to people db
@@ -244,7 +244,7 @@ def scan_ticket(bug, kibble_bit, source, open_tickets, u, dom):
                         try:
                             ujs = jsonapi.get(ticketsURL)
                             creator["name"] = ujs["result"]["users"][0]["real_name"]
-                        except:  # pylint: disable=bare-except
+                        except:  # pylint: disable=bare-except  # pylint: disable=bare-except
                             creator["name"] = creator["email"]
                     if creator["name"] and len(creator["name"]) > 0:
                         # Add to people db
@@ -290,7 +290,7 @@ def scan_ticket(bug, kibble_bit, source, open_tickets, u, dom):
 
 class BzThread(Thread):
     def __init__(self, KibbleBit, source, block, pt, ot, u, dom):
-        super(BzThread, self).__init__()
+        super().__init__()
         self.KibbleBit = KibbleBit
         self.source = source
         self.block = block
@@ -412,7 +412,7 @@ def scan(kibble_bit, source):
         while True:
             try:
                 js = jsonapi.get(tickets_url, auth=creds)
-            except:  # pylint: disable=bare-except
+            except:  # pylint: disable=bare-except  # pylint: disable=bare-except
                 kibble_bit.pprint("Couldn't fetch more tickets, bailing")
                 break
 
@@ -426,7 +426,7 @@ def scan(kibble_bit, source):
                 )
                 for bug in js["result"]["bugs"]:
                     pending_tickets.append(bug)
-                    if not bug["status"] in ["RESOLVED", "CLOSED"]:
+                    if bug["status"] not in ["RESOLVED", "CLOSED"]:
                         open_tickets.append(bug["id"])
                 params["offset"] += 10000
                 tickets_url = "%s?method=Bug.search&params=[%s]" % (

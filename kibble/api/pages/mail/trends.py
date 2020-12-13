@@ -65,7 +65,6 @@
 This is the Email trends renderer for Kibble
 """
 
-import datetime
 import json
 import time
 

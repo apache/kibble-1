@@ -175,7 +175,7 @@ class KibbleBit:
 
     def append(self, t, doc):
         """ Append a document to the bulk push queue """
-        if not "id" in doc:
+        if "id" not in doc:
             sys.stderr.write("No doc ID specified!\n")
             return
         doc["doctype"] = t
@@ -297,12 +297,8 @@ class Broker:
         self.oDB = es  # Original ES class, always. the .DB may change
         self.bitClass = KibbleBit
         # This bit is required since ES 6.x and above don't like document types
-        self.noTypes = (
-            True if int(es_info["version"]["number"].split(".")[0]) >= 6 else False
-        )
-        self.seven = (
-            True if int(es_info["version"]["number"].split(".")[0]) >= 7 else False
-        )
+        self.noTypes = int(es_info["version"]["number"].split(".")[0]) >= 6
+        self.seven = int(es_info["version"]["number"].split(".")[0]) >= 7
         if self.noTypes:
             print("This is a type-less DB, expanding database names instead.")
             if self.seven:

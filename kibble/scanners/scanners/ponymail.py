@@ -15,16 +15,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""
+This is a Kibble scanner plugin for Apache Pony Mail sources.
+"""
+
 import datetime
 import hashlib
 import re
 import time
 
 from kibble.scanners.utils import jsonapi
-
-"""
-This is a Kibble scanner plugin for Apache Pony Mail sources.
-"""
 
 title = "Scanner plugin for Apache Pony Mail"
 version = "0.1.0"
@@ -230,9 +230,9 @@ def scan(kibble_bit, source):
                 if m:
                     name = m.group(1).replace('"', "").strip()
                     sender = m.group(2)
-                if not sender in posters:
+                if sender not in posters:
                     posters[sender] = {"name": name, "email": sender}
-                if not sender in knowns:
+                if sender not in knowns:
                     sid = hashlib.sha1(
                         ("%s%s" % (source["organisation"], sender)).encode(
                             "ascii", errors="replace"
@@ -240,7 +240,7 @@ def scan(kibble_bit, source):
                     ).hexdigest()
                     if kibble_bit.exists("person", sid):
                         knowns[sender] = True
-                if not sender in knowns or name != sender:
+                if sender not in knowns or name != sender:
                     kibble_bit.append(
                         "person",
                         {

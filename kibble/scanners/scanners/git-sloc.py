@@ -15,14 +15,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""
+Source Lines of Code counter for Git.
+"""
+
 import os
 import subprocess
 import time
 
 from kibble.configuration import conf
 from kibble.scanners.utils import git, sloc
-
-""" Source Lines of Code counter for Git """
 
 title = "SloC Counter for Git"
 version = "0.1.0"
@@ -33,7 +35,7 @@ def accepts(source):
     if source["type"] == "git":
         return True
     # There are cases where we have a github repo, but don't wanna analyze the code, just issues
-    if source["type"] == "github" and source.get("issuesonly", False) == False:
+    if source["type"] == "github" and not source.get("issuesonly", False):
         return True
     return False
 
@@ -61,7 +63,7 @@ def scan(kibble_bit, source):
         try:
             branch = git.default_branch(source, gpath)
             subprocess.call("cd %s && git checkout %s" % (gpath, branch), shell=True)
-        except:  # pylint: disable=bare-except
+        except:  # pylint: disable=bare-except  # pylint: disable=bare-except
             kibble_bit.pprint("SLoC counter failed to find main branch for %s!!" % url)
             return False
 

@@ -48,7 +48,7 @@
 #       content:
 #         application/json:
 #           schema:
-#             type: array
+#             type: array  # pylint: disable=syntax-error
 #             items:
 #               $ref: '#/components/schemas/OrgMembers'
 #       description: 200 Response
@@ -115,7 +115,7 @@
 This is the Org list renderer for Kibble
 """
 
-import hashlib
+
 import json
 import time
 

@@ -230,7 +230,7 @@ def run(API, environ, indata, session):
                 sourceURL = source["sourceURL"]
                 sourceType = source["type"]
                 creds = {}
-                if not sourceType in stypes:
+                if sourceType not in stypes:
                     raise API.exception(400, "Attempt to add unknown source type!")
                 if "optauth" in stypes[sourceType]:
                     for el in stypes[sourceType]["optauth"]:

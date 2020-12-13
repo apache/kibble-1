@@ -15,6 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""
+This is the Kibble Travis CI scanner plugin.
+"""
+
 import datetime
 import hashlib
 import re
@@ -23,10 +27,6 @@ import time
 
 import requests
 import requests.exceptions
-
-"""
-This is the Kibble Travis CI scanner plugin.
-"""
 
 title = "Scanner for Travis CI"
 version = "0.1.0"
@@ -83,7 +83,7 @@ def scan_job(kibble_bit, source, bid, token, TLD):
                 started_at = build["started_at"]
                 finished_at = build["finished_at"]
                 duration = build["duration"]
-                completed = True if duration else False
+                completed = bool(duration)
                 duration = duration or 0
 
                 buildhash = hashlib.sha224(
@@ -95,7 +95,7 @@ def scan_job(kibble_bit, source, bid, token, TLD):
                 builddoc = None
                 try:
                     builddoc = kibble_bit.get("ci_build", buildhash)
-                except:  # pylint: disable=bare-except
+                except:  # pylint: disable=bare-except  # pylint: disable=bare-except
                     pass
 
                 # If this build already completed, no need to parse it again
@@ -167,7 +167,7 @@ class TravisThread(threading.Thread):
     """ Generic thread class for scheduling multiple scans at once """
 
     def __init__(self, block, kibble_bit, source, token, jobs, TLD):
-        super(TravisThread, self).__init__()
+        super().__init__()
         self.block = block
         self.kibble_bit = kibble_bit
         self.token = token

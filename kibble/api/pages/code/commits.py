@@ -65,7 +65,7 @@
 This is the TopN committers list renderer for Kibble
 """
 
-import hashlib
+
 import json
 import time
 

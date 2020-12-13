@@ -67,7 +67,6 @@ This is the code contributor retention factor renderer for Kibble
 
 import datetime
 import json
-import re
 import time
 
 

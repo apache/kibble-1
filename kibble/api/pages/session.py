@@ -96,7 +96,6 @@ This is the user session handler for Kibble
 
 import hashlib
 import json
-import re
 import time
 import uuid
 

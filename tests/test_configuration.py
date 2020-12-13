@@ -32,7 +32,7 @@ class TestDefaultConfig:
             ("mail", "mailhost", "localhost:25"),
         ],
     )
-    def test_default_values(self, section, key, value):
+    def test_default_values(self, section, key, value):  # pylint: disable=no-self-use
         if isinstance(value, bool):
             config_value = conf.getboolean(section, key)
         elif isinstance(value, int):

@@ -65,7 +65,7 @@
 This is the forum actors stats page for Kibble
 """
 
-import hashlib
+
 import json
 import time
 

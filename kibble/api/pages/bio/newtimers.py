@@ -75,10 +75,10 @@ def find_earlier(session, query, when, who, which, where, doctype, dOrg):
     if "aggs" in query:
         del query["aggs"]
 
-    rangeQuery = {"range": {which: {"from": 0, "to": time.time()}}}
+    range_query = {"range": {which: {"from": 0, "to": time.time()}}}
 
     query["query"]["bool"]["must"] = [
-        rangeQuery,
+        range_query,
         {"term": {"organisation": dOrg}},
         {"term": {where: who}},
     ]
@@ -90,10 +90,7 @@ def find_earlier(session, query, when, who, which, where, doctype, dOrg):
         doc = res["hits"]["hits"][0]["_source"]
         if doc[which] >= when:
             return [doc[which], doc]
-        else:
-            return [-1, None]
-    else:
-        return [-1, None]
+    return [-1, None]
 
 
 def run(API, environ, indata, session):

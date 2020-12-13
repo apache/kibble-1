@@ -132,6 +132,6 @@ def scan(kibble_bit, source):
                     "id": shash,
                 }
                 kibble_bit.append("ghstats", bit)
-    except:  # pylint: disable=bare-except
+    except:  # pylint: disable=bare-except  # pylint: disable=bare-except
         pass
         # All done!

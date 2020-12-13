@@ -33,7 +33,7 @@ def accepts(source):
     if source["type"] == "git":
         return True
     # There are cases where we have a github repo, but don't wanna analyze the code, just issues
-    if source["type"] == "github" and source.get("issuesonly", False) == False:
+    if source["type"] == "github" and not source.get("issuesonly", False):
         return True
     return False
 
@@ -93,7 +93,7 @@ def scan(kibble_bit, source):
         os.unlink(tmp.name)
         kibble_bit.pprint("Parsing log for %s (%s)..." % (rid, url))
         for m in re.finditer(
-            u":([a-f0-9]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([\d+]+)\r?\n([^:]+?):",
+            r":([a-f0-9]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([^\r\n|]+)\|([\d+]+)\r?\n([^:]+?):",
             inp,
             flags=re.MULTILINE,
         ):
@@ -110,7 +110,7 @@ def scan(kibble_bit, source):
                 files_touched = set()
                 # Diffs
                 for l in re.finditer(
-                    u"(\d+)[ \t]+(\d+)[ \t]+([^\r\n]+)", diff, flags=re.MULTILINE
+                    r"(\d+)[ \t]+(\d+)[ \t]+([^\r\n]+)", diff, flags=re.MULTILINE
                 ):
                     insert += int(l.group(1))
                     delete += int(l.group(2))
@@ -148,63 +148,62 @@ def scan(kibble_bit, source):
                             "gigantic diff for %s (%s), ignoring"
                             % (gpath, source["sourceURL"])
                         )
-                        pass
-                if not gname in idseries:
+                if gname not in idseries:
                     idseries[gname] = {}
-                if not gname in lcseries:
+                if gname not in lcseries:
                     lcseries[gname] = {}
-                if not gname in alcseries:
+                if gname not in alcseries:
                     alcseries[gname] = {}
-                if not gname in ctseries:
+                if gname not in ctseries:
                     ctseries[gname] = {}
-                if not gname in atseries:
+                if gname not in atseries:
                     atseries[gname] = {}
                 ts = ct - (ct % 86400)
-                if not ts in idseries[gname]:
+                if ts not in idseries[gname]:
                     idseries[gname][ts] = [0, 0]
 
                 idseries[gname][ts][0] += insert
                 idseries[gname][ts][1] += delete
 
-                if not ts in lcseries[gname]:
+                if ts not in lcseries[gname]:
                     lcseries[gname][ts] = {}
-                if not ts in alcseries[gname]:
+                if ts not in alcseries[gname]:
                     alcseries[gname][ts] = {}
-                if not ce in lcseries[gname][ts]:
+                if ce not in lcseries[gname][ts]:
                     lcseries[gname][ts][ce] = [0, 0]
                 lcseries[gname][ts][ce][0] += insert
                 lcseries[gname][ts][ce][1] = lcseries[gname][ts][ce][0] + delete
 
-                if not ae in alcseries[gname][ts]:
+                if ae not in alcseries[gname][ts]:
                     alcseries[gname][ts][ae] = [0, 0]
                 alcseries[gname][ts][ae][0] += insert
                 alcseries[gname][ts][ae][1] = alcseries[gname][ts][ae][0] + delete
 
-                if not ts in ctseries[gname]:
+                if ts not in ctseries[gname]:
                     ctseries[gname][ts] = {}
-                if not ts in atseries[gname]:
+                if ts not in atseries[gname]:
                     atseries[gname][ts] = {}
 
-                if not ce in ctseries[gname][ts]:
+                if ce not in ctseries[gname][ts]:
                     ctseries[gname][ts][ce] = 0
                 ctseries[gname][ts][ce] += 1
 
-                if not ae in atseries[gname][ts]:
+                if ae not in atseries[gname][ts]:
                     atseries[gname][ts][ae] = 0
                 atseries[gname][ts][ae] += 1
 
                 # Committer
-                if not ce in people or len(people[ce]["name"]) < len(cn):
+                if ce not in people or len(people[ce]["name"]) < len(cn):
                     people[ce] = people[ce] if ce in people else {"projects": [gname]}
                     people[ce]["name"] = cn
-                    if not gname in people[ce]["projects"]:
+                    if gname not in people[ce]["projects"]:
                         people[ce]["projects"].append(gname)
 
                 # Author
-                if not ae in people or len(people[ae]["name"]) < len(an):
+                if ae not in people or len(people[ae]["name"]) < len(an):
                     people[ae] = people[ae] if ae in people else {"projects": [gname]}
                     people[ae]["name"] = an
-                    if not gname in people[ae]["projects"]:
+                    if gname not in people[ae]["projects"]:
                         people[ae]["projects"].append(gname)
 
                 # Make a list of changed files, max 1024
@@ -282,7 +281,8 @@ def scan(kibble_bit, source):
                 kibble_bit.append("code_commit", js)
                 kibble_bit.append("code_commit_unique", jsx)
 
-        if True:  # Do file changes?? Might wanna make this optional
+        changed = True  # Do file changes?? Might wanna make this optional
+        if changed:
             kibble_bit.pprint("Scanning file changes for %s" % source["sourceURL"])
             for filename in modificationDates:
                 fid = hashlib.sha1(

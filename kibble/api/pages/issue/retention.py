@@ -69,7 +69,6 @@ This is the code contributor retention factor renderer for Kibble
 
 import datetime
 import json
-import re
 import time
 
 
@@ -99,12 +98,11 @@ def run(API, environ, indata, session):
 
     if nm < 1:
         nm += 12
-        ny = ny - 1
 
-    peopleSeen = {}
-    activePeople = {}
-    allPeople = {}
-    FoundSomething = False
+    people_seen = {}
+    active_people = {}
+    all_people = {}
+    found_something = False
 
     ny = 1970
     while ny < cy or (ny == cy and (nm + 3) <= tnow.month):
@@ -144,9 +142,9 @@ def run(API, environ, indata, session):
         res = session.DB.ES.count(index=session.DB.dbname, doc_type="issue", body=query)
 
         globcount = res["count"]
-        if globcount == 0 and FoundSomething == False:
+        if not globcount and not found_something:
             continue
-        FoundSomething = True
+        found_something = True
 
         # Get top 1000 committers this period
         query["aggs"] = {
@@ -165,34 +163,34 @@ def run(API, environ, indata, session):
         for bucket in res["aggregations"]["by_o"]["buckets"]:
             who = bucket["key"]
             thisPeriod.append(who)
-            if who not in peopleSeen:
-                peopleSeen[who] = tf
+            if who not in people_seen:
+                people_seen[who] = tf
                 added += 1
-            activePeople[who] = tf
-            if who not in allPeople:
-                allPeople[who] = tf
+            active_people[who] = tf
+            if who not in all_people:
+                all_people[who] = tf
 
         for bucket in res["aggregations"]["by_c"]["buckets"]:
             who = bucket["key"]
             thisPeriod.append(who)
-            if who not in peopleSeen:
-                peopleSeen[who] = tf
+            if who not in people_seen:
+                people_seen[who] = tf
                 added += 1
-            if who not in activePeople:
-                activePeople[who] = tf
-            if who not in allPeople:
-                allPeople[who] = tf
+            if who not in active_people:
+                active_people[who] = tf
+            if who not in all_people:
+                all_people[who] = tf
 
         prune = []
-        for k, v in activePeople.items():
+        for k, v in active_people.items():
             if v < (t - (hl * 30.45 * 86400)):
                 prune.append(k)
                 lost += 1
 
         for who in prune:
-            del activePeople[who]
-            del peopleSeen[who]
-        retained = len(activePeople) - added
+            del active_people[who]
+            del people_seen[who]
+        retained = len(active_people) - added
         ts.append(
             {
                 "date": tf,
@@ -212,13 +210,13 @@ def run(API, environ, indata, session):
 
     counts = {}
     totExp = 0
-    for person, age in activePeople.items():
-        totExp += time.time() - allPeople[person]
+    for person, age in active_people.items():
+        totExp += time.time() - all_people[person]
         for el in sorted(groups, key=lambda x: x[1], reverse=True):
-            if allPeople[person] <= time.time() - el[1]:
+            if all_people[person] <= time.time() - el[1]:
                 counts[el[0]] = counts.get(el[0], 0) + 1
                 break
-    avgyr = (totExp / (86400 * 365)) / max(len(activePeople), 1)
+    avgyr = (totExp / (86400 * 365)) / max(len(active_people), 1)
 
     ts = sorted(ts, key=lambda x: x["date"])
 

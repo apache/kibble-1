@@ -31,6 +31,7 @@ import yaml
 
 class OpenAPIException(Exception):
     def __init__(self, message):
+        super().__init__()
         self.message = message
 
 
@@ -61,7 +62,8 @@ class OpenAPI:
         else:
             self.API = yaml.safe_load(open(APIFile))
 
-    def validateType(self, field, value, ftype):
+    @staticmethod
+    def validateType(field, value, ftype):
         """ Validate a single field value against an expected type """
 
         # Get type of value, convert to JSON name of type.
@@ -97,7 +99,7 @@ class OpenAPI:
         # Check that all required fields are present
         if "required" in pdef:
             for field in pdef["required"]:
-                if not field in formdata:
+                if field not in formdata:
                     raise OpenAPIException(
                         "OpenAPI mismatch: Missing input field '%s' in %s!"
                         % (field, where)
@@ -171,7 +173,7 @@ class OpenAPI:
                 ):
 
                     # SHORTCUT: We only care about JSON input for Kibble! Disregard other types
-                    if not "application/json" in mdefs["requestBody"]["content"]:
+                    if "application/json" not in mdefs["requestBody"]["content"]:
                         raise OpenAPIException(
                             "OpenAPI mismatch: API endpoint accepts input, but no application/json definitions found in api.yaml!"
                         )
@@ -211,9 +213,9 @@ class OpenAPI:
                     js[k] = v["example"]
                 elif "items" in v:
                     if v["type"] == "array":
-                        js[k], foo = self.dumpExamples(v["items"], True)
+                        js[k], _ = self.dumpExamples(v["items"], True)
                     else:
-                        js[k], foo = self.dumpExamples(v["items"])
+                        js[k], _ = self.dumpExamples(v["items"])
         return [js if not array else [js], desc]
 
     def toHTML(self):

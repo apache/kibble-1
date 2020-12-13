@@ -54,6 +54,7 @@ KibbleOpenAPI = openapi.OpenAPI(openapi_yaml)
 
 class KibbleHTTPError(Exception):
     def __init__(self, code, message):
+        super().__init__()
         self.code = code
         self.message = message
 
@@ -75,7 +76,7 @@ class KibbleAPIWrapper:
             # Read JSON client data if any
             try:
                 request_size = int(environ.get("CONTENT_LENGTH", 0))
-            except (ValueError):
+            except ValueError:
                 request_size = 0
             requestBody = environ["wsgi.input"].read(request_size)
             formdata = {}
@@ -123,7 +124,7 @@ class KibbleAPIWrapper:
                 ) + "\n"
                 return
 
-        except:
+        except:  # pylint: disable=bare-except
             err_type, err_value, tb = sys.exc_info()
             traceback_output = ["API traceback:"]
             traceback_output += traceback.format_tb(tb)
@@ -133,7 +134,7 @@ class KibbleAPIWrapper:
                 start_response(
                     "500 Internal Server Error", [("Content-Type", "application/json")]
                 )
-            except:
+            except:  # pylint: disable=bare-except
                 pass
             yield json.dumps({"code": "500", "reason": "\n".join(traceback_output)})
 
@@ -142,7 +143,6 @@ def fourohfour(environ, start_response):
     """A very simple 404 handler"""
     start_response("404 Not Found", [("Content-Type", "application/json")])
     yield json.dumps({"code": 404, "reason": "API endpoint not found"}, indent=4) + "\n"
-    return
 
 
 def application(environ, start_response):
@@ -164,7 +164,7 @@ def application(environ, start_response):
                     session.headers.append(bucket)
                     try:
                         start_response("200 Okay", session.headers)
-                    except:
+                    except:  # pylint: disable=bare-except
                         pass
                 a += 1
                 # WSGI prefers byte strings, so convert if regular py3 string

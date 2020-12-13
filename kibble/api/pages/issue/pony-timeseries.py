@@ -67,7 +67,6 @@ This is the pony factor renderer for Kibble
 
 import datetime
 import json
-import re
 import time
 
 import dateutil.relativedelta

@@ -66,7 +66,6 @@ This is the committer relationship list renderer for Kibble
 """
 
 import copy
-import hashlib
 import json
 import math
 import re
@@ -133,13 +132,13 @@ def run(API, environ, indata, session):
 
     # For each repo, count commits and gather data on authors
     for doc in res["aggregations"]["per_ml"]["buckets"]:
-        sourceID = doc["key"]
+        source_id = doc["key"]
         emails = doc["doc_count"]
 
         # Gather the unique authors/committers
         query["aggs"] = {"per_ml": {"terms": {"field": "sender", "size": 10000}}}
         xquery = copy.deepcopy(query)
-        xquery["query"]["bool"]["must"].append({"term": {"sourceID": sourceID}})
+        xquery["query"]["bool"]["must"].append({"term": {"sourceID": source_id}})
         xres = session.DB.ES.search(
             index=session.DB.dbname, doc_type="email", size=0, body=xquery
         )
@@ -148,8 +147,8 @@ def run(API, environ, indata, session):
             authors.append(person["key"])
         if emails > max_emails:
             max_emails = emails
-        repos[sourceID] = authors
-        repo_commits[sourceID] = emails
+        repos[source_id] = authors
+        repo_commits[source_id] = emails
 
     # Now, figure out which repos share the same contributors
     repo_links = {}
@@ -168,7 +167,7 @@ def run(API, environ, indata, session):
 
     for ID, repo in repos.items():
         mylinks = {}
-        if not ID in repodatas:
+        if ID not in repodatas:
             continue
         repodata = repodatas[ID]
         oID = ID
@@ -230,25 +229,25 @@ def run(API, environ, indata, session):
     nodes = []
     links = []
     existing_repos = []
-    for sourceID in repo_notoriety.keys():
+    for source_id in repo_notoriety:
         lsize = 0
-        for k in repo_links.keys():
+        for k in repo_links:
             fr, to = k.split("||")
-            if fr == sourceID or to == sourceID:
+            if source_id in (fr, to):
                 lsize += 1
-        asize = len(repo_authors[sourceID])
+        asize = len(repo_authors[source_id])
         doc = {
-            "id": sourceID,
-            "name": sourceID,
-            "emails": repo_commits[sourceID],
+            "id": source_id,
+            "name": source_id,
+            "emails": repo_commits[source_id],
             "authors": asize,
             "links": lsize,
             "size": max(5, (1 - abs(math.log10(asize / max_authors))) * 45),
             "tooltip": "%u connections, %u contributors, %u emails"
-            % (lsize, asize, repo_commits[sourceID]),
+            % (lsize, asize, repo_commits[source_id]),
         }
         nodes.append(doc)
-        existing_repos.append(sourceID)
+        existing_repos.append(source_id)
 
     for k, s in repo_links.items():
         size = s

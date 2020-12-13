@@ -57,7 +57,7 @@ def watson_tone(kibble_bit, bodies):
                 ),
             )
             jsout = rv.json()
-        except:
+        except:  # pylint: disable=bare-except
             jsout = {}  # borked Watson?
         mood = {}
         if "document_tone" in jsout:
@@ -96,7 +96,7 @@ def azure_tone(kibble_bit, bodies):
             data=json.dumps(js),
         )
         jsout = rv.json()
-    except:
+    except:  # pylint: disable=bare-except
         jsout = {}  # borked sentiment analysis?
 
     if "documents" in jsout and len(jsout["documents"]) > 0:
@@ -158,7 +158,7 @@ def pico_tone(kibble_bit, bodies):
             data=json.dumps(js),
         )
         jsout = rv.json()
-    except:
+    except:  # pylint: disable=bare-except
         jsout = {}  # borked sentiment analysis?
 
     if "results" in jsout and len(jsout["results"]) > 0:

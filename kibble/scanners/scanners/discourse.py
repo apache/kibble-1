@@ -15,6 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""
+This is the Kibble Discourse scanner plugin.
+"""
+
 import datetime
 import hashlib
 import os
@@ -23,10 +27,6 @@ import threading
 import time
 
 from kibble.scanners.utils import jsonapi
-
-"""
-This is the Kibble Discourse scanner plugin.
-"""
 
 title = "Scanner for Discourse Forums"
 version = "0.1.0"
@@ -233,7 +233,7 @@ class DiscourseThread(threading.Thread):
     """ Generic thread class for scheduling multiple scans at once """
 
     def __init__(self, block, KibbleBit, source, creds, jobs):
-        super(DiscourseThread, self).__init__()
+        super().__init__()
         self.block = block
         self.KibbleBit = KibbleBit
         self.creds = creds

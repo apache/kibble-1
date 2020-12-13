@@ -66,7 +66,6 @@ This is the pony factor renderer for Kibble
 """
 
 import json
-import re
 import time
 
 

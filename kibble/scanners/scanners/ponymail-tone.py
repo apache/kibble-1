@@ -21,7 +21,6 @@ This is a Kibble scanner plugin for Apache Pony Mail sources.
 import re
 import time
 
-from kibble.configuration import conf
 from kibble.scanners.utils import jsonapi, tone
 from kibble.settings import AZURE_ENABLED, PICOAPI_ENABLED, WATSON_ENABLED
 

@@ -76,33 +76,31 @@ def run(API, environ, indata, session):
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
 
     # First, fetch the view if we have such a thing enabled
-    viewList = []
+    view_list = []
     if indata.get("view"):
-        viewList = session.getView(indata.get("view"))
+        view_list = session.getView(indata.get("view"))
     if indata.get("subfilter"):
-        viewList = session.subFilter(indata.get("subfilter"), view=viewList)
+        view_list = session.subFilter(indata.get("subfilter"), view=view_list)
 
-    dateTo = indata.get("to", int(time.time()))
-    dateFrom = indata.get(
-        "from", dateTo - (86400 * 30 * 6)
+    date_to = indata.get("to", int(time.time()))
+    date_from = indata.get(
+        "from", date_to - (86400 * 30 * 6)
     )  # Default to a 6 month span
 
     # Define moods we know of
-    moods_good = set(["trust", "joy", "confident", "positive"])
-    moods_bad = set(["sadness", "anger", "disgust", "fear", "negative"])
-    moods_neutral = set(
-        ["anticipation", "surprise", "tentative", "analytical", "neutral"]
-    )
-    all_moods = set(moods_good | moods_bad | moods_neutral)
+    moods_good = {"trust", "joy", "confident", "positive"}
+    moods_bad = {"sadness", "anger", "disgust", "fear", "negative"}
+    moods_neutral = {"anticipation", "surprise", "tentative", "analytical", "neutral"}
+    all_moods = moods_good | moods_bad | moods_neutral
 
     # Start off with a query for the entire org (we want to compare)
-    dOrg = session.user["defaultOrganisation"] or "apache"
+    d_org = session.user["defaultOrganisation"] or "apache"
     query = {
         "query": {
             "bool": {
                 "must": [
-                    {"range": {"ts": {"from": dateFrom, "to": dateTo}}},
-                    {"term": {"organisation": dOrg}},
+                    {"range": {"ts": {"from": date_from, "to": date_to}}},
+                    {"term": {"organisation": d_org}},
                     {"exists": {"field": "mood"}},
                 ]
             }
@@ -121,12 +119,19 @@ def run(API, environ, indata, session):
 
     global_mood_compiled = {}
     mood_compiled = {}
-    txt = "This chart shows the ten potential mood types as they average on the emails in this period. A score of 100 means a sentiment is highly visible in most emails."
+    txt = (
+        "This chart shows the ten potential mood types as they average on the emails "
+        "in this period. A score of 100 means a sentiment is highly visible in most emails."
+    )
     gtxt = "This shows the overall estimated mood as a gauge from terrible to good."
     # If we're comparing against all lists, first do a global query
     # and compile moods overall
     if indata.get("relative"):
-        txt = "This chart shows the ten potential mood types on the selected lists as they compare against all mailing lists in the database. A score of 100 here means the sentiment conforms to averages across all lists."
+        txt = (
+            "This chart shows the ten potential mood types on the selected lists "
+            "as they compare against all mailing lists in the database. A score of 100 "
+            "here means the sentiment conforms to averages across all lists."
+        )
         gtxt = "This shows the overall estimated mood compared to all lists, as a gauge from terrible to good."
         global_moods = {}
 
@@ -136,7 +141,7 @@ def run(API, environ, indata, session):
         for mood, el in gres["aggregations"].items():
             # If a mood is not present (iow sum is 0), remove it from the equation by setting to -1
             if el["value"] == 0:
-                el["value"] == -1
+                el["value"] = -1
             global_moods[mood] = el["value"]
         for k, v in global_moods.items():
             if v >= 0:
@@ -149,8 +154,8 @@ def run(API, environ, indata, session):
             {"term": {"sourceID": indata.get("source")}}
         )
         ss = True
-    elif viewList:
-        query["query"]["bool"]["must"].append({"terms": {"sourceID": viewList}})
+    elif view_list:
+        query["query"]["bool"]["must"].append({"terms": {"sourceID": view_list}})
         ss = True
 
     # If we have a view enabled (and distinguish), compile local view against global view
@@ -166,11 +171,10 @@ def run(API, environ, indata, session):
         )["count"]
 
         moods = {}
-        years = 0
 
         for mood, el in res["aggregations"].items():
             if el["value"] == 0:
-                el["value"] == -1
+                el["value"] = -1
             moods[mood] = el["value"]
         for k, v in moods.items():
             if v > 0:
@@ -210,11 +214,11 @@ def run(API, environ, indata, session):
     swingometer = max(0, min(100, happ))
 
     # JSON out!
-    JSON_OUT = {
+    json_out = {
         "relativeMode": True,
         "text": txt,
         "counts": mood_compiled,
         "okay": True,
         "gauge": {"key": "Happiness", "value": swingometer, "text": gtxt},
     }
-    yield json.dumps(JSON_OUT)
+    yield json.dumps(json_out)

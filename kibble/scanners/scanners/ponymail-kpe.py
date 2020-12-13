@@ -15,15 +15,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""
+This is a Kibble scanner plugin for Apache Pony Mail sources.
+"""
+
 import re
 import time
 
 from kibble.scanners.utils import jsonapi, kpe
 from kibble.settings import AZURE_ENABLED, PICOAPI_ENABLED, WATSON_ENABLED
-
-"""
-This is a Kibble scanner plugin for Apache Pony Mail sources.
-"""
 
 title = "Key Phrase Extraction plugin for Apache Pony Mail"
 version = "0.1.0"

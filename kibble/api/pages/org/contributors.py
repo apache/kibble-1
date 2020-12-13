@@ -140,7 +140,7 @@ def run(API, environ, indata, session):
                     ).hexdigest(),
                 }
                 person = cached_people[pid]
-            except:
+            except:  # pylint: disable=bare-except
                 pass  # Couldn't find 'em, booo
         if person:
             person["contributions"] = contribs.get(email, 0)

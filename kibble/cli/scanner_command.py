@@ -48,7 +48,7 @@ class ScanThread(threading.Thread):
     """
 
     def __init__(self, broker, org, i, t=None, e=None):
-        super(ScanThread, self).__init__()
+        super().__init__()
         self.broker = broker
         self.org = org
         self.id = i
@@ -58,9 +58,10 @@ class ScanThread(threading.Thread):
         print("Initialized thread %i" % i)
 
     def run(self):
+        # pylint: disable=import-outside-toplevel
         from kibble.scanners import scanners
 
-        global BIG_LOCK, PENDING_OBJECTS
+        global BIG_LOCK, PENDING_OBJECTS  # pylint: disable=global-statement
         time.sleep(0.5)  # Primarily to align printouts.
         # While there are objects to snag
         while PENDING_OBJECTS:
@@ -80,7 +81,7 @@ class ScanThread(threading.Thread):
                             # Specific scanner type or no types mentioned?
                             if not self.stype or self.stype == sid:
                                 scanner.scan(self.bit, obj)
-            except:
+            except:  # pylint: disable=bare-except
                 break
             finally:
                 BIG_LOCK.release()
@@ -96,7 +97,7 @@ def scan_cmd(
     source: str = None,
     view: str = None,
 ):
-    global PENDING_OBJECTS
+    global PENDING_OBJECTS  # pylint: disable=global-statement
 
     print("Kibble Scanner starting")
     print("Using direct ElasticSearch broker model")

@@ -65,7 +65,7 @@
 This is the issue timeseries renderer for Kibble
 """
 
-import hashlib
+
 import json
 import time
 

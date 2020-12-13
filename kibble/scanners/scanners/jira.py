@@ -15,6 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""
+This is the Kibble JIRA scanner plugin.
+"""
+
 import hashlib
 import re
 import threading
@@ -23,10 +27,6 @@ import time
 import requests.exceptions
 
 from kibble.scanners.utils import jsonapi
-
-"""
-This is the Kibble JIRA scanner plugin.
-"""
 
 title = "Scanner for Atlassian JIRA"
 version = "0.1.0"
@@ -225,7 +225,7 @@ def scan_ticket(kibble_bit, key, u, source, creds, open_tickets):
                 .replace(" dot ", ".", 10)
                 .replace(" at ", "@", 1)
             )
-            if not "@" in closer_email:
+            if "@" not in closer_email:
                 closer_email = "%s@%s" % (closer_email, domain)
             display_name = closer.get("displayName", "Unkown")
             if display_name and len(display_name) > 0:
@@ -246,7 +246,7 @@ def scan_ticket(kibble_bit, key, u, source, creds, open_tickets):
 
         if creator:
             creator = creator.replace(" dot ", ".", 10).replace(" at ", "@", 1)
-            if not "@" in creator:
+            if "@" not in creator:
                 creator = "%s@%s" % (creator, domain)
             display_name = (
                 tjson["fields"]["reporter"]["displayName"]
@@ -305,7 +305,7 @@ def scan_ticket(kibble_bit, key, u, source, creds, open_tickets):
 
 class JiraThread(threading.Thread):
     def __init__(self, block, kibble_bit, source, creds, pt, ot):
-        super(JiraThread, self).__init__()
+        super().__init__()
         self.block = block
         self.KibbleBit = kibble_bit
         self.creds = creds
@@ -421,13 +421,13 @@ def scan(kibble_bit, source):
             # print(openURL)
             try:
                 ojs = jsonapi.get(open_url, auth=creds)
-                if not "issues" in ojs or len(ojs["issues"]) == 0:
+                if "issues" not in ojs or len(ojs["issues"]) == 0:
                     break
                 for item in ojs["issues"]:
                     open_tickets.append(item["key"])
                 kibble_bit.pprint("Found %u open tickets" % len(open_tickets))
                 start_at += 100
-            except:  # pylint: disable=bare-except
+            except:  # pylint: disable=bare-except  # pylint: disable=bare-except
                 kibble_bit.pprint("JIRA borked, retrying")
                 bad_tries += 1
         kibble_bit.pprint("Found %u open tickets" % len(open_tickets))

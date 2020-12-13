@@ -141,6 +141,7 @@ disable=invalid-name,
         exception-escape,
         comprehension-escape,
         # TODO remove in future maybe
+        missing-class-docstring,
         duplicate-code,
         missing-function-docstring,
         too-many-locals,
@@ -150,7 +151,17 @@ disable=invalid-name,
         line-too-long,
         redefined-builtin,
         too-many-nested-blocks,
-        missing-module-docstring
+        missing-module-docstring,
+        too-many-arguments,
+        unused-variable,
+        unused-argument,
+        too-few-public-methods,
+        inconsistent-return-statements,
+        fixme,
+        dangerous-default-value,
+        useless-object-inheritance,
+        redefined-outer-name
+
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

@@ -66,7 +66,7 @@ This is the email-only timeseries renderer for Kibble
 unlike timeseries.py, this only shows mail sent, not topics or authors.
 """
 
-import hashlib
+
 import json
 import time
 
