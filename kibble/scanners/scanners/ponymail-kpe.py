@@ -115,7 +115,7 @@ def scan(KibbleBit, source):
             KPEs = kpe.azureKPE(KibbleBit, bodies)
         elif "picoapi" in KibbleBit.config:
             KPEs = kpe.picoKPE(KibbleBit, bodies)
-        if KPEs == False:
+        if not KPEs:
             KibbleBit.pprint("Hit rate limit, not trying further emails for now.")
 
         a = 0

@@ -52,7 +52,9 @@ def get_tokens_left(auth=None):
     return tokens_left
 
 
-def issues(source, params={}, auth=None):
+def issues(source, params=None, auth=None):
+    if params is None:
+        params = {}
     local_params = {"per_page": 100, "page": 1}
     local_params.update(params)
 
@@ -79,7 +81,9 @@ def user(user_url, auth=None):
     return get_limited(user_url, auth=auth)
 
 
-def get_all(source, f, params={}, auth=None):
+def get_all(source, f, params=None, auth=None):
+    if params is None:
+        params = {}
     acc = []
     page = params.get("page", 1)
 
@@ -91,7 +95,7 @@ def get_all(source, f, params={}, auth=None):
 
         acc.extend(items)
 
-        page = page + 1
+        page += 1
         params.update({"page": page})
 
     return acc

@@ -114,7 +114,7 @@ class KibbleESWrapperSeven:
 
 # This is redundant, refactor later?
 def pprint(string, err=False):
-    line = "[core]: %s" % (string)
+    line = "[core]: %s" % string
     if err:
         sys.stderr.write(line + "\n")
     else:
@@ -265,7 +265,7 @@ class KibbleOrganisation:
         )
 
         for hit in res["hits"]["hits"]:
-            if sourceType == None or hit["_source"]["type"] == sourceType:
+            if sourceType is None or hit["_source"]["type"] == sourceType:
                 s.append(hit["_source"])
         return s
 

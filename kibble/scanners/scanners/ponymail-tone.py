@@ -116,7 +116,7 @@ def scan(KibbleBit, source):
             moods = tone.azureTone(KibbleBit, bodies)
         elif "picoapi" in KibbleBit.config:
             moods = tone.picoTone(KibbleBit, bodies)
-        if moods == False:
+        if not moods:
             KibbleBit.pprint("Hit rate limit, not trying further emails for now.")
 
         a = 0

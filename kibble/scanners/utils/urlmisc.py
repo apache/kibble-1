@@ -58,7 +58,6 @@ def unzip(url, creds=None, cookie=None):
             subprocess.check_call(("/usr/bin/wget", "-O", tmpfile.name, url))
 
             try:
-                te
                 compressedFile = open("/tmp/kibbletmp.gz", "rb")
                 if compressedFile.read(2) == "\x1f\x8b":
                     compressedFile.seek(0)
