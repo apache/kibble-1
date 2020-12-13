@@ -28,7 +28,7 @@ class TestDefaultConfig:
             ("accounts", "verify", True),
             ("api", "database", 2),
             ("api", "version", "0.1.0"),
-            ("elasticsearch", "conn_uri", "elasticsearch:9200"),
+            ("elasticsearch", "conn_uri", "http://elasticsearch:9200"),
             ("mail", "mailhost", "localhost:25"),
         ],
     )
