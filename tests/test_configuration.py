@@ -20,6 +20,7 @@ import pytest
 from kibble.configuration import conf
 
 
+# pylint: disable=no-self-use
 class TestDefaultConfig:
     @pytest.mark.parametrize(
         "section, key, value",
@@ -32,7 +33,7 @@ class TestDefaultConfig:
             ("mail", "mailhost", "localhost:25"),
         ],
     )
-    def test_default_values(self, section, key, value):  # pylint: disable=no-self-use
+    def test_default_values(self, section, key, value):
         if isinstance(value, bool):
             config_value = conf.getboolean(section, key)
         elif isinstance(value, int):

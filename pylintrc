@@ -6,7 +6,7 @@
 extension-pkg-whitelist=
 
 # Specify a score threshold to be exceeded before program exits with error.
-fail-under=10.0
+fail-under=10
 
 # Add files or directories to the blacklist. They should be base names, not
 # paths.
@@ -140,6 +140,7 @@ disable=invalid-name,
         deprecated-sys-function,
         exception-escape,
         comprehension-escape,
+        bad-continuation,
         # TODO remove in future maybe
         missing-class-docstring,
         duplicate-code,
@@ -186,7 +187,7 @@ evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / stateme
 # Set the output format. Available formats are text, parseable, colorized, json
 # and msvs (visual studio). You can also give a reporter class, e.g.
 # mypackage.mymodule.MyReporterClass.
-output-format=text
+output-format=colorized
 
 # Tells whether to display a full report or only the messages.
 reports=no

@@ -48,7 +48,7 @@
 #       content:
 #         application/json:
 #           schema:
-#             type: array  # pylint: disable=syntax-error
+#             type: array
 #             items:
 #               $ref: '#/components/schemas/Organisation'
 #       description: 200 Response

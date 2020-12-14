@@ -28,7 +28,12 @@ mod = util.module_from_spec(spec)
 spec.loader.exec_module(mod)  # type: ignore
 version = mod.version  # type: ignore
 
-DEVEL_REQUIREMENTS = ["black==20.8b1", "pre-commit==2.7.1", "pytest==6.1.1"]
+DEVEL_REQUIREMENTS = [
+    "black==20.8b1",
+    "pre-commit==2.7.1",
+    "pylint==2.6.0",
+    "pytest==6.1.1",
+]
 
 INSTALL_REQUIREMENTS = [
     "bcrypt==3.2.0",

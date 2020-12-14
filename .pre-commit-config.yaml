@@ -81,9 +81,10 @@ repos:
         name: Run isort to sort imports
         args: ['--multi-line', '3', '--trailing-comma']
         files: \.py$
-  - repo: https://github.com/pre-commit/mirrors-pylint
-    rev: v2.6.0
+  - repo: local
     hooks:
       - id: pylint
-        name: pylint
-        files: \.py$
+        name: Pylint on all sources
+        entry: pylint
+        language: system
+        types: [ python ]
