@@ -30,6 +30,15 @@ class BaseScanner:
     title: str
     log = logging.getLogger(__name__)
 
+    def __init__(self, kibble_bit: KibbleBit, source: dict):
+        self.kibble_bit = kibble_bit
+        self.source = source
+
     @abstractmethod
-    def scan(self, kibble_bit: KibbleBit, source: dict) -> None:
+    @property
+    def accepts(self) -> bool:
+        raise NotImplementedError
+    
+    @abstractmethod
+    def scan(self) -> None:
         raise NotImplementedError

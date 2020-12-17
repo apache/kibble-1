@@ -20,35 +20,39 @@ import subprocess
 import time
 
 from kibble.configuration import conf
+from kibble.scanners.scanners.base_scanner import BaseScanner
 from kibble.scanners.utils import git, sloc
 
-""" Source Lines of Code counter for Git """
 
-title = "SloC Counter for Git"
-version = "0.1.0"
+class GitSlocScanner(BaseScanner):
+    """Source Lines of Code counter for Git"""
 
+    title = "SloC Counter for Git"
+    version = "0.1.0"
 
-def accepts(source):
-    """ Do we accept this source? """
-    if source["type"] == "git":
-        return True
-    # There are cases where we have a github repo, but don't wanna analyze the code, just issues
-    if source["type"] == "github" and source.get("issuesonly", False) == False:
-        return True
-    return False
+    @property
+    def accepts(self):
+        """ Do we accept this source? """
+        if self.source["type"] == "git":
+            return True
+        # There are cases where we have a github repo, but don't wanna analyze the code, just issues
+        if self.source["type"] == "github" and self.source.get("issuesonly"):
+            return True
+        return False
 
+    def scan(self):
+        source = self.source
+        source_id = source["sourceID"]
 
-def scan(kibble_bit, source):
+        url = source["sourceURL"]
+        root_path = (
+            f'{conf.get("scanner", "scratchdir")}/{source["organisation"]}/{git}'
+        )
+        gpath = os.path.join(root_path, source_id)
 
-    rid = source["sourceID"]
-    url = source["sourceURL"]
-    rootpath = "%s/%s/git" % (
-        conf.get("scanner", "scratchdir"),
-        source["organisation"],
-    )
-    gpath = os.path.join(rootpath, rid)
+        if not source["steps"]["sync"]["good"] or not os.path.exists(gpath):
+            return
 
-    if source["steps"]["sync"]["good"] and os.path.exists(gpath):
         source["steps"]["count"] = {
             "time": time.time(),
             "status": "SLoC count started at "
@@ -56,28 +60,27 @@ def scan(kibble_bit, source):
             "running": True,
             "good": True,
         }
-        kibble_bit.update_source(source)
+        self.kibble_bit.update_source(source)
 
         try:
             branch = git.default_branch(source, gpath)
             subprocess.call("cd %s && git checkout %s" % (gpath, branch), shell=True)
         except:  # pylint: disable=bare-except
-            kibble_bit.pprint("SLoC counter failed to find main branch for %s!!" % url)
+            self.log.error("SLoC counter failed to find main branch for %s", url)
             return False
 
-        kibble_bit.pprint("Running SLoC count for %s" % url)
-        languages, codecount, comment, blank, years, cost = sloc.count(gpath)
+        self.log.info("Running SLoC count for %s", url)
+        languages, code_count, comment, blank, years, cost = sloc.count(gpath)
 
-        sloc_ = {
-            "sourceID": source["sourceID"],
-            "loc": codecount,
+        source["sloc"] = {
+            "sourceID": source_id,
+            "loc": code_count,
             "comments": comment,
             "blanks": blank,
             "years": years,
             "cost": cost,
             "languages": languages,
         }
-        source["sloc"] = sloc_
         source["steps"]["count"] = {
             "time": time.time(),
             "status": "SLoC count completed at "
@@ -85,4 +88,4 @@ def scan(kibble_bit, source):
             "running": False,
             "good": True,
         }
-        kibble_bit.update_source(source)
+        self.kibble_bit.update_source(source)
