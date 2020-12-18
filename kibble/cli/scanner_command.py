@@ -14,11 +14,13 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 import multiprocessing
 import threading
 import time
+from inspect import isclass
 from typing import List
+
+from loguru import logger
 
 from kibble.configuration import conf
 from kibble.scanners.brokers import kibbleES
@@ -27,7 +29,7 @@ PENDING_OBJECTS = []
 BIG_LOCK = threading.Lock()
 
 
-def is_mine(id_):
+def is_mine(id_: str):
     balance = conf.get("scanner", "balance")
     if not balance:
         return False
@@ -55,7 +57,7 @@ class ScanThread(threading.Thread):
         self.bit = self.broker.bitClass(self.broker, self.org, i)
         self.stype = t
         self.exclude = e
-        print("Initialized thread %i" % i)
+        logger.info("Initialized thread {}", i)
 
     def run(self):
         from kibble.scanners import scanners
@@ -67,25 +69,40 @@ class ScanThread(threading.Thread):
             BIG_LOCK.acquire(blocking=True)
             try:
                 # Try grabbing an object (might not be any left!)
-                obj = PENDING_OBJECTS.pop(0)
+                try:
+                    obj = PENDING_OBJECTS.pop(0)
+                except IndexError:
+                    break
+
                 # If load balancing jobs, make sure this one is ours
-                if is_mine(obj["sourceID"]):
-                    # Run through list of scanners in order, apply when useful
-                    for sid, scanner in scanners.enumerate():
-                        if scanner.accepts(obj):
-                            self.bit.pluginname = "plugins/scanners/" + sid
-                            # Excluded scanner type?
-                            if self.exclude and sid in self.exclude:
-                                continue
-                            # Specific scanner type or no types mentioned?
-                            if not self.stype or self.stype == sid:
-                                scanner.scan(self.bit, obj)
-            except:
-                break
+                if not is_mine(obj["sourceID"]):
+                    continue
+                # Run through list of scanners in order, apply when useful
+                for sid, scanner_class_or_mod in scanners.enumerate():
+                    if self.exclude and sid in self.exclude:
+                        continue
+
+                    # Specific scanner type or no types mentioned?
+                    if self.stype and self.stype != sid:
+                        continue
+
+                    self.bit.pluginname = "plugins/scanners/" + sid
+
+                    if isclass(scanner_class_or_mod):
+                        scanner = scanner_class_or_mod(kibble_bit=self.bit, source=obj)
+                        logger.info("Doing scan for {}", scanner.title)
+                        if scanner.accepts:
+                            scanner.scan()
+                    else:
+                        logger.info("Doing scan for {}", scanner_class_or_mod.title)
+                        if scanner_class_or_mod.accepts(obj):
+                            scanner_class_or_mod.scan(self.bit, obj)
+            except Exception:
+                logger.exception("An error occurred when scanning.")
             finally:
                 BIG_LOCK.release()
         self.bit.pluginname = "core"
-        self.bit.pprint("No more objects, exiting!")
+        logger.info("No more objects, exiting!")
 
 
 def scan_cmd(
@@ -98,15 +115,15 @@ def scan_cmd(
 ):
     global PENDING_OBJECTS
 
-    print("Kibble Scanner starting")
-    print("Using direct ElasticSearch broker model")
+    logger.info("Kibble Scanner starting")
+    logger.info("Using direct ElasticSearch broker model")
     broker = kibbleES.Broker()
 
     org_no = 0
     source_no = 0
     for org_item in broker.organisations():
         if not org or org == org_item.id:
-            print(f"Processing organisation {org_item.id}")
+            logger.info(f"Processing organisation {org_item.id}")
             org_no += 1
 
             # Compile source list
@@ -145,6 +162,6 @@ def scan_cmd(
             for t in threads:
                 t.join()
 
-    print(
+    logger.info(
         f"All done scanning for now, found {org_no} organisations and {source_no} sources to process."
     )

@@ -45,12 +45,16 @@ class GitSlocScanner(BaseScanner):
         source_id = source["sourceID"]
 
         url = source["sourceURL"]
-        root_path = (
-            f'{conf.get("scanner", "scratchdir")}/{source["organisation"]}/{git}'
-        )
+        root_path = f'{conf.get("scanner", "scratchdir")}/{source["organisation"]}/git'
         gpath = os.path.join(root_path, source_id)
 
-        if not source["steps"]["sync"]["good"] or not os.path.exists(gpath):
+        steps = source["steps"]
+        if "sync" in steps and not steps["sync"]["good"]:
+            self.log.warning("Scanning skipped")
+            return
+
+        if not os.path.exists(gpath):
+            self.log.warning("Scanning skipped, path '{}' does not exists", gpath)
             return
 
         source["steps"]["count"] = {
@@ -69,7 +73,7 @@ class GitSlocScanner(BaseScanner):
             self.log.error("SLoC counter failed to find main branch for %s", url)
             return False
 
-        self.log.info("Running SLoC count for %s", url)
+        self.log.info("Running SLoC count for {}", url)
         languages, code_count, comment, blank, years, cost = sloc.count(gpath)
 
         source["sloc"] = {
@@ -89,3 +93,6 @@ class GitSlocScanner(BaseScanner):
             "good": True,
         }
         self.kibble_bit.update_source(source)
+
+
+scanner = GitSlocScanner

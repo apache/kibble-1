@@ -36,6 +36,7 @@ INSTALL_REQUIREMENTS = [
     "click==7.1.2",
     "elasticsearch==7.9.1",
     "gunicorn==20.0.4",
+    "loguru==0.5.3",
     "psutil==5.7.3",
     "python-dateutil==2.8.1",
     "python-twitter==3.5",

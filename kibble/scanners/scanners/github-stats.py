@@ -27,9 +27,7 @@ version = "0.1.0"
 
 def accepts(source):
     """ Do we accept this source? """
-    if source["type"] == "github":
-        return True
-    return False
+    return source["type"] == "github"
 
 
 def get_time(string):

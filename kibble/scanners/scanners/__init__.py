@@ -22,6 +22,8 @@ scanners that Kibble has.
 
 import importlib
 
+from loguru import logger
+
 # Define, in order of priority, all scanner plugins we have
 __all__ = [
     "git-sync",  # This needs to precede other VCS scanners!
@@ -46,12 +48,19 @@ __all__ = [
 scanners = {}
 
 for p in __all__:
-    scanner = importlib.import_module("kibble.scanners.scanners.%s" % p)
+    scanner_mod = importlib.import_module("kibble.scanners.scanners.%s" % p)
+    # New case
+    if hasattr(scanner_mod, "scanner"):
+        scanner = getattr(scanner_mod, "scanner")
+    else:
+        scanner = scanner_mod
+
     scanners[p] = scanner
-    # This should ideally be pprint, meh
-    print(
-        "[core]: Loaded plugins/scanners/%s v/%s (%s)"
-        % (p, scanner.version, scanner.title)
+    logger.info(
+        "[core]: Loaded plugins/scanners/{} v/{} ({})",
+        p,
+        scanner.version,
+        scanner.title,
     )
 
 

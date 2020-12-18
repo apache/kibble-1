@@ -20,6 +20,7 @@ from urllib.parse import urlparse
 
 import elasticsearch
 import elasticsearch.helpers
+from loguru import logger
 
 from kibble.configuration import conf
 
@@ -125,7 +126,7 @@ class KibbleBit:
         self.queueMax = 1000  # Entries to keep before bulk pushing
         self.pluginname = ""
         self.tid = tid
-        self.dbname = conf.get("elasticsearch", "database")
+        self.dbname = conf.get("elasticsearch", "dbname")
 
     def __del__(self):
         """ On unload/delete, push the last chunks of data to ES """
@@ -136,9 +137,9 @@ class KibbleBit:
     def pprint(self, string, err=False):
         line = "[thread#%i:%s]: %s" % (self.tid, self.pluginname, string)
         if err:
-            sys.stderr.write(line + "\n")
+            logger.warning(line)
         else:
-            print(line)
+            logger.info(line)
 
     def update_source(self, source):
         """ Updates a source document, usually with a status update """
@@ -232,7 +233,7 @@ class KibbleOrganisation:
 
         self.broker = broker
         self.id = org
-        self.dbname = conf.get("elasticsearch", "database")
+        self.dbname = conf.get("elasticsearch", "dbname")
 
     def sources(self, sourceType=None, view=None):
         """ Get all sources or sources of a specific type for an org """

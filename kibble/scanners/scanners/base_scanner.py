@@ -15,8 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import logging
 from abc import abstractmethod
+
+from loguru import logger
 
 from kibble.scanners.brokers.kibbleES import KibbleBit
 
@@ -28,17 +29,17 @@ class BaseScanner:
 
     version: str
     title: str
-    log = logging.getLogger(__name__)
+    log = logger
 
     def __init__(self, kibble_bit: KibbleBit, source: dict):
         self.kibble_bit = kibble_bit
         self.source = source
 
-    @abstractmethod
     @property
+    @abstractmethod
     def accepts(self) -> bool:
         raise NotImplementedError
-    
+
     @abstractmethod
     def scan(self) -> None:
         raise NotImplementedError
