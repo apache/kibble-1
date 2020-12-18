@@ -27,20 +27,19 @@ Setting up Apache Kibble
 Understanding the Components
 ****************************
 
-Kibble consists of two major components:
+Kibble consists of three major components:
 
-The Kibble Server (kibble)
-   This is the main database and UI Server. It serves as the hub for the
-   scanners to connect to, and provides the overall management of
-   sources as well as the visualizations and API end points.
-
-The Kibble Scanner Applications (kibble-scanners)
-   This is a collection of scanning applications each designed to work
+- web application - this is the user facing part of Apache Kibble. Via this
+    ui users can create organizations, configure scanners and most importantly
+    view and analyze the data.
+- scanners - as the name suggest are application designed to work
    with a specific type of resource (a git repo, a mailing list, a JIRA
    instance etc) and push compiled data objects to the Kibble Server.
    Some resources only have one scanner plugin, while others may have
    multiple plugins capable of dealing with specific aspects of a
    resource.
+- database - an instance of ElasticSearch used by both web application and
+    scanners to share the information.
 
 The following diagram shows Kibble architecture:
 
@@ -54,10 +53,10 @@ Component Requirements
 Server Component
 ################
 
-As said, the main Kibble Server is a hub for scanners, and as such, is
-only ever needed on one machine. It is recommended that, for large
-instances of kibble, you place the application on a machine or VM with
-sufficient resources to handle the database load and memory requirements.
+The Kibble Server is a hub for scanners, and as such, is only ever needed on
+one machine. It is recommended that, for large instances of kibble, you place
+the application on a machine or VM with sufficient resources to handle the
+database load and memory requirements.
 
 As a rule of thumb, the Server does not require a lot of disk space
 (enough to hold the compiled database), but it does require CPU and RAM.
@@ -101,32 +100,27 @@ Source Code Location
 *You are however welcome to try out the development version.*
 
 For the time being, we recommend that you use the ``main`` branch for
-testing Kibble. This applies to both scanners and the server.
-
-The Kibble Server can be found via our source repository at
+testing Kibble. All source code can be found in our repository at:
 https://github.com/apache/kibble
 
-The Kibble Scanners can be found at
-https://github.com/apache/kibble-scanners
-
-
 *********************
-Installing the Server
+Installing Kibble
 *********************
 
 ###############
 Pre-requisites
 ###############
 
-Before you install the Kibble Server, please ensure you have the
+Before you install the Kibble, please ensure you have the
 following components installed and set up:
 
+- Python 3.8
+- git binaries (GPL License)
+- cloc version 1.76 or later (GPL License)
 - An ElasticSearch instance, version 6.x or newer (5.x is supported for
   existing databases, but not for new setups). Does not have to be on
   the same machine, but it may help speed up processing.
 - A web server of your choice (Apache HTTP Server, NGINX, lighttp etc)
-- Python 3.4 or newer with installed libraries from `setup/requirements.txt`
-- Gunicorn for Python 3.x (often called gunicorn3) or mod_wsgi
 
 ###########################################
 Configuring and Priming the Kibble Instance
@@ -134,18 +128,26 @@ Configuring and Priming the Kibble Instance
 Once you have the components installed and Kibble downloaded, you will
 need to prime the ElasticSearch instance and create a configuration file.
 
-Assuming you wish to install kibble in /var/www/kibble, you would set it
-up by issuing the following:
+To install ``kibble`` do the following
 
-- ``git clone https://github.com/apache/kibble.git /var/www/kibble``
-- ``cd /var/www/kibble``
-- ``pip install -r setup/requirements.txt``
-- ``python setup/setup.py``
+::
 
-This will set up the database, the configuration file, and create your
-initial administrator account for the UI. You can later on do additional
-configuration of the data server by editing the ``api/yaml/kibble.yaml``
-file.
+    git clone https://github.com/apache/kibble.git
+    cd kibble
+    pip install .
+
+As a good practice it is recommended to use virtual environment for installation.
+
+Once ``kibble`` is installed you may wish to adjust the ``kibble.ini`` configuration
+file, especially the ``elasticsearch`` section which is required to connect to database.
+
+Then you can run the following command to configure the database and create initial
+administrator account for the UI:
+
+::
+
+    kibble setup --autoadmin --skiponexist
+
 
 #####################
 Setting up the Web UI
@@ -176,47 +178,18 @@ be using the Apache HTTP Server and proxy to Gunicorn:
 ::
 
    cd /var/www/kibble/api/
-   gunicorn -w 10 -b 127.0.0.1:8000 handler:application -t 120 -D
+   gunicorn -w 10 -b 127.0.0.1:8000 -t 120 -D kibble.api.handler:application
 
 Once httpd is (re)started, you should be able to browse to your new
 Kibble instance.
 
 
-*******************
-Installing Scanners
-*******************
+######################
+Configuring a Scanners
+######################
 
-##############
-Pre-requisites
-##############
+Scanners are configured via ``kibble.ini`` configuration file.
 
-.. _cloc: https://github.com/AlDanial/cloc
-
-The Kibble Scanners rely on the following packages:
-
-- Python >= 3.4 with the following packages:
-- - python3-yaml
-- - python3-elasticsearch
-- - python3-certifi
-
-The scanners require the following optional components if you wish to enable
-git repository analysis:
-
-- git binaries (GPL License)
-- cloc_ version 1.76 or later (GPL License)
-
-
-###########################
-Configuring a Scanner Node
-###########################
-
-First, check out the scanner source in a file path of your choosing:
-
-``git clone https://github.com/apache/kibble-scanners.git``
-
-Then edit the ``conf/config.yaml`` file to match both the ElasticSearch
-database used by the Kibble UI, as well as whatever file layout (data
-and scratch dir) you wish to use on the scanner machine.
 Remember that the scanner must have enough disk space to fully store
 any resources you may be scanning. If you are scanning a large git repository,
 the scanner should have sufficient disk space to store it locally.
@@ -242,9 +215,9 @@ across all machines.
 
 .. _runscan:
 
-**************
+###############
 Running a Scan
-**************
+###############
 
 Once you have both scanners and the data server set up, you can begin
 scanning resources for data. Please refer to :ref:`configdatasources`
@@ -252,7 +225,11 @@ for how to set up various resources for scanning via the Web UI.
 
 Scans can be initiated manually, but you may want to set up a cron job to
 handle daily scans of resources. To start a scan on a scanner machine,
-run the following: ``python3 src/kibble-scanner.py``
+run the following:
+
+::
+
+    kibble scan
 
 This will load all plugins and use them in a sensible order on each
 resource that matches the appropriate type. The collected data will be
@@ -260,6 +237,32 @@ pushed to the main data server and be available for visualizations
 instantly.
 
 It may be worth your while to run the scanner inside a timer wrapper,
-as such: ``time python3 src/kibble-scanner.py`` in order to gauge the
+as such: ``time kibble scan`` in order to gauge the
 amount of time a scan will take, and adjusting your cron jobs to match
 this.
+
+************
+Docker Image
+************
+
+If you want to spin up a development instance of Apache Kibble you can do:
+
+::
+
+    docker-compose -f docker-compose-dev.yaml run kibble setup --autoadmin --skiponexist
+    docker-compose -f docker-compose-dev.yaml up ui
+
+The ui should be available under `http://0.0.0.0:8000` or `http://localhost:8000`.
+To log in you can use the dummy admin account `admin@kibble` and password `kibbleAdmin`.
+
+You can also start only the API server:
+
+::
+
+    docker-compose -f docker-compose-dev.yaml up api
+
+To trigger scanners run:
+
+::
+
+    docker-compose -f docker-compose-dev.yaml run kibble scan

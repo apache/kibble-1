@@ -26,7 +26,7 @@ reflected  in the running app.
 
 First you need to configure the Elasticsearch node:
 ```
-docker-compose -f docker-compose-dev.yaml up setup
+docker-compose -f docker-compose-dev.yaml run kibble setup --autoadmin --skiponexist
 ```
 Once you see the
 ```
@@ -42,6 +42,11 @@ the dummy admin account `admin@kibble` and password `kibbleAdmin`.
 You can also start only the API server:
 ```
 docker-compose -f docker-compose-dev.yaml up kibble
+```
+
+To run scanning:
+```
+docker-compose -f docker-compose-dev.yaml run kibble scan
 ```
 
 ## Code Quality

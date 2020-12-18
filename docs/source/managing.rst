@@ -38,7 +38,7 @@ To create your first organisation:
 
 1. Go to the "Organisation" tab in the top menu
 2. Locate the Create a new organisation` field set
-3. Enter the details required for the new organsation
+3. Enter the details required for the new organisation
 
 This will set up a new organisation and set it as your default (current)
 one.
