@@ -93,7 +93,7 @@ def scan(kibble_bit, source):
         kibble_bit.update_source(source)
         return
 
-    # Pony Mail requires a UI cookie in order to work. Maked sure we have one!
+    # Pony Mail requires a UI cookie in order to work. Make sure we have one!
     cookie = None
     if "creds" in source and source["creds"]:
         cookie = source["creds"].get("cookie", None)
