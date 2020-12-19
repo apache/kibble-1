@@ -56,8 +56,8 @@ radar = (json, state) ->
     state.widget.inject(chk)
     label = document.createElement('label')
     label.setAttribute("for", id)
-    label.setAttribute("title", "Check this box to force all areas to be relative to their own projects (and not the compared projects). This may help to display foucs areas.")
-    chk.setAttribute("title", "Check this box to force all areas to be relative to their own projects (and not the compared projects). This may help to display foucs areas.")
+    label.setAttribute("title", "Check this box to force all areas to be relative to their own projects (and not the compared projects). This may help to display focus areas.")
+    chk.setAttribute("title", "Check this box to force all areas to be relative to their own projects (and not the compared projects). This may help to display focus areas.")
     label.style.paddingLeft = '5px'
     label.appendChild(document.createTextNode('Make all projects relative to themselves'))
     state.widget.inject(label)

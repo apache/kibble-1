@@ -227,7 +227,7 @@ def scan_ticket(kibble_bit, key, u, source, creds, open_tickets):
             )
             if not "@" in closer_email:
                 closer_email = "%s@%s" % (closer_email, domain)
-            display_name = closer.get("displayName", "Unkown")
+            display_name = closer.get("displayName", "Unknown")
             if display_name and len(display_name) > 0:
                 # Add to people db
                 pid = hashlib.sha1(
@@ -321,7 +321,7 @@ class JiraThread(threading.Thread):
             try:
                 rl = self.pendingTickets.pop(0)
             except Exception as err:
-                print(f"An error occured: {err}")
+                print(f"An error occurred: {err}")
                 self.block.release()
                 return
             if not rl:
