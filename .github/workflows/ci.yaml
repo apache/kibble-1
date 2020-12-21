@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build docker image
-        run: docker-compose -f docker-compose-dev.yaml build setup
+        run: docker-compose -f docker-compose-dev.yaml build kibble
       - name: Run kibble command
         run: docker run apache/kibble kibble --help
       - name: Check dependencies

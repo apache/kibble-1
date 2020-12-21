@@ -5,13 +5,13 @@ networks:
     driver: bridge
 
 services:
-  # Helper service to setup the Apache Kibble es node
-  setup:
+  # Main docker image
+  kibble:
     image: &img apache/kibble
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: bash -c "kibble setup --autoadmin --skiponexist"
+    entrypoint: kibble
     volumes:
       - .:/kibble/
     depends_on:
@@ -20,7 +20,7 @@ services:
       - kibble
 
   # Apache Kibble API server
-  kibble:
+  api:
     image: *img
     command: bash -c "gunicorn --reload -w 1 -b 0.0.0.0:8001 kibble.api.handler:application"
     expose:
@@ -43,7 +43,7 @@ services:
     ports:
       - 8000:8000
     depends_on:
-      - kibble
+      - api
     networks:
       - kibble
 
