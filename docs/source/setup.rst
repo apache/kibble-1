@@ -252,8 +252,8 @@ If you want to spin up a development instance of Apache Kibble you can do:
     docker-compose -f docker-compose-dev.yaml run kibble setup --autoadmin --skiponexist
     docker-compose -f docker-compose-dev.yaml up ui
 
-The ui should be available under `http://0.0.0.0:8000` or `http://localhost:8000`.
-To log in you can use the dummy admin account `admin@kibble` and password `kibbleAdmin`.
+The ui should be available under ``http://0.0.0.0:8000`` or ``http://localhost:8000``.
+To log in you can use the dummy admin account ``admin@kibble`` and password ``kibbleAdmin``.
 
 You can also start only the API server:
 
