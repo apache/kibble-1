@@ -14,143 +14,84 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-KIBBLE_VERSION = '0.1.0' # ABI/API compat demarcation.
-KIBBLE_DB_VERSION = 2 # Second database revision
-
 import sys
+import os
+import argparse
+import logging
+from getpass import getpass
+
+import yaml
+import bcrypt
+import json
+from elasticsearch import Elasticsearch
+
+KIBBLE_VERSION = '0.1.0'  # ABI/API compat demarcation.
+KIBBLE_DB_VERSION = 2  # Second database revision
 
 if sys.version_info <= (3, 3):
     print("This script requires Python 3.4 or higher")
     sys.exit(-1)
 
-import os
-import getpass
-import subprocess
-import argparse
-import shutil
-import yaml
-import bcrypt
-import json
-
-mappings = json.load(open("mappings.json"))
-myyaml = yaml.load(open("kibble.yaml.sample"))
-
-dopip = False
-try:
-    from elasticsearch import Elasticsearch
-    from elasticsearch import VERSION as ES_VERSION
-    ES_MAJOR = ES_VERSION[0]
-except:
-    dopip = True
-    
-if dopip and (getpass.getuser() != "root"):
-    print("It looks like you need to install some python modules first")
-    print("Either run this as root to do so, or run: ")
-    print("pip3 install elasticsearch certifi bcrypt")
-    sys.exit(-1)
-
-elif dopip:
-    print("Before we get started, we need to install some modules")
-    print("Hang on!")
-    try:
-        subprocess.check_call(('pip3','install','elasticsearch', 'certifi', 'bcrypt'))
-        from elasticsearch import Elasticsearch
-    except:
-        print("Oh dear, looks like this failed :(")
-        print("Please install elasticsearch and certifi before you try again:")
-        print("pip install elasticsearch certifi")
-        sys.exit(-1)
-
 
 # Arguments for non-interactive setups like docker
-arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument("-e", "--hostname", help="Pre-defined hostname for ElasticSearch (docker setups)")
-arg_parser.add_argument("-p", "--port", help="Pre-defined port for ES (docker setups)")
-arg_parser.add_argument("-d", "--dbname", help="Pre-defined Database prefix (docker setups)")
-arg_parser.add_argument("-s", "--shards", help="Predefined number of ES shards (docker setups)")
-arg_parser.add_argument("-r", "--replicas", help="Predefined number of replicas for ES (docker setups)")
-arg_parser.add_argument("-m", "--mailhost", help="Pre-defined mail server host (docker setups)")
-arg_parser.add_argument("-a", "--autoadmin", action='store_true', help="Generate generic admin account (docker setups)")
-arg_parser.add_argument("-k", "--skiponexist", action='store_true', help="Skip DB creation if DBs exist (docker setups)")
-args = arg_parser.parse_args()
+def get_parser():
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument(
+        "-e", "--hostname",
+        help="Pre-defined hostname for ElasticSearch (docker setups). Default: localhost",
+        default="localhost"
+    )
+    arg_parser.add_argument(
+        "-p", "--port",
+        help="Pre-defined port for ES (docker setups). Default: 9200", default=9200
+    )
+    arg_parser.add_argument(
+        "-d", "--dbname", help="Pre-defined Database prefix (docker setups). Default: kibble", default="kibble"
+    )
+    arg_parser.add_argument(
+        "-s", "--shards", help="Predefined number of ES shards (docker setups), Default: 5", default=5
+    )
+    arg_parser.add_argument(
+        "-r", "--replicas", help="Predefined number of replicas for ES (docker setups). Default: 1", default=1
+    )
+    arg_parser.add_argument(
+        "-m", "--mailhost",
+        help="Pre-defined mail server host (docker setups). Default: localhost:25",
+        default="localhost:25"
+    )
+    arg_parser.add_argument(
+        "-a", "--autoadmin",
+        action='store_true',
+        help="Generate generic admin account (docker setups). Default: False",
+        default=False
+    )
+    arg_parser.add_argument(
+        "-k", "--skiponexist",
+        action='store_true',
+        help="Skip DB creation if DBs exist (docker setups). Defaul: True", default=True
+    )
+    return arg_parser
 
-print("Welcome to the Apache Kibble setup script!")
-print("Let's start by determining some settings...")
-print("")
 
+def create_es_index(
+    hostname: str,
+    port: int,
+    dbname: str,
+    shards: int,
+    replicas: int,
+    admin_name: str,
+    admin_pass: str,
+    skiponexist: bool,
+):
+    """Creates Elasticsearch index used by Kibble"""
 
-hostname = args.hostname or ""
-port = int(args.port) if args.port else 0
-dbname = args.dbname or ""
-mlserver = args.mailhost or ""
-mldom = ""
-wc = ""
-genname = ""
-wce = False
-shards = int(args.shards) if args.shards else 0
-replicas = int(args.replicas) if args.replicas else -1
+    # elasticsearch logs lots of warnings on retries/connection failure
+    logging.getLogger("elasticsearch").setLevel(logging.ERROR)
 
-while hostname == "":
-    hostname = input("What is the hostname of the ElasticSearch server? [localhost]: ")
-    if hostname == "":
-        print("Using default; localhost")
-        hostname = "localhost"
-while port < 1:
-    try:
-        port = input("What port is ElasticSearch listening on? [9200]: ")
-        if port == "":
-            print("Using default; 9200")
-            port = 9200
-        port = int(port)
-    except ValueError:
-        pass
+    mappings_json = os.path.join(os.path.dirname(os.path.realpath(__file__)), "mappings.json")
+    with open(mappings_json, "r") as f:
+        mappings = json.load(f)
 
-while dbname == "":
-    dbname = input("What would you like to call the DB index [kibble]: ")
-    if dbname == "":
-        print("Using default; kibble")
-        dbname = "kibble"
-        
-while mlserver == "":
-    mlserver = input("What is the hostname of the outgoing mailserver? [localhost:25]: ")
-    if mlserver == "":
-        print("Using default; localhost:25")
-        mlserver = "localhost:25"
-    
-while shards < 1:
-    try:
-        shards = input("How many shards for the ElasticSearch index? [5]:")
-        if shards == "":
-            print("Using default; 5")
-            shards = 5
-        shards = int(shards)
-    except ValueError:
-        pass
-
-while replicas < 0:
-    try:
-        replicas = input("How many replicas for each shard? [1]: ")
-        if replicas == "":
-            print("Using default; 1")
-            replicas = 1
-        replicas = int(replicas)
-    except ValueError:
-        pass
-
-adminName = ""
-adminPass = ""
-if args.autoadmin:
-    adminName = "admin@kibble"
-    adminPass = "kibbleAdmin"
-while adminName == "":
-    adminName = input("Enter an email address for the adminstrator account: ")
-while adminPass == "":
-    adminPass = input("Enter a password for the adminstrator account: ")
-    
-print("Okay, I got all I need, setting up Kibble...")
-
-def createIndex():
-    global mappings
     es = Elasticsearch([
         {
             'host': hostname,
@@ -160,19 +101,27 @@ def createIndex():
         }],
         max_retries=5,
         retry_on_timeout=True
-        )
+    )
 
-    es6 = True if int(es.info()['version']['number'].split('.')[0]) >= 6 else False
-    es7 = True if int(es.info()['version']['number'].split('.')[0]) >= 7 else False
+    es_version =es.info()['version']['number']
+    es6 = int(es_version.split('.')[0]) >= 6
+    es7 = int(es_version.split('.')[0]) >= 7
+
     if not es6:
-        print("New Kibble installations require ElasticSearch 6.x or newer! You appear to be running %s!" % es.info()['version']['number'])
+        print(
+            f"New Kibble installations require ElasticSearch 6.x or newer! "
+            f"You appear to be running {es_version}!"
+        )
         sys.exit(-1)
+
     # If ES >= 7, _doc is invalid and mapping should be rooted
     if es7:
         mappings['mappings'] = mappings['mappings']['_doc']
+
     # Check if index already exists
-    if es.indices.exists(dbname+"_api"):
-        if args.skiponexist: # Skip this is DB exists and -k added
+    if es.indices.exists(dbname + "_api"):
+        # Skip this is DB exists and -k added
+        if skiponexist:
             print("DB prefix exists, but --skiponexist used, skipping this step.")
             return
         print("Error: ElasticSearch DB prefix '%s' already exists!" % dbname)
@@ -223,31 +172,31 @@ def createIndex():
         # person: contributor DB
         'person',
     ]
-    
+
     for t in types:
-        iname = "%s_%s" % (dbname, t)
-        print("Creating index " + iname)
-    
+        iname = f"{dbname}_{t}"
+        print(f"Creating index {iname}")
+
         settings = {
-            "number_of_shards" :   shards,
-            "number_of_replicas" : replicas
+            "number_of_shards":   shards,
+            "number_of_replicas": replicas
         }
-    
-        
-        res = es.indices.create(index = iname, body = {
-                    "mappings" : mappings['mappings'],
-                    "settings": settings
-                }
-            )
-        
-    print("Indices created! %s " % res)
-    
+        es.indices.create(
+            index=iname,
+            body={
+                "mappings": mappings['mappings'],
+                "settings": settings
+            }
+        )
+    print(f"Indices created!")
+    print()
+
     salt = bcrypt.gensalt()
-    pwd = bcrypt.hashpw(adminPass.encode('utf-8'), salt).decode('ascii')
+    pwd = bcrypt.hashpw(admin_pass.encode('utf-8'), salt).decode('ascii')
     print("Creating administrator account")
     doc = {
-            'email': adminName,                 # Username (email)
-            'password': pwd,              # Hashed password
+            'email': admin_name,                # Username (email)
+            'password': pwd,                    # Hashed password
             'displayName': "Administrator",     # Display Name
             'organisations': [],                # Orgs user belongs to (default is none)
             'ownerships': [],                   # Orgs user owns (default is none)
@@ -259,60 +208,133 @@ def createIndex():
         'apiversion': KIBBLE_VERSION,           # Log current API version
         'dbversion': KIBBLE_DB_VERSION          # Log the database revision we accept (might change!)
     }
-    es.index(index=dbname+'_useraccount', doc_type = '_doc', id = adminName, body = doc)
-    es.index(index=dbname+'_api', doc_type = '_doc', id = 'current', body = dbdoc)
+    es.index(index=dbname+'_useraccount', doc_type='_doc', id=admin_name, body=doc)
+    es.index(index=dbname+'_api', doc_type='_doc', id='current', body=dbdoc)
     print("Account created!")
 
-try:
-    import logging
-    # elasticsearch logs lots of warnings on retries/connection failure
-    logging.getLogger("elasticsearch").setLevel(logging.ERROR)
-    createIndex()
-    
-     
-except Exception as e:
-    print("Index creation failed: %s" % e)
-    sys.exit(1)
 
-kibble_yaml = '../api/yaml/kibble.yaml'
+def get_kibble_yaml() -> str:
+    """Resolve path to kibble config yaml"""
+    kibble_yaml = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        os.pardir,
+        "api",
+        "yaml",
+        "kibble.yaml"
+    )
+    if os.path.exists(kibble_yaml):
+        print(f"{kibble_yaml} already exists! Writing to {kibble_yaml}.tmp instead")
+        kibble_yaml = kibble_yaml + ".tmp"
+    return kibble_yaml
 
-if os.path.exists(kibble_yaml):
-    print("%s already exists! Writing to %s.tmp instead" % (kibble_yaml, kibble_yaml))
-    kibble_yaml = kibble_yaml + ".tmp"
-    
 
-print("Writing Kibble config (%s)" % kibble_yaml)
+def save_config(
+    mlserver: str,
+    hostname: str,
+    port: int,
+    dbname: str,
+):
+    """Save kibble config to yaml file"""
+    if ":" in mlserver:
+        try:
+            mailhost, mailport = mlserver.split(":")
+        except ValueError:
+            raise ValueError("mailhost argument must be in form of `host:port` or `host`")
+    else:
+        mailhost = mlserver
+        mailport = 25
 
-m = mlserver.split(':')
-if len(m) == 1:
-    m.append(25)
-    
-myconfig = {
-    'api': {
-        'version': KIBBLE_VERSION,
-        'database': KIBBLE_DB_VERSION
-    },
-    'elasticsearch': {
-        'host': hostname,
-        'port': port,
-        'ssl': False,
-        'dbname': dbname
-    },
-    'mail': {
-        'mailhost': m[0],
-        'mailport': m[1],
-        'sender': 'Kibble <noreply@kibble.kibble>'
-    },
-    'accounts': {
-        'allowSignup': True,
-        'verify': True
+    config = {
+        'api': {
+            'version': KIBBLE_VERSION,
+            'database': KIBBLE_DB_VERSION
+        },
+        'elasticsearch': {
+            'host': hostname,
+            'port': port,
+            'ssl': False,
+            'dbname': dbname
+        },
+        'mail': {
+            'mailhost': mailhost,
+            'mailport': int(mailport),
+            'sender': 'Kibble <noreply@kibble.kibble>'
+        },
+        'accounts': {
+            'allowSignup': True,
+            'verify': True
+        }
     }
-}
 
-with open(kibble_yaml, "w") as f:
-    f.write(yaml.dump(myconfig, default_flow_style = False))
-    f.close()
+    kibble_yaml = get_kibble_yaml()
+    print(f"Writing Kibble config to {kibble_yaml}")
+    with open(kibble_yaml, "w") as f:
+        f.write(yaml.dump(config, default_flow_style = False))
+        f.close()
 
-    
-print("All done, Kibble should...work now :)")
 
+def get_user_input(msg: str, secure: bool = False):
+    value = None
+    while not value:
+        value = getpass(msg) if secure else input(msg)
+    return value
+
+
+def print_configuration(args):
+    print("Configuring Apache Kibble elasticsearch instance with the following arguments:")
+    print(f"- hostname: {args.hostname}")
+    print(f"- port: {int(args.port)}")
+    print(f"- dbname: {args.dbname}")
+    print(f"- shards: {int(args.shards)}")
+    print(f"- replicas: {int(args.replicas)}")
+    print()
+
+
+def main():
+    """
+    The main Kibble setup logic. Using users input we create:
+    - Elasticsearch indexes used by Apache Kibble app
+    - Configuration yaml file
+    """
+    parser = get_parser()
+    args = parser.parse_args()
+
+    print("Welcome to the Apache Kibble setup script!")
+    print_configuration(args)
+
+    admin_name = "admin@kibble"
+    admin_pass = "kibbleAdmin"
+    if not args.autoadmin:
+        admin_name = get_user_input("Enter an email address for the administrator account:")
+        admin_pass = get_user_input("Enter a password for the administrator account:", secure=True)
+
+    # Create Elasticsearch index
+    try:
+        create_es_index(
+            hostname=args.hostname,
+            port=int(args.port),
+            dbname=args.dbname,
+            shards=int(args.shards),
+            replicas=int(args.replicas),
+            admin_name=admin_name,
+            admin_pass=admin_pass,
+            skiponexist=args.skiponexist,
+        )
+    except Exception as e:
+        print("Index creation failed: %s" % e)
+        sys.exit(1)
+    print()
+
+    # Create Kibble configuration file
+    save_config(
+        mlserver=args.mailhost,
+        hostname=args.hostname,
+        port=int(args.port),
+        dbname=args.dbname,
+    )
+    print()
+    print("All done, Kibble should...work now :)")
+
+
+if __name__ == '__main__':
+    main()

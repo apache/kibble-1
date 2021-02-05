@@ -42,5 +42,5 @@ def loadPage(path):
                 xp = p.replace('.', '/')
                 print("Loading endpoint pages.%s as %s" % (p, xp))
                 handlers[xp] = importlib.import_module("pages.%s" % p)
-    
+
 loadPage(rootpath)

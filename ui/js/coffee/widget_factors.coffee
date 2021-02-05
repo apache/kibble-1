@@ -30,13 +30,13 @@ factors = (json, state) ->
                         " #{pct}% change since last period"
                     ])
                     h.inject(h2)
-                else 
+                else
                     h2 = new HTML('span', { style: { marginLeft: "8px", fontSize: "14px", color: 'green'}},[
                         new HTML('i', {class: "fa fa-chevron-circle-up"}),
                         " +#{pct}% change since last period"
                     ])
                     h.inject(h2)
-                        
+
             t = txt(factor.title)
             obj.inject(new HTML('div', {}, [h,t]))
         state.widget.inject(obj, true)

@@ -106,7 +106,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Remove a person from an organisation
-# 
+#
 ########################################################################
 
 
@@ -125,7 +125,7 @@ def canInvite(session):
     """ Determine if the user can edit sources in this org """
     if session.user['userlevel'] == 'admin':
         return True
-    
+
     dOrg = session.user['defaultOrganisation'] or "apache"
     if session.DB.ES.exists(index=session.DB.dbname, doc_type="organisation", id= dOrg):
         xorg = session.DB.ES.get(index=session.DB.dbname, doc_type="organisation", id= dOrg)['_source']
@@ -138,9 +138,9 @@ def run(API, environ, indata, session):
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint!")
-    
+
     method = environ['REQUEST_METHOD']
-    
+
     #################################################
     # Inviting a new member?                        #
     #################################################
@@ -152,18 +152,18 @@ def run(API, environ, indata, session):
             # Make sure the org exists
             if not session.DB.ES.exists(index=session.DB.dbname, doc_type='organisation', id = orgid):
                 raise API.exception(403, "No such organisation!")
-            
+
             # make sure the user account exists
             if not session.DB.ES.exists(index=session.DB.dbname, doc_type='useraccount', id = newmember):
                 raise API.exception(403, "No such user!")
-            
+
             # Modify user account
             doc = session.DB.ES.get(index=session.DB.dbname, doc_type='useraccount', id = newmember)
             if orgid not in doc['_source']['organisations']: # No duplicates, please
                 doc['_source']['organisations'].append(orgid)
                 session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = newmember, body = doc['_source'])
-            
-            
+
+
             # Get org doc from ES
             doc = session.DB.ES.get(index=session.DB.dbname, doc_type='organisation', id = orgid)
             if isadmin:
@@ -172,7 +172,7 @@ def run(API, environ, indata, session):
                     # Override old doc
                     session.DB.ES.index(index=session.DB.dbname, doc_type='organisation', id = orgid, body = doc['_source'])
                     time.sleep(1) # Bleh!!
-            
+
             # If an admin, and not us, and reinvited, we purge the admin bit
             elif newmember in doc['_source']['admins']:
                 if newmember == session.user['email']:
@@ -182,11 +182,11 @@ def run(API, environ, indata, session):
                 session.DB.ES.index(index=session.DB.dbname, doc_type='organisation', id = orgid, body = doc['_source'])
                 time.sleep(1) # Bleh!!
             yield json.dumps({"okay": True, "message": "Member invited!!"})
-            
+
             return
         else:
             raise API.exception(403, "Only administrators or organisation owners can invite new members.")
-        
+
     #################################################
     # DELETE: Remove a member                       #
     #################################################
@@ -195,25 +195,25 @@ def run(API, environ, indata, session):
             memberid = indata.get('email')
             isadmin = indata.get('admin', False)
             orgid = session.user['defaultOrganisation'] or "apache"
-            
+
             # We can't remove ourselves!
             if memberid == session.user['email']:
                 raise API.exception(403, "You can't remove yourself from an organisation.")
-            
+
             # Make sure the org exists
             if not session.DB.ES.exists(index=session.DB.dbname, doc_type='organisation', id = orgid):
                 raise API.exception(403, "No such organisation!")
-            
+
             # make sure the user account exists
             if not session.DB.ES.exists(index=session.DB.dbname, doc_type='useraccount', id = memberid):
                 raise API.exception(403, "No such user!")
-            
+
             # Modify user account
             doc = session.DB.ES.get(index=session.DB.dbname, doc_type='useraccount', id = memberid)
             if orgid in doc['_source']['organisations']: # No duplicates, please
                 doc['_source']['organisations'].remove(orgid)
                 session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = memberid, body = doc['_source'])
-            
+
             # Check is user is admin and remove if so
             # Get org doc from ES
             doc = session.DB.ES.get(index=session.DB.dbname, doc_type='organisation', id = orgid)
@@ -222,12 +222,12 @@ def run(API, environ, indata, session):
                 # Override old doc
                 session.DB.ES.index(index=session.DB.dbname, doc_type='organisation', id = orgid, body = doc['_source'])
                 time.sleep(1) # Bleh!!
-                
+
             yield json.dumps({"okay": True, "message": "Member removed!"})
             return
         else:
             raise API.exception(403, "Only administrators or organisation owners can invite new members.")
-    
+
 
     #################################################
     # GET/POST: Display members                     #
@@ -236,11 +236,11 @@ def run(API, environ, indata, session):
         orgid = session.user['defaultOrganisation'] or "apache"
         if not session.DB.ES.exists(index=session.DB.dbname, doc_type='organisation', id = orgid):
             raise API.exception(403, "No such organisation!")
-        
+
         # Only admins should be able to view this!
         if not canInvite(session):
             raise API.exception(403, "Only organisation owners can view this list.")
-        
+
         # Find everyone affiliated with this org
         query = {
                     'query': {
@@ -264,7 +264,7 @@ def run(API, environ, indata, session):
         members = []
         for doc in res['hits']['hits']:
             members.append(doc['_id'])
-        
+
         # Get org doc from ES
         doc = session.DB.ES.get(index=session.DB.dbname, doc_type='organisation', id = orgid)
         JSON_OUT = {

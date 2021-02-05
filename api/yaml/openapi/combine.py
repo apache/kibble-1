@@ -64,7 +64,7 @@ def deconstruct():
                 f.write("\n\n")
                 f.write(contents)
                 f.close()
-        
+
     print("Dumping security components...")
     for basetype, bdefs in yml['components'].items():
         for schema, defs in bdefs.items():
@@ -81,7 +81,7 @@ def deconstruct():
                 f.write(yaml.dump(defs, default_flow_style=False))
                 f.close()
     print("Dumped %u definitions." % noDefs)
-    
+
 def construct():
     yml = {}
     yml['paths'] = {}
@@ -138,7 +138,7 @@ def construct():
         f.write(yaml.dump(yml, default_flow_style=False))
         f.close()
     print("All done!")
-    
+
 if len(sys.argv) > 1 and sys.argv[1] == 'deconstruct':
     deconstruct()
 else:

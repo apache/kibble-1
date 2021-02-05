@@ -85,7 +85,7 @@
 #             $ref: '#/components/schemas/Error'
 #       description: unexpected error
 #   summary: Create a new account
-# 
+#
 ########################################################################
 
 
@@ -125,7 +125,7 @@ Apache Kibble.
     s.quit()
 
 def run(API, environ, indata, session):
-    
+
     method = environ['REQUEST_METHOD']
 
     # Add a new account??
@@ -133,32 +133,32 @@ def run(API, environ, indata, session):
         u = indata['email']
         p = indata['password']
         d = indata['displayname']
-        
+
         # Are new accounts allowed? (admin can always make accounts, of course)
         if not session.config['accounts'].get('allowSignup', False):
             if not (session.user and session.user['level'] == 'admin'):
                 raise API.exception(403, "New account requests have been administratively disabled.")
-        
+
         # Check if we already have that username in use
         if session.DB.ES.exists(index=session.DB.dbname, doc_type='useraccount', id = u):
             raise API.exception(403, "Username already in use")
-        
+
         # We require a username, displayName password of at least 3 chars each
         if len(p) < 3 or len(u) < 3 or len(d) < 3:
             raise API.exception(400, "Username, display-name and password must each be at elast 3 characters long.")
-        
+
         # We loosely check that the email is an email
         if not re.match(r"^\S+@\S+\.\S+$", u):
             raise API.exception(400, "Invalid email address presented.")
-        
+
         # Okay, let's make an account...I guess
         salt = bcrypt.gensalt()
         pwd = bcrypt.hashpw(p.encode('utf-8'), salt).decode('ascii')
-        
+
         # Verification code, if needed
         vsalt = bcrypt.gensalt()
         vcode = hashlib.sha1(vsalt).hexdigest()
-        
+
         # Auto-verify unless verification is enabled.
         # This is so previously unverified accounts don'thave to verify
         # if we later turn verification on.
@@ -167,7 +167,7 @@ def run(API, environ, indata, session):
             verified = False
             sendCode(session, u, vcode) # Send verification email
             # If verification email fails, skip account creation.
-        
+
         doc = {
             'email': u,                         # Username (email)
             'password': pwd,                    # Hashed password
@@ -179,24 +179,24 @@ def run(API, environ, indata, session):
             'vcode': vcode,                     # Verification code
             'userlevel': "user"                 # User level (user/admin)
         }
-        
-        
+
+
         # If we have auto-invite on, check if there are orgs to invite to
         if 'autoInvite' in session.config['accounts']:
             dom = u.split('@')[-1].lower()
             for ai in session.config['accounts']['autoInvite']:
                 if ai['domain'] == dom:
                     doc['organisations'].append(ai['organisation'])
-                
+
         session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = u, body = doc)
         yield json.dumps({"message": "Account created!", "verified": verified})
         return
-    
+
     # We need to be logged in for the rest of this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
-    
+
+
     # Patch (edit) an account
     if method == "PATCH":
         userid = session.user['email']
@@ -217,4 +217,3 @@ def run(API, environ, indata, session):
         session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = userid, body = udoc)
         yield json.dumps({"message": "Account updated!"})
         return
-    

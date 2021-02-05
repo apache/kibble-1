@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows top 25 jobs by total builds done. Essentially buildtime, tweaked
-# 
+#
 ########################################################################
 
 
@@ -72,23 +72,23 @@ import time
 import re
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-    
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -118,7 +118,7 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+
     query['aggs'] = {
         'by_job': {
                 'terms': {
@@ -146,14 +146,14 @@ def run(API, environ, indata, session):
                 }
             }
         }
-    
+
     res = session.DB.ES.search(
             index=session.DB.dbname,
             doc_type="ci_build",
             size = 0,
             body = query
         )
-    
+
     jobs = []
     for doc in res['aggregations']['by_job']['buckets']:
         job = doc['key']
@@ -162,12 +162,12 @@ def run(API, environ, indata, session):
         ci = doc['ci']['buckets'][0]['key']
         jobname = doc['name']['buckets'][0]['key']
         jobs.append([builds, duration, jobname, ci])
-    
+
     topjobs = sorted(jobs, key = lambda x: int(x[0]), reverse = True)
     tophash = {}
     for v in topjobs:
         tophash["%s (%s)" % (v[2], v[3])] = v[0]
-        
+
     JSON_OUT = {
         'counts': tophash,
         'okay': True,

@@ -70,20 +70,20 @@ top5 = (json, state) ->
         pos = 5
         while pos < json.topN.items.length
             nid = id + "_show_" + pos
-            
+
             obj.inject(new HTML('a', { style: { cursor: 'pointer'}, onclick: "this.style.display = 'none'; get('#{nid}').style.display = 'block';"}, "Show more..."))
             obj = new HTML('div', { id: nid, style: { display: 'none'}})
             make5(obj, json, pos)
             state.widget.inject(obj)
             pos += 5
-        
 
-         
+
+
 showMore = (id) ->
     obj = document.getElementById(id)
     if obj
         obj.style.display = "block"
-            
+
 
 filterPerson = (email) ->
     if email == ""
@@ -96,4 +96,3 @@ filterPerson = (email) ->
     updateWidgets('relationship', null, { email: email })
     updateWidgets('viewpicker', null, { email: email })
     globArgs.email = email
-              

@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Show code evolution as a timeseries
-# 
+#
 ########################################################################
 
 
@@ -72,25 +72,25 @@ import time
 import hashlib
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     breakdown = False
     onlycode = False
-    
-    
+
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -120,7 +120,7 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+
     # We need scrolling here!
     res = session.DB.ES.search(
             index=session.DB.dbname,
@@ -133,10 +133,10 @@ def run(API, environ, indata, session):
     scroll_size = res['hits']['total']
     if type(scroll_size) is dict:
         scroll_size = scroll_size['value'] # ES >= 7.x
-    
+
     timeseries = []
     tstmp = {}
-    
+
     while (scroll_size > 0):
         for doc in res['hits']['hits']:
             updates = doc['_source']
@@ -151,15 +151,15 @@ def run(API, environ, indata, session):
                 item['code'] = item.get('code', 0) + (updates['loc'] or 0)
                 item['comments'] = item.get('comments', 0) + (updates['comments'] or 0)
                 item['blanks'] = item.get('blanks', 0) + (updates['blank'] or 0)
-                
+
         res = session.DB.ES.scroll(scroll_id = sid, scroll = '1m')
         sid = res['_scroll_id']
         scroll_size = len(res['hits']['hits'])
-    
+
     for k, v in tstmp.items():
         v['date'] = k
         timeseries.append(v)
-        
+
     timeseries = sorted(timeseries, key = lambda x: x['date'])
     JSON_OUT = {
         'widgetType': {

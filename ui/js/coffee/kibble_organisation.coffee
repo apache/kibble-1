@@ -16,8 +16,8 @@
 keyValueForm = (type, key, caption, placeholder) ->
     div = new HTML('div', { style: { width: "100%", margin: "10px", paddingBottom: "10px"}})
     left = new HTML('div', { style: { float: "left", width: "300px", fontWeight: "bold"}}, caption)
-    right = new HTML('div', { style: { float: "left", width: "500px"}}) 
-    
+    right = new HTML('div', { style: { float: "left", width: "500px"}})
+
     if type == 'text'
         inp = new HTML('input', {name: key, id: key, style: { marginBottom: "10px"}, class: "form-control", type: "text", placeholder: placeholder})
         right.inject(inp)
@@ -76,34 +76,34 @@ orglist = (json, state) ->
                 new HTML('kbd', {}, ""+org.sourceCount.pretty()),
                 " sources so far."
                 ])
-            
+
             odiv.inject(div)
             if not isDefault
                 dbtn = new HTML('input', { style: { marginTop: "10px", width: "120px"},class: "btn btn-primary btn-block", type: "button", onclick: "setDefaultOrg('#{org.id}');", value: "Set as current"})
                 div.inject(dbtn)
             odiv.inject(new HTML('hr'))
         state.widget.inject(odiv, true)
-        
+
     if userAccount.userlevel == "admin"
         fieldset = new HTML('fieldset', { style: { float: "left", margin: '30px'}})
         legend = new HTML('legend', {}, "Create a new organisation:")
         fieldset.inject(legend)
-        
+
         fieldset.inject(keyValueForm('text', 'orgname', 'Name of the organisation:', 'Foo, inc.'))
         fieldset.inject(keyValueForm('textarea', 'orgdesc', 'Description:', 'Foo, inc. is awesome and does stuff.'))
         fieldset.inject(keyValueForm('text', 'orgid', 'Optional org ID:', 'demo, myorg etc'))
-        
+
         fieldset.inject(new HTML('p', {}, "You'll be able to add users and owners once the organisation has been created."))
-        
+
         btn = new HTML('input', { style: { width: "200px"},class: "btn btn-primary btn-block", type: "button", onclick: "makeOrg();", value: "Create organisation"})
         fieldset.inject(btn)
-        
+
         state.widget.inject(fieldset)
-        
+
 
 inviteMember = (eml, admin) ->
     put('org/members', { email: eml, admin: admin}, null, memberInvited)
-    
+
 removeMember = (eml, admin) ->
     xdelete('org/members', { email: eml, admin: admin}, null, memberInvited)
 
@@ -115,7 +115,7 @@ memberInvited = (json, state) ->
         )
 
 membershipList = (json, state) ->
-    
+
     # Invite member form
     h = new HTML('h3', {}, "Invite a member to #{userAccount.defaultOrganisation}")
     state.widget.inject(h, true)
@@ -124,13 +124,13 @@ membershipList = (json, state) ->
     state.widget.inject(inp)
     state.widget.inject(btn)
     state.widget.inject(new HTML('hr'))
-    
-    
+
+
     # Existing membership list
     h = new HTML('h3', {}, "Current membership of #{userAccount.defaultOrganisation}:")
     state.widget.inject(h)
     list = new HTML('table', { style: { margin: "20px", border: "1px solid #666"}})
-    
+
     for member in json.members
         tr = new HTML('tr', { style: { borderBottom: "1px solid #666"}})
         eml = new HTML('td', { style: { padding: "5px"}}, member)
@@ -140,17 +140,15 @@ membershipList = (json, state) ->
         if isAdmin
             alink = new HTML('a', { href: "javascript:void(inviteMember('#{member}', false));"}, "Remove as admin")
         admopt = new HTML('td', { style: { padding: "5px"}}, alink)
-        
+
         # Remove member
         dlink = new HTML('a', { href: "javascript:void(removeMember('#{member}'));"}, "Remove from organisation")
         delopt = new HTML('td', { style: { padding: "5px"}}, dlink)
-        
+
         tr.inject(eml)
         tr.inject(admin)
         tr.inject(admopt)
         tr.inject(delopt)
         list.inject(tr)
-        
-    state.widget.inject(list)
-    
 
+    state.widget.inject(list)

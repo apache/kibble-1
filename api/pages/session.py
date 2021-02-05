@@ -85,7 +85,7 @@
 #             $ref: '#/components/schemas/Error'
 #       description: unexpected error
 #   summary: Log in
-# 
+#
 ########################################################################
 
 
@@ -104,9 +104,9 @@ import hashlib
 import uuid
 
 def run(API, environ, indata, session):
-    
+
     method = environ['REQUEST_METHOD']
-    
+
     # Logging in?
     if method == "PUT":
         u = indata['email']
@@ -127,30 +127,30 @@ def run(API, environ, indata, session):
                 session.DB.ES.index(index=session.DB.dbname, doc_type='uisession', id = session.cookie, body = sessionDoc)
                 yield json.dumps({"message": "Logged in OK!"})
                 return
-        
+
         # Fall back to a 403 if username and password did not match
         raise API.exception(403, "Wrong username or password supplied!")
-    
-    
+
+
     # We need to be logged in for the rest of this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     # Delete a session (log out)
     if method == "DELETE":
         session.DB.ES.delete(index=session.DB.dbname, doc_type='uisession', id = session.cookie)
         session.newCookie()
         yield json.dumps({"message": "Logged out, bye bye!"})
-    
+
     # Display the user data for this session
     if method == "GET":
-        
+
         # Do we have an API key? If not, make one
         if not session.user.get('token') or indata.get('newtoken'):
             token = str(uuid.uuid4())
             session.user['token'] = token
             session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = session.user['email'], body = session.user)
-        
+
         # Run a quick search of all orgs we have.
         res = session.DB.ES.search(
                 index=session.DB.dbname,
@@ -162,12 +162,12 @@ def run(API, environ, indata, session):
                     }
                 }
             )
-    
+
         orgs = []
         for hit in res['hits']['hits']:
             doc = hit['_source']
             orgs.append(doc)
-        
+
         JSON_OUT = {
             'email': session.user['email'],
             'displayName': session.user['displayName'],
@@ -180,7 +180,6 @@ def run(API, environ, indata, session):
         }
         yield json.dumps(JSON_OUT)
         return
-    
+
     # Finally, if we hit a method we don't know, balk!
     yield API.exception(400, "I don't know this request method!!")
-    

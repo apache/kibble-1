@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows trend data for a set of forums over a given period of time
-# 
+#
 ########################################################################
 
 
@@ -71,30 +71,30 @@ import json
 import time
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
     if dateFrom < 0:
         dateFrom = 0
     dateYonder = dateFrom - (dateTo - dateFrom)
-    
-    
+
+
     dOrg = session.user['defaultOrganisation'] or "apache"
-    
+
     ####################################################################
     # We start by doing all the queries for THIS period.               #
     # Then we reset the query, and change date to yonder-->from        #
@@ -126,7 +126,7 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+
     # Get number of issues created, this period
     res = session.DB.ES.count(
             index=session.DB.dbname,
@@ -134,8 +134,8 @@ def run(API, environ, indata, session):
             body = query
         )
     no_issues_created = res['count']
-    
-    
+
+
     # Get number of open/close, this period
     query['aggs'] = {
             'opener': {
@@ -151,10 +151,10 @@ def run(API, environ, indata, session):
             body = query
         )
     no_creators = res['aggregations']['opener']['value']
-    
-    
+
+
     # REPLIERS
-    
+
     query = {
                 'query': {
                     'bool': {
@@ -182,7 +182,7 @@ def run(API, environ, indata, session):
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
 
-    
+
     # Get number of issues created, this period
     res = session.DB.ES.count(
             index=session.DB.dbname,
@@ -190,8 +190,8 @@ def run(API, environ, indata, session):
             body = query
         )
     no_issues_closed = res['count']
-    
-    
+
+
     # Get number of open/close, this period
     query['aggs'] = {
             'closer': {
@@ -207,8 +207,8 @@ def run(API, environ, indata, session):
             body = query
         )
     no_closers = res['aggregations']['closer']['value']
-    
-    
+
+
     ####################################################################
     # Change to PRIOR SPAN                                             #
     ####################################################################
@@ -233,13 +233,13 @@ def run(API, environ, indata, session):
                     }
                 }
             }
-    
+
     if indata.get('source'):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
-    
+
+
     # Get number of issues, this period
     res = session.DB.ES.count(
             index=session.DB.dbname,
@@ -247,7 +247,7 @@ def run(API, environ, indata, session):
             body = query
         )
     no_issues_created_before = res['count']
-    
+
     # Get number of committers, this period
     query['aggs'] = {
             'opener': {
@@ -263,11 +263,11 @@ def run(API, environ, indata, session):
             body = query
         )
     no_creators_before = res['aggregations']['opener']['value']
-    
-    
-    
+
+
+
     # REPLIERS
-    
+
     query = {
                 'query': {
                     'bool': {
@@ -293,7 +293,7 @@ def run(API, environ, indata, session):
         query['query']['bool']['must'].append({'term': {'sourceID': indata.get('source')}})
     elif viewList:
         query['query']['bool']['must'].append({'terms': {'sourceID': viewList}})
-    
+
     # Get number of issues created, this period
     res = session.DB.ES.count(
             index=session.DB.dbname,
@@ -301,8 +301,8 @@ def run(API, environ, indata, session):
             body = query
         )
     no_issues_closed_before = res['count']
-    
-    
+
+
     # Get number of open/close, this period
     query['aggs'] = {
             'closer': {
@@ -318,7 +318,7 @@ def run(API, environ, indata, session):
             body = query
         )
     no_closers_before = res['aggregations']['closer']['value']
-    
+
     trends = {
         "created": {
             'before': no_issues_created_before,
@@ -341,7 +341,7 @@ def run(API, environ, indata, session):
             'title': "People replying this period"
         }
     }
-    
+
     JSON_OUT = {
         'trends': trends,
         'okay': True,

@@ -56,7 +56,7 @@
 #   security:
 #   - cookieAuth: []
 #   summary: Shows email sent over time
-# 
+#
 ########################################################################
 
 
@@ -72,33 +72,33 @@ import time
 import hashlib
 
 def run(API, environ, indata, session):
-    
+
     # We need to be logged in for this!
     if not session.user:
         raise API.exception(403, "You must be logged in to use this API endpoint! %s")
-    
+
     now = time.time()
-    
+
     # First, fetch the view if we have such a thing enabled
     viewList = []
     if indata.get('view'):
         viewList = session.getView(indata.get('view'))
     if indata.get('subfilter'):
-        viewList = session.subFilter(indata.get('subfilter'), view = viewList) 
-    
-    
+        viewList = session.subFilter(indata.get('subfilter'), view = viewList)
+
+
     dateTo = indata.get('to', int(time.time()))
     dateFrom = indata.get('from', dateTo - (86400*30*6)) # Default to a 6 month span
-    
+
     which = 'committer_email'
     role = 'committer'
     if indata.get('author', False):
         which = 'author_email'
         role = 'author'
-    
+
     interval = indata.get('interval', 'month')
-    
-    
+
+
     ####################################################################
     ####################################################################
     dOrg = session.user['defaultOrganisation'] or "apache"
@@ -131,7 +131,7 @@ def run(API, environ, indata, session):
     if indata.get('email'):
         query['query']['bool']['should'] = [{'term': {'sender': indata.get('email')}}]
         query['query']['bool']['minimum_should_match'] = 1
-    
+
     # Get number of committers, this period
     query['aggs'] = {
             'timeseries': {
@@ -164,7 +164,7 @@ def run(API, environ, indata, session):
             size = 0,
             body = query
         )
-    
+
     timeseries = []
     for bucket in res['aggregations']['timeseries']['buckets']:
         ts = int(bucket['key'] / 1000)
@@ -174,7 +174,7 @@ def run(API, environ, indata, session):
             'topics': bucket['topics']['value'],
             'authors': bucket['authors']['value']
         })
-    
+
     JSON_OUT = {
         'widgetType': {
             'chartType': 'bar'  # Recommendation for the UI
