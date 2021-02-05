@@ -12,15 +12,15 @@ mvp = (json, state) ->
                     n = null
             globArgs.size = n
             updateWidgets('mvp', null, { size: n })
-                
+
         , false)
     state.widget.inject(
         new HTML('b', {}, "List size: "),
         true
     )
     state.widget.inject(nlist)
-    
-    
+
+
     nlist = new HTML('select', { name: 'sort', id: 'sort'})
     for i in ['commits', 'issues', 'emails']
         el = new HTML('option', { value: i, text: i})
@@ -34,13 +34,13 @@ mvp = (json, state) ->
                     n = null
             globArgs.sort = n
             updateWidgets('mvp', null, { sort: n })
-                
+
         , false)
     state.widget.inject(
         new HTML('b', {}, " Sort by: "),
     )
     state.widget.inject(nlist)
-    
+
     tbl = mk('table', {class: "table table-striped"})
     tr = mk('tr', {}, [
         mk('th', {}, "Rank"),
@@ -67,5 +67,3 @@ mvp = (json, state) ->
     app(tbl, tb)
     state.widget.inject(tbl)
     #updateWidgets('trends', null, { email: email })
-
-              

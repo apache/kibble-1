@@ -36,12 +36,12 @@ charts_punchcard = (obj, data, options) ->
         div = d3.select(div)
     data = data.timeseries
     days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    
+
     c = []
 
     chart = d3.select(obj).append("svg").attr("width", '100%').attr("height", '100%')
-    
-    
+
+
     MAX = 0
     for k, v of data
         m = k.split(/ - /)
@@ -59,8 +59,8 @@ charts_punchcard = (obj, data, options) ->
     circles = chart.selectAll('svg').data(c).enter().append("circle");
     labels = chart.selectAll('svg').data(days).enter().append('text')
     slots = chart.selectAll('svg').data([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]).enter().append('text')
-    
-    
+
+
     redraw = () ->
         xy = obj.getBoundingClientRect()
         xy.height = xy.width * 0.5
@@ -69,16 +69,16 @@ charts_punchcard = (obj, data, options) ->
         maxr = Math.sqrt(xy.width**2 + xy.height**2) / 80
         cw = (0.03*xy.width)
         circles.attr("cx", (d) => (d.x*xy.width) + cw/2).attr("cy", (d) => 50 + d.y*xy.height ).attr("r", (d) => pval(d.r, MAX) * maxr).style("fill", (d) => punchcard_color(d.r, MAX)).
-        on("mouseover", (d) -> 
+        on("mouseover", (d) ->
             div.transition()
-                .duration(200)		
+                .duration(200)
                 .style("opacity", .9)
-            div	.html(d.h + d.r.pretty() + " commits")	
-                .style("left", (d3.event.pageX) + "px")		
+            div	.html(d.h + d.r.pretty() + " commits")
+                .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
         ).on("mouseout", (d) ->
             div.transition()
-                .duration(200)		
+                .duration(200)
                 .style("opacity", 0)
             )
         labels.attr('x', 20).attr('y', (d) => (55 + (0.04 + days.indexOf(d) * 0.10) * xy.height)).attr('font-size', maxr*1.75).text((d) => d)
@@ -86,6 +86,5 @@ charts_punchcard = (obj, data, options) ->
     chart.node().addEventListener("resize", redraw)
     window.addEventListener("resize", redraw)
     redraw();
-    
-    return [chart, {punchcard: true}]
 
+    return [chart, {punchcard: true}]

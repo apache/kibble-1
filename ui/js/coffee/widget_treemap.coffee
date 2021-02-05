@@ -3,7 +3,7 @@ treemap = (json, state) ->
         cats = new Array()
         dates = new Array()
         catdata = {}
-        
+
         filled = { areaStyle: {type: 'default' } }
         if json.widgetType
           if json.widgetType.chartType
@@ -16,25 +16,25 @@ treemap = (json, state) ->
           #type = state.widget.args.representation
         if not json.widget.title or json.widget.title.length == 0
           json.widget.title = 'Languages'
-          
+
         if not state.widget.div.style.height
           div.style.minHeight = "900px"
         else
           div.style.minHeight = "100%"
         if state.widget.fullscreen
           div.style.minHeight = (window.innerHeight - 100) + "px"
-        
+
         state.widget.inject(div, true)
-        
-        
-        
+
+
+
         range = ""
         rect = div.getBoundingClientRect()
         theme.color = genColors(json.treemap.length+1, 0.6, 0.5, true)
         colors = genColors(json.treemap.length+1, 0.6, 0.5, true)
         theme.textStyle.fontSize = Math.max(12, window.innerHeight/100)
         echartLine = echarts.init(div, theme);
-        
+
         ld = []
         for lang, i in json.treemap
           ld.push(lang)
@@ -45,7 +45,7 @@ treemap = (json, state) ->
                 color: colors[i]
               }
             }
-        
+
         option = {
 
             title: {
@@ -58,7 +58,7 @@ treemap = (json, state) ->
                 #selectedMode: 'single',
               data: ld
             }],
-    
+
             tooltip: {
                 show: true,
                 feature: {
@@ -71,18 +71,18 @@ treemap = (json, state) ->
                     value = info.value;
                     treePathInfo = info.treePathInfo;
                     treePath = [];
-    
+
                     for i in [1...treePathInfo.length]
                         treePath.push(treePathInfo[i].name)
-                    
-    
+
+
                     return [
                         '<div class="tooltip-title">' + treePath.join('/') + '</div>',
                         'Lines of Code: ' + value.pretty(),
                     ].join('');
-                
+
             },
-        
+
             series: [
                 {
                     name:json.widget.title,
@@ -122,4 +122,3 @@ treemap = (json, state) ->
             ]
         }
         echartLine.setOption(option = option);
-          

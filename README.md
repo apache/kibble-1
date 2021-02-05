@@ -1,6 +1,8 @@
 <p align="center"><img src="/ui/images/kibble-logo.png" width="300"/></p>
 
 # Apache Kibble
+![CI](https://github.com/apache/kibble/workflows/CI/badge.svg)
+[![License](http://img.shields.io/:license-Apache%202-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 Apache Kibble is a tool to collect, aggregate and visualize data about any software project that uses commonly known tools. It consists of two components:
 
@@ -8,7 +10,7 @@ Apache Kibble is a tool to collect, aggregate and visualize data about any softw
  for the scanners to connect to, and provides the overall management of sources as well as the
  visualizations and API end points.
 - **Kibble scanners** ([kibble-scanners](https://github.com/apache/kibble-scanners)) - a collection of
- scanning applications each designed to work with a specific type of resource (git repo, mailing list, 
+ scanning applications each designed to work with a specific type of resource (git repo, mailing list,
  JIRA, etc) and push compiled data objects to the Kibble Server.
 
 ## Documentation

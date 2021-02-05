@@ -1,3 +1,20 @@
+ .. Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+ ..   http://www.apache.org/licenses/LICENSE-2.0
+
+ .. Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
 Setting up Apache Kibble
 ========================
 
@@ -20,7 +37,7 @@ The Kibble Server (kibble)
 The Kibble Scanner Applications (kibble-scanners)
    This is a collection of scanning applications each designed to work
    with a specific type of resource (a git repo, a mailing list, a JIRA
-   instance etc) and push copmpiled data objects to the Kibble Server.
+   instance etc) and push compiled data objects to the Kibble Server.
    Some resources only have one scanner plugin, while others may have
    multiple plugins capable of dealing with specific aspects of a
    resource.
@@ -83,7 +100,7 @@ Source Code Location
 *Apache Kibble does not currently have any releases.*
 *You are however welcome to try out the development version.*
 
-For the time being, we recommend that you use the ``master`` branch for
+For the time being, we recommend that you use the ``main`` branch for
 testing Kibble. This applies to both scanners and the server.
 
 The Kibble Server can be found via our source repository at
@@ -108,11 +125,7 @@ following components installed and set up:
   existing databases, but not for new setups). Does not have to be on
   the same machine, but it may help speed up processing.
 - A web server of your choice (Apache HTTP Server, NGINX, lighttp etc)
-- Python 3.4 or newer with the following libraries installed:
-- - elasticsearch
-- - certifi
-- - pyyaml
-- - bcrypt
+- Python 3.4 or newer with installed libraries from `setup/requirements.txt`
 - Gunicorn for Python 3.x (often called gunicorn3) or mod_wsgi
 
 ###########################################
@@ -125,10 +138,9 @@ Assuming you wish to install kibble in /var/www/kibble, you would set it
 up by issuing the following:
 
 - ``git clone https://github.com/apache/kibble.git /var/www/kibble``
-- ``cd /var/www/kibble/setup``
-- ``pip3 install -r requirements.txt``
-- ``python3 setup.py``
-- Enter the configuration parameters the setup process asks for
+- ``cd /var/www/kibble``
+- ``pip install -r setup/requirements.txt``
+- ``python setup/setup.py``
 
 This will set up the database, the configuration file, and create your
 initial administrator account for the UI. You can later on do additional

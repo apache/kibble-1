@@ -3,7 +3,7 @@ publisherWidget = null
 
 publisherPublic = (json, state) ->
     publisher(json, state, true)
-    
+
 publisher = (json, state, nolink) ->
         div = document.createElement('div')
         state.public = true
@@ -33,12 +33,12 @@ publisher = (json, state, nolink) ->
             if not location.href.match(/snoot\.io/)
                 link = mk('a', { href: "https://www.snoot.io/", style: "font-size: 10px; margin-left: 60px; font-family: sans-serif;"}, "Data courtesy of Snoot.io")
                 state.widget.inject(link)
-        
+
 publishWidget = () ->
     postJSON("publish", {
         publish: JSON.parse(viewJS)
     }, null, postPublishLink)
-    
+
 postPublishLink = (json, state) ->
     if json.id
         pdiv = get('publishercode')
@@ -52,4 +52,3 @@ postPublishLink = (json, state) ->
         app(pdiv, txt("Script code for publishing:\n\n<div class=\"snoot-widget\" data=\"" + json.id + "\"></div>\n<script src=\"https://www.snoot.io/js/snoot.all.3.js\"></script>\n<script src=\"https://www.snoot.io/publish/bundle.js\"></script>#{added}"))
     else
         alert("Something broke :(")
-    

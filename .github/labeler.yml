@@ -1,0 +1,23 @@
+area:api:
+  - 'kibble/api/*'
+
+area:cli:
+  - 'kibble/cli/*'
+
+area:scanners:
+  - 'kibble/scanners/*'
+
+area:ui:
+  - 'ui/*'
+
+area:docs:
+  - 'docs/*'
+  - '*.md'
+
+area:dev:
+  - '.github/*'
+  - '.pre-commit.config.yaml'
+  - 'asf.yaml'
+  - 'Dockerfile*'
+  - 'docker*'
+  - 'setup.*'

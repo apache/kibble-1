@@ -1,7 +1,7 @@
 charts_gaugechart = (obj, data) ->
     if data.gauge
         data = data.gauge
-    
+
     config = {
         bindto: obj,
         data: {
@@ -29,12 +29,11 @@ charts_gaugechart = (obj, data) ->
 
 
 gauge = (json, state) ->
-        
+
     lmain = new HTML('div')
     state.widget.inject(lmain, true)
-    
+
     if json.gauge and json.gauge.text
         lmain.inject(new HTML('p', {}, json.gauge.text))
-    
-    gaugeChart = new Chart(lmain, 'gauge', json)
 
+    gaugeChart = new Chart(lmain, 'gauge', json)

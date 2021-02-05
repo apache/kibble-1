@@ -1025,14 +1025,14 @@
     //         $('#editModal #fName').val(val1.html());
     //         $('#editModal #lName').val(val2.html());
     //         $('#editModal #uName').val(val3.html());
-    // 
-    // 
+    //
+    //
     //         $('#editModal #sbmtBtn').on('click', function() {
     //             val1.html($('#editModal #fName').val());
     //             val2.html($('#editModal #lName').val());
     //             val3.html($('#editModal #uName').val());
     //         });
-    // 
+    //
     //     });
     /*----------- END action table CODE -------------------------*/
   };

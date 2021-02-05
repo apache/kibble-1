@@ -117,7 +117,7 @@ copyCSS = (destination, source) ->
             if (child.tagName in containerElements)
                  copyCSS(child, source.childNodes[cd])
                  continue
-            
+
             style = source.childNodes[cd].currentStyle || window.getComputedStyle(source.childNodes[cd]);
             if (style == "undefined" || style == null)
              continue
@@ -129,7 +129,7 @@ downloadBlob = (name, uri) ->
       navigator.msSaveOrOpenBlob(uriToBlob(uri), name);
     else
       saveLink = document.createElement('a');
-    
+
       saveLink.download = name;
       saveLink.style.display = 'none';
       document.body.appendChild(saveLink);
@@ -141,26 +141,26 @@ downloadBlob = (name, uri) ->
           requestAnimationFrame( () ->
             URL.revokeObjectURL(url)
           )
-        
+
       catch e
         console.warn('This browser does not support object URLs. Falling back to string URL.');
         saveLink.href = uri;
-      
+
       saveLink.click()
       document.body.removeChild(saveLink)
-     
-    
+
+
 chartToSvg = (o, asSVG) ->
-    
+
     doctype = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
     svgdiv = o.chartdiv.getElementsByTagName('svg')[0]
     svgcopy = svgdiv.cloneNode(true)
     copyCSS(svgcopy, svgdiv)
     rect = o.main.getBoundingClientRect()
     svgcopy.setAttribute('xlink', 'http://www.w3.org/1999/xlink')
-    
+
     source = (new XMLSerializer()).serializeToString(svgcopy)
-    
+
     source = source.replace(/(\w+)?:?xlink=/g, 'xmlns:xlink=')
     source = source.replace(/NS\d+:href/g, 'xlink:href')
     blob = new Blob([ doctype + source], { type: 'image/svg+xml;charset=utf-8' })
@@ -174,12 +174,12 @@ chartToSvg = (o, asSVG) ->
             document.getElementById('chartWrapperHiddenMaster').appendChild(canvas)
             ctx = canvas.getContext('2d')
             ctx.drawImage(img, 0, 0)
-            
+
             canvasUrl = canvas.toDataURL("image/png")
             downloadBlob('chart.png', canvasUrl)
-            
+
         document.getElementById('chartWrapperHiddenMaster').appendChild(img)
-    
+
 rotateTable = (list) ->
     newList = []
     for x, i in list[0]
@@ -188,7 +188,7 @@ rotateTable = (list) ->
             arr.push(el[i])
         newList.push(arr)
     return newList
-    
+
 dataTable = (o) ->
     modal = new HTML('div', { class: "chartModal"})
     modalInner = new HTML('div', { class: "chartModalContent"})
@@ -223,7 +223,7 @@ switchChartType = (o, config, type) ->
             xtype = m[1] + v.split(/-/)[1]||v
         config.data.types[k] = xtype
     o.chartobj = c3.generate(config)
-    
+
 stackChart = (o, config, chart) ->
     arr = []
     for k, v of config.data.columns
@@ -240,33 +240,33 @@ class Chart
     constructor: (parent, type, data, options) ->
         cid = parseInt((Math.random()*1000000)).toString(16)
         @cid = cid
-        
+
         xxCharts[cid] = this
-        
+
         # Make main div wrapper
         @main = new HTML('div', { class: "chartWrapper"})
         @main.xThis = this
         @data = data
-        
+
         # Make toolbar
         @toolbar = new HTML('div', {class: "chartToolbar"})
         @main.inject(@toolbar)
-        
+
         # Title bar
         @titlebar = new HTML('div', {class: "chartTitle"}, if (options and options.title) then options.title else "")
         @main.inject(@titlebar)
-        
+
         i = 0
         chartWrapperColors = genColors(16, 0.2, 0.75, true)
-        
+
         # Default to generic buttons
         btns = chartWrapperButtons.generic.slice(0,999)
-        
+
         # Line charts have more features than, say, donuts
         if type == 'line'
             for el in chartWrapperButtons.line
                 btns.push(el)
-                
+
         # Make the buttons appear
         @buttons = {}
         for btn in btns
@@ -279,13 +279,13 @@ class Chart
             if btn.onclick
                 do (btn, btnDiv) ->
                     btnDiv.addEventListener('click', () -> chartOnclick(btn.onclick, cid))
-                
+
             i++
-        
+
         # Make inner chart
         @chartdiv = new HTML('div', { class: "chartChart"})
         @main.inject(@chartdiv)
-        
+
         if parent
             parent.appendChild(@main)
         else
@@ -294,7 +294,7 @@ class Chart
                 hObj = new HTML('div', { id: 'chartWrapperHiddenMaster', style: { visibility: "hidden"}})
                 document.body.appendChild(hObj)
             hObj.appendChild(@main)
-        
+
         if type == 'line'
             [@chartobj, @config] = charts_linechart(@chartdiv, data, options)
         if type == 'donut'
@@ -307,8 +307,8 @@ class Chart
             [@chartobj, @config] = charts_linked(@chartdiv, data.nodes, data.links, options)
          if type == 'punchcard'
             [@chartobj, @config] = charts_punchcard(@chartdiv, data, options)
-            
-        
+
+
         # If this data source has distinguishable categories
         # show a checkbox to toggle it.
         if data.distinguishable
@@ -324,7 +324,7 @@ class Chart
                   if this.checked
                           distinguish = 'true'
                           globArgs['distinguish'] = 'true'
-                  
+
                   updateWidgets('line', null, { distinguish: distinguish })
                   updateWidgets('gauge', null, { distinguish: distinguish })
                   )
@@ -337,7 +337,7 @@ class Chart
           label.style.paddingLeft = '5px'
           label.appendChild(document.createTextNode('Toggle category breakdown'))
           @main.inject(label)
-        
+
         # If this data source has relative weightings
         # show a checkbox to toggle it.
         if data.relativeMode
@@ -353,7 +353,7 @@ class Chart
                   if this.checked
                           relative = 'true'
                           globArgs['relative'] = 'true'
-                  
+
                   updateWidgets('line', null, { relative: relative })
                   updateWidgets('gauge', null, { relative: relative })
                   )
@@ -366,6 +366,5 @@ class Chart
           label.style.paddingLeft = '5px'
           label.appendChild(document.createTextNode('Toggle relative/comparative mode'))
           @main.inject(label)
-          
+
         return @main
-    

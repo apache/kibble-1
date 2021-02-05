@@ -1,0 +1,81 @@
+########################################################################
+# defaultWidgetArgs                                                    #
+########################################################################
+properties:
+  author:
+    description: Turns on author view for code results, as opposed to the default
+      committer view
+    type: boolean
+  collapse:
+    description: for some widgets, this collapses sources based on a regex
+    type: string
+  email:
+    description: filter sources based on an email (a person)
+    type: string
+  from:
+    description: If specified, compile data from this timestamp onwards
+    example: 1400000000
+    type: integer
+  interval:
+    description: If fetching histograms, this specifies the interval to pack figures
+      into. Can be day, week, month, quarter or year
+    example: month
+    type: string
+  links:
+    description: for relationship maps, this denotes the minimum link strength (no.
+      of connections) that makes up a link.
+    type: integer
+  page:
+    type: string
+  quick:
+    description: Turns on quick data for some endpoints, returning only sparse data
+      (thus less traffic)
+    example: false
+    type: boolean
+  search:
+    description: for some widgets, this enables sub-filtering based on searches
+    type: string
+  source:
+    description: If specified, only compile data on this specific sourceID
+    example: abcdef12345678
+    type: string
+  sources:
+    description: for some widget, this fetches all sources
+    type: boolean
+  span:
+    description: For factor charts, denotes the number of months to base factors on
+      from
+    example: 2
+    type: integer
+  subfilter:
+    description: Quickly defined view by sub-filtering the existing view and matching
+      on sourceURLs
+    type: string
+  pathfilter:
+    description: Quickly defined view by sub-filtering commits by paths affected.
+    type: string
+  to:
+    description: If specified, only compile data up until here
+    example: 1503483273
+    type: integer
+  types:
+    description: If set, only return data from sources matching these types
+    example:
+    - jira
+    - bugzilla
+    type: array
+  unique:
+    description: Only compile data from unique commits, ignore duplicates
+    type: boolean
+  view:
+    description: ID Of optional view to use
+    example: abcdef12345678
+    type: string
+  distinguish:
+    description: Enables distinguishing different types of data objects, subject to the individual API endpoint
+    type: boolean
+    example: false
+  relative:
+    description: Enables relative comparison mode for API endpoints that have this feature.
+    type: boolean
+    example: false

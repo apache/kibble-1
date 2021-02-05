@@ -9,7 +9,7 @@ preferences = (json, state) ->
             token: "API token"
         desc =
             tag: "If set, only sources with this tag will be shown in your views."
-            
+
         for item in ['screenname', 'fullname', 'email', 'tag', 'token']
             div = mk('div')
             app(div, txt(items[item] + ": "))
@@ -43,16 +43,16 @@ preferences = (json, state) ->
             app(list, opt)
         app(div,list)
         app(obj, div)
-        
+
         btn = mk('input')
         set(btn, 'type', 'button')
         set(btn, 'onclick', 'saveprefs(this.form)')
         set(btn, 'value', "Save preferences")
         app(obj, btn)
-        
+
         #obj.innerHTML += JSON.stringify(json)
         state.widget.inject(obj, true)
-        
+
         # Org admin?
         if json.admin
             aobj = mk('div')
@@ -81,4 +81,3 @@ saveprefs = (form) ->
         if k in ['screenname', 'fullname', 'email', 'tag', 'organisation']
             js[k] = v
     postJSON("preferences", js, null, (a) -> alert("Preferences saved!") )
-        

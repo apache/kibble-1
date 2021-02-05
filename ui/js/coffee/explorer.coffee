@@ -14,7 +14,7 @@
 # limitations under the License.
 
 explorer = (json, state) ->
-        
+
         org = json.organisation
         h = document.createElement('h2')
         if json.tag
@@ -46,12 +46,12 @@ explorer = (json, state) ->
                 if globArgs.source and globArgs.source == item.sourceID
                     opt.selected = 'selected'
                 list.appendChild(opt)
-        
+
         ID = Math.floor(Math.random() * 987654321).toString(16)
         list.setAttribute('id', ID)
         $("#"+ID).chosen().change(() ->
                 source = this.value
-                
+
                 if source == ""
                         source = null
                 globArgs.source = source
@@ -67,9 +67,9 @@ explorer = (json, state) ->
                 updateWidgets('punchcard', null, { source: source })
                 updateWidgets('jsondump', null, { source: source })
               )
-        
-        
-        
+
+
+
         # Unique commits label
         id = Math.floor(Math.random() * 987654321).toString(16)
         chk = document.createElement('input')
@@ -83,7 +83,7 @@ explorer = (json, state) ->
                 if this.checked
                         author = 'true'
                         globArgs['author'] = 'true'
-                
+
                 updateWidgets('donut', null, { author: author })
                 updateWidgets('gauge', null, { author: author })
                 updateWidgets('line', null, { author: author })
@@ -107,10 +107,10 @@ explorer = (json, state) ->
         state.widget.inject(label)
         br = new HTML('br')
         p = new HTML('input', {id:'pathfilter', size: 32, type: 'text', value: globArgs.pathfilter, onChange: 'pathFilterGlob = this.value;',placeholder: 'optional path-filter'})
-        
+
         state.widget.inject(br)
         state.widget.inject(p)
-        
+
         b = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-success', type: 'button', onClick: 'pathFilter();', value: "filter paths"})
         rb = new HTML('input', {style: { marginLeft: '10px'}, class: 'btn btn-small btn-danger', type: 'button', onClick: 'get("pathfilter").value = ""; pathFilterGlob = ""; pathFilter();', value: "reset"})
         state.widget.inject(b)
@@ -118,7 +118,7 @@ explorer = (json, state) ->
 
 
 sourceexplorer = (json, state) ->
-        
+
         org = json.organisation
         h = document.createElement('h4')
         if json.tag
@@ -151,12 +151,12 @@ sourceexplorer = (json, state) ->
                 if globArgs.source and globArgs.source == item.sourceID
                     opt.selected = 'selected'
                 list.appendChild(opt)
-                
+
         ID = Math.floor(Math.random() * 987654321).toString(16)
         list.setAttribute('id', ID)
         $("#"+ID).chosen().change(() ->
                 source = this.value
-                
+
                 if source == ""
                         source = null
                 globArgs.source = source
@@ -176,13 +176,13 @@ sourceexplorer = (json, state) ->
 
 
 mailexplorer = (json, state) ->
-        
+
         org = json.organisation
         h = document.createElement('h4')
         if json.tag
             org.name += " (Filter: " + json.tag + ")"
         h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
-        
+
         state.widget.inject(h, true)
         list = document.createElement('select')
         state.widget.inject(list)
@@ -209,12 +209,12 @@ mailexplorer = (json, state) ->
                 if globArgs.source and globArgs.source == item.sourceID
                     opt.selected = 'selected'
                 list.appendChild(opt)
-        
+
         ID = Math.floor(Math.random() * 987654321).toString(16)
         list.setAttribute('id', ID)
         $("#"+ID).chosen().change(() ->
                 source = this.value
-                
+
                 if source == ""
                         source = null
                 globArgs.source = source
@@ -227,17 +227,17 @@ mailexplorer = (json, state) ->
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('punchcard', null, { source: source })
                 updateWidgets('relationship', null, { source: source })
-                
+
         )
-        
+
 logexplorer = (json, state) ->
-        
+
         org = json.organisation
         h = document.createElement('h4')
         if json.tag
             org.name += " (Filter: " + json.tag + ")"
         h.appendChild(document.createTextNode("Exploring " + org.name + ":"))
-        
+
         state.widget.inject(h, true)
         list = document.createElement('select')
         state.widget.inject(list)
@@ -264,12 +264,12 @@ logexplorer = (json, state) ->
                 if globArgs.source and globArgs.source == item.sourceID
                     opt.selected = 'selected'
                 list.appendChild(opt)
-        
+
         ID = Math.floor(Math.random() * 987654321).toString(16)
         list.setAttribute('id', ID)
         $("#"+ID).chosen().change(() ->
                 source = this.value
-                
+
                 if source == ""
                         source = null
                 globArgs.source = source
@@ -281,11 +281,11 @@ logexplorer = (json, state) ->
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('punchcard', null, { source: source })
-                
+
         )
-        
+
 issueexplorer = (json, state) ->
-        
+
         org = json.organisation
         if json.tag
             org.name += " (Filter: " + json.tag + ")"
@@ -310,7 +310,7 @@ issueexplorer = (json, state) ->
                 opt = document.createElement('option')
                 opt.value = item.sourceID
                 ezURL = null
-                n = item.sourceURL.match(/^([a-z]+:\/\/.+?)\/([-.A-Z0-9]+)$/i)                
+                n = item.sourceURL.match(/^([a-z]+:\/\/.+?)\/([-.A-Z0-9]+)$/i)
                 m = item.sourceURL.match(/^([a-z]+:\/\/.+?)\s(.+)$/i)
                 if n and n.length == 3
                     ezURL = "#{n[2]} - (#{n[1]})"
@@ -320,12 +320,12 @@ issueexplorer = (json, state) ->
                 if globArgs.source and globArgs.source == item.sourceID
                     opt.selected = 'selected'
                 list.appendChild(opt)
-        
+
         ID = Math.floor(Math.random() * 987654321).toString(16)
         list.setAttribute('id', ID)
         $("#"+ID).chosen().change(() ->
                 source = this.value
-                
+
                 if source == ""
                         source = null
                 globArgs.source = source
@@ -337,13 +337,13 @@ issueexplorer = (json, state) ->
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('punchcard', null, { source: source })
-                
+
         )
-        
+
 
 
 forumexplorer = (json, state) ->
-        
+
         org = json.organisation
         if json.tag
             org.name += " (Filter: " + json.tag + ")"
@@ -368,7 +368,7 @@ forumexplorer = (json, state) ->
                 opt = document.createElement('option')
                 opt.value = item.sourceID
                 ezURL = null
-                n = item.sourceURL.match(/^([a-z]+:\/\/.+?)\/([-.A-Z0-9]+)$/i)                
+                n = item.sourceURL.match(/^([a-z]+:\/\/.+?)\/([-.A-Z0-9]+)$/i)
                 m = item.sourceURL.match(/^([a-z]+:\/\/.+?)\s(.+)$/i)
                 if n and n.length == 3
                     ezURL = "#{n[2]} - (#{n[1]})"
@@ -378,12 +378,12 @@ forumexplorer = (json, state) ->
                 if globArgs.source and globArgs.source == item.sourceID
                     opt.selected = 'selected'
                 list.appendChild(opt)
-        
+
         ID = Math.floor(Math.random() * 987654321).toString(16)
         list.setAttribute('id', ID)
         $("#"+ID).chosen().change(() ->
                 source = this.value
-                
+
                 if source == ""
                         source = null
                 globArgs.source = source
@@ -395,13 +395,13 @@ forumexplorer = (json, state) ->
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('punchcard', null, { source: source })
-                
+
         )
-        
+
 
 
 imexplorer = (json, state) ->
-        
+
         org = json.organisation
         if json.tag
             org.name += " (Filter: " + json.tag + ")"
@@ -426,7 +426,7 @@ imexplorer = (json, state) ->
                 opt = document.createElement('option')
                 opt.value = item.sourceID
                 ezURL = null
-                n = item.sourceURL.match(/^([a-z]+:\/\/.+?)\/([#\S+]+)$/i)                
+                n = item.sourceURL.match(/^([a-z]+:\/\/.+?)\/([#\S+]+)$/i)
                 m = item.sourceURL.match(/^([a-z]+:\/\/.+?)\s(.+)$/i)
                 if n and n.length == 3
                     ezURL = "#{n[2]} - (#{n[1]})"
@@ -436,12 +436,12 @@ imexplorer = (json, state) ->
                 if globArgs.source and globArgs.source == item.sourceID
                     opt.selected = 'selected'
                 list.appendChild(opt)
-        
+
         ID = Math.floor(Math.random() * 987654321).toString(16)
         list.setAttribute('id', ID)
         $("#"+ID).chosen().change(() ->
                 source = this.value
-                
+
                 if source == ""
                         source = null
                 globArgs.source = source
@@ -453,13 +453,13 @@ imexplorer = (json, state) ->
                 updateWidgets('factors', null, { source: source })
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('punchcard', null, { source: source })
-                
+
         , false)
         $('select').chosen();
-        
+
 
 ciexplorer = (json, state) ->
-        
+
         org = json.organisation
         if json.tag
             org.name += " (Filter: " + json.tag + ")"
@@ -484,7 +484,7 @@ ciexplorer = (json, state) ->
                 opt = document.createElement('option')
                 opt.value = item.sourceID
                 ezURL = null
-                n = item.sourceURL.match(/^([a-z]+:\/\/.+?)\/([#\S+]+)$/i)                
+                n = item.sourceURL.match(/^([a-z]+:\/\/.+?)\/([#\S+]+)$/i)
                 m = item.sourceURL.match(/^([a-z]+:\/\/.+?)\s(.+)$/i)
                 if n and n.length == 3
                     ezURL = "#{n[2]} - (#{n[1]})"
@@ -494,12 +494,12 @@ ciexplorer = (json, state) ->
                 if globArgs.source and globArgs.source == item.sourceID
                     opt.selected = 'selected'
                 list.appendChild(opt)
-        
+
         ID = Math.floor(Math.random() * 987654321).toString(16)
         list.setAttribute('id', ID)
         $("#"+ID).chosen().change(() ->
                 source = this.value
-                
+
                 if source == ""
                         source = null
                 globArgs.source = source
@@ -512,9 +512,9 @@ ciexplorer = (json, state) ->
                 updateWidgets('trends', null, { source: source })
                 updateWidgets('relationship', null, { source: source })
                 updateWidgets('punchcard', null, { source: source })
-                
+
         )
-        
+
 
 multiviewexplorer = (json, state) ->
         org = json.organisation
@@ -547,7 +547,7 @@ multiviewexplorer = (json, state) ->
                 if globArgs[tName] and globArgs[tName] == item.id
                     opt.selected = 'selected'
                 list.appendChild(opt)
-            
+
                 ID = Math.floor(Math.random() * 987654321).toString(16)
                 list.setAttribute('id', ID)
                 $("#"+ID).chosen().change(() ->
@@ -568,7 +568,7 @@ multiviewexplorer = (json, state) ->
                     updateWidgets('radar', null, x)
                     updateWidgets('punchcard', null, x)
               )
-        
+
 subFilterGlob = null
 subFilter = () ->
         source = subFilterGlob
@@ -601,7 +601,7 @@ subFilter = () ->
         updateWidgets('worldmap', null, x)
         updateWidgets('jsondump', null, x)
         updateWidgets('punchcard', null, x)
-        
+
         $( "a" ).each( () ->
             url = $(this).attr('href')
             if url
@@ -640,7 +640,7 @@ pathFilter = () ->
         updateWidgets('worldmap', null, x)
         updateWidgets('jsondump', null, x)
         updateWidgets('punchcard', null, x)
-        
+
         $( "a" ).each( () ->
             url = $(this).attr('href')
             if url
@@ -651,7 +651,7 @@ pathFilter = () ->
                     else
                             $(this).attr('href', "#{m[1]}#{m[2]}")
         )
-        
+
 
 viewexplorer = (json, state) ->
         org = json.organisation
@@ -683,7 +683,7 @@ viewexplorer = (json, state) ->
             if globArgs[tName] and globArgs[tName] == item.id
                 opt.selected = 'selected'
             list.appendChild(opt)
-        
+
         ID = Math.floor(Math.random() * 987654321).toString(16)
         list.setAttribute('id', ID)
         $("#"+ID).chosen().change(() ->
@@ -716,7 +716,7 @@ viewexplorer = (json, state) ->
                 updateWidgets('worldmap', null, x)
                 updateWidgets('jsondump', null, x)
                 updateWidgets('punchcard', null, x)
-                
+
                 $( "a" ).each( () ->
                     url = $(this).attr('href')
                     if url
@@ -727,9 +727,9 @@ viewexplorer = (json, state) ->
                             else
                                     $(this).attr('href', "#{m[1]}#{m[2]}")
                 )
-                
+
         )
-        
+
         # Quick filter
         state.widget.inject(new HTML('br'))
         i = new HTML('input', {id:'subfilter', size: 16, type: 'text', value: globArgs.subfilter, onChange: 'subFilterGlob = this.value;', placeholder: 'sub-filter'})
@@ -738,8 +738,8 @@ viewexplorer = (json, state) ->
         state.widget.inject(i)
         state.widget.inject(b)
         state.widget.inject(rb)
-        
-        
+
+
         if globArgs.subfilter and globArgs.subfilter.length > 0
                 source = globArgs.subfilter
                 $( "a" ).each( () ->
@@ -752,13 +752,13 @@ viewexplorer = (json, state) ->
                                 else
                                         $(this).attr('href', "#{m[1]}#{m[2]}")
                     )
-        
+
         if globArgs.email
                 div = new HTML('div', {}, "Currently filtering results based on " + globArgs.email + ". - ")
                 div.inject(new HTML('a', { href: 'javascript:void(filterPerson(null));'}, "Reset filter"))
                 state.widget.inject(div)
-            
-        
+
+
 
 widgetexplorer = (json, state) ->
         pwidgets = {
@@ -817,7 +817,7 @@ widgetexplorer = (json, state) ->
             if globArgs[tName] and globArgs[tName] == key
                 opt.selected = 'selected'
             list.appendChild(opt)
-        
+
         list.addEventListener("change", () ->
                 source = this.value
                 if source == ""
@@ -836,7 +836,5 @@ widgetexplorer = (json, state) ->
                 updateWidgets('trends', null, x)
                 updateWidgets('radar', null, x)
                 updateWidgets('punchcard', null, x)
-                
+
         , false)
-            
-        
