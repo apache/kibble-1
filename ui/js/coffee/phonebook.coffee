@@ -7,7 +7,7 @@ phonebook = (json, state) ->
         obj.innerText = "Found #{json.people.length} contributors.."
         obj.inject(new HTML('br'))
         state.widget.inject(obj, true)
-        
+
         json.people.sort( (a,b) =>
                 if a.name < b.name
                         return -1
@@ -15,7 +15,7 @@ phonebook = (json, state) ->
                         return 1
                 return 0
         )
-        
+
         for i, item of json.people
                 if i > 250
                         break
@@ -33,6 +33,3 @@ phonebook = (json, state) ->
                 idiv.inject(left)
                 idiv.inject(right)
                 obj.inject(idiv)
-                
-
-        

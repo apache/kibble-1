@@ -12,6 +12,3 @@ paragraph = (json, state) ->
           app(lmain, para)
       else
           app(lmain, mk('p', {style:"font-size: 1.2rem;"}, json.text))
-
-
-    

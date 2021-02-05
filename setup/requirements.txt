@@ -1,6 +1,0 @@
-certifi
-pyyaml
-bcrypt
-elasticsearch
-pre-commit
-python-dateutil

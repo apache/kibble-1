@@ -12,7 +12,7 @@ affiliation = (json, state) ->
         ngroups--
     app(h3, txt("Found " + ngroups + " organisations/companies:"))
     app(obj, h3)
-    
+
     btn = mk('input')
     set(btn, 'type', 'button')
     set(btn, 'class', 'btn btn-info')
@@ -26,7 +26,7 @@ affiliation = (json, state) ->
         w.callback = affiliationWizard
         w.reload()
     )
-    
+
     p = mk('p')
     app(p, txt("You may use the "))
     app(p, btn)
@@ -132,7 +132,7 @@ affiliationWizard = (json, state) ->
             app(gdiv, sp)
             app(gdiv, mk('br'))
         app(obj,gdiv)
-    
+
     btn = mk('input')
     set(btn, 'type', 'button')
     set(btn, 'class', 'btn btn-info')
@@ -167,7 +167,7 @@ affiliate = (hash) ->
     if tag
         postJSON('affiliations', { tag: tags }, null, null)
         app(tr, txt("(Tagged as: " + tag + ") "))
-        
+
 altemail = (hash) ->
     tag = window.prompt("Please enter the alt email with which you wish to associate this source, or type nothing to clear alts.")
     if tag == ""
@@ -178,4 +178,3 @@ altemail = (hash) ->
     if tag
         postJSON('affiliations', { altemail: tags }, null, null)
         app(tr, txt("(Affiliated as: " + tag + ") "))
-        

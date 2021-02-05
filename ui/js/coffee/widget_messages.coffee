@@ -1,5 +1,5 @@
 messages = (json, state) ->
-    
+
     if isArray json
         obj = document.createElement('form')
 
@@ -15,10 +15,10 @@ messages = (json, state) ->
             app(tr, td)
         app(thead, tr)
         app(tbl, thead)
-        
+
         tbody = mk('tbody')
         app(tbl, tbody)
-        
+
         for message in json
             tr = mk('tr')
             if message.read == false
@@ -30,14 +30,14 @@ messages = (json, state) ->
             app(a, txt(new Date(message.epoch*1000).toString()))
             app(td, a)
             app(tr, td)
-            
+
             td = mk('td')
             a = mk('a')
             set(a, 'href', '?page=messages&message=' + message.id)
             app(a, txt(message.senderName))
             app(td, a)
             app(tr, td)
-            
+
             td = mk('td')
             a = mk('a')
             set(a, 'href', '?page=messages&message=' + message.id)
@@ -45,18 +45,18 @@ messages = (json, state) ->
             app(td, a)
             app(tr, td)
             app(tbody, tr)
-            
+
         app(obj, tbl)
-        
+
         items =
             recipient: 'Recipient ID'
             subject: "Message subject"
             body: "Message"
-            
+
         h2 = mk('h2')
         app(h2, txt("Send a message:"))
         app(obj, h2)
-        
+
         for item in ['recipient', 'subject', 'body']
             div = mk('div')
             app(div, txt(items[item] + ": "))
@@ -71,13 +71,13 @@ messages = (json, state) ->
             set(inp, 'name', item)
             app(div, inp)
             app(obj, div)
-        
+
         btn = mk('input')
         set(btn, 'type', 'button')
         set(btn, 'onclick', 'sendEmail(this.form)')
         set(btn, 'value', "Send message")
         app(obj, btn)
-        
+
         #obj.innerHTML += JSON.stringify(json)
         state.widget.inject(obj, true)
     else
@@ -87,42 +87,42 @@ messages = (json, state) ->
         app(obj, b)
         app(obj, txt(json.senderName + ' (' + json.sender + ')'))
         app(obj, mk('br'))
-        
+
         b = mk('b')
         app(b, txt("Date: "))
         app(obj, b)
         app(obj, txt(new Date(json.epoch*1000).toString()))
         app(obj, mk('br'))
-        
+
         b = mk('b')
         app(b, txt("Subject: "))
         app(obj, b)
         app(obj, txt(json.subject))
         app(obj, mk('br'))
         app(obj, mk('br'))
-        
+
         pre = mk('pre')
         app(pre, txt(json.body))
         app(obj, pre)
-        
+
         app(obj, mk('hr'))
-        
+
         form = mk('form')
         items =
             recipient: 'Recipient ID'
             subject: "Message subject"
             body: "Message"
-            
+
         h2 = mk('h2')
         app(h2, txt("Send a reply:"))
         app(form, h2)
-        
+
         reply = {
             recipient: json.sender
             subject: 'RE: ' + json.subject
             body: ''
         }
-        
+
         for item in ['recipient', 'subject', 'body']
             div = mk('div')
             app(div, txt(items[item] + ": "))
@@ -138,13 +138,13 @@ messages = (json, state) ->
             set(inp, 'name', item)
             app(div, inp)
             app(form, div)
-        
+
         btn = mk('input')
         set(btn, 'type', 'button')
         set(btn, 'onclick', 'sendEmail(this.form)')
         set(btn, 'value', "Send message")
         app(form, btn)
-        
+
         app(obj, form)
         state.widget.inject(obj, true)
 
@@ -158,4 +158,3 @@ sendEmail = (form) ->
         if k in ['recipient', 'subject', 'body']
             js[k] = v
     postJSON("messages", js, null, (a) -> alert("Mail sent!") )
-        

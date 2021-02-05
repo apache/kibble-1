@@ -35,7 +35,7 @@ fetch = (url, xstate, callback, nocreds) ->
     # GET URL
     xmlHttp.open("GET", "api/#{url}", true);
     xmlHttp.send(null);
-    
+
     xmlHttp.onreadystatechange = (state) ->
             if xmlHttp.readyState == 4 and xmlHttp.status == 500
                 if snap
@@ -70,7 +70,7 @@ put = (url, json, xstate, callback, nocreds = false) ->
     # GET URL
     xmlHttp.open("PUT", "api/#{url}", true);
     xmlHttp.send(JSON.stringify(json || {}));
-    
+
     xmlHttp.onreadystatechange = (state) ->
             if xmlHttp.readyState == 4 and xmlHttp.status == 500
                 if snap
@@ -105,7 +105,7 @@ patch = (url, json, xstate, callback, nocreds = false) ->
     # GET URL
     xmlHttp.open("PATCH", "api/#{url}", true);
     xmlHttp.send(JSON.stringify(json || {}));
-    
+
     xmlHttp.onreadystatechange = (state) ->
             if xmlHttp.readyState == 4 and xmlHttp.status == 500
                 if snap
@@ -139,7 +139,7 @@ xdelete = (url, json, xstate, callback, nocreds = false) ->
     # GET URL
     xmlHttp.open("DELETE", "api/#{url}", true);
     xmlHttp.send(JSON.stringify(json || {}));
-    
+
     xmlHttp.onreadystatechange = (state) ->
             if xmlHttp.readyState == 4 and xmlHttp.status == 500
                 if snap
@@ -180,12 +180,12 @@ post = (url, json, xstate, callback, snap) ->
             if val == 'false'
                 json[key] = false
     fdata = JSON.stringify(json)
-    
+
     # POST URL
     xmlHttp.open("POST", "api/#{url}", true);
     xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(fdata);
-    
+
     xmlHttp.onreadystatechange = (state) ->
             if xmlHttp.readyState == 4 and xmlHttp.status == 500
                 if snap
@@ -477,14 +477,14 @@ isArray = ( value ) ->
         typeof value.length is 'number' and
         typeof value.splice is 'function' and
         not ( value.propertyIsEnumerable 'length' )
-        
+
 
 ### isHash: function to detect if an object is a hash ###
 isHash = (value) ->
     value and
         typeof value is 'object' and
         not isArray(value)
-        
+
 
 class HTML
     constructor: (type, params, children) ->
@@ -493,7 +493,7 @@ class HTML
             @element = type.cloneNode()
         else
             @element = document.createElement(type)
-        
+
         ### If params have been passed, set them ###
         if isHash(params)
             for key, val of params
@@ -509,7 +509,7 @@ class HTML
                         if not @element[key]
                             throw "No such attribute, #{key}!"
                         @element[key][subkey] = subval
-        
+
         ### If any children have been passed, add them to the element  ###
         if children
             ### If string, convert to textNode using txt() ###

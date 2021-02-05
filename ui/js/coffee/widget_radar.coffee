@@ -3,13 +3,13 @@
 radarIndicators = []
 
 radar = (json, state) ->
-        
+
     lmain = new HTML('div')
     state.widget.inject(lmain, true)
-    
+
     radarChart = new Chart(lmain, 'radar', json.radar)
-    
-    
+
+
     # Harmonizer
     id = Math.floor(Math.random() * 987654321).toString(16)
     chk = document.createElement('input')
@@ -23,7 +23,7 @@ radar = (json, state) ->
             if this.checked
                     harmonize = 'true'
                     globArgs['harmonize'] = 'true'
-            
+
             updateWidgets('radar', null, { harmonize: harmonize })
             )
     state.widget.inject(mk('br'))
@@ -35,7 +35,7 @@ radar = (json, state) ->
     label.style.paddingLeft = '5px'
     label.appendChild(document.createTextNode('Harmonize edges'))
     state.widget.inject(label)
-    
+
     # Relativizer
     id = Math.floor(Math.random() * 987654321).toString(16)
     chk = document.createElement('input')
@@ -49,7 +49,7 @@ radar = (json, state) ->
             if this.checked
                     relativize = 'true'
                     globArgs['relativize'] = 'true'
-            
+
             updateWidgets('radar', null, { relativize: relativize })
             )
     state.widget.inject(mk('br'))

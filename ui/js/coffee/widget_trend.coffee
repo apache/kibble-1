@@ -19,23 +19,23 @@ trendBox = (icon, count, title, desc) ->
         i.setAttribute("class", "fa " + (icons[icon] || 'fa-comments-o'))
         idiv.appendChild(i)
         cdiv.appendChild(idiv)
-        
+
         # Count
         codiv = document.createElement('div')
         codiv.setAttribute("class", "count")
         codiv.appendChild(document.createTextNode(count))
         cdiv.appendChild(codiv)
-        
+
         # Title
         h3 = document.createElement('h4')
         h3.appendChild(document.createTextNode(title))
         cdiv.appendChild(h3)
-        
+
         # Description
         p = document.createElement('p')
         p.appendChild(document.createTextNode(desc))
         cdiv.appendChild(p)
-        
+
         div.appendChild(cdiv)
         return div
 
@@ -57,6 +57,3 @@ trend = (json, state) ->
                 tb = trendBox(icon, data.after.pretty(), data.title, linediff)
                 state.widget.inject(tb, wipe)
                 wipe = false
-                
-        
-            

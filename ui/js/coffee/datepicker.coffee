@@ -39,7 +39,7 @@ updateTimeseriesWidgets = (range) ->
             updateWidgets('phonebook', null, { to: to, from: from})
             updateWidgets('worldmap', null, { to: to, from: from})
             updateWidgets('jsondump', null, { to: to, from: from})
-                
+
 datepicker = (widget) ->
         div = document.createElement('div')
         div.setAttribute("class", "well")
@@ -72,10 +72,10 @@ datepicker = (widget) ->
         id = Math.floor(Math.random()*987654321).toString(16)
         input.setAttribute("id", id)
         group.appendChild(input)
-        
+
         widget.inject(div)
-        
-        
+
+
         datePickerOptions = {
           startDate: if globArgs.from then moment(new Date(globArgs.from*1000)) else moment().subtract(6, 'months'),
           endDate: if globArgs.to then moment(new Date(globArgs.to*1000)) else moment(),
@@ -118,9 +118,8 @@ datepicker = (widget) ->
             firstDay: 1
           }
         };
-        
+
         $('#' + id).daterangepicker(datePickerOptions, (start, end, label) ->
                 console.log(start._d.getTime()/1000)
                 updateTimeseriesWidgets([Math.max(0, Math.floor(start._d.getTime()/1000)), Math.max(3600, Math.floor(end._d.getTime()/1000))])
         );
-

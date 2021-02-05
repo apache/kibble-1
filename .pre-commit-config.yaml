@@ -24,8 +24,60 @@ minimum_pre_commit_version: "1.20.0"
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v3.3.0
     hooks:
       - id: check-yaml
       - id: end-of-file-fixer
+        exclude: ^ui/vendors/.*$
       - id: trailing-whitespace
+        exclude: ^ui/vendors/.*$
+      - id: fix-encoding-pragma
+        args:
+          - --remove
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.9
+    hooks:
+      - id: insert-license
+        name: Add license for all other files
+        exclude: ^\.github/.*$
+        args:
+          - --comment-style
+          - "|#|"
+          - --license-filepath
+          - license-templates/LICENSE.txt
+          - --fuzzy-match-generates-todo
+        files: >
+          \.cfg$|^Dockerfile.*$|\.sh$|\.bash$|\.py$|\.yml$|\.yaml$
+      - id: insert-license
+        name: Add license for all rst files
+        exclude: ^\.github/.*$
+        args:
+          - --comment-style
+          - "||"
+          - --license-filepath
+          - license-templates/LICENSE.rst
+          - --fuzzy-match-generates-todo
+        files: \.rst$
+      - id: insert-license
+        name: Add license for all md and html files
+        files: \.md$|\.html$
+        exclude: ^\.github/.*$|
+        args:
+          - --comment-style
+          - "<!--|| -->"
+          - --license-filepath
+          - license-templates/LICENSE.txt
+          - --fuzzy-match-generates-todo
+  - repo: https://github.com/psf/black
+    rev: 20.8b1
+    hooks:
+    - id: black
+      name: Black
+      types: [python]
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.6.4
+    hooks:
+      - id: isort
+        name: Run isort to sort imports
+        args: ['--multi-line', '3', '--trailing-comma']
+        files: \.py$

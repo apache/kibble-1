@@ -17,10 +17,6 @@ punchcard = (json, state) ->
         div = document.createElement('div')
         if json.text
                 div.inject(new HTML('p', {}, json.text))
-        
+
         state.widget.inject(div, true)
         pc = new Chart(div, 'punchcard', json, {punchcard: true})
-        
-        
-        
-        

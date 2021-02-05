@@ -1,6 +1,6 @@
 # Donut widget
 donut = (json, state) ->
-        
+
     dt = []
     dtl = []
     l = 0
@@ -21,7 +21,7 @@ donut = (json, state) ->
         for item in dt
             dtl.push(dt.name)
         theme.color = genColors(a+1, 0.55, 0.475, true) #quickColors(a)
-        
+
     if (state.widget.args.representation == 'commentcount')
         code = 0
         comment = 0
@@ -31,7 +31,7 @@ donut = (json, state) ->
                 code += data.code
                 comment += data.comment
                 blank += data.blank||0
-        
+
         tot = code + comment
         dtl = ['Code', 'Comments']
         dt = [
@@ -40,16 +40,16 @@ donut = (json, state) ->
         ]
         if blank > 0
                 dt.push({name: "Blanks", value: blank})
-                
+
         theme.color = genColors(3, 0.6, 0.5, true)
-    
-    
+
+
     if (state.widget.args.representation == 'sloccount' or (state.widget.args.representation != 'commentcount' and json.languages))
         langs = json.languages
         for lang, data of langs
             tot += data.code
             top.push(lang)
-        
+
         top.sort((a,b) => langs[b].code - langs[a].code)
         for lang in top
             l++
@@ -61,21 +61,19 @@ donut = (json, state) ->
                     value: langs[lang].code
             })
             dtl.push(lang)
-            
-        if (tot != ttot) 
+
+        if (tot != ttot)
             dtl.push('Other languages')
             dt.push( {
                 name: 'Other languages',
                 value: (tot-ttot)
                 })
-        
+
         theme.color = genColors(17, 0.6, 0.5, true)
-    
+
     data = {}
     for el in dt
         data[el.name] = el.value
     div = new HTML('div')
     state.widget.inject(div, true)
     chartBox = new Chart(div, 'donut', data, 25)
-    
-      
