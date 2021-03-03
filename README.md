@@ -2,7 +2,7 @@
 
 # This is old version of Apache Kibble
 
-Development is taking place in https://github.com/apache/kibble
+This repo contains archived code for Kibble v1. The current development for Apache Kibble happens at https://github.com/apache/kibble.
 
 ## Apache Kibble
 
