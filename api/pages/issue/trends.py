@@ -324,7 +324,8 @@ def run(API, environ, indata, session):
             body = query
         )
     no_closers_before = res['aggregations']['closer']['value']
-    
+    issuesRatioBefore = round(float(no_issues_closed_before) / no_issues_created_before, 2)
+    issuesRatioAfter = str(round(float(no_issues_closed) / no_issues_created, 2))
     
     trends = {
         "created": {
@@ -346,6 +347,11 @@ def run(API, environ, indata, session):
             'before': no_closers_before,
             'after': no_closers,
             'title': "People closing issues this period"
+        },
+        "ratio":{
+            'before': 0,
+            'after': 0,
+            'title': "Issues Closed / Issues Opened Ratio: "+issuesRatioAfter
         }
     }
     
