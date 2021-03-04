@@ -78,10 +78,15 @@ components:
           description: The name of the organisation to create
           example: Kibble, Inc.
           type: string
+        querymethod:
+          description: Update or new
+          example: update
+          type: string
       required:
       - id
       - name
       - desc
+      - querymethod
     OrgMembers:
       properties:
         admins:

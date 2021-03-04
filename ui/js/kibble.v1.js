@@ -3105,13 +3105,15 @@ defaultOrgChanged = function(json, state) {
   }, 1000);
 };
 
-makeOrg = function() {
+makeOrg = function(queryMethod) {
   var orgdesc, orgid, orgname;
   orgname = get('orgname').value;
   orgdesc = get('orgdesc').value;
   orgid = get('orgid').value;
-  if (orgid.length === 0) {
-    orgid = parseInt(Math.random() * 987654321).toString(16);
+  if (queryMethod === 'new') {
+    if (orgid.length === 0) {
+      orgid = parseInt(Math.random() * 987654321).toString(16);
+    }
   }
   if (orgname.length === 0) {
     alert("Please enter a name for the organisation!");
@@ -3124,8 +3126,18 @@ makeOrg = function() {
   return put('org/list', {
     id: orgid,
     name: orgname,
-    desc: orgdesc
+    desc: orgdesc,
+    querymethod: queryMethod
   }, {}, orgCreated);
+};
+
+edit = function(org) {
+  document.getElementById('orgname').value = org.name;
+  document.getElementById('orgdesc').value = org.desc;
+  document.getElementById('orgid').value = org.id;
+  document.getElementById('create_btn').disabled = true;
+  document.getElementById('create_btn').scrollIntoView = false;
+  return window.scrollTo(0, document.body.scrollHeight);
 };
 
 orglist = function(json, state) {
@@ -3164,6 +3176,17 @@ orglist = function(json, state) {
         });
         div.inject(dbtn);
       }
+      dbtn = new HTML('i', {
+        style: {
+          float: "right"
+        },
+        "class": "fa fa-edit",
+        type: "icon",
+        title: "Edit Organisation",
+        onclick: "edit({name: '" + org.name + "', desc: '" + org.description + "', id: '" + org.id + "'});",
+        href: "#create_btn"
+      });
+      div.inject(dbtn);
       odiv.inject(new HTML('hr'));
     }
     state.widget.inject(odiv, true);
@@ -3187,8 +3210,20 @@ orglist = function(json, state) {
       },
       "class": "btn btn-primary btn-block",
       type: "button",
-      onclick: "makeOrg();",
+      id: 'create_btn',
+      onclick: "makeOrg('new');",
       value: "Create organisation"
+    });
+    fieldset.inject(btn);
+    btn = new HTML('input', {
+      style: {
+        width: "200px"
+      },
+      "class": "btn btn-primary btn-block",
+      type: "button",
+      id: 'edit_btn',
+      onclick: "makeOrg('update');",
+      value: "Edit organisation"
     });
     fieldset.inject(btn);
     return state.widget.inject(fieldset);
