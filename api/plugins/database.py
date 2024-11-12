@@ -22,12 +22,11 @@ It stores the elasticsearch handler and config options.
 
 
 # Main imports
-import cgi
 import re
 #import aaa
 import elasticsearch
 
-class KibbleESWrapper(object):
+class _KibbleESWrapper(object):
     """
        Class for rewriting old-style queries to the new ones,
        where doc_type is an integral part of the DB name
@@ -65,7 +64,7 @@ class KibbleESWrapper(object):
             body = body
             )
 
-class KibbleESWrapperSeven(object):
+class _KibbleESWrapperSeven(object):
     """
        Class for rewriting old-style queries to the >= 7.x ones,
        where doc_type is an integral part of the DB name and NO DOC_TYPE!
@@ -106,14 +105,22 @@ class KibbleDatabase(object):
     def __init__(self, config):
         self.config = config
         self.dbname = config['elasticsearch']['dbname']
-        self.ES = elasticsearch.Elasticsearch([{
-                'host': config['elasticsearch']['host'],
-                'port': int(config['elasticsearch']['port']),
-                'use_ssl': config['elasticsearch']['ssl'],
-                'verify_certs': False,
-                'url_prefix': config['elasticsearch']['uri'] if 'uri' in config['elasticsearch'] else '',
-                'http_auth': config['elasticsearch']['auth'] if 'auth' in config['elasticsearch'] else None
-            }],
+        
+        defaultELConfig = {
+            'host': config['elasticsearch']['host'],
+            'port': int(config['elasticsearch']['port']),
+        }
+        versionHint = config['elasticsearch']['versionHint']
+        if (versionHint >= 7):
+            defaultELConfig['scheme'] = 'https' if (config['elasticsearch']['ssl']) else 'http'
+            defaultELConfig['path_prefix'] = config['elasticsearch']['uri'] if 'uri' in config['elasticsearch'] else ''
+        else:
+           defaultELConfig['use_ssl'] =  config['elasticsearch']['ssl']
+           defaultELConfig['verify_certs']: False
+           defaultELConfig['url_prefix'] = config['elasticsearch']['uri'] if 'uri' in config['elasticsearch'] else ''
+           defaultELConfig['http_auth'] = config['elasticsearch']['auth'] if 'auth' in config['elasticsearch'] else None
+            
+        self.ES = elasticsearch.Elasticsearch([ defaultELConfig ],
                 max_retries=5,
                 retry_on_timeout=True
             )
@@ -123,7 +130,7 @@ class KibbleDatabase(object):
         # ES calls to match this.
         self.ESversion = int(self.ES.info()['version']['number'].split('.')[0])
         if self.ESversion >= 7:
-            self.ES = KibbleESWrapperSeven(self.ES)
+            self.ES = _KibbleESWrapperSeven(self.ES)
         elif self.ESVersion >= 6:
-            self.ES = KibbleESWrapper(self.ES)
+            self.ES = _KibbleESWrapper(self.ES)
         

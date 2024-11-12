@@ -103,6 +103,9 @@ import bcrypt
 import hashlib
 import uuid
 
+# debug
+import traceback
+
 def run(API, environ, indata, session):
     
     method = environ['REQUEST_METHOD']
@@ -111,10 +114,19 @@ def run(API, environ, indata, session):
     if method == "PUT":
         u = indata['email']
         p = indata['password']
-        if session.DB.ES.exists(index=session.DB.dbname, doc_type='useraccount', id = u):
+        # session.DB.ES calls database.py which wraps for es > 7 doc_tyoe to the index
+        user_exists = session.DB.ES.exists(index=session.DB.dbname, doc_type='useraccount', id = u)
+        if __debug__:
+            print("user exists for %s: %s" % (u, user_exists))
+        if user_exists:
             doc = session.DB.ES.get(index=session.DB.dbname, doc_type='useraccount', id = u)
             hp = doc['_source']['password']
-            if bcrypt.hashpw(p.encode('utf-8'), hp.encode('utf-8')).decode('ascii') == hp:
+            x = bcrypt.hashpw(p.encode('utf-8'), hp.encode('utf-8'))
+            #print("Check doc %s" % ( doc))
+            #print("Check user password %s" % (hp))
+            #print("Check ucrypt pw %s" % ( x))
+            if x== hp:
+                #print("Matched pw proceedd with verify %s!" % (session.config['accounts']) )
                 # If verification is enabled, make sure account is verified
                 if session.config['accounts'].get('verify'):
                     if doc['_source']['verified'] == False:
@@ -124,10 +136,17 @@ def run(API, environ, indata, session):
                     'id': session.cookie,
                     'timestamp': int(time.time())
                 }
-                session.DB.ES.index(index=session.DB.dbname, doc_type='uisession', id = session.cookie, body = sessionDoc)
+                if __debug__:
+                    print("Saving from session %s to sessionDoc %s." % (session, sessionDoc) )
+                res = session.DB.ES.index(index=session.DB.dbname, doc_type='uisession', id = session.cookie, body = sessionDoc)
+                if __debug__:
+                    print("Saved to index uisession %s." % (res) )
+                    print("session headers ",  ( session.headers) )
                 yield json.dumps({"message": "Logged in OK!"})
                 return
         
+        #if __debug__:
+        #    traceback.print_stack();
         # Fall back to a 403 if username and password did not match
         raise API.exception(403, "Wrong username or password supplied!")
     
@@ -145,11 +164,20 @@ def run(API, environ, indata, session):
     # Display the user data for this session
     if method == "GET":
         
-        # Do we have an API key? If not, make one
+        if __debug__:
+            print("GET session user %s" % ( session.user))
+            print("GET indata token %s" % (indata.get('newtoken')))
+        
+        if  (session.user is None or indata is None ):
+            print("NO user session cookie not set? RETURN")
+            return
+        # Do we have an API key? If not, make one - question: Should it be ".. or not indata.get.."? This is not used anywhere.
         if not session.user.get('token') or indata.get('newtoken'):
             token = str(uuid.uuid4())
             session.user['token'] = token
             session.DB.ES.index(index=session.DB.dbname, doc_type='useraccount', id = session.user['email'], body = session.user)
+            if __debug__:
+                print("saved session user %s token %s" % ( session.user, token))
         
         # Run a quick search of all orgs we have.
         res = session.DB.ES.search(
@@ -162,6 +190,7 @@ def run(API, environ, indata, session):
                     }
                 }
             )
+        print("organisation index search result :%s" % ( res))
     
         orgs = []
         for hit in res['hits']['hits']:

@@ -38,7 +38,15 @@ def loadPage(path):
             if os.path.isdir(filepath):
                 loadPage(filepath)
             else:
+                # debugging
+                # print("Init of filepath %s" % filepath )
+                # x = filepath.replace(rootpath, "")[1:]
+                # print("Result  replace of filepath %s type: %s" % (x , type(x)) )
+                # explanation: remove rootpath from the beginning and truncate last three characters (=.py) at the end and replace any slash before with a dot
                 p = filepath.replace(rootpath, "")[1:].replace('/', '.')[:-3]
+                # windows path
+                p = p.replace('\\', '.')
+                # print("Init of module path: pages.%s" % p )
                 xp = p.replace('.', '/')
                 print("Loading endpoint pages.%s as %s" % (p, xp))
                 handlers[xp] = importlib.import_module("pages.%s" % p)

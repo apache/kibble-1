@@ -153,7 +153,7 @@ def run(API, environ, indata, session):
         
         # Okay, let's make an account...I guess
         salt = bcrypt.gensalt()
-        pwd = bcrypt.hashpw(p.encode('utf-8'), salt).decode('ascii')
+        pwd = bcrypt.hashpw(p.encode('utf-8'), salt)  #.decode('ascii')
         
         # Verification code, if needed
         vsalt = bcrypt.gensalt()

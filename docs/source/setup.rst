@@ -154,7 +154,7 @@ be using the Apache HTTP Server and proxy to Gunicorn:
       # Set this to your domain, or add kibble.localhost to /etc/hosts
       ServerName kibble.localhost
       DocumentRoot /var/www/kibble/ui/
-      # Proxy to gunicorn for /api/ below:
+      # Proxy to gunicorn or waitress for /api/ below:
       ProxyPass /api/ http://localhost:8000/api/
    </VirtualHost>
 
@@ -166,7 +166,14 @@ be using the Apache HTTP Server and proxy to Gunicorn:
    cd /var/www/kibble/api/
    gunicorn -w 10 -b 127.0.0.1:8000 handler:application -t 120 -D
 
-Once httpd is (re)started, you should be able to browse to your new
+   Alternatively use waitress, e.g. in development like this:
+   
+::
+
+   cd /var/www/kibble/api/
+   waitress-serve --listen=*:8000 handler:application
+   
+   Once httpd is (re)started, you should be able to browse to your new
 Kibble instance.
 
 
