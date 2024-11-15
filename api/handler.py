@@ -128,7 +128,7 @@ class KibbleAPIWrapper:
                 return
             
         except Exception as err:
-            traceBack(err)
+            traceback_output = traceBack(err)
             # We don't know if response has been given yet, try giving one, fail gracefully.
             try:
                 start_response('500 Internal Server Error', [
@@ -137,7 +137,7 @@ class KibbleAPIWrapper:
                 pass
             yield json.dumps({
                 "code": "500",
-                "reason": '\n'.join(err.message)
+                "reason": '\n'.join(traceback_output)
             })
     
 def traceBack(err):
@@ -178,8 +178,8 @@ def application(environ, start_response):
             a = 0
             for bucket in callback(environ, start_response, session):
                 if a == 0:
-                    if __debug__:
-                        print("Checking list type of bucket: %s %s"  % ( type(bucket), bucket )  )
+                    #if __debug__:
+                    #    print("Checking list type of bucket: %s %s"  % ( type(bucket), bucket )  )
                     if isinstance(bucket, dict):
                         print("Added to session headers now %s"  % ( session.headers ) )  
                         session.headers.append(bucket)

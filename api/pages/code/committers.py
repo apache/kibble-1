@@ -96,7 +96,7 @@ def run(API, environ, indata, session):
         which = 'author_email'
         role = 'author'
     
-    interval = indata.get('interval', 'month')
+    interval = indata.get('interval', 'month')  # or 30d if using fixed_interval el8 fixed-interval or calendar_interval
     
     
     ####################################################################
