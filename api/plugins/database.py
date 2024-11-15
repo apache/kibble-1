@@ -116,10 +116,7 @@ class _KibbleESWrapperEight(_KibbleESWrapperSeven):
         if body is not None:
             body = self.ndict_replace(body, self.replace)
         return self.ES.update(index = index+'_'+doc_type, id = id, body = body)
-    def scroll(self, scroll_id, scroll):
-        if body is not None:
-            body = self.ndict_replace(body, self.replace)
-        return self.ES.scroll(scroll_id = scroll_id, scroll = scroll)
+        
     def search(self, index, doc_type, size = 100, scroll = None, _source_include = None, body = None):
         if body is not None:
             body = self.ndict_replace(body, self.replace)
