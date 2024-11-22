@@ -20,22 +20,10 @@ import argparse
 import yaml
 import bcrypt
 
-class KibbleDatabase(object):
-    def __init__(self, config):
-        self.config = config
-        self.dbname = config['elasticsearch']['dbname']
-        self.ES = elasticsearch.Elasticsearch([{
-                'host': config['elasticsearch']['host'],
-                'port': int(config['elasticsearch']['port']),
-                'use_ssl': config['elasticsearch']['ssl'],
-                'verify_certs': False,
-                'url_prefix': config['elasticsearch']['uri'] if 'uri' in config['elasticsearch'] else '',
-                'http_auth': config['elasticsearch']['auth'] if 'auth' in config['elasticsearch'] else None
-            }],
-                max_retries=5,
-                retry_on_timeout=True
-            )
+import sys
+sys.path.append('../')
 
+import api.plugins.database
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument("-u", "--username", required=True, help="Username (email) of accoun to create")
@@ -43,14 +31,15 @@ arg_parser.add_argument("-p", "--password", required=True, help="Password to set
 arg_parser.add_argument("-n", "--name", help="Real name (displayname) of account (optional)")
 arg_parser.add_argument("-A", "--admin", action="store_true", help="Make account global admin")
 arg_parser.add_argument("-a", "--orgadmin", action="store_true", help="Make account owner of orgs invited to")
-arg_parser.add_argument("-o", "--org", help="Invite to this organisation")
+arg_parser.add_argument("-o", "--org", help="Invite to this organisation (id)")
 
 args = arg_parser.parse_args()
 
 # Load Kibble master configuration
-config = yaml.load(open("../api/yaml/kibble.yaml"))
+config = yaml.load(open("../api/yaml/kibble.yaml"), Loader=yaml.Loader)
 
-DB = KibbleDatabase(config)
+# use es 7 mapping if
+DB = api.plugins.database.KibbleDatabase(config)
 
 username = args.username
 password = args.password
@@ -61,7 +50,8 @@ orgs = [args.org] if args.org else []
 aorgs = orgs if adminorg else []
 
 salt = bcrypt.gensalt()
-pwd = bcrypt.hashpw(password.encode('utf-8'), salt).decode('ascii')
+pwd = bcrypt.hashpw(password.encode('utf-8'), salt)  #.decode('ascii')
+
 doc = {
         'email': username,                          # Username (email)
         'password': pwd,                            # Hashed password
@@ -72,6 +62,9 @@ doc = {
         'verified': True,                           # Account verified via email?
         'userlevel': "admin" if admin else "user"   # User level (user/admin)
     }
-DB.ES.index(index=DB.dbname, doc_type='useraccount', id = username, body = doc)
-print("Account created!")
+
+# doc_type is adpated for es > 6
+res = DB.ES.index(index=DB.dbname, doc_type='useraccount', id = username, body = doc) # 
+
+print("Account '%s' %s in index %s!" %( username, res['result'],  DB.dbname) )
 

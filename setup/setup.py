@@ -17,6 +17,8 @@
 KIBBLE_VERSION = '0.1.0' # ABI/API compat demarcation.
 KIBBLE_DB_VERSION = 2 # Second database revision
 
+ELASTIC_SEARCH_MIN_VERSION = 8
+
 import sys
 
 if sys.version_info <= (3, 3):
@@ -33,7 +35,7 @@ import bcrypt
 import json
 
 mappings = json.load(open("mappings.json"))
-myyaml = yaml.load(open("kibble.yaml.sample"))
+myyaml = yaml.load(open("kibble.yaml.sample"), Loader=yaml.Loader)
 
 dopip = False
 try:
@@ -106,7 +108,7 @@ while port < 1:
         pass
 
 while dbname == "":
-    dbname = input("What would you like to call the DB index [kibble]: ")
+    dbname = input("What would you like to call (lowercase) the DB index [kibble]: ")
     if dbname == "":
         print("Using default; kibble")
         dbname = "kibble"
@@ -151,19 +153,30 @@ print("Okay, I got all I need, setting up Kibble...")
 
 def createIndex():
     global mappings
-    es = Elasticsearch([
-        {
-            'host': hostname,
-            'port': port,
-            'use_ssl': False,
-            'url_prefix': ''
-        }],
+    global es
+    
+    defaultELConfig = {
+        'host': hostname,
+        'port': port
+    }
+        
+    versionHint = ELASTIC_SEARCH_MIN_VERSION
+    
+    if versionHint >= 7:
+        defaultELConfig['scheme'] = 'http'
+        defaultELConfig['path_prefix'] = ''
+    else:
+        defaultELConfig['use_ssl'] = False
+        defaultELConfig['url_prefix'] = ''
+    
+    es = Elasticsearch([ defaultELConfig],
         max_retries=5,
         retry_on_timeout=True
-        )
-
+    )
+    
     es6 = True if int(es.info()['version']['number'].split('.')[0]) >= 6 else False
     es7 = True if int(es.info()['version']['number'].split('.')[0]) >= 7 else False
+    es8 = True if int(es.info()['version']['number'].split('.')[0]) >= 8 else False
     if not es6:
         print("New Kibble installations require ElasticSearch 6.x or newer! You appear to be running %s!" % es.info()['version']['number'])
         sys.exit(-1)
@@ -171,7 +184,7 @@ def createIndex():
     if es7:
         mappings['mappings'] = mappings['mappings']['_doc']
     # Check if index already exists
-    if es.indices.exists(dbname+"_api"):
+    if es.indices.exists(index=dbname+"_api"):
         if args.skiponexist: # Skip this is DB exists and -k added
             print("DB prefix exists, but --skiponexist used, skipping this step.")
             return
@@ -192,8 +205,8 @@ def createIndex():
         # forum_*: forum stats (SO, Discourse, Askbot etc)
         'forum_post',
         'forum_topic',
-        # GitHub stats
         'ghstats',
+        # GitHub stats
         # im_*: Instant messaging stats
         'im_stats',
         'im_ops',
@@ -241,9 +254,13 @@ def createIndex():
             )
         
     print("Indices created! %s " % res)
+     
+    
+def createAccount():
+    global es
     
     salt = bcrypt.gensalt()
-    pwd = bcrypt.hashpw(adminPass.encode('utf-8'), salt).decode('ascii')
+    pwd = bcrypt.hashpw(adminPass.encode('utf-8'), salt)   # .decode('ascii') ->  'str' object has no attribute 'decode'
     print("Creating administrator account")
     doc = {
             'email': adminName,                 # Username (email)
@@ -252,6 +269,7 @@ def createIndex():
             'organisations': [],                # Orgs user belongs to (default is none)
             'ownerships': [],                   # Orgs user owns (default is none)
             'defaultOrganisation': None,        # Default org for user
+            #'defaultOrganisation':  'apache',        # Default org for user
             'verified': True,                   # Account verified via email?
             'userlevel': "admin"                # User level (user/admin)
         }
@@ -259,15 +277,24 @@ def createIndex():
         'apiversion': KIBBLE_VERSION,           # Log current API version
         'dbversion': KIBBLE_DB_VERSION          # Log the database revision we accept (might change!)
     }
-    es.index(index=dbname+'_useraccount', doc_type = '_doc', id = adminName, body = doc)
-    es.index(index=dbname+'_api', doc_type = '_doc', id = 'current', body = dbdoc)
+    
+    es7 = True if int(es.info()['version']['number'].split('.')[0]) >= 7 else False
+    
+    if es7:
+        es.index(index=dbname+'_useraccount', id = adminName, body = doc) 
+        es.index(index=dbname+'_api', id = 'current', body = dbdoc) 
+    else:
+        es.index(index=dbname+'_useraccount', doc_type = '_doc', id = adminName, body = doc)
+        es.index(index=dbname+'_api', doc_type = '_doc', id = 'current', body = dbdoc)
     print("Account created!")
+    
 
 try:
     import logging
     # elasticsearch logs lots of warnings on retries/connection failure
     logging.getLogger("elasticsearch").setLevel(logging.ERROR)
     createIndex()
+    createAccount()
     
      
 except Exception as e:
@@ -296,7 +323,8 @@ myconfig = {
         'host': hostname,
         'port': port,
         'ssl': False,
-        'dbname': dbname
+        'dbname': dbname,
+        'versionHint': ELASTIC_SEARCH_MIN_VERSION
     },
     'mail': {
         'mailhost': m[0],

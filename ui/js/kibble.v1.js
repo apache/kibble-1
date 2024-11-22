@@ -3315,7 +3315,7 @@ fetch = function(url, xstate, callback, nocreds) {
   return xmlHttp.onreadystatechange = function(state) {
     var e, js, mpart, response;
     if (xmlHttp.readyState === 4 && xmlHttp.status === 500) {
-      if (snap) {
+      if (typeof snap !== "undefined") {
         snap(xstate);
       }
       return;
@@ -3362,7 +3362,7 @@ put = function(url, json, xstate, callback, nocreds) {
   return xmlHttp.onreadystatechange = function(state) {
     var e, js, response;
     if (xmlHttp.readyState === 4 && xmlHttp.status === 500) {
-      if (snap) {
+      if (typeof snap !== "undefined") {
         snap(xstate);
       }
       return;
@@ -3409,7 +3409,7 @@ patch = function(url, json, xstate, callback, nocreds) {
   return xmlHttp.onreadystatechange = function(state) {
     var e, js, response;
     if (xmlHttp.readyState === 4 && xmlHttp.status === 500) {
-      if (snap) {
+      if (typeof snap !== "undefined") {
         snap(xstate);
       }
       return;
@@ -3456,7 +3456,7 @@ xdelete = function(url, json, xstate, callback, nocreds) {
   return xmlHttp.onreadystatechange = function(state) {
     var e, js, response;
     if (xmlHttp.readyState === 4 && xmlHttp.status === 500) {
-      if (snap) {
+      if (typeof snap !== "undefined") {
         snap(xstate);
       }
       return;
@@ -3514,7 +3514,7 @@ post = function(url, json, xstate, callback, snap) {
   return xmlHttp.onreadystatechange = function(state) {
     var e, response;
     if (xmlHttp.readyState === 4 && xmlHttp.status === 500) {
-      if (snap) {
+      if (typeof snap !== "undefined") {
         snap(xstate);
       }
     }

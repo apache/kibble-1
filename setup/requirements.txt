@@ -4,3 +4,4 @@ bcrypt
 elasticsearch
 pre-commit
 python-dateutil
+ndicts

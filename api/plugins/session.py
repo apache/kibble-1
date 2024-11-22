@@ -22,7 +22,6 @@ It handles setting/getting cookies and user prefs
 
 
 # Main imports
-import cgi
 import re
 import sys
 import traceback
@@ -122,12 +121,19 @@ class KibbleSession(object):
                 self.user = None
             except:
                 pass
+
     def newCookie(self):
         cookie = uuid.uuid4()
         cookies = http.cookies.SimpleCookie()
         cookies['kibble_session'] = cookie
         cookies['kibble_session']['expires'] = 86400 * 365 # Expire one year from now
+        cookies['kibble_session']['HttpOnly'] = True; # no js write exposure
+        # cookies['kibble_session']['secure'] = True; # more secure 
         self.headers.append(('Set-Cookie', cookies['kibble_session'].OutputString()))
+        if __debug__:
+            print("headers ",  ( self.headers) )
+        return cookie
+        
     def __init__(self, DB, environ, config):
         """
         Loads the current user session or initiates a new session if
@@ -138,7 +144,7 @@ class KibbleSession(object):
         self.DB = DB
         self.headers = [('Content-Type', 'application/json; charset=utf-8')]
         self.cookie = None
-        
+          
         # Construct the URL we're visiting
         self.url = "%s://%s" % (environ['wsgi.url_scheme'], environ.get('HTTP_HOST', environ.get('SERVER_NAME')))
         self.url += environ.get('SCRIPT_NAME', '/')
@@ -182,6 +188,8 @@ class KibbleSession(object):
                 except Exception as err:
                     print(err)
             if not cookie:
-                self.newCookie()
+                cookie = self.newCookie()
         self.cookie = cookie
+        if __debug__:
+            print("cookie found/set ",  (cookie) )
         

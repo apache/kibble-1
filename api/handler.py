@@ -24,7 +24,6 @@ also handles CGI parsing and exceptions in the applications.
 
 
 # Main imports
-import cgi
 import re
 import sys
 import traceback
@@ -44,7 +43,7 @@ if __name__ != '__main__':
 
 
 # Load Kibble master configuration
-config = yaml.load(open("yaml/kibble.yaml"))
+config = yaml.load(open("yaml/kibble.yaml"), Loader=yaml.Loader)
 
 # Instantiate database connections
 DB = None
@@ -117,6 +116,9 @@ class KibbleAPIWrapper:
                     501: '501 Gateway error'
                 }
                 errHeader = errHeaders[err.code] if err.code in errHeaders else "400 Bad request"
+                if __debug__:
+                    print("Set response header: %s."  % ( errHeader ) )  #'Set-Cookie'
+                    #    traceBack(err)  
                 start_response(errHeader, [
                             ('Content-Type', 'application/json')])
                 yield json.dumps({
@@ -125,11 +127,8 @@ class KibbleAPIWrapper:
                 }, indent = 4) + "\n"
                 return
             
-        except:
-            err_type, err_value, tb = sys.exc_info()
-            traceback_output = ['API traceback:']
-            traceback_output += traceback.format_tb(tb)
-            traceback_output.append('%s: %s' % (err_type.__name__, err_value))
+        except Exception as err:
+            traceback_output = traceBack(err)
             # We don't know if response has been given yet, try giving one, fail gracefully.
             try:
                 start_response('500 Internal Server Error', [
@@ -141,6 +140,14 @@ class KibbleAPIWrapper:
                 "reason": '\n'.join(traceback_output)
             })
     
+def traceBack(err):
+    print("Initial exception error: %s"  % ( err ) ) 
+    err_type, err_value, tb = sys.exc_info()
+    traceback_output = ['API traceback:']
+    traceback_output += traceback.format_tb(tb)
+    traceback_output.append('%s: %s' % (err_type.__name__, err_value))
+    print("Error: traceback_output: %s" % (traceback_output)) 
+    return traceback_output
         
 def fourohfour(environ, start_response):
     """A very simple 404 handler"""
@@ -166,12 +173,18 @@ def application(environ, start_response):
         if m:
             callback = KibbleAPIWrapper(path, function)
             session = plugins.session.KibbleSession(DB, environ, config)
+            if __debug__:
+                print("Path %s setting in session %s header %s"  % ( path, session, session.headers ) )  #'Set-Cookie'
             a = 0
             for bucket in callback(environ, start_response, session):
                 if a == 0:
-                    session.headers.append(bucket)
+                    #if __debug__:
+                    #    print("Checking list type of bucket: %s %s"  % ( type(bucket), bucket )  )
+                    if isinstance(bucket, dict):
+                        print("Added to session headers now %s"  % ( session.headers ) )  
+                        session.headers.append(bucket)
                     try:
-                        start_response("200 Okay", session.headers)
+                        start_response("200 Okay", (session.headers) )
                     except:
                         pass
                 a += 1
