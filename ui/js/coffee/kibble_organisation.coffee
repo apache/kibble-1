@@ -40,21 +40,39 @@ defaultOrgChanged = (json, state) ->
             location.reload()
         , 1000)
 
-makeOrg = () ->
+makeOrg = (queryMethod) ->
     orgname = get('orgname').value
     orgdesc = get('orgdesc').value
     orgid = get('orgid').value
-    if orgid.length == 0
-        orgid = parseInt(Math.random()*987654321).toString(16)
+    if queryMethod == 'new'
+        if orgid.length == 0
+            orgid = parseInt(Math.random()*987654321).toString(16)
     if orgname.length  == 0
         alert("Please enter a name for the organisation!")
         return
     if orgdesc.length  == 0
         alert("Please enter a description of the organisation!")
         return
-    put('org/list', {id: orgid, name: orgname, desc: orgdesc}, {}, orgCreated)
+    put('org/list', {id: orgid, name: orgname, desc: orgdesc, querymethod: queryMethod}, {}, orgCreated)
 
-
+edit = (org) ->
+    document
+        .getElementById 'orgname'
+        .value = org.name
+    document
+        .getElementById 'orgdesc'
+        .value = org.desc
+    document
+        .getElementById 'orgid'
+        .value = org.id
+    document
+        .getElementById 'create_btn'
+        .disabled = true
+    document
+        .getElementById 'create_btn'
+        .scrollIntoView = false
+    window
+        .scrollTo(0,document.body.scrollHeight)
 orglist = (json, state) ->
     items = []
     if json.organisations.length == 0
@@ -81,6 +99,8 @@ orglist = (json, state) ->
             if not isDefault
                 dbtn = new HTML('input', { style: { marginTop: "10px", width: "120px"},class: "btn btn-primary btn-block", type: "button", onclick: "setDefaultOrg('#{org.id}');", value: "Set as current"})
                 div.inject(dbtn)
+            dbtn = new HTML('i', { style: { float: "right" }, class: "fa fa-edit", type: "icon", title: "Edit Organisation", onclick: "edit({name: '#{org.name}', desc: '#{org.description}', id: '#{org.id}'});",href: "#create_btn"})
+            div.inject(dbtn)
             odiv.inject(new HTML('hr'))
         state.widget.inject(odiv, true)
         
@@ -95,7 +115,9 @@ orglist = (json, state) ->
         
         fieldset.inject(new HTML('p', {}, "You'll be able to add users and owners once the organisation has been created."))
         
-        btn = new HTML('input', { style: { width: "200px"},class: "btn btn-primary btn-block", type: "button", onclick: "makeOrg();", value: "Create organisation"})
+        btn = new HTML('input', { style: { width: "200px"},class: "btn btn-primary btn-block", type: "button",id: 'create_btn', onclick: "makeOrg('new');", value: "Create organisation"})
+        fieldset.inject(btn)
+        btn = new HTML('input', { style: { width: "200px"},class: "btn btn-primary btn-block", type: "button",id: 'edit_btn', onclick: "makeOrg('update');", value: "Edit organisation"})
         fieldset.inject(btn)
         
         state.widget.inject(fieldset)

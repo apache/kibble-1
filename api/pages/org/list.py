@@ -110,19 +110,32 @@ def run(API, environ, indata, session):
             orgname = indata.get('name', 'Foo')
             orgdesc = indata.get('desc', '')
             orgid = indata.get('id', str(int(time.time())))
+            queryMethod = indata.get('querymethod', 'update')
             if session.DB.ES.exists(index=session.DB.dbname, doc_type='organisation', id = orgid):
-                raise API.exception(403, "Organisation ID already in use!")
-            
-            doc = {
-                'id': orgid,
-                'name': orgname,
-                'description': orgdesc,
-                'admins': []
-            }
-            session.DB.ES.index(index=session.DB.dbname, doc_type='organisation', id = orgid, body = doc)
-            time.sleep(1.5)
-            yield json.dumps({"okay": True, "message": "Organisation created!"})
-            return
+                if queryMethod == 'update':
+                    doc = {
+                        'id': orgid,
+                        'name': orgname,
+                        'description': orgdesc,
+                        'admins': []
+                    }
+                    session.DB.ES.index(index=session.DB.dbname, doc_type='organisation',id= orgid, body = doc)
+                    time.sleep(1.5)
+                    yield json.dumps({"okay": True, "message": "Organisation updated!"})
+                    return
+                else:
+                    raise API.exception(403, "Organisation ID already in use!")
+            else:
+                doc = {
+                    'id': orgid,
+                    'name': orgname,
+                    'description': orgdesc,
+                    'admins': []
+                }
+                session.DB.ES.index(index=session.DB.dbname, doc_type='organisation', id = orgid, body = doc)
+                time.sleep(1.5)
+                yield json.dumps({"okay": True, "message": "Organisation created!"})
+                return
         else:
             raise API.exception(403, "Only administrators can create new organisations.")
     
