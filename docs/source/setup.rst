@@ -113,7 +113,7 @@ following components installed and set up:
 - - certifi
 - - pyyaml
 - - bcrypt
-- Gunicorn for Python 3.x (often called gunicorn3) or mod_wsgi
+- Gunicorn for Python 3.x (often called gunicorn3), Waitress or mod_wsgi
 
 ###########################################
 Configuring and Priming the Kibble Instance
@@ -167,12 +167,12 @@ be using the Apache HTTP Server and proxy to Gunicorn:
    gunicorn -w 10 -b 127.0.0.1:8000 handler:application -t 120 -D
 
    Alternatively use waitress, e.g. in development like this:
-   
+
 ::
 
    cd /var/www/kibble/api/
    waitress-serve --listen=*:8000 handler:application
-   
+
    Once httpd is (re)started, you should be able to browse to your new
 Kibble instance.
 
