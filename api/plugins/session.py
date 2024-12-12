@@ -31,13 +31,13 @@ import elasticsearch
 import time
 
 class KibbleSession(object):
-    
+
     def getView(self, viewID):
         if self.DB.ES.exists(index=self.DB.dbname, doc_type="view", id = viewID):
             view = self.DB.ES.get(index=self.DB.dbname, doc_type="view", id = viewID)
             return view['_source']['sourceList']
         return []
-    
+
     def subFilter(self, subfilter, view = []):
         if len(subfilter) == 0:
             return view
@@ -56,7 +56,7 @@ class KibbleSession(object):
                                 }
                             }]
                         }
-                        
+
                     }
                 }
             )
@@ -69,7 +69,7 @@ class KibbleSession(object):
         if not sources:
             sources = ['x'] # blank return to not show eeeeverything
         return sources
-    
+
     def subType(self, stype, view = []):
         if len(stype) == 0:
             return view
@@ -95,7 +95,7 @@ class KibbleSession(object):
                                 }
                             ]
                         }
-                        
+
                     }
                 }
             )
@@ -108,7 +108,7 @@ class KibbleSession(object):
         if not sources:
             sources = ['x'] # blank return to not show eeeeverything
         return sources
-            
+
     def logout(self):
         """Log out user and wipe cookie"""
         if self.user and self.cookie:
@@ -128,12 +128,12 @@ class KibbleSession(object):
         cookies['kibble_session'] = cookie
         cookies['kibble_session']['expires'] = 86400 * 365 # Expire one year from now
         cookies['kibble_session']['HttpOnly'] = True; # no js write exposure
-        # cookies['kibble_session']['secure'] = True; # more secure 
+        # cookies['kibble_session']['secure'] = True; # more secure
         self.headers.append(('Set-Cookie', cookies['kibble_session'].OutputString()))
         if __debug__:
             print("headers ",  ( self.headers) )
         return cookie
-        
+
     def __init__(self, DB, environ, config):
         """
         Loads the current user session or initiates a new session if
@@ -144,11 +144,11 @@ class KibbleSession(object):
         self.DB = DB
         self.headers = [('Content-Type', 'application/json; charset=utf-8')]
         self.cookie = None
-          
+
         # Construct the URL we're visiting
         self.url = "%s://%s" % (environ['wsgi.url_scheme'], environ.get('HTTP_HOST', environ.get('SERVER_NAME')))
         self.url += environ.get('SCRIPT_NAME', '/')
-        
+
         # Get Kibble cookie
         cookie = None
         cookies = None
@@ -190,6 +190,5 @@ class KibbleSession(object):
             if not cookie:
                 cookie = self.newCookie()
         self.cookie = cookie
-        if __debug__:
-            print("cookie found/set ",  (cookie) )
-        
+        #if __debug__:
+        #    print("cookie found/set ",  (cookie) )

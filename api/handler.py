@@ -33,6 +33,8 @@ import plugins.session
 import plugins.database
 import plugins.openapi
 
+__version__ = "1.0.0"
+
 # Compile valid API URLs from the pages library
 # Allow backwards compatibility by also accepting .lua URLs
 urls = []
@@ -55,7 +57,7 @@ class KibbleHTTPError(Exception):
     def __init__(self, code, message):
         self.code = code
         self.message = message
-        
+
 
 class KibbleAPIWrapper:
     """
@@ -66,7 +68,7 @@ class KibbleAPIWrapper:
         self.API = KibbleOpenAPI
         self.path = path
         self.exception = KibbleHTTPError
-     
+
     def __call__(self, environ, start_response, session):
         """Run the function, return response OR return stacktrace"""
         response = None
@@ -89,7 +91,7 @@ class KibbleAPIWrapper:
                         "reason": "Invalid JSON: %s" % err
                     })
                     return
-                
+
             # Validate URL against OpenAPI specs
             try:
                 self.API.validate(environ['REQUEST_METHOD'], self.path, formdata)
@@ -101,7 +103,7 @@ class KibbleAPIWrapper:
                     "reason": err.message
                 })
                 return
-            
+
             # Call page with env, SR and form data
             try:
                 response = self.func(self, environ, formdata, session)
@@ -118,7 +120,7 @@ class KibbleAPIWrapper:
                 errHeader = errHeaders[err.code] if err.code in errHeaders else "400 Bad request"
                 if __debug__:
                     print("Set response header: %s."  % ( errHeader ) )  #'Set-Cookie'
-                    #    traceBack(err)  
+                    #    traceBack(err)
                 start_response(errHeader, [
                             ('Content-Type', 'application/json')])
                 yield json.dumps({
@@ -126,7 +128,7 @@ class KibbleAPIWrapper:
                     "reason": err.message
                 }, indent = 4) + "\n"
                 return
-            
+
         except Exception as err:
             traceback_output = traceBack(err)
             # We don't know if response has been given yet, try giving one, fail gracefully.
@@ -139,16 +141,16 @@ class KibbleAPIWrapper:
                 "code": "500",
                 "reason": '\n'.join(traceback_output)
             })
-    
+
 def traceBack(err):
-    print("Initial exception error: %s"  % ( err ) ) 
+    print("Initial exception error: %s"  % ( err ) )
     err_type, err_value, tb = sys.exc_info()
     traceback_output = ['API traceback:']
     traceback_output += traceback.format_tb(tb)
     traceback_output.append('%s: %s' % (err_type.__name__, err_value))
-    print("Error: traceback_output: %s" % (traceback_output)) 
+    print("Error: traceback_output: %s" % (traceback_output))
     return traceback_output
-        
+
 def fourohfour(environ, start_response):
     """A very simple 404 handler"""
     start_response("404 Not Found", [
@@ -173,15 +175,15 @@ def application(environ, start_response):
         if m:
             callback = KibbleAPIWrapper(path, function)
             session = plugins.session.KibbleSession(DB, environ, config)
-            if __debug__:
-                print("Path %s setting in session %s header %s"  % ( path, session, session.headers ) )  #'Set-Cookie'
+            #if __debug__:
+            #    print("Path %s setting in session %s header %s"  % ( path, session, session.headers ) )  #'Set-Cookie'
             a = 0
             for bucket in callback(environ, start_response, session):
                 if a == 0:
                     #if __debug__:
                     #    print("Checking list type of bucket: %s %s"  % ( type(bucket), bucket )  )
                     if isinstance(bucket, dict):
-                        print("Added to session headers now %s"  % ( session.headers ) )  
+                        print("Added to session headers now %s"  % ( session.headers ) )
                         session.headers.append(bucket)
                     try:
                         start_response("200 Okay", (session.headers) )
@@ -194,7 +196,7 @@ def application(environ, start_response):
                 elif isinstance(bucket, bytes):
                     yield bucket
             return
-            
+
     for bucket in fourohfour(environ, start_response):
         yield bytes(bucket, encoding = 'utf-8')
 

@@ -2,6 +2,6 @@ certifi
 pyyaml
 bcrypt
 elasticsearch
-pre-commit
+pre_commit
 python-dateutil
 ndicts

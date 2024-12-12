@@ -35,7 +35,7 @@ class _KibbleESWrapper(object):
     """
     def __init__(self, ES):
         self.ES = ES
-    
+
     def get(self, index, doc_type, id):
         return self.ES.get(index = index+'_'+doc_type, doc_type = '_doc', id = id)
     def exists(self, index, doc_type, id):
@@ -73,7 +73,7 @@ class _KibbleESWrapperSeven(object):
     """
     def __init__(self, ES):
         self.ES = ES
-    
+
     def get(self, index, doc_type, id):
         return self.ES.get(index = index+'_'+doc_type, id = id)
     def exists(self, index, doc_type, id):
@@ -101,13 +101,13 @@ class _KibbleESWrapperSeven(object):
             index = index+'_'+doc_type,
             body = body
             )
-    
+
 class _KibbleESWrapperEight(_KibbleESWrapperSeven):
     def __init__(self, ES):
         super().__init__(ES)
         # to replace key in body in queries
         self.replace = {'interval': 'calendar_interval'} # or fixed_interval
-        
+
     def index(self, index, doc_type, id, body):
         if body is not None:
             body = self.ndict_replace(body, self.replace)
@@ -116,10 +116,13 @@ class _KibbleESWrapperEight(_KibbleESWrapperSeven):
         if body is not None:
             body = self.ndict_replace(body, self.replace)
         return self.ES.update(index = index+'_'+doc_type, id = id, body = body)
-        
+
     def search(self, index, doc_type, size = 100, scroll = None, _source_include = None, body = None):
         if body is not None:
             body = self.ndict_replace(body, self.replace)
+        if 'size' in body:
+            print("WARNING duplicate size: body size %s and size param: %s" % (body['size'], size) )
+            #del body['size']
         return self.ES.search(
             index = index+'_'+doc_type,
             size = size,
@@ -134,7 +137,7 @@ class _KibbleESWrapperEight(_KibbleESWrapperSeven):
             index = index+'_'+doc_type,
             body = body
             )
-         
+
     def ndict_replace(self, dict, replace):
         #print("original body/dict : %s." %(dict) )
         ndict = NestedDict(dict)
@@ -145,7 +148,7 @@ class _KibbleESWrapperEight(_KibbleESWrapperSeven):
             #print("replace %s matched in key %s " %(key, result) )
             new_key = result
             new_nd[new_key] = value
-        new_dict =  new_nd.to_dict(); 
+        new_dict =  new_nd.to_dict();
         #print("replaced body/dict: %s." %(new_dict) )
         return new_dict
 
@@ -153,7 +156,7 @@ class KibbleDatabase(object):
     def __init__(self, config):
         self.config = config
         self.dbname = config['elasticsearch']['dbname']
-        
+
         defaultELConfig = {
             'host': config['elasticsearch']['host'],
             'port': int(config['elasticsearch']['port']),
@@ -167,12 +170,12 @@ class KibbleDatabase(object):
            defaultELConfig['verify_certs']: False
            defaultELConfig['url_prefix'] = config['elasticsearch']['uri'] if 'uri' in config['elasticsearch'] else ''
            defaultELConfig['http_auth'] = config['elasticsearch']['auth'] if 'auth' in config['elasticsearch'] else None
-            
+
         self.ES = elasticsearch.Elasticsearch([ defaultELConfig ],
                 max_retries=5,
                 retry_on_timeout=True
             )
-        
+
         # IMPORTANT BIT: Figure out if this is ES < 6.x, 6.x or >= 7.x.
         # If so, we're using the new ES DB mappings, and need to adjust ALL
         # ES calls to match this.
@@ -183,4 +186,3 @@ class KibbleDatabase(object):
             self.ES = _KibbleESWrapperSeven(self.ES)
         elif self.ESVersion >= 6:
             self.ES = _KibbleESWrapper(self.ES)
-        

@@ -12,7 +12,7 @@ Apache Kibble is a tool to collect, aggregate and visualize data about any softw
  for the scanners to connect to, and provides the overall management of sources as well as the
  visualizations and API end points.
 - **Kibble scanners** ([kibble-scanners](https://github.com/apache/kibble-scanners)) - a collection of
- scanning applications each designed to work with a specific type of resource (git repo, mailing list, 
+ scanning applications each designed to work with a specific type of resource (git repo, mailing list,
  JIRA, etc) and push compiled data objects to the Kibble Server.
 
 ### Documentation
@@ -29,6 +29,31 @@ service: [https://demo.kibble.apache.org/](https://demo.kibble.apache.org/).
 ### Installation
 
 For installation steps see the [documentation](https://apache-kibble.readthedocs.io/en/latest/setup.html#installing-the-server).
+
+### Packaging
+
+After installation of the build requirements
+
+    pip install -q build
+
+build the project by running
+
+    python -m build
+
+Find more information here: [Setuptools](https://setuptools.pypa.io/) and in project.toml file.
+
+
+### Installation
+
+To install **Kibble-1** for development and/or testing from the checked-out code repository, run the following from the repository root:
+
+    pip install -e '.[dev]'
+
+Find more information [Editable project mode](https://setuptools.pypa.io/en/latest/userguide/development_mode.html).
+
+
+More TBD ..
+
 
 ### Contributing
 

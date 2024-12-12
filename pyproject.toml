@@ -1,0 +1,60 @@
+##############################
+# Python packaging settings: #
+
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kibble-1"
+description = "Apache Kibble is a tool to collect, aggregate and visualize data about any software project that uses commonly known tools."
+# version is dynamic
+
+dependencies = [
+    "python-dateutil",
+    "certifi",
+    "elasticsearch",
+    "PyYAML>=5.2",
+]
+
+requires-python = ">=3.9, <4.0"
+
+authors = [
+    { name = "Apache Software Foundation", email = "dev@kibble.apache.org" },
+]
+maintainers = [
+    { name = "Apache Software Foundation", email="dev@kibble.apache.org" },
+]
+keywords = [
+    "kibble", "data" ]
+
+license = { text = "Apache License, Version 2.0" }
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Environment :: Console",
+    "Environment :: Web Environment",
+    "Framework :: Apache Kibble-1",
+    "License :: OSI Approved :: Apache Software License",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Topic :: System :: Monitoring"
+]
+
+dynamic = [
+    "readme",
+    "version",
+]
+
+[project.urls]
+repository = "https://github.com/apache/kibble-1.git"
+"Bug Tracker" = "https://github.com/apache/kibble-1/issues"
+
+[tool.setuptools]
+dynamic = { readme = { file = ["README.md"] },  version = { attr = "handler.__version__" } }
+packages.find = { where = ["api"] }
